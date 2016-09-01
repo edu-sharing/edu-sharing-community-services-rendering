@@ -1,0 +1,115 @@
+<?php
+
+    global $Locale, $Translate, $ROOT_PATH;
+    $msg = array();
+    $msg['back'] = new Phools_Message_Default('back');
+    $msg['print'] = new Phools_Message_Default('print');
+    $msg['showFitScreen'] = new Phools_Message_Default('Fit image size to browser window (esc)');
+    $msg['showOriginalSize'] = new Phools_Message_Default('Show image in original size');
+    $msg['saveToDisk'] = new Phools_Message_Default('saveToDisk');
+
+    if(!empty($backLink))
+        $backCloseHref = $backLink;
+    else
+        $backCloseHref = 'javascript:window.close();';
+
+?>
+<html>
+    <head>
+        <title>edu-sharing picture module</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="../../theme/default/css/display.css">
+        <link rel="stylesheet" type="text/css" href="../../theme/default/css/custom.css">
+        <link rel="stylesheet" type="text/css" href="../../theme/default/module/picture/css/picture.css">
+        <script type="text/javascript" src="../../vendor/js/getJS.php?<?php echo filemtime($ROOT_PATH . '/vendor/js/getJS.php') ?>"></script>
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                var fit = true;
+                var origWidth = 0;
+                var origHeight = 0;
+
+                function getMaxHeight() {
+                    var buffer = 60;
+                    var license = $('div.license').height() + parseInt($('div.license').css('margin-top'));
+                    if(license !== parseInt(license, 10))
+                        license = 30;
+                    return window.innerHeight - $('nav').height() - parseInt($('nav').css('margin-top')) - parseInt($('section').css('padding-top')) - license - buffer;
+                }
+                function toggleViewButton() {
+                    if(origWidth < window.innerWidth && origHeight < getMaxHeight()) {
+                        $('#toggleView').hide();
+                    } else {
+                        $('#toggleView').show();
+                        scaleImage();
+                    }
+                }
+                function scaleImage() {
+                    if(fit) {
+                        $('#eduImage').css('display', 'block').css('width', '').css('height', '').css('max-height', getMaxHeight()).css('max-width', '100%');
+                        $('#eduImageOrigSize').css('display', 'none');
+                    } else {
+                    	$('#eduImage').css('display', 'none');
+                        $('#eduImageOrigSize').css('display', 'block');
+                    }
+                    setOverflow();
+                }
+
+                function setOverflow() {
+                    if(fit) {
+                        $('body').css('overflow', 'hidden');
+                    } else {
+                        $('body').css('overflow', 'auto');
+                    }
+                }
+
+                $('#eduImage').css('max-height', getMaxHeight());
+                $('#eduImage').css('max-width', '100%');
+
+                $('#toggleView').click(function() {
+                    if(fit) {
+                        fit = false;
+                        $('#toggleView').text('<?php echo $msg['showFitScreen']->localize($Locale, $Translate);?>');
+                    } else {
+                        fit = true;
+                        $('#toggleView').text('<?php echo $msg['showOriginalSize']->localize($Locale, $Translate);?>');
+                    }
+                    scaleImage();
+                });
+                $(document).keyup(function(e) {
+                    if(e.keyCode == 27 && !fit) {
+                        fit = true;
+                        $('#toggleView').text('<?php echo $msg['showOriginalSize']->localize($Locale, $Translate);?>');
+                        scaleImage();
+                        toggleViewButton();
+                    }
+                });
+                $(window).resize(function() {
+                    scaleImage();
+                    toggleViewButton();
+                });
+
+                
+                $('#eduImageOrigSize').on('load', function() {
+                    origWidth = $('#eduImageOrigSize').width();
+                    origHeight = $('#eduImageOrigSize').height();
+                    toggleViewButton();
+                });
+
+                setOverflow();
+            });
+        </script>
+
+    </head>
+    <body style="height: 100%;">
+            <nav>
+                <a class="action back" href="<?php echo $backCloseHref; ?>"><?php echo $msg['back']->localize($Locale, $Translate);?></a>
+                <a class="action" style="display: none;" id="toggleView"><?php echo $msg['showOriginalSize']->localize($Locale, $Translate);?></a>
+              </nav>
+        <section>
+          <img id="eduImage" src="<?php echo htmlentities($image_url, ENT_QUOTES, 'UTF-8') ?>">
+          <img id="eduImageOrigSize" oncontextmenu="return false" src="<?php echo htmlentities($image_url, ENT_QUOTES, 'UTF-8') ?>" style="display:none;">
+            <?php echo (!empty($license)? $license : '<p class="edu_sharing_filename">' . $title . '</p>')?>
+        </section>
+    </body>
+</html>

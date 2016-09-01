@@ -1,0 +1,26 @@
+<div class="license" style="max-width: 100%">
+<?php   
+    $licenceContent = '<a class="license_permalink" href="'.$license_permalink.'" target="_blank" title="'.htmlentities($license_filename).'">'
+                        . htmlentities($license_filename)
+                        . '</a>'
+                        . '&nbsp;'
+                        . htmlentities($this->translate('authored_by'), ENT_COMPAT, 'utf-8')
+                        . '&nbsp;'
+                        . '<span class="author">'
+                        . htmlspecialchars($license_author, ENT_QUOTES, 'utf-8')
+                        . '</span>'
+                        . '&nbsp;'
+                        . htmlentities($this->translate('published under a'), ENT_COMPAT, 'utf-8')
+                        . '&nbsp;';
+                        if(!empty($license_icon_url)) {
+                            $licenceContent .= '<a target="_blank" href="' . htmlspecialchars($license_url, ENT_QUOTES, 'utf-8') . '">';
+                            $licenceContent .= '<img src="' . htmlspecialchars($license_icon_url, ENT_QUOTES, 'utf-8') . '" />';
+                            $licenceContent .= '</a>';    
+                        } else { 
+                            $licenceContent .= $license_name;
+                        }
+                        
+                        
+    echo $licenceContent;
+?>
+</div>

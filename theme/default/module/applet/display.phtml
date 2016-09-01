@@ -1,0 +1,28 @@
+<?php
+    global $Locale, $Translate;
+    $msg = array();
+    $msg['back'] = new Phools_Message_Default('back');
+    if(!empty($backLink))
+        $backCloseHref = $backLink;
+    else 
+        $backCloseHref = 'javascript:window.close();';
+
+?>
+<html>
+    <head>
+        <title>edu-sharing applet module</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="../../theme/default/css/display.css">
+        <link rel="stylesheet" type="text/css" href="../../theme/default/css/custom.css">
+    </head>
+    <body>
+        <nav>
+            <a class="action back" href="<?php echo $backCloseHref; ?>"><?php echo $msg['back']->localize($Locale, $Translate);?></a>
+        </nav>
+        <section>
+            <?php include(dirname(__FILE__).'/inline.phtml'); ?>
+            <?php echo (!empty($license)? $license : '<span class="edu_sharing_filename">' . $title . '</span>')?>
+        </section>
+    </body>
+</html>

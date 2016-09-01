@@ -1,0 +1,136 @@
+<html>
+<HEAD>
+<title>{title}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="../design/m2xcross/style/main_style.css" rel="stylesheet" type="text/css">
+<script language="JavaScript">
+<!--
+function reloadform()
+{
+	document.settings.target = "config";
+	document.settings.action = "form.php";
+	document.settings.submit();
+}
+//-->
+</script>
+</HEAD>
+<style type="text/css">
+  body		{ padding-left:20px; font-size:12px; background-color:#EFEFFF; }
+  td		{ padding: 2px 15px 2px 5px; font-size:12px; }
+  table input	{ border-style:solid; border-width:1px; font-size:12px; vertical-align:middle; }
+  table select	{ border-style:solid; border-width:1px; font-size:12px; vertical-align:middle; }
+  table button	{ padding: 5px; font-size:11px; font-weight:bold; }
+  h2		{ text-align:left; margin-top:10px; }
+  li		{ font-size:9px; color:#E00000; margin:0px; padding:0px; }
+
+</style>
+<body>
+
+<h2 style="text-align:left;">{headline}</h2>
+
+<!-- <form name="settings" target="status" action="execute.php" method="post"> -->
+<form name="{form_name}" target="{form_target}" action="{form_action}" method="post">
+	<input name="step" type="hidden" value="{step}">
+	<input name="LANG" type="hidden" value="{lang_id}">
+
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr>
+  	<td colspan="3" style="padding-top:15px; padding-bottom:5px; font-weight:bold;">{label_01}</td>
+  </tr>
+
+  <tr>
+  	<td width="200" align="right">{label_03}</td>
+  	<td colspan="2" style="font-size:10px; vertical-align:middle; ">
+    	<input name="FORM_PROT" type="text" value="{db_prot}" style="width:40px;"> ://
+    	<input name="FORM_SERVER" type="text" value="{db_srvr}"> /
+    	<input name="FORM_SUB_PATH" type="text" value="{db_sub}" style="width:200px;">
+    	<input name="FORM_INST_PATH" type="hidden" value="{inst_path}">
+  	</td>
+  </tr>
+
+  <tr>
+  	<td colspan="3" style="padding-top:15px; padding-bottom:5px; font-weight:bold;">{label_04}</td>
+  </tr>
+
+  <tr>
+  	<td align="right">{label_05}</td>
+  	<td width="200" style="font-size:10px; vertical-align:middle;">
+      <input name="MYSQL_HOST" type="text" value="{db_host}" style="width:200px;">
+    </td>
+    <td></td>
+  </tr>
+
+  <tr>
+  	<td align="right">{label_08}</td>
+  	<td style="font-size:10px; vertical-align:middle;">
+      <input name="DB_NAME" type="text" value="{db_name}" style="width:200px;">
+    </td>
+    <td>
+      <table>
+      	<tr>
+          <td style="padding:0px;">
+            <input name="DROP_DB" type="checkbox" value="1" {checked_DROP}>
+          </td>
+          <td style="font-size:10px;">{label_10}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+  	<td align="right">{label_06}</td>
+  	<td style="font-size:10px; vertical-align:middle;">
+      <input name="MYSQL_LUSER" type="text" value="{db_user}" style="width:200px;">
+    </td>
+    <td></td>
+  </tr>
+
+  <tr>
+  	<td align="right">{label_07}</td>
+  	<td style="font-size:10px; vertical-align:middle;">
+      <input name="MYSQL_LPASS" type="password" value="{db_pass}" style="width:200px;">
+    </td>
+    <td></td>
+  </tr>
+
+  <tr>
+  	<td colspan="3" style="padding-top:15px; padding-bottom:5px; font-weight:bold;">{label_11}</td>
+  </tr>
+
+  <tr>
+   	<td align="right">{label_12}</td>
+    <td style="font-size:10px; vertical-align:middle; ">
+      <select name="FORM_LANG" onchange="reloadform()">
+{lang_options}
+      </select>
+    </td>
+  	<td></td>
+  </tr>
+
+  <tr><td colspan="3" height="10"></td></tr>
+
+  <tr>
+    <td align="right" style="font-size:10px;"><!-- {label_09} --></td>
+    <td>
+      <!-- <input name="USE_LONG_MSG" type="checkbox" value="1" {checked_LONG}> -->
+      <input name="USE_LONG_MSG" type="hidden" value="1">
+    </td>
+    <td></td>
+  </tr>
+
+  <tr><td colspan="3" height="10"></td></tr>
+
+  <tr>
+    <td></td>
+    <td>
+      <button name="senden" type="submit"><nobr>{install_submit}</nobr></button>
+    </td>
+    <td></td>
+  </tr>
+
+</table>
+
+</form>
+
+</body>
+</html>

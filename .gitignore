@@ -1,0 +1,17 @@
+.project
+.buildpath
+conf
+!conf/de.metaventis.esrender.log4php.properties
+!conf/esmain
+conf/esmain/*
+install/_tmpl/log.php
+log/conversion/*
+!log/conversion/.gitignore
+log/debug/*
+log/scr/*
+log/cacheCleaner.log
+log/esrender.log
+log/redirect.log
+modules/video/config.php
+vendor/lib/wurfl/resources/storage/cache/*
+vendor/lib/wurfl/resources/storage/persistence/*

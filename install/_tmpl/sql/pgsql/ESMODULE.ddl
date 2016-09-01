@@ -1,0 +1,6 @@
+CREATE TABLE "ESMODULE" (
+  "ESMODULE_ID" SERIAL,
+  "ESMODULE_NAME" varchar(100) default NULL,
+  "ESMODULE_DESC" varchar(200) default NULL,
+  PRIMARY KEY  ("ESMODULE_ID")
+);

@@ -1,0 +1,16 @@
+nav {
+	display: inline-block;
+	height: inherit;
+}
+
+.action.left {
+	float: none;
+}
+
+span.caption {
+	margin: 0 20px 0 40px;
+}
+
+.license {
+	display: inline-block;
+}

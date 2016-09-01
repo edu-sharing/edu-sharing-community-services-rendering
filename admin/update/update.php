@@ -1,0 +1,213 @@
+<?php
+define ( 'UPDATEVERSION', '3.0.7' );
+function run($installedVersion) {
+	
+	try {
+		if (version_compare ( '3.0.0', $installedVersion ) > 0) {
+			rename ( MC_ROOT_PATH . 'conf/system.conf.php', MC_ROOT_PATH . 'conf/bk_system.conf.php' );
+			include (MC_ROOT_PATH . 'conf/bk_system.conf.php');
+			$fileContents = file_get_contents ( MC_ROOT_PATH . 'admin/update/templates/system.conf.php' );
+			$fileContents = str_replace ( array (
+					'[[[TOKEN_URL]]]',
+					'[[[TOKEN_DOCROOT]]]',
+					'[[[TOKEN_DATA_DIR]]]' 
+			), array (
+					$MC_SCHEME . '://' . $MC_HOST . $MC_PATH,
+					$MC_DOCROOT,
+					$CC_RENDER_PATH 
+			), $fileContents );
+			file_put_contents ( MC_ROOT_PATH . 'conf/system.conf.php', $fileContents );
+			
+			$application = new ESApp ();
+			$application->getApp ( 'esmain' );
+			$hc = $application->getHomeConf ();
+			$homeRepConf = file_get_contents ( MC_ROOT_PATH . 'conf/esmain/app-' . $hc->prop_array ['homerepid'] . '.properties.xml' );
+			$homeRepConf = str_replace ( array (
+					'services/authentication',
+					'services/usage</entry>',
+					'services/usage?wsdl' 
+			), array (
+					'services/authbyapp',
+					'services/usage2</entry>',
+					'services/usage2?wsdl' 
+			), $homeRepConf );
+			file_put_contents ( MC_ROOT_PATH . 'conf/esmain/app-' . $hc->prop_array ['homerepid'] . '.properties.xml', $homeRepConf );
+			
+			$pdo = RsPDO::getInstance ();
+			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			
+			$sql = $pdo->formatQuery ( 'SELECT `REL_ESMODULE_MIMETYPE_TYPE` FROM `REL_ESMODULE_MIMETYPE` WHERE `REL_ESMODULE_MIMETYPE_TYPE` = :mime' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':mime', 'video/webm' );
+			$stmt->execute ();
+			$result = $stmt->fetchObject ();
+			if (! $result) {
+				$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+				$stmt = $pdo->prepare ( $sql );
+				$stmt->bindValue ( ':modid', '9' );
+				$stmt->bindValue ( ':mime', 'video/webm' );
+				$stmt->execute ();
+			}
+			
+			$sql = $pdo->formatQuery ( 'SELECT `REL_ESMODULE_MIMETYPE_TYPE` FROM `REL_ESMODULE_MIMETYPE` WHERE `REL_ESMODULE_MIMETYPE_TYPE` = :mime' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':mime', 'video/3gpp' );
+			$stmt->execute ();
+			$result = $stmt->fetchObject ();
+			if (! $result) {
+				$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+				$stmt = $pdo->prepare ( $sql );
+				$stmt->bindValue ( ':modid', '9' );
+				$stmt->bindValue ( ':mime', 'video/3gpp' );
+				$stmt->execute ();
+			}
+			
+			$sql = $pdo->formatQuery ( 'SELECT `REL_ESMODULE_MIMETYPE_TYPE` FROM `REL_ESMODULE_MIMETYPE` WHERE `REL_ESMODULE_MIMETYPE_TYPE` = :mime' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':mime', 'video/3gpp2' );
+			$stmt->execute ();
+			$result = $stmt->fetchObject ();
+			if (! $result) {
+				$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+				$stmt = $pdo->prepare ( $sql );
+				$stmt->bindValue ( ':modid', '9' );
+				$stmt->bindValue ( ':mime', 'video/3gpp2' );
+				$stmt->execute ();
+			}
+			
+			$sql = $pdo->formatQuery ( 'ALTER TABLE `ESTRACK` CHANGE `ESTRACK_PARENT_ID` `ESTRACK_ESOBJECT_ID` int(11)' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'DELETE FROM `REL_ESMODULE_MIMETYPE` WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :tif' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':tif', '%image/tif%' );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS `MIMETYPE`' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS `ESVOTE`' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS `ESRESULT`' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS `ESAPPLICATION`' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'ALTER TABLE `ESMODULE` DROP COLUMN `ESMODULE_TYPE`, DROP COLUMN `ESMODULE_URI`, DROP COLUMN `ESMODULE_DISPATCHER_URI`, DROP COLUMN `ESMODULE_TMP_FILEPATH`, DROP COLUMN `ESMODULE_CONF`' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'ALTER TABLE `REL_ESMODULE_MIMETYPE` DROP COLUMN `REL_ESMODULE_MIMETYPE_MIMETYPE_IDENT`' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'ALTER TABLE `ESOBJECT` DROP COLUMN `ESOBJECT_ALF_TIMESTAMP`' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'ALTER TABLE `ESOBJECT` DROP COLUMN `ESOBJECT_TIMESTAMP`' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->execute ();
+		}
+
+		if (version_compare ( '3.0.4', $installedVersion ) > 0) {
+			if(file_exists(MC_ROOT_PATH . 'version.ini'))
+				unlink ( MC_ROOT_PATH . 'version.ini' );
+					
+			if(file_exists(MC_ROOT_PATH . 'maintenance'))
+				rrmdir ( MC_ROOT_PATH . 'maintenance' );
+			
+			if(file_exists(MC_ROOT_PATH . 'theme/default/module/picture/js'))
+				rrmdir ( MC_ROOT_PATH . 'theme/default/module/picture/js' );
+			
+			if(file_exists(MC_ROOT_PATH . 'theme/default/module/picture/css/magnifier.css'))
+				unlink ( MC_ROOT_PATH . 'theme/default/module/picture/css/magnifier.css');
+		}
+		
+		if (version_compare ( '3.0.5', $installedVersion ) > 0) {
+			
+			$pdo = RsPDO::getInstance();
+			
+			if($pdo -> getDriver() == 'pgsql') {
+				
+				$sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` ALTER COLUMN `ESTRACK_ESOBJECT_ID` TYPE varchar(40);');
+				$stmt = $pdo->prepare ( $sql );
+				$stmt->execute ();
+				
+				$sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` ALTER COLUMN `ESTRACK_MODUL_ID` TYPE varchar(40);');
+				$stmt = $pdo->prepare ( $sql );
+				$stmt->execute ();
+				
+			} else if ($pdo -> getDriver() == 'mysql') {
+				
+				$sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` MODIFY `ESTRACK_ESOBJECT_ID` varchar(40);');
+				$stmt = $pdo->prepare ( $sql );
+				$stmt->execute ();
+				
+				$sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` MODIFY `ESTRACK_MODUL_ID` varchar(40);');
+				$stmt = $pdo->prepare ( $sql );
+				$stmt->execute ();				
+			}
+		}
+		
+		
+		if (version_compare ( '3.0.7', $installedVersion ) > 0) {
+				
+			$pdo = RsPDO::getInstance();
+			
+			
+			
+			$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':modid', '9' );
+			$stmt->bindValue ( ':mime', 'video/x-ms-asf' );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':modid', '9' );
+			$stmt->bindValue ( ':mime', 'video/x-matroska' );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':modid', '9' );
+			$stmt->bindValue ( ':mime', 'video/x-ogm' );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':modid', '9' );
+			$stmt->bindValue ( ':mime', 'video/ogg' );
+			$stmt->execute ();
+
+		}
+		
+	} catch ( Exception $e ) {
+		error_log ( print_r ( $e, true ) );
+		return false;
+	}
+	
+	return true;
+}
+function rrmdir($dir) {
+	if (is_dir ( $dir )) {
+		$objects = scandir ( $dir );
+		foreach ( $objects as $object ) {
+			if ($object != "." && $object != "..") {
+				if (is_dir ( $dir . "/" . $object ))
+					rrmdir ( $dir . "/" . $object );
+				else
+					unlink ( $dir . "/" . $object );
+			}
+		}
+		rmdir ( $dir );
+	}
+}

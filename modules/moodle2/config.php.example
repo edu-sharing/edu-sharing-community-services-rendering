@@ -1,0 +1,17 @@
+<?php
+
+/*
+ * When using this module beware of moodle 2.x' modified PEAR-library which
+ * collides with out own. Possible fix:
+ * 
+ * Insert the following atop the file MOODLE_BASE_DIR/lib/pear/PEAR.php:
+ *
+ * if ( ! function_exists('_PEAR_call_destructors') )
+ * {
+ *  ...
+ *  ...
+ *  ...
+ * }
+ *
+ */
+define('MOODLE_BASE_DIR', '/srv/www/htdocs/moodle201_esrender');

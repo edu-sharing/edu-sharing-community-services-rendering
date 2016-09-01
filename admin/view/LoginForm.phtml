@@ -1,0 +1,13 @@
+
+	<?php include dirname(__FILE__) . '/head.phtml' ?>
+	<body>
+		<h1><?php echo LANG_IMPORTHEADING ?></h1>
+		<?php echo $err ?>
+		<p>
+			<form class="login" action="?login=1" method="post">
+				<label for="username"><?php echo LANG_USERNAME ?></label><input type="text" name="username">
+				<label for="password"><?php echo LANG_PASSWORD ?></label><input type="password" name="password">
+				<input class="import_button" type="submit" value="<?php echo LANG_LOGIN ?>"/>
+			</form>
+		</p>
+<?php include dirname(__FILE__) . '/foot.phtml' ?>

@@ -1,0 +1,37 @@
+v3.0
+- support PostgreSQL
+- image module now uses PHP gd instead of imagemagick
+- changeover to prepared statements (PHP PDO)
+- working-over licence rendering
+- new admin interface for DB supports MySQL, PostgreSQL and others
+- communication between repository - rendering service - lms simplified
+- edu-sharing webservices replace Alfresco web services
+- picture rendering add fit to screen and original image size option
+- remove unnecessary database items
+- improve video quality for webm videos
+- added video support for MS Edge
+- French language support
+- centralise module caches (facilitates clustering)
+- new module etherpad (LTI based)
+- added some mimetypes for videos
+- optimize display mode for mobile devices
+
+v1.8
+- device detection (WURFL)
+- html5 video player
+- html5 audio player
+- ffmpeg static build included to prevent unpredictable encoding problems
+- show position of resource in encoding queue
+- new image magnification plugin
+- disable image magnification function for mobile devices
+- max-width for videos (video module, youtube, vimeo)
+- refurbished user interface for installation, update and meta data import
+- password protection for update and meta data import
+- communication between repository, rendering service and lms protected with OpenSSL signatures
+- object tracking is anonymized by default
+- prepared statements for relevant mysql queries
+- add edu-sharing licenses
+- prevent right click to impede download
+- init db management tool for administrators
+- directory "error" renamed to "log"
+- some smaller improvements and bugfixes

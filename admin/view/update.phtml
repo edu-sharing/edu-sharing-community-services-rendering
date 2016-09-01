@@ -1,0 +1,20 @@
+
+	<?php include dirname(__FILE__) . '/head.phtml' ?>
+	
+	<body>
+		<h1><?php echo LANG_IMPORTHEADING ?></h1>
+		
+<?php 
+
+if($this -> isUpdatable()) {
+	echo '<span id="message"><div class="user_message user_info">'.LANG_UPDATEAVAILABLE.'</div></span><br/>';
+	echo LANG_CLICKTOUPDATEFROMVERSION . ' ' . $this -> installedVersion . ' ' . LANG_TO . ' ' . $this -> updateVersion . '.</p><br/>';
+	echo '<form action="?" method="post"><input type="hidden" name="action" value="doupdate"><input type="submit" class="updateButton" value="' . LANG_UPDATE . '"></form>';
+} else {
+	echo '<p><span id="message"><div class="user_message user_warning">'.LANG_NOUPDATEAVAILABLE.'</div></span></p><br/>';
+}
+
+
+?>
+<span id="version_running"><?php echo LANG_VERSION_RUNNING . ' ' . $this->getinstalledversion()?></span>
+<?php include dirname(__FILE__) . '/foot.phtml' ?>

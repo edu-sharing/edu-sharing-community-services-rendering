@@ -1,0 +1,4 @@
+<?php
+
+define("cfg_onyx_service", "http://127.0.0.1:8080/onyxplugin/services?wsdl");
+define("cfg_onyx_runurl", "http://127.0.0.1:8080/onyxplugin/onyxrun");

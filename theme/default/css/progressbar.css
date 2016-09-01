@@ -1,0 +1,8 @@
+.es_progressbar_container {
+	background: url('../../../theme/default/img/bg_dark.png');
+	border: 5px solid #555 !important;
+}
+
+.es_progressbar_progress {
+	border-right: 1px solid #fff;
+}

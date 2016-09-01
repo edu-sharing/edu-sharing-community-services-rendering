@@ -1,0 +1,5 @@
+<?php
+
+define("cfg_scenarion_service", "http://127.0.0.1/service/wsmccourse.php?wsdl");
+define("cfg_scenario_auth_service", "http://127.0.0.1/service/authenticationservice.php?wsdl");
+define("cfg_scenario_player", "http://127.0.0.1/session/player_scenario.php");

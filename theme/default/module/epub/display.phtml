@@ -1,0 +1,101 @@
+<?php
+global $Locale, $Translate, $MC_DOCROOT, $MC_PATH;
+$msg = array();
+$msg['back'] = new Phools_Message_Default('back');
+$msg['Chapter'] = new Phools_Message_Default('Chapter');
+if(!empty($backLink))
+    $backCloseHref = $backLink;
+else 
+    $backCloseHref = 'javascript:window.close();';
+?>
+<!DOCTYPE html>
+<html class="no-js">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title><?php echo htmlentities($title, ENT_QUOTES, 'UTF-8') ?></title>
+		<meta name="viewport" content="width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+
+		<link rel="stylesheet" href="../../theme/default/module/epub/css/es_custom.css">
+		<link rel="stylesheet" type="text/css" href="../../theme/default/css/display.css">
+		<link rel="stylesheet" type="text/css" href="../../theme/default/css/custom.css">
+		<script src="../../theme/default/module/epub/js/epub.min.js"></script>
+		<script src="../../theme/default/module/epub/js/libs/zip.min.js"></script>
+		<script type="text/javascript" src="../../vendor/js/getJS.php?<?php echo filemtime($MC_DOCROOT . $MC_PATH . '/vendor/js/getJS.php') ?>"></script>
+		<script>
+                        "use strict";
+
+            var Book;
+            
+            document.onreadystatechange = function () {
+                if (document.readyState == "complete") {
+                    EPUBJS.filePath = "../../theme/default/module/epub/js/libs/";
+                    EPUBJS.cssPath = "../../theme/default/module/epub/css/";
+                    Book = ePub('<?php echo $path ?>');
+                    Book.renderTo("viewer");
+
+                    // set original title and author from epub metadata
+                    Book.getMetadata().then(function(meta){
+                        $('.caption').append('&nbsp;('+ meta.bookTitle + ', ' + meta.creator + ')');
+                    });
+
+                    Book.getToc().then(function(toc) {
+    
+                        var $select = document.getElementById("toc"),
+                        docfrag = document.createDocumentFragment();
+    
+                        toc.forEach(function(chapter) {
+                            var option = document.createElement("option");
+                            option.textContent = chapter.label;
+                            option.ref = chapter.href;
+        
+                            docfrag.appendChild(option);
+                        });
+    
+                        $select.appendChild(docfrag);
+    
+                        $select.onchange = function(){
+                        var index = $select.selectedIndex,
+                        url = $select.options[index].ref;
+    
+                        Book.goto(url);
+                        return false;
+                        }
+
+                    });
+                    }
+                    };
+
+                    $(document).keydown(function(e){
+                    if (e.keyCode == 37 || e.keyCode == 38) {
+                    Book.prevPage();
+                    return false;
+                    }
+                    });
+                    $(document).keydown(function(e){
+                    if (e.keyCode == 39 || e.keyCode == 40) {
+                    Book.nextPage();
+                    return false;
+                    }
+                    });
+
+		</script>
+	</head>
+	<body>
+		<div id="main">
+        		<header class="no-print">
+                    <nav>
+                        <a class="action left" href="<?php echo $backCloseHref; ?>">&#9668;&nbsp;<?php echo $msg['back'] -> localize($Locale, $Translate); ?></a>
+                        <span class="caption"><?php echo htmlentities($title, ENT_QUOTES, 'UTF-8') ?></span>
+                        <nobr><?php echo $msg['Chapter'] -> localize($Locale, $Translate); ?>&nbsp;<select id="toc"></select></nobr>
+
+                     </nav>
+                </header>
+                <a id="prev" onclick="Book.prevPage();" class="action arrow">‹</a>
+			<div id="viewer"></div>
+			<a id="next" onclick="Book.nextPage();" class="action arrow">›</a>
+		</div>
+		<?php echo $license ?>
+	</body>
+</html>

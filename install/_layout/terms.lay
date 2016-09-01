@@ -1,0 +1,35 @@
+<form name="{form_name}" target="{form_target}" action="{form_action}" method="post">
+	<input name="step" type="hidden" value="{step}">
+	<input name="LANG" type="hidden" value="{lang_id}">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+
+  <tr>
+	<td colspan="2"><p style="width: 760px">{label_14}</p></div>
+	</td>
+  </tr>
+
+  <tr>
+	<td colspan="2">
+	<div id="terms">{terms.txt}</div>
+	</td>
+  </tr>
+
+  <tr>
+   	<td valign="middle" align="right" width="150">
+   		<input type="hidden" name="terms_accepted" value="0">
+		<input type="checkbox" name="terms_accepted" id="accepted" value="1">
+	</td>
+    <td valign="middle"><label for="accepted">{label_15}</label></td>
+  </tr>
+
+  <tr>
+    <td></td>
+    <td>
+      <button name="send" type="submit"><nobr>{form_submit}</nobr></button>
+    </td>
+  </tr>
+
+  </table>
+
+</form>

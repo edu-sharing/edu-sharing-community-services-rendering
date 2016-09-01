@@ -1,0 +1,87 @@
+
+
+<!-- <form name="settings" target="status" action="execute.php" method="post"> -->
+<form name="{form_name}" target="{form_target}" action="{form_action}" method="post">
+	<input name="step" type="hidden" value="{step}">
+	<input name="LANG" type="hidden" value="{lang_id}">
+
+<table width="800px" cellpadding="0" cellspacing="0">
+	<tr>
+		<td colspan="3" style="padding-top:30px; padding-bottom:5px; font-weight:bold;">{label_01}</td>
+	</tr>
+
+	<tr>
+		<td width="200px" align="right">{label_03}</td>
+		<td colspan="2" style=" vertical-align:middle;">{rs_url}</td>
+	</tr>
+
+	<tr>
+		<td align="right">{label_21}</td>
+		<td colspan="2" style=" vertical-align:middle;">{base_dir}</td>
+	</tr>
+
+	<tr>
+		<td  align="right">{label_24}</td>
+		<td colspan="2" style=" vertical-align:middle;">{data_dir}</td>
+	</tr>
+
+	<tr>
+		<td colspan="3" style="padding-top:30px; padding-bottom:5px; font-weight:bold;">{label_22}</td>
+	</tr>
+
+	<tr>
+		<td  align="right">{label_23}</td>
+		<td colspan="2" style=" vertical-align:middle;">{repo_url}</td>
+	</tr>
+
+	<tr>
+		<td colspan="3" style="padding-top:30px; padding-bottom:5px; font-weight:bold;">{label_04}</td>
+	</tr>
+
+	<tr>
+		<td></td>
+		<td colspan="2">{safe_mode}</td>
+	</tr>
+
+	<tr>
+		<td align="right">{db_driver_label}</td>
+		<td  style=" vertical-align:middle;">{db_driver}</td>
+	</tr>
+	
+	<tr>
+		<td align="right">{label_05}</td>
+		<td  style=" vertical-align:middle;">{db_host}</td>
+	</tr>
+
+	<tr>
+		<td align="right">{label_05a}</td>
+		<td  style=" vertical-align:middle;">{db_port}</td>
+	</tr>
+
+	<tr>
+		<td align="right">{label_06}</td>
+		<td style=" vertical-align:middle;">{db_user}</td>
+	</tr>
+
+	<tr>
+		<td align="right">{label_07}</td>
+		<td style=" vertical-align:middle;">{db_pass}</td>
+	</tr>
+
+	<tr>
+		<td align="right">{label_08}</td>
+		<td style=" vertical-align:middle;">{db_name}</td>
+	</tr>
+
+	<tr><td colspan="3" height="50"></td></tr>
+
+	<tr>
+		<td></td>
+		<td>
+			<button name="send" type="submit"><nobr>{form_submit}</nobr></button>
+		</td>
+	</tr>
+
+</table>
+
+</form>

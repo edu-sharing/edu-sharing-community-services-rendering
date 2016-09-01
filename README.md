@@ -5,7 +5,7 @@ Therefore it will convert objects, render them together with the respective lice
 
 Installation
 ------------
-For a full documentation with screenshots of the installation steps visit the [documentation pages](http://edu-sharing.com/dokumentation/?lang=en).
+For a full documentation with screenshots of the installation steps visit the [documentation pages](http://docs.edu-sharing.com).
 
 Documentation
 -------------

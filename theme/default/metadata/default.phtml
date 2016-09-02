@@ -11,8 +11,8 @@
 <div class="edusharing_metadata_wrapper">
 	<a class="edusharing_metadata_toggle_button" data-textopen="<?php echo $msg['showMetadata']->localize($Locale, $Translate);?>" data-textclose="<?php echo $msg['hideMetadata']->localize($Locale, $Translate);?>"><?php echo $msg['showMetadata']->localize($Locale, $Translate);?></a>
 	<div class="edusharing_metadata" style="display:none">
-		<label class="edusharing_metadata_label"><?php echo $msg['title']->localize($Locale, $Translate);?></label>
-		<span class="edusharing_metadata_title"><?php echo $title ?></span>
+		<label class="edusharing_metadata_label"><?php echo htmlentities($msg['title']->localize($Locale, $Translate));?></label>
+		<span class="edusharing_metadata_title"><?php echo htmlentities($title)?></span>
 		<?php
 		foreach($meta as $key => $value) {
 			echo '<label class="edusharing_metadata_label">' . htmlentities($key) . '</label><span class="edusharing_metadata_value">' . htmlentities($value) . '</span>';

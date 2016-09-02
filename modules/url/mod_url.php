@@ -45,11 +45,8 @@ extends ESRender_Module_NonContentNode_Abstract {
             return false;
         }
         
-        //hack $_REQUEST['course_id'] > 0 to show only in lms/inline
-        if(ENABLE_METADATA_RENDERING && $_REQUEST['course_id'] > 0) {
-        	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
-        	$data['metadata'] = $metadata;
-        }
+        $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
+        $data['metadata'] = $metadata;
 
         if ($this -> detectVideo()) {
         	$factory = new ESRender_LicenseFactory_Implementation();

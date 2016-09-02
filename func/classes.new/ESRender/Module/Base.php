@@ -96,8 +96,10 @@ implements ESRender_Module_Interface {
                     'height' => $requestData['height'],
                     'backLink' => $requestData['backLink']);
 
-       	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
-		$data['metadata'] = $metadata;
+        if(ENABLE_METADATA_RENDERING) {
+	       	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
+			$data['metadata'] = $metadata;
+        }
         
         return $data;
     }

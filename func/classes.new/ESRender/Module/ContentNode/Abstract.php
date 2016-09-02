@@ -209,8 +209,10 @@ extends ESRender_Module_Base
         		'title' => $this->_ESOBJECT->getTitle(),
             	'url' => $this->renderUrl($requestData));
 
-        $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
-        $data['metadata'] = $metadata;
+        if(ENABLE_METADATA_RENDERING) {
+        	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
+        	$data['metadata'] = $metadata;
+        }
         
         $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
         if(!empty($license)) {

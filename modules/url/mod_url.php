@@ -45,8 +45,10 @@ extends ESRender_Module_NonContentNode_Abstract {
             return false;
         }
         
-        $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
-        $data['metadata'] = $metadata;
+        if(ENABLE_METADATA_RENDERING) {
+	        $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
+	        $data['metadata'] = $metadata;
+        }
 
         if ($this -> detectVideo()) {
         	$factory = new ESRender_LicenseFactory_Implementation();

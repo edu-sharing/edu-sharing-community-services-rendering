@@ -157,6 +157,10 @@ extends ESRender_Module_Base
         {
             $url .= '&u=' . urlencode($requestData['usernameEncrypted']);
         }
+        
+        
+        /*3.2*/
+        $url .=  '&' . session_name() . '=' . session_id();;
 
         $redirector = '{{{LMS_INLINE_HELPER_SCRIPT}}}&';
 
@@ -172,7 +176,7 @@ extends ESRender_Module_Base
     protected function download(array $requestData)
     {
         $Logger = $this->getLogger();
-        $url = $this->_ESOBJECT -> getPathfile();
+        $url = $this->_ESOBJECT -> getPathfile() .  '?' . session_name() . '=' . session_id(); /*3.2*/
         $Logger->debug('Redirecting to location: "' . $url . '"');
 
         header('HTTP/1.1 303 See other');
@@ -226,6 +230,32 @@ extends ESRender_Module_Base
         echo $snippet;
 
         return true;
+    }
+    
+    protected function dynamic(array $requestData)
+    {
+    	$Logger = $this->getLogger();
+    
+    	$data = array(
+    			'title' => $this->_ESOBJECT->getTitle(),
+    			'url' => $this->renderUrl($requestData));
+    
+
+    		$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
+    		$data['metadata'] = $metadata;
+    
+    	$license = $this->_ESOBJECT->ESOBJECT_LICENSE;
+    	if(!empty($license)) {
+    		$data['license'] = $license -> renderFooter($this -> getTemplate());
+    	}
+    
+    	$snippet = $this->getTemplate()->render('/module/default/dynamic', $data);
+    
+    	$Logger->debug('ESRender_Module_Base::dynamic Snippet "' . $snippet . '"');
+    
+    	echo $snippet;
+    
+    	return true;
     }
 
 }

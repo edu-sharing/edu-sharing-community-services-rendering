@@ -256,7 +256,6 @@ try {
             throw new ESRender_Exception_InvalidRequestParam('display');
         }
     }
-
     // WIDTH
     $req_data['width'] = mc_Request::fetch('width', 'INT', 0);
 
@@ -320,7 +319,7 @@ try {
         $Plugin -> preSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
     }    
     
-    $skipSslVerification = false;
+    $skipSslVerification = true;
     
     if(!empty($_SESSION[$req_data['usernameEncrypted']][$req_data['obj_id']]) && !empty($_COOKIE[$req_data['obj_id']]) && $_SESSION[$req_data['usernameEncrypted']][$req_data['obj_id']] == $_COOKIE[$req_data['obj_id']]) {
         $skipSslVerification = true;
@@ -669,10 +668,19 @@ try {
     $cookie_domain = MC_HOST;
 
     $Logger -> debug('Setting esrender-cookie for host "' . MC_HOST . '".');
+    
+    
+    
+    /*
+     * 3.2
     if (!setcookie($ESRENDER_SESSION_NAME, session_id(), $cookie_expire, $cookie_path, $cookie_domain)) {
         $Logger -> error('Error setting esrender-cookie named "' . $ESRENDER_SESSION_NAME . '" = "' . session_id() . '" for host "' . MC_HOST . '".');
     }
-    // re-start module-session to finish processing
+    */
+    
+    
+    
+    // re-start module-session to finish processing    
     session_write_close();
 
     session_save_path($moduleSessionSavePath);
@@ -716,10 +724,8 @@ try {
             'backLink' => $req_data['backLink']),
         $Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash))) {
         $Logger -> error('Error processing object "' . $data['parentNodeId'] . '".');
-
         throw new Exception('Error processing object.');
     }
-
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin "' . $name . '"::postProcessObject()');
         $Plugin -> postProcessObject();

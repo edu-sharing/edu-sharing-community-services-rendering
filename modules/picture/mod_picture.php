@@ -158,6 +158,18 @@ extends ESRender_Module_ContentNode_Abstract {
 
         return true;
     }
+    
+    /**
+     * (non-PHPdoc)
+     * @see ESRender_Module_ContentNode_Abstract::dynamic()
+     */
+    protected function dynamic(array $requestData) {
+    	$Logger = $this -> getLogger();
+    
+    	echo $this -> renderTemplate($requestData, '/module/picture/dynamic');
+    
+    	return true;
+    }
 
     /**
      * (non-PHPdoc)

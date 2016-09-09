@@ -89,6 +89,28 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
 
         return true;
     }
+    
+    /**
+     * (non-PHPdoc)
+     * @see ESRender_Module_Base::dynamic()
+     */
+    final public function dynamic(
+    		array $requestData)
+    {
+    	global $Locale, $ROOT_URI;
+    	$data = $this->prepareRenderData($requestData);
+    	//$data['inline'] = $this->renderInlineTemplate($data);
+    	$data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
+    			.$requestData['app_id'].'&session='.$requestData['session']
+    			.'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
+    					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
+    					.'&display=inline&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
+    					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
+    					$Template = $this->getTemplate();
+    					echo $Template->render('/module/audio/dynamic', $data);
+    
+    					return true;
+    }
 
     /**
      * (non-PHPdoc)

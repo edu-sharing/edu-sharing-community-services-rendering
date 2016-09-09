@@ -232,30 +232,35 @@ extends ESRender_Module_Base
         return true;
     }
     
-    protected function dynamic(array $requestData)
-    {
-    	$Logger = $this->getLogger();
     
-    	$data = array(
-    			'title' => $this->_ESOBJECT->getTitle(),
-    			'url' => $this->renderUrl($requestData));
-    
+    protected function dynamic(array $requestData) {
+    	 
+       $Logger = $this->getLogger();
+        
+        $data = array(
+        		'title' => $this->_ESOBJECT->getTitle(),
+            	'url' => $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id(),#
+            	'objectId' =>$this->_ESOBJECT->getId());
 
-    		$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
-    		$data['metadata'] = $metadata;
-    
-    	$license = $this->_ESOBJECT->ESOBJECT_LICENSE;
-    	if(!empty($license)) {
-    		$data['license'] = $license -> renderFooter($this -> getTemplate());
-    	}
-    
-    	$snippet = $this->getTemplate()->render('/module/default/dynamic', $data);
-    
-    	$Logger->debug('ESRender_Module_Base::dynamic Snippet "' . $snippet . '"');
-    
-    	echo $snippet;
-    
-    	return true;
+        if(ENABLE_METADATA_RENDERING) {
+        	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
+        	$data['metadata'] = $metadata;
+        }
+        
+        $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
+        if(!empty($license)) {
+        	$data['license'] = $license -> renderFooter($this -> getTemplate());
+        }
+
+        $snippet = $this->getTemplate()->render('/module/default/dynamic', $data);
+                
+        $Logger->debug('ESRender_Module_Base::dynamic Snippet "' . $snippet . '"');
+
+        echo $snippet;
+
+        return true;
+    	
     }
+
 
 }

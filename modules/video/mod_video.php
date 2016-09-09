@@ -102,6 +102,7 @@ extends ESRender_Module_AudioVideo_Abstract
         $inline_template = 'module/video/inline';
 
         $Template = $this->getTemplate();
+        header('Access-Control-Allow-Origin: *');
         return $Template->render($inline_template, $template_data);
     }
 
@@ -147,6 +148,7 @@ extends ESRender_Module_AudioVideo_Abstract
     					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
     					$Template = $this->getTemplate();
+    					header('Access-Control-Allow-Origin: *');
     					echo $Template->render('/module/video/dynamic', $template_data);
     
     					return true;

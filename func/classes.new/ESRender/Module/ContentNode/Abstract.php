@@ -251,7 +251,7 @@ extends ESRender_Module_Base
         	$data['license'] = $license -> renderFooter($this -> getTemplate());
         }
         */
-
+        header('Access-Control-Allow-Origin: *');
         $snippet = $this->getTemplate()->render('/module/default/dynamic', $data);
                 
         $Logger->debug('ESRender_Module_Base::dynamic Snippet "' . $snippet . '"');

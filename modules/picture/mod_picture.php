@@ -109,6 +109,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
         $template_data['image_url'] = $imageUrl;
         $Template = $this -> getTemplate();
+        header('Access-Control-Allow-Origin: *');
         $rendered = $Template -> render($TemplateName, $template_data);
 
         return $rendered;

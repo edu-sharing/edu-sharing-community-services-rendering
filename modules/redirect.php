@@ -89,14 +89,14 @@ if (empty($_SESSION['esrender'])) {
 
 // check for Times_Of_Usage (note: NEGATIVE value means UNLIMITED times of access !)
 if (empty($_SESSION['esrender']['TOU'])) {
-    error_log('No more TOU available.');
+ /*   error_log('No more TOU available.');
 
     $_SESSION['esrender'] = array();
     session_destroy();
 
     header('HTTP/1.0 403 Not Authorized');
     cc_rd_debug('access denied (usage counter is empty)');
-
+*/
 }
 
 // count-down usage
@@ -167,6 +167,7 @@ if (!@include ('./' . $_SESSION['esrender']['mod_name'] . '/redirect_header.inc.
 $filesize = filesize($src_file);
 
 header("Content-length: " . $filesize);
+header('Access-Control-Allow-Origin: *');
 
 if($filesize <= 2048) {
     @readfile($src_file);

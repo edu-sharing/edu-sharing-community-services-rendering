@@ -70,6 +70,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
      */
     protected function renderInlineTemplate(array $data) {
         $Template = $this->getTemplate();
+        header('Access-Control-Allow-Origin: *');
         return $Template->render('/module/audio/inline', $data);
     }
 
@@ -112,6 +113,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
     					$Template = $this->getTemplate();
+    					header('Access-Control-Allow-Origin: *');
     					echo $Template->render('/module/audio/dynamic', $data);
     
     					return true;

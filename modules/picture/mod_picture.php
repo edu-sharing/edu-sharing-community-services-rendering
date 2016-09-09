@@ -93,7 +93,7 @@ extends ESRender_Module_ContentNode_Abstract {
         return $this -> _ESOBJECT -> getFilePath() . '.jpg';
     }
 
-    protected function renderTemplate(array $requestData, $TemplateName) {
+    protected function renderTemplate(array $requestData, $TemplateName, $getDefaultData = true) {
         $Logger = $this -> getLogger();
 
         $m_mimeType = $this -> _ESOBJECT -> getMimeType();
@@ -103,8 +103,9 @@ extends ESRender_Module_ContentNode_Abstract {
 
         $imageUrl = $m_path . '.jpg?' . session_name() . '=' . session_id();
 
-        $template_data = parent::prepareRenderData($requestData);
-
+        if($getDefaultData)
+        	$template_data = parent::prepareRenderData($requestData);
+        
         $template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
         $template_data['image_url'] = $imageUrl;
         $Template = $this -> getTemplate();
@@ -165,9 +166,7 @@ extends ESRender_Module_ContentNode_Abstract {
      */
     protected function dynamic(array $requestData) {
     	$Logger = $this -> getLogger();
-    
-    	echo $this -> renderTemplate($requestData, '/module/picture/dynamic');
-    
+    	echo $this -> renderTemplate($requestData, '/module/picture/dynamic', false);
     	return true;
     }
 

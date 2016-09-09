@@ -42,11 +42,15 @@ extends ESRender_Module_AudioVideo_Abstract
     protected $filename;
 
     protected function prepareRenderData(
-        array $requestData)
+        array $requestData, $getDefaultData = true)
     {
     	global $MC_URL;
 
-        $template_data = parent::prepareRenderData($requestData);
+    	
+    	$template_data = array();
+    	
+    	if($getDefaultData)
+        	$template_data = parent::prepareRenderData($requestData);
         
         $ext = $this -> getExtensionByFormat($this->getVideoFormatByRequestingDevice());
         $object_url = dirname($this -> _ESOBJECT->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?' . session_name() . '=' . session_id();
@@ -140,7 +144,7 @@ extends ESRender_Module_AudioVideo_Abstract
     			.$requestData['app_id'].'&session='.$requestData['session']
     			.'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
     					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
-    					.'&display=inline&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
+    					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
     					$Template = $this->getTemplate();
     					echo $Template->render('/module/video/dynamic', $template_data);
@@ -156,9 +160,14 @@ extends ESRender_Module_AudioVideo_Abstract
     final public function inline(
         array $requestData)
     {
-        $template_data = $this->prepareRenderData($requestData);
-
-        echo $this->renderInlineTemplate($template_data);
+    	
+    	if($_REQUEST['displayoption'] == 'min') {
+    		$template_data = $this->prepareRenderData($requestData, false);
+    	} else {
+    		$template_data = $this->prepareRenderData($requestData);
+    	}
+    	
+    	echo $this->renderInlineTemplate($template_data);
 
         return true;
     }

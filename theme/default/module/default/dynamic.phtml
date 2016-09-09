@@ -1,3 +1,4 @@
+<div id="edusharing_rendering_content">
 Öffnen des Objekts nicht möglich, leider.<br/><br/>
 Um das Objekt trotdzem zu ... herunterladen.<br/><br/><br/>
 Vorschaubild:<br/>
@@ -10,13 +11,12 @@ Vorschaubild:<br/>
 </pre>
 
 <a href="<?php echo $url ?>" target="_blank"  >[DOWNLOAD]</es:title></a>
+</div>
+<div id="edusharing_rendering_metadata">
 
 
+<?php if(!empty($metadata))
+	echo $metadata;
+?>
 
-<!-- <?php if(!empty($metadata) || !empty($license)) {
-	echo '&nbsp;(<span style="display: inline-block">'.$license.'</span>';
-	if(!empty($metadata) && !empty($license))
-		echo '&nbsp|&nbsp';
-	echo '<span style="display: inline-block">'.$metadata.'</span>)';
-}?> -->
-
+</div>

@@ -242,15 +242,15 @@ extends ESRender_Module_Base
             	'url' => $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id(),#
             	'objectId' =>$this->_ESOBJECT->getId());
 
-        if(ENABLE_METADATA_RENDERING) {
-        	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
-        	$data['metadata'] = $metadata;
-        }
+       // $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
+        //$data['metadata'] = $metadata;
         
+        /*
         $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
         if(!empty($license)) {
         	$data['license'] = $license -> renderFooter($this -> getTemplate());
         }
+        */
 
         $snippet = $this->getTemplate()->render('/module/default/dynamic', $data);
                 

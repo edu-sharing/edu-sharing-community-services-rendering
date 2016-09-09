@@ -1,17 +1,18 @@
-<?php
-global $Locale, $Translate, $ROOT_PATH;
-?>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>
             get_resource = function() {
                 jQuery.ajax({
                     url:"<?php echo $ajax_url ?>&callback=get_resource",
                     success:function(data){
-                        jQuery("#edusharing_rendering_data").html(data);
+                        jQuery("#edusharing_rendering_content").html(data);
                     }
                 });
             }
             get_resource();
         </script>
-<div id="edusharing_rendering_data"></div>
+<div id="edusharing_rendering_content"></div>
+<div id="edusharing_rendering_metadata">
+<?php 
+
+?>
+</div>

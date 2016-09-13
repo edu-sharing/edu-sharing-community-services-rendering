@@ -82,10 +82,27 @@ session_start();
 
 if (empty($_SESSION['esrender'])) {
     error_log('Missing "esrender"-session-data.');
-
     header('HTTP/1.0 500 Internal Server Error');
     cc_rd_debug('missing session render data');
 }
+
+if(empty($_SESSION['esrender']['token'])) {
+	error_log('Missing token (session)');
+	cc_rd_debug('Missing token (session)');
+	header('HTTP/1.0 500 Internal Server Error');
+}
+if(empty($_REQUEST['token'])) {
+	error_log('Missing token (request)');
+	cc_rd_debug('Missing token (request)');
+	header('HTTP/1.0 500 Internal Server Error');
+}
+if($_SESSION['esrender']['token'] !== $_REQUEST['token']) {
+	error_log('Invalid token');
+	cc_rd_debug('Invalid token');
+	header('HTTP/1.0 500 Internal Server Error');
+}
+$_SESSION['esrender']['token'] = '';
+	
 
 // check for Times_Of_Usage (note: NEGATIVE value means UNLIMITED times of access !)
 if (empty($_SESSION['esrender']['TOU'])) {
@@ -118,7 +135,7 @@ $dest_path = parse_url($l_dest, PHP_URL_PATH);
 
 if (strpos($dest_path, $l_check) !== 0) {
     header('HTTP/1.0 400 Bad Request');
-    cc_rd_debug('permission denied (path access check failed)');
+    cc_rd_debug('Permission denied (path access check failed)');
 }
 $dest_path = sanitizePath($dest_path);
 

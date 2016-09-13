@@ -1,25 +1,36 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script>
-            get_resource = function() {
-                jQuery.ajax({
-                    url:"<?php echo $ajax_url ?>&callback=get_resource",
-                    success:function(data){
-                        jQuery("#edusharing_rendering_content").html(data);
-                    }
-                });
-            }
-            get_resource();
-        </script>
-<div id="edusharing_rendering_content"></div>
-<span id="edusharing_rendering_metadata_toggle">TOGGLE</span>
-<div id="edusharing_rendering_metadata">
-<h1>Titel des Objekts</h1>
-<label>Eigentümer</label>
-<span>Name des Eigentümers</span>
-<label>Quelle</label>
-<span>Name der Quelle</span>
-<label>Lizenz</label>
-<span>Bild und Text der Lizenz</span>
-<label>Weitere Metadaten</label>
-<span>kommen hier</span>
+<style type='text/css'>
+@import "../../theme/default/css/dynamic.css"
+</style>
+
+<div class="edusharing_rendering_wrapper">
+	<div class="edusharing_rendering_metadata_top"><span class="edusharing_rendering_metadata_top_toggle edusharing_rendering_cursor_pointer" onClick="toggle_edusharing_rendering_metadata()">Informationen ein-/ausblenden</span></div>
+		<?php echo $metadata?>
+	<div class="edusharing_rendering_content_wrapper">
+		<div id="edusharing_rendering_content"></div>
+	</div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+<script>
+	get_resource = function() {
+	    jQuery.ajax({
+	        url:"<?php echo $ajax_url ?>&callback=get_resource",
+	        success:function(data){
+	            jQuery("#edusharing_rendering_content").html(data);
+	        }
+	    });
+	}
+	
+	get_resource();
+	
+	function toggle_edusharing_rendering_metadata() {
+		var el = document.getElementById('edusharing_rendering_metadata');
+		el.style.display = (el.style.display != 'none' ? 'none' : '' );
+	}
+	
+	function close_edusharing_rendering_metadata() {
+		document.getElementById('edusharing_rendering_metadata').style.display = 'none';
+		return true;
+	}
+</script>

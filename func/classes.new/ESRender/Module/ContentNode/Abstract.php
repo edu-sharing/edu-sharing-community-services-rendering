@@ -158,14 +158,11 @@ extends ESRender_Module_Base
             $url .= '&u=' . urlencode($requestData['usernameEncrypted']);
         }
         
-        
         /*3.2*/
-        $url .=  '&' . session_name() . '=' . session_id();;
+        $url .= '&token=' . $requestData['token'];
 
         $redirector = '{{{LMS_INLINE_HELPER_SCRIPT}}}&';
-
         $url = $redirector . 'url=' . urlencode($url);     
-        
         
         return $url;
     }
@@ -176,7 +173,7 @@ extends ESRender_Module_Base
     protected function download(array $requestData)
     {
         $Logger = $this->getLogger();
-        $url = $this->_ESOBJECT -> getPathfile() .  '?' . session_name() . '=' . session_id(); /*3.2*/
+        $url = $this->_ESOBJECT -> getPathfile() .  '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token']; /*3.2*/
         $Logger->debug('Redirecting to location: "' . $url . '"');
 
         header('HTTP/1.1 303 See other');
@@ -192,7 +189,7 @@ extends ESRender_Module_Base
     {
         $Logger = $this->getLogger();
 
-        $url = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id();
+        $url = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
         $Logger->debug('Redirecting to location: "' . $url . '"');
 
         header('HTTP/1.1 303 See other');
@@ -236,29 +233,17 @@ extends ESRender_Module_Base
     protected function dynamic(array $requestData) {
     	 
        $Logger = $this->getLogger();
+       $Logger->debug('ESRender_Module_Base::dynamic Snippet "' . $snippet . '"');
+       
+       $data = array();
+       $data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
+       $data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);
         
-        $data = array(
-        		'title' => $this->_ESOBJECT->getTitle(),
-            	'url' => $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id(),#
-            	'objectId' =>$this->_ESOBJECT->getId());
-
-       // $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
-        //$data['metadata'] = $metadata;
+       header('Access-Control-Allow-Origin: *');
         
-        /*
-        $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
-        if(!empty($license)) {
-        	$data['license'] = $license -> renderFooter($this -> getTemplate());
-        }
-        */
-        header('Access-Control-Allow-Origin: *');
-        $snippet = $this->getTemplate()->render('/module/default/dynamic', $data);
-                
-        $Logger->debug('ESRender_Module_Base::dynamic Snippet "' . $snippet . '"');
-
-        echo $snippet;
-
-        return true;
+       echo $this->getTemplate()->render('/module/default/dynamic', $data);
+       
+       return true;
     	
     }
 

@@ -1,0 +1,17 @@
+<div id="edusharing_rendering_metadata">
+		<div class="edusharing_rendering_metadata_header">
+			<span class="edusharing_rendering_metadata_header_x edusharing_rendering_cursor_pointer" onClick="close_edusharing_rendering_metadata()">X</span>
+			<?php echo $title ?>
+		</div>
+		<div class="edusharing_rendering_metadata_body">
+<?php
+foreach($meta as $key => $value) {
+	echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities($key) . '</label>';
+	if(strpos($key, 'permalink') !== false)
+		echo '<span class="edusharing_rendering_metadata_body_value"><a href="'.htmlentities($value).'" target="_blank">' . htmlentities($key) . '</a></span>';
+	else
+		echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($value) . '</span>';
+}
+?>
+		</div>
+	</div>

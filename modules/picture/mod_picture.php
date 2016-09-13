@@ -101,7 +101,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $m_name = $this -> _ESOBJECT -> getTitle();
         $f_path = $this -> _ESOBJECT -> getFilePath();
 
-        $imageUrl = $m_path . '.jpg?' . session_name() . '=' . session_id();
+        $imageUrl = $m_path . '.jpg?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
 
         if($getDefaultData)
         	$template_data = parent::prepareRenderData($requestData);
@@ -166,8 +166,21 @@ extends ESRender_Module_ContentNode_Abstract {
      * @see ESRender_Module_ContentNode_Abstract::dynamic()
      */
     protected function dynamic(array $requestData) {
-    	$Logger = $this -> getLogger();
-    	echo $this -> renderTemplate($requestData, '/module/picture/dynamic', false);
+    	$Logger = $this -> getLogger();   	
+    	$template_data['image_url'] = $this -> _ESOBJECT -> getPath() . '.jpg?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+    	
+    	$valuesToShow = array(
+    					'AlfrescoMimeType',
+    					'{http://www.alfresco.org/model/content/1.0}modified',
+    					'{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN',
+    					'{http://www.alfresco.org/model/content/1.0}versionLabel',
+    					'{virtualproperty}permalink',
+    					'{http://www.campuscontent.de/model/lom/1.0}general_description',
+    					'{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN'
+    					);
+    	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);
+    	header('Access-Control-Allow-Origin: *');
+    	echo $this -> getTemplate() -> render('/module/picture/dynamic', $template_data);
     	return true;
     }
 

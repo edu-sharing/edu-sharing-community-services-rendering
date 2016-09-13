@@ -56,7 +56,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     	if($getDefaultData)
         	$data = parent::prepareRenderData($requestData);
         
-        $object_url = dirname($this->_ESOBJECT->getPath()) . '/' . basename($this->getOutputFilename($this)) . '?' . session_name() . '=' . session_id();
+        $object_url = dirname($this->_ESOBJECT->getPath()) . '/' . basename($this->getOutputFilename($this)) . '?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
         $data['audio_url'] = $object_url;
         return $data;
     }
@@ -86,6 +86,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
         //$data['inline'] = $this->renderInlineTemplate($data);
         $data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
             .$requestData['app_id'].'&session='.$requestData['session']
+            .'&token=' . $requestData['token']
             .'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
             .$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
             .'&display=inline&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
@@ -108,15 +109,28 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     	//$data['inline'] = $this->renderInlineTemplate($data);
     	$data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
     			.$requestData['app_id'].'&session='.$requestData['session']
+    			.'&token=' . $requestData['token']
     			.'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
     					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
     					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-    					$Template = $this->getTemplate();
-    					header('Access-Control-Allow-Origin: *');
-    					echo $Template->render('/module/audio/dynamic', $data);
-    
-    					return true;
+    	
+    	$valuesToShow = array(
+    					'AlfrescoMimeType',
+    					'{http://www.alfresco.org/model/content/1.0}modified',
+    					'{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN',
+    					'{http://www.alfresco.org/model/content/1.0}versionLabel',
+    					'{virtualproperty}permalink',
+    					'{http://www.campuscontent.de/model/lom/1.0}general_description',
+    					'{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN'
+    			);
+    	
+    	$data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);    	
+
+    	header('Access-Control-Allow-Origin: *');
+    	echo $this->getTemplate()->render('/module/audio/dynamic', $data);
+    	
+    	return true;
     }
 
     /**

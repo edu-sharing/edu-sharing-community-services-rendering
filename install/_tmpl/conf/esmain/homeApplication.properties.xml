@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<!-- comment describing this application-config-file -->
+	<comment>edu-sharing render service</comment>
+
+	<!-- the application-id, used to identify in edu-sharing.network -->
+	<entry key="appid">esrender</entry>
+	
+	<!-- a more verbose description of this application -->
+	<entry key="appcaption">my renderservice renders repository-objects</entry>
+
+	<!-- says if application is allowd to act like a client -->
+	<entry key="trustedclient">true</entry>
+
+	<!-- the type, one of LMS,REPOSITORY,SERVICE -->
+	<entry key="type">SERVICE</entry>
+
+	<!-- host: 	client: trusted host, server: access url  -->
+	<entry key="host">[[[TOKEN_HOST]]]</entry>
+
+	<!-- port: 	server: access url -->
+	<entry key="port">[[[TOKEN_PORT]]]</entry>
+	
+	<entry key="scheme">[[[TOKEN_SCHEME]]]</entry>
+	
+	<entry key="private_key">[[[TOKEN_PRIVATE_KEY]]]</entry>
+	
+	<entry key="public_key">[[[TOKEN_PUBLIC_KEY]]]</entry>
+
+</properties>

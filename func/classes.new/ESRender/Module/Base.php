@@ -96,11 +96,10 @@ implements ESRender_Module_Interface {
                     'height' => $requestData['height'],
                     'backLink' => $requestData['backLink']);
 
-        //hack $_REQUEST['course_id'] > 0 to show only in lms/inline
-		if(ENABLE_METADATA_RENDERING && $_REQUEST['course_id'] > 0) {
-			$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
+        if(ENABLE_METADATA_RENDERING) {
+	       	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
 			$data['metadata'] = $metadata;
-		}
+        }
         
         return $data;
     }

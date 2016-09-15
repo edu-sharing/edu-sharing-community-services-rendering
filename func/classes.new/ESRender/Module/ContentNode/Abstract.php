@@ -208,9 +208,8 @@ extends ESRender_Module_Base
         $data = array(
         		'title' => $this->_ESOBJECT->getTitle(),
             	'url' => $this->renderUrl($requestData));
-        
-        //hack $_REQUEST['course_id'] > 0 to show only in lms/inline
-        if(ENABLE_METADATA_RENDERING && $_REQUEST['course_id'] > 0) {
+
+        if(ENABLE_METADATA_RENDERING) {
         	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
         	$data['metadata'] = $metadata;
         }

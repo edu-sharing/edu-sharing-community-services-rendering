@@ -76,3 +76,7 @@ a.action:active, .license a:active, a.action:focus, .license a:focus {
 .error {
 	padding: 30px 0 0 4%;
 }
+
+.edusharing_metadata_wrapper {
+	display: none;
+}

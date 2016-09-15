@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '3.0.7' );
+define ( 'UPDATEVERSION', '3.1.0' );
 function run($installedVersion) {
 	
 	try {
@@ -162,8 +162,6 @@ function run($installedVersion) {
 				
 			$pdo = RsPDO::getInstance();
 			
-			
-			
 			$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
 			$stmt = $pdo->prepare ( $sql );
 			$stmt->bindValue ( ':modid', '9' );
@@ -188,6 +186,23 @@ function run($installedVersion) {
 			$stmt->bindValue ( ':mime', 'video/ogg' );
 			$stmt->execute ();
 
+		}
+		
+		if (version_compare ( '3.1.0', $installedVersion ) > 0) {
+			
+			$pdo = RsPDO::getInstance();
+			
+			$sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':modid', '8' );
+			$stmt->bindValue ( ':mime', '%audio/vorbis%' );
+			$stmt->execute ();
+			
+			$sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':modid', '8' );
+			$stmt->bindValue ( ':mime', '%audio/x-aiff%' );
+			$stmt->execute ();
 		}
 		
 	} catch ( Exception $e ) {

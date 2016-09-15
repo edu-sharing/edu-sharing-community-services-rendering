@@ -1,9 +1,10 @@
-.project
 .buildpath
-conf
-!conf/de.metaventis.esrender.log4php.properties
-!conf/esmain
-conf/esmain/*
+.project
+.settings
+conf/db.conf.php
+conf/de.metaventis.esrender.log4php.cachecleaner.properties
+conf/esmain
+conf/system.conf.php
 install/_tmpl/log.php
 log/conversion/*
 !log/conversion/.gitignore

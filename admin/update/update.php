@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '3.1.0' );
+define ( 'UPDATEVERSION', '3.2.0' );
 function run($installedVersion) {
 	
 	try {

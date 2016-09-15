@@ -6,7 +6,7 @@
 		<div class="edusharing_rendering_metadata_body">
 <?php
 foreach($meta as $key => $value) {
-	echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities($key) . '</label>';
+	echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($key)) . '</label>';
 	if(strpos($key, 'permalink') !== false)
 		echo '<span class="edusharing_rendering_metadata_body_value"><a href="'.htmlentities($value).'" target="_blank">' . htmlentities($key) . '</a></span>';
 	else

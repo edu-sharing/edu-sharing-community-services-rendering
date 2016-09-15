@@ -13,16 +13,16 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
 <script>
-	get_resource = function() {
+	get_resource = function(token) {
 	    jQuery.ajax({
-	        url:"<?php echo $ajax_url ?>&callback=get_resource",
+	        url:"<?php echo $ajax_url ?>&callback=get_resource&token="+token,
 	        success:function(data){
 	            jQuery("#edusharing_rendering_content").html(data);
 	        }
 	    });
 	}
 	
-	get_resource();
+	get_resource("<?php echo $token ?>");
 	
 	function toggle_edusharing_rendering_metadata() {
 		var el = document.getElementById('edusharing_rendering_metadata');

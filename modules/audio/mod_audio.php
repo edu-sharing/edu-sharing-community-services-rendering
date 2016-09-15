@@ -113,7 +113,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
     					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-    	$template_data['token'] = $requestData['token'];
+    	$data['token'] = $requestData['token'];
     	$valuesToShow = array(
     					'AlfrescoMimeType',
     					'{http://www.alfresco.org/model/content/1.0}modified',

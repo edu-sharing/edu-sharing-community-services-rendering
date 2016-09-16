@@ -19,7 +19,7 @@
         <link rel="stylesheet" type="text/css" href="../../theme/default/css/progressbar.css">
         <script type="text/javascript" src="../../vendor/js/getJS.php?<?php echo filemtime($MC_DOCROOT . $MC_PATH . '/vendor/js/getJS.php') ?>"></script>
         <script>
-            get_resource = function() {
+            get_resource = function(token) {
                 jQuery.ajax({
                     url:"<?php echo $ajax_url ?>&callback=get_resource&token="+token,
                     success:function(result){

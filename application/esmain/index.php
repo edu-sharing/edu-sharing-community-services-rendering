@@ -249,7 +249,7 @@ try {
     }
 
     // DISPLAY MODE
-    $display_kind = mc_Request::fetch('display', 'CHAR', 'dynamic');
+    $display_kind = mc_Request::fetch('display', 'CHAR', 'window');
     if ($display_kind) {
         $Validator = new ESRender_Validator_DisplayMode();
         if (!$Validator -> validate($display_kind)) {

@@ -456,6 +456,7 @@ try {
         if($ref) {
         	$params['nodeId'] = $original;
         	$renderInfoLMSReturn = $client->getRenderInfoLMS($params);
+        	$req_data['obj_id'] = $original;
         }
         
 

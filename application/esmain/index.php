@@ -327,6 +327,8 @@ try {
     if(!empty($req_data['token'])) {
     	if($req_data['token'] == $_SESSION['esrender']['token']) {
         	$skipSslVerification = true;
+    	} else {
+    		$Logger->error('Token not valid!');
     	}
     }
     

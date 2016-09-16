@@ -21,14 +21,14 @@
         <script>
             get_resource = function() {
                 jQuery.ajax({
-                    url:"<?php echo $ajax_url ?>&callback=get_resource",
+                    url:"<?php echo $ajax_url ?>&callback=get_resource&token="+token,
                     success:function(result){
                         jQuery("#content").html(result);
                         document.getElementsByTagName('audio')[0].play();
                     }
                 });
             }
-            get_resource();
+            get_resource("<?php echo $token ?>");
         </script>
     </head>
     <body oncontextmenu="return false;">

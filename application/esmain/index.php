@@ -21,6 +21,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: *");
+
+
 try {
     include_once ('../../conf.inc.php');
 
@@ -325,7 +331,7 @@ try {
     $skipSslVerification = false;
     
     if(!empty($req_data['token'])) {
-    	if($req_data['token'] == $_SESSION['esrender']['token']) {
+    	if($req_data['token'] == $_SESSION['esrender']['token'] || empty($_SESSION['esrender']['token'])) {
         	$skipSslVerification = true;
     	} else {
     		$Logger->error('Token not valid!');
@@ -436,6 +442,22 @@ try {
             "version" => $req_data['version']
         );
         $renderInfoLMSReturn = $client->getRenderInfoLMS($params);
+        
+        
+        /*for collection refs call service again with original node id*/
+        $ref = false;
+        foreach($renderInfoLMSReturn->getRenderInfoLMSReturn->properties->item as $item) {
+        	if($item->key == '{http://www.campuscontent.de/model/lom/1.0}format' && $item->value == 'edu/ref') {
+        		$ref = true;
+        	}
+        	if($item->key == '{http://www.campuscontent.de/model/1.0}original')
+        		$original = $item->value;
+        }
+        if($ref) {
+        	$params['nodeId'] = $original;
+        	$renderInfoLMSReturn = $client->getRenderInfoLMS($params);
+        }
+        
 
     } catch (Exception $e) {
         throw new ESRender_Exception_InfoLms($e);

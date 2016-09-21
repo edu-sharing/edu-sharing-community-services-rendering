@@ -84,12 +84,11 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
         global $Locale, $ROOT_URI;
         $data = $this->prepareRenderData($requestData);
         //$data['inline'] = $this->renderInlineTemplate($data);
-        $data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
-            .$requestData['app_id'].'&session='.$requestData['session']
+        $data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='.$requestData['app_id']
             .'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
             .$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
             .'&display=inline&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-        $data['token'] = $requestData['token'];
+        $data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
         //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
         $Template = $this->getTemplate();
         echo $Template->render('/module/audio/display', $data);
@@ -107,13 +106,12 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     	global $Locale, $ROOT_URI;
     	$data = $this->prepareRenderData($requestData);
     	//$data['inline'] = $this->renderInlineTemplate($data);
-    	$data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
-    			.$requestData['app_id'].'&session='.$requestData['session']
+    	$data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='.$requestData['app_id']
     			.'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
     					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
     					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-    	$data['token'] = $requestData['token'];
+    	$data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
     	$valuesToShow = array(
     					'AlfrescoMimeType',
     					'{http://www.alfresco.org/model/content/1.0}modified',
@@ -159,7 +157,10 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
         $positionInConversionQueue = $this->_ESOBJECT->getPositionInConversionQueue(self::FORMAT_AUDIO_MP3);
         if(empty($progress) || is_array($progress))
             $progress = '0';
-        echo $template->render('/module/audio/lock', array('callback' => $requestData['callback'], 'token' => $requestData['token'], 'progress' => $progress, 'positionInConversionQueue' => $positionInConversionQueue));
+        echo $template->render('/module/audio/lock', array('callback' => $requestData['callback'],
+        											'authString' => 'token='.$requestData['token'].'&'.session_name().'='.session_id(),
+        											'progress' => $progress,
+        											'positionInConversionQueue' => $positionInConversionQueue));
         return true;
     }
 

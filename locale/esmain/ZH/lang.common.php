@@ -41,6 +41,8 @@ $Translate
     ->addTranslation('zh', 'Chapter', 'Chapter')
     ->addTranslation('zh', 'Object does not exist in repository', 'Object does not exist in repository')
     ->addTranslation('zh', 'Error fetching object properties', 'Error fetching object properties')
-    ->addTranslation('en', 'title', 'Title')
-    ->addTranslation('en', 'showMetadata', 'Show metadata')
-    ->addTranslation('en', 'hideMetadata', 'hide metadata');
+    ->addTranslation('zh', 'title', 'Title')
+    ->addTranslation('zh', 'showMetadata', 'Show metadata')
+    ->addTranslation('zh', 'hideMetadata', 'hide metadata')
+    ->addTranslation('zh', 'showInformation', 'Show information')
+    ->addTranslation('zh', 'hideInformation', 'Hide information');

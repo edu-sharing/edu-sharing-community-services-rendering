@@ -24,4 +24,4 @@ if($progress == 0 && $positionInConversionQueue) {
 }
 
 if(!empty($callback))
-    echo "<script>var t = setTimeout('{$callback}(\"".$token."\")', ".TIMEOUT_INTERVAL.");</script>";
+    echo "<script>var t = setTimeout('{$callback}(\"".$authString."\")', ".TIMEOUT_INTERVAL.");</script>";

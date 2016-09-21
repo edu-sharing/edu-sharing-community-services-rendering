@@ -1,91 +1,16 @@
+<?php 
+global $Locale, $Translate;
+$msg = array();
+$msg['showInformation'] = new Phools_Message_Default('showInformation');
+$msg['hideInformation'] = new Phools_Message_Default('hideInformation');
+?>
+
 <style scoped>
-
-@import url(https://fonts.googleapis.com/css?family=Roboto);
-
-.edusharing_rendering_cursor_pointer {
-	cursor: pointer;
-}
-
-.edusharing_rendering_wrapper {
-	background-color: #eee;
-	padding: 0;
-	margin: 0;
-	font-family: 'Roboto', 'Noto', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    font-size: 100%;
-    min-height: 100%;
-}
-
-.edusharing_rendering_metadata_top {
-	text-align: right;
-	margin-bottom: 20px;
-}
-
-.edusharing_rendering_metadata_top_toggle {
-	color: #4F7A98;
-}
-
-#edusharing_rendering_metadata {
-	position: absolute;
-	right: 0;
-	-webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
-	-moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
-	box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
-	background-color: #eee;
-}
-.edusharing_rendering_metadata_header {
-	background-color: #fff;
-	padding: 20px;
-	font-size: 110%;
-}
-
-.edusharing_rendering_metadata_header_x {
-	float: right;
-	margin-left: 20px;
-}
-
-.edusharing_rendering_metadata_body {
-	padding: 20px;
-}
-
-.edusharing_rendering_metadata_body_label {
-	display: block;
-	font-weight: 700;
-	margin-top: 10px;
-}
-
-.edusharing_rendering_metadata_body_value {
-	display: block;
-}
-
-.edusharing_rendering_content_wrapper {
-	text-align: left;
-}
-
-.edusharing_rendering_content {
-	text-align: center;
-}
-
-a.edusharing_rendering_content {
-	border-radius: 3px;
-	padding: 5px 10px;
-	text-decoration: none;
-	color: #fff;
-	background-color: #4F7A98;
-}
-
-.edusharing_rendering_content, video, audio {
-	-webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
-	-moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
-	box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
-	max-width: 100%;
-}
-
+<?php include(dirname(__FILE__) . '/../../css/dynamic.css'); ?>
 </style>
 
 <div class="edusharing_rendering_wrapper">
-	<div class="edusharing_rendering_metadata_top"><span class="edusharing_rendering_metadata_top_toggle edusharing_rendering_cursor_pointer" onClick="toggle_edusharing_rendering_metadata()">Informationen ein-/ausblenden</span></div>
+	<div class="edusharing_rendering_metadata_top"><span id="edusharing_rendering_metadata_top_toggle" class="edusharing_rendering_cursor_pointer" onClick="toggle_edusharing_rendering_metadata()"><?php echo $msg['hideInformation']->localize($Locale, $Translate);?></span></div>
 		<?php echo $metadata?>
 	<div class="edusharing_rendering_content_wrapper">
 		<h1>Öffnen des Objekts leider nicht möglich.</h1>
@@ -95,15 +20,7 @@ a.edusharing_rendering_content {
 </div>
 
 <script>
-	function toggle_edusharing_rendering_metadata() {
-		var el = document.getElementById('edusharing_rendering_metadata');
-		el.style.display = (el.style.display != 'none' ? 'none' : '' );
-	}
-	
-	function close_edusharing_rendering_metadata() {
-		document.getElementById('edusharing_rendering_metadata').style.display = 'none';
-		return true;
-	}
+	<?php include(dirname(__FILE__) . '/../../js/dynamic.js'); ?>
 </script>
 
 

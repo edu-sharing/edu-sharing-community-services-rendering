@@ -53,4 +53,6 @@ $Translate
     ->addTranslation('fr', 'Token expired', 'Security Token expiré')
     ->addTranslation('fr', 'title', 'Titre')
     ->addTranslation('fr', 'showMetadata', 'Montrer métadonnées')
-    ->addTranslation('fr', 'hideMetadata', 'Cacher métadonnées');
+    ->addTranslation('fr', 'hideMetadata', 'Cacher métadonnées')
+    ->addTranslation('fr', 'showInformation', 'Montrer information')
+    ->addTranslation('fr', 'hideInformation', 'Cacher information');

@@ -118,12 +118,12 @@ extends ESRender_Module_AudioVideo_Abstract
 
         //load resource asynchr. with display mode inline!
         $template_data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
-            .$requestData['app_id'].'&session='.$requestData['session']
+            .$requestData['app_id']
             .'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
             .$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
             .'&display=inline&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-            $template_data['token'] = $requestData['token'];
-		//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
+            $template_data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
+        //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
         $Template = $this->getTemplate();
         echo $Template->render('/module/video/display', $template_data);
 
@@ -143,13 +143,13 @@ extends ESRender_Module_AudioVideo_Abstract
     
     	//load resource asynchr. with display mode inline!
     	$template_data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
-    			.$requestData['app_id'].'&session='.$requestData['session']
+    			.$requestData['app_id']
     			.'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
     					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
     					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-    	$template_data['token'] = $requestData['token']; 	
-    	$valuesToShow = array(
+            $template_data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
+    					$valuesToShow = array(
     					'AlfrescoMimeType',
     					'{http://www.alfresco.org/model/content/1.0}modified',
     					'{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN',
@@ -198,7 +198,10 @@ extends ESRender_Module_AudioVideo_Abstract
         $positionInConversionQueue = $this->_ESOBJECT->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice());
         if(empty($progress) || is_array($progress))
             $progress = '0';
-        echo $template->render('/module/video/lock', array('callback' => $requestData['callback'], 'token' => $requestData['token'], 'progress' => $progress, 'positionInConversionQueue' => $positionInConversionQueue));
+        echo $template->render('/module/video/lock', array('callback' => $requestData['callback'],
+        												'authString' => 'token='.$requestData['token'].'&'.session_name().'='.session_id(),
+        												'progress' => $progress,
+        												'positionInConversionQueue' => $positionInConversionQueue));
         return true;
     }
 

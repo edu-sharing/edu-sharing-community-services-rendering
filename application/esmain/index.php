@@ -27,6 +27,7 @@ header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: *");
 
 
+
 try {
     include_once ('../../conf.inc.php');
 
@@ -35,8 +36,14 @@ try {
         error_log('ESRENDER_SESSION_NAME not set in conf/system.conf.php');
         $ESRENDER_SESSION_NAME = 'ESSID';
     }
-
+    
     session_name($ESRENDER_SESSION_NAME);
+
+    $sessid = mc_Request::fetch($ESRENDER_SESSION_NAME, 'CHAR', '');
+    if(!empty($sessid))
+    	session_id($sessid);
+ 
+    
     if (!session_start()) {
         throw new Exception('Could not start session.');
     }

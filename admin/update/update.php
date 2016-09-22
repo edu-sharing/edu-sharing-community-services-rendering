@@ -205,6 +205,19 @@ function run($installedVersion) {
 			$stmt->execute ();
 		}
 		
+		
+		if (version_compare ( '3.2.0', $installedVersion ) > 0) {
+			$mArr = 'DEFINE("DISPLAY_DYNAMIC_METADATA_KEYS", serialize(array(
+				"{http://www.alfresco.org/model/content/1.0}creator",
+				"{http://www.campuscontent.de/model/1.0}commonlicense_key",
+				"{http://www.alfresco.org/model/content/1.0}versionLabel",
+				"REPOSITORY_ID"
+			)));';
+			file_put_contents(MC_ROOT_PATH . 'conf/system.conf.php', $mArr, FILE_APPEND | LOCK_EX);
+			
+		}
+		
+		
 	} catch ( Exception $e ) {
 		error_log ( print_r ( $e, true ) );
 		return false;

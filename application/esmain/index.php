@@ -262,7 +262,7 @@ try {
     }
 
     // DISPLAY MODE
-    $display_kind = mc_Request::fetch('display', 'CHAR', 'window');
+    $display_kind = mc_Request::fetch('display', 'CHAR', 'dynamic');
     if ($display_kind) {
         $Validator = new ESRender_Validator_DisplayMode();
         if (!$Validator -> validate($display_kind)) {
@@ -451,7 +451,11 @@ try {
         $renderInfoLMSReturn = $client->getRenderInfoLMS($params);
         
         
-        /*for collection refs call service again with original node id*/
+        /*
+         * For collection refs call service again with original node id.
+         * Should be handled in teh repository for consistency.
+         * 
+         * */
         $ref = false;
         foreach($renderInfoLMSReturn->getRenderInfoLMSReturn->properties->item as $item) {
         	if($item->key == '{http://www.campuscontent.de/model/lom/1.0}format' && $item->value == 'edu/ref') {

@@ -101,19 +101,18 @@ if($_SESSION['esrender']['token'] !== $_REQUEST['token']) {
 	cc_rd_debug('Invalid token');
 	header('HTTP/1.0 500 Internal Server Error');
 }
-$_SESSION['esrender']['token'] = '';
 	
 
 // check for Times_Of_Usage (note: NEGATIVE value means UNLIMITED times of access !)
 if (empty($_SESSION['esrender']['TOU'])) {
- /*   error_log('No more TOU available.');
+    error_log('No more TOU available.');
 
     $_SESSION['esrender'] = array();
     session_destroy();
 
     header('HTTP/1.0 403 Not Authorized');
     cc_rd_debug('access denied (usage counter is empty)');
-*/
+
 }
 
 // count-down usage

@@ -60,9 +60,7 @@ function cc_rd_debug($err_msg) {
 // start session to read object-data
 if (!empty($_GET[$ESRENDER_SESSION_NAME])) {
     $l_sid = $_GET[$ESRENDER_SESSION_NAME];
-}/* 3.2 else if (!empty($_COOKIE[$ESRENDER_SESSION_NAME])) {
-    $l_sid = $_COOKIE[$ESRENDER_SESSION_NAME];
-} */else {
+} else {
     header('HTTP/1.0 400 Bad Request');
     $l_sid = cc_rd_debug('esrender session missing');
 }

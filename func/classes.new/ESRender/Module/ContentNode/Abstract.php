@@ -157,11 +157,11 @@ extends ESRender_Module_Base
         {
             $url .= '&u=' . urlencode($requestData['usernameEncrypted']);
         }
-        
-        /*3.2*/
+
         $url .= '&token=' . $requestData['token'];
 
         $redirector = '{{{LMS_INLINE_HELPER_SCRIPT}}}&';
+        
         $url = $redirector . 'url=' . urlencode($url);     
         
         return $url;
@@ -173,7 +173,7 @@ extends ESRender_Module_Base
     protected function download(array $requestData)
     {
         $Logger = $this->getLogger();
-        $url = $this->_ESOBJECT -> getPathfile() .  '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token']; /*3.2*/
+        $url = $this->_ESOBJECT -> getPathfile() .  '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
         $Logger->debug('Redirecting to location: "' . $url . '"');
 
         header('HTTP/1.1 303 See other');

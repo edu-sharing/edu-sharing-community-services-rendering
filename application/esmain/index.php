@@ -711,13 +711,6 @@ try {
     $cookie_expire = 0;
     $cookie_domain = MC_HOST;
 
-    $Logger -> debug('Setting esrender-cookie for host "' . MC_HOST . '".');
-    /*
-     * 3.2
-    if (!setcookie($ESRENDER_SESSION_NAME, session_id(), $cookie_expire, $cookie_path, $cookie_domain)) {
-        $Logger -> error('Error setting esrender-cookie named "' . $ESRENDER_SESSION_NAME . '" = "' . session_id() . '" for host "' . MC_HOST . '".');
-    }
-    */
     // re-start module-session to finish processing    
     session_write_close();
 

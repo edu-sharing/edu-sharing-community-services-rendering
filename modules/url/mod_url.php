@@ -119,7 +119,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
     
     protected function getLinkIframe() {
-    	return '<iframe style="height: 70%; width: 70%; border: none" src="'.$this -> getUrl().'"></iframe>';
+    	return '<iframe id="eduLinkFrame" style="height: 70%; width: 70%; border: none" src="'.$this -> getUrl().'"></iframe>';
     }
 
     protected function getVideoEmbedding($width = NULL) {

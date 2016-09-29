@@ -14,9 +14,9 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 	<div class="edusharing_rendering_metadata_top"><span id="edusharing_rendering_metadata_top_toggle" class="edusharing_rendering_cursor_pointer" onClick="toggle_edusharing_rendering_metadata()"><?php echo $msg['hideInformation']->localize($Locale, $Translate);?></span></div>
 		<?php echo $metadata?>
 	<div class="edusharing_rendering_content_wrapper">
-		<?php echo $embedding ?>
-		<br/><br/>
 		<a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" ><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
+		<br/><br/>
+		<?php echo $embedding ?>
 	</div>
 </div>
 

@@ -21,7 +21,7 @@
 
 global $Translate;
 $Translate
-    ->addTranslation('de', 'Error', '错误')
+    ->addTranslation('zh', 'Error', '错误')
     ->addTranslation('zh', 'Missing parameter ":name".', '缺少参数 ":name".')
 	->addTranslation('zh', 'Invalid parameter ":name".', '无效参数 ":name".')
 	->addTranslation('zh', 'Error loading configuration.', '载入配置信息失败')
@@ -45,4 +45,8 @@ $Translate
     ->addTranslation('zh', 'showMetadata', 'Show metadata')
     ->addTranslation('zh', 'hideMetadata', 'hide metadata')
     ->addTranslation('zh', 'showInformation', 'Show information')
-    ->addTranslation('zh', 'hideInformation', 'Hide information');
+    ->addTranslation('zh', 'hideInformation', 'Hide information')
+	->addTranslation('zh', 'toDownload', 'Download')
+	->addTranslation('zh', 'cannotOpenObject', 'Cannot open object.')
+	->addTranslation('zh', 'cannotOpenObjectText', 'In order to use it anyway, you can download it.')
+	->addTranslation('zh', 'goToOrigin', 'Go to origin');

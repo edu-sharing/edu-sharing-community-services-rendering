@@ -50,4 +50,8 @@ $Translate
     ->addTranslation('en', 'showMetadata', 'Show metadata')
     ->addTranslation('en', 'hideMetadata', 'Hide metadata')
 	->addTranslation('en', 'showInformation', 'Show information')
-	->addTranslation('en', 'hideInformation', 'Hide information');
+	->addTranslation('en', 'hideInformation', 'Hide information')
+	->addTranslation('en', 'toDownload', 'Download')
+	->addTranslation('en', 'cannotOpenObject', 'Cannot open object.')
+	->addTranslation('en', 'cannotOpenObjectText', 'In order to use it anyway, you can download it.')
+	->addTranslation('en', 'goToOrigin', 'Go to origin');

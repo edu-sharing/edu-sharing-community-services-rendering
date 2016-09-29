@@ -55,4 +55,8 @@ $Translate
     ->addTranslation('fr', 'showMetadata', 'Montrer métadonnées')
     ->addTranslation('fr', 'hideMetadata', 'Cacher métadonnées')
     ->addTranslation('fr', 'showInformation', 'Montrer information')
-    ->addTranslation('fr', 'hideInformation', 'Cacher information');
+    ->addTranslation('fr', 'hideInformation', 'Cacher information')
+	->addTranslation('fr', 'toDownload', 'Télécharger')
+	->addTranslation('fr', 'cannotOpenObject', 'Ouverture de l`objet est pas possible.')
+	->addTranslation('fr', 'cannotOpenObjectText', 'Afin de l`utiliser de toute façon, vous pouvez le télécharger.')
+	->addTranslation('fr', 'goToOrigin', 'Aller à l`origine');

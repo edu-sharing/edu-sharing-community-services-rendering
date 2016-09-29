@@ -102,7 +102,6 @@ extends ESRender_Module_AudioVideo_Abstract
         $inline_template = 'module/video/inline';
 
         $Template = $this->getTemplate();
-        header('Access-Control-Allow-Origin: *');
         return $Template->render($inline_template, $template_data);
     }
 
@@ -149,17 +148,7 @@ extends ESRender_Module_AudioVideo_Abstract
     					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
             $template_data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
-    					$valuesToShow = array(
-    					'AlfrescoMimeType',
-    					'{http://www.alfresco.org/model/content/1.0}modified',
-    					'{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN',
-    					'{http://www.alfresco.org/model/content/1.0}versionLabel',
-    					'{virtualproperty}permalink',
-    					'{http://www.campuscontent.de/model/lom/1.0}general_description',
-    					'{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN'
-    			);
-    	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);
-    	header('Access-Control-Allow-Origin: *');
+    	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	echo $this->getTemplate()->render('/module/video/dynamic', $template_data);
     
     	return true;

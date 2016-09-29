@@ -55,4 +55,8 @@ $Translate
 	->addTranslation('de', 'showMetadata', 'Metadaten einblenden')
 	->addTranslation('de', 'hideMetadata', 'Metadaten ausblenden')
 	->addTranslation('de', 'showInformation', 'Informationen einblenden')
-	->addTranslation('de', 'hideInformation', 'Informationen ausblenden');
+	->addTranslation('de', 'hideInformation', 'Informationen ausblenden')
+	->addTranslation('de', 'toDownload', 'Herunterladen')
+	->addTranslation('de', 'cannotOpenObject', 'Öffnen des Objekts leider nicht möglich.')
+	->addTranslation('de', 'cannotOpenObjectText', 'Um das Objekt trotzdem zu benutzen, können Sie es herunterladen.')
+	->addTranslation('de', 'goToOrigin', 'Zur Originalseite springen');

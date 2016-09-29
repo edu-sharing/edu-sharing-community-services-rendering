@@ -237,10 +237,7 @@ extends ESRender_Module_Base
        
        $data = array();
        $data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
-       $data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);
-        
-       header('Access-Control-Allow-Origin: *');
-        
+       $data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);       
        echo $this->getTemplate()->render('/module/default/dynamic', $data);
        
        return true;

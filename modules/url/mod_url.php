@@ -38,6 +38,24 @@ extends ESRender_Module_NonContentNode_Abstract {
 
         return true;
     }
+    
+    protected function dynamic(array $requestData) {
+    
+    	if (!$this -> validate()) {
+    		error_log('URL-property is empty.');
+    		return false;
+    	}
+    
+    	if ($this -> detectVideo())
+    		$embedding = $this -> getVideoEmbedding();
+    		else
+    			$embedding = $this -> getLinkIframe();
+    	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    	$Template = $this -> getTemplate();
+    	echo $Template -> render('/module/url/dynamic', array('embedding' => $embedding, 'metadata' => $metadata, 'url' => $this->getUrl()));
+    
+    	return true;
+    }
 
     protected function inline(array $requestData) {
         if (!$this -> validate()) {
@@ -98,6 +116,10 @@ extends ESRender_Module_NonContentNode_Abstract {
         $htm =  '<script> if (typeof single != "undefined") location.href="'.$this -> getUrl().'";</script>';    
         $htm .= '<a href="' . $this -> getUrl() . '" target="_blank"><es:title xmlns:es="http://edu-sharing.net/object" >' . htmlspecialchars($this -> getUrl(), ENT_QUOTES, 'UTF-8') . '</es:title></a>';
         return $htm;         
+    }
+    
+    protected function getLinkIframe() {
+    	return '<iframe style="height: 70%; width: 70%; border: none" src="'.$this -> getUrl().'"></iframe>';
     }
 
     protected function getVideoEmbedding($width = NULL) {

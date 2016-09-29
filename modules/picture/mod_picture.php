@@ -109,7 +109,6 @@ extends ESRender_Module_ContentNode_Abstract {
         $template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
         $template_data['image_url'] = $imageUrl;
         $Template = $this -> getTemplate();
-        header('Access-Control-Allow-Origin: *');
         $rendered = $Template -> render($TemplateName, $template_data);
 
         return $rendered;
@@ -168,18 +167,7 @@ extends ESRender_Module_ContentNode_Abstract {
     protected function dynamic(array $requestData) {
     	$Logger = $this -> getLogger();   	
     	$template_data['image_url'] = $this -> _ESOBJECT -> getPath() . '.jpg?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-    	
-    	$valuesToShow = array(
-    					'AlfrescoMimeType',
-    					'{http://www.alfresco.org/model/content/1.0}modified',
-    					'{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN',
-    					'{http://www.alfresco.org/model/content/1.0}versionLabel',
-    					'{virtualproperty}permalink',
-    					'{http://www.campuscontent.de/model/lom/1.0}general_description',
-    					'{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN'
-    					);
-    	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);
-    	header('Access-Control-Allow-Origin: *');
+    	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	echo $this -> getTemplate() -> render('/module/picture/dynamic', $template_data);
     	return true;
     }

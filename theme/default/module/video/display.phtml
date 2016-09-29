@@ -20,16 +20,16 @@
         <link rel="stylesheet" type="text/css" href="../../theme/default/css/video.css">
         <script type="text/javascript" src="../../vendor/js/getJS.php?<?php echo filemtime($ROOT_PATH . '/vendor/js/getJS.php') ?>"></script>
         <script>
-            get_resource = function(token) {
+            get_resource = function(authstring) {
                 jQuery.ajax({
-                    url:"<?php echo $ajax_url ?>&callback=get_resource&token="+token,
+                    url:"<?php echo $ajax_url ?>&callback=get_resource&"+authstring,
                     success:function(result){
                         jQuery("#content").html(result);
                         document.getElementsByTagName('video')[0].play();
                     }
                 });
             }
-            get_resource("<?php echo $token ?>");
+            get_resource("<?php echo $authString ?>");
         </script>
     </head>
     <body oncontextmenu="return false;">

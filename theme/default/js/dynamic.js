@@ -15,3 +15,8 @@ function close_edusharing_rendering_metadata() {
 	document.getElementById('edusharing_rendering_metadata_top_toggle').innerHTML = '<?php echo $msg['showInformation']->localize($Locale, $Translate);?>';
 	return true;
 }
+
+var renderwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+if(renderwidth < 1000) {
+	toggle_edusharing_rendering_metadata();
+}

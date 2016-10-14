@@ -173,7 +173,7 @@ extends ESRender_Module_Base
     protected function download(array $requestData)
     {
         $Logger = $this->getLogger();
-        $url = $this->_ESOBJECT -> getPathfile() .  '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
+        $url = $this->_ESOBJECT -> getPathfile() .  '?' . 'token=' . $requestData['token'];
         $Logger->debug('Redirecting to location: "' . $url . '"');
 
         header('HTTP/1.1 303 See other');
@@ -189,7 +189,7 @@ extends ESRender_Module_Base
     {
         $Logger = $this->getLogger();
 
-        $url = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
+        $url = $this->_ESOBJECT->getPath() . '?' . 'token=' . $requestData['token'];
         $Logger->debug('Redirecting to location: "' . $url . '"');
 
         header('HTTP/1.1 303 See other');
@@ -236,7 +236,7 @@ extends ESRender_Module_Base
        $Logger->debug('ESRender_Module_Base::dynamic Snippet "' . $snippet . '"');
        
        $data = array();
-       $data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
+       $data['url'] = $this->_ESOBJECT->getPath() . '?' . 'token=' . $requestData['token'];
        $data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);  
        $data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
        echo $this->getTemplate()->render('/module/default/dynamic', $data);

@@ -38,7 +38,7 @@ class mod_applet
 	{
 		$data = parent::prepareRenderData($requestData);
 
-		$data['object_url'] = $this->_ESOBJECT->getPath().'/index.html?' . urlencode(session_name()) . '=' . urlencode(session_id());
+		$data['object_url'] = $this->_ESOBJECT->getPath().'/index.html';
 
 		return $data;
 	}
@@ -87,7 +87,7 @@ class mod_applet
 		$Logger = $this->getLogger();
 
 		header('HTTP/1.1 303 See other');
-		header('Location: '.$this->_ESOBJECT->getPath().'/index.html?' . session_name() . '=' . session_id());
+		header('Location: '.$this->_ESOBJECT->getPath().'/index.html');
 
 		return true;
 	}

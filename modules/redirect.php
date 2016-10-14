@@ -57,12 +57,10 @@ function cc_rd_debug($err_msg) {
     }
 }
 
-// start session to read object-data
-if (!empty($_GET[$ESRENDER_SESSION_NAME])) {
-    $l_sid = $_GET[$ESRENDER_SESSION_NAME];
+if (!empty($_COOKIE[$ESRENDER_SESSION_NAME])) {
+    $l_sid = $_COOKIE[$ESRENDER_SESSION_NAME];
 } else {
-    header('HTTP/1.0 400 Bad Request');
-    $l_sid = cc_rd_debug('esrender session missing');
+	cc_rd_debug('Access denied');
 }
 
 // the object
@@ -89,33 +87,19 @@ if(empty($_SESSION['esrender']['token'])) {
 	cc_rd_debug('Missing token (session)');
 	header('HTTP/1.0 500 Internal Server Error');
 }
-if(empty($_REQUEST['token'])) {
+if(empty($_REQUEST['token']) && empty('ESSEC')) {
 	error_log('Missing token (request)');
 	cc_rd_debug('Missing token (request)');
 	header('HTTP/1.0 500 Internal Server Error');
 }
-if($_SESSION['esrender']['token'] !== $_REQUEST['token']) {
-	error_log('Invalid token');
+if(($_SESSION['esrender']['token'] !== $_REQUEST['token']) && $_SESSION['esrender']['token'] !== $_COOKIE['ESSEC']) {
+	error_log('Access denied (invalid token)');
 	cc_rd_debug('Invalid token');
 	header('HTTP/1.0 500 Internal Server Error');
-}
-	
-
-// check for Times_Of_Usage (note: NEGATIVE value means UNLIMITED times of access !)
-if (empty($_SESSION['esrender']['TOU'])) {
-    error_log('No more TOU available.');
-
-    $_SESSION['esrender'] = array();
-    session_destroy();
-
-    header('HTTP/1.0 403 Not Authorized');
-    cc_rd_debug('access denied (usage counter is empty)');
-
-}
-
-// count-down usage
-if ($_SESSION['esrender']['TOU'] > 0) {
-    $_SESSION['esrender']['TOU']--;
+} else {
+	$token = $token = md5(uniqid());
+	$_SESSION['esrender']['token'] = $token;
+    setcookie('ESSEC', $token, time() + 300, '/', MC_HOST);
 }
 
 session_write_close();

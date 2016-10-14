@@ -53,7 +53,7 @@ extends ESRender_Module_AudioVideo_Abstract
         	$template_data = parent::prepareRenderData($requestData);
         
         $ext = $this -> getExtensionByFormat($this->getVideoFormatByRequestingDevice());
-        $object_url = dirname($this -> _ESOBJECT->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?' . session_name() . '=' . session_id().'&token='.$requestData['token'];
+        $object_url = dirname($this -> _ESOBJECT->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?token='.$requestData['token'];
         $template_data['ext'] = $ext;
         $template_data['url'] = $object_url;
         if(!empty($requestData['width']))
@@ -121,7 +121,7 @@ extends ESRender_Module_AudioVideo_Abstract
             .'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
             .$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
             .'&display=inline&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-            $template_data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
+            $template_data['authString'] = 'token='.$requestData['token'];
         //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
         $Template = $this->getTemplate();
         echo $Template->render('/module/video/display', $template_data);
@@ -147,7 +147,7 @@ extends ESRender_Module_AudioVideo_Abstract
     					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
     					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-            $template_data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
+            $template_data['authString'] = 'token='.$requestData['token'];
     	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	echo $this->getTemplate()->render('/module/video/dynamic', $template_data);
     
@@ -188,7 +188,7 @@ extends ESRender_Module_AudioVideo_Abstract
         if(empty($progress) || is_array($progress))
             $progress = '0';
         echo $template->render('/module/video/lock', array('callback' => $requestData['callback'],
-        												'authString' => 'token='.$requestData['token'].'&'.session_name().'='.session_id(),
+        												'authString' => 'token='.$requestData['token'],
         												'progress' => $progress,
         												'positionInConversionQueue' => $positionInConversionQueue));
         return true;

@@ -48,15 +48,16 @@ extends ESRender_Module_NonContentNode_Abstract {
     
     	if ($this -> detectVideo())
     		$embedding = $this -> getVideoEmbedding();
-    		else
-    			$embedding = $this -> getLinkIframe();
+    	else
+    		$embedding = '';
+    		
     	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	$Template = $this -> getTemplate();
-    	echo $Template -> render('/module/url/dynamic', array('embedding' => $embedding, 'metadata' => $metadata, 'url' => $this->getUrl()));
+    	echo $Template -> render('/module/url/dynamic', array('embedding' => $embedding, 'metadata' => $metadata, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT ->getPreviewUrl()));
     
     	return true;
     }
-
+    
     protected function inline(array $requestData) {
         if (!$this -> validate()) {
             error_log('URL-property is empty.');
@@ -118,10 +119,6 @@ extends ESRender_Module_NonContentNode_Abstract {
         return $htm;         
     }
     
-    protected function getLinkIframe() {
-    	return '<iframe id="eduLinkFrame" style="height: 90%; width: 70%; border: none" src="'.$this -> getUrl().'"></iframe>';
-    }
-
     protected function getVideoEmbedding($width = NULL) {
 
         if(empty($width)) {

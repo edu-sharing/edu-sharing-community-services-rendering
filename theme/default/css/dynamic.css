@@ -22,6 +22,7 @@
 
 #edusharing_rendering_metadata_top_toggle {
 	color: #4F7A98;
+	padding: 20px;
 }
 
 #edusharing_rendering_metadata {
@@ -32,6 +33,7 @@
 	box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
 	background-color: #eee;
 	z-index: 99;
+	max-width: 80%;
 }
 .edusharing_rendering_metadata_header {
 	background-color: #eee;
@@ -39,9 +41,20 @@
 	font-size: 110%;
 }
 
+.edusharing_rendering_metadata_header_title {
+	display: inline-block;
+	max-width: 420px;
+	overflow: hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+}
+
 .edusharing_rendering_metadata_header_x {
-	float: right;
-	margin-left: 20px;
+	padding: 19px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #eee;
 }
 
 .edusharing_rendering_metadata_body {
@@ -61,6 +74,7 @@
 
 .edusharing_rendering_content_wrapper {
 	text-align: center;
+	padding: 0 20px;
 }
 
 .edusharing_rendering_content {
@@ -73,6 +87,8 @@ a.edusharing_rendering_content {
 	text-decoration: none;
 	color: #fff;
 	background-color: #4F7A98;
+	display: inline-block;
+	margin-top: 20px;
 }
 
 .edusharing_rendering_content, video, audio {
@@ -80,4 +96,11 @@ a.edusharing_rendering_content {
 	-moz-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 	box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 	max-width: 100%;
+}
+
+img.edusharing_rendering_content_preview {
+	display: block;
+	margin: 20px auto;
+	max-width: 400px;
+	max-height: 400px;
 }

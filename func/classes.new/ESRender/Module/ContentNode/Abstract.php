@@ -237,7 +237,8 @@ extends ESRender_Module_Base
        
        $data = array();
        $data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
-       $data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);       
+       $data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);  
+       $data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
        echo $this->getTemplate()->render('/module/default/dynamic', $data);
        
        return true;

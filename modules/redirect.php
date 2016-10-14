@@ -94,30 +94,16 @@ if(empty($_REQUEST['token'])) {
 	cc_rd_debug('Missing token (request)');
 	header('HTTP/1.0 500 Internal Server Error');
 }
-if($_SESSION['esrender']['token'] !== $_REQUEST['token']) {
+if(($_SESSION['esrender']['token'] !== $_REQUEST['token']) && ($_SESSION['esrender']['token'])!==$_COOKIE['ESSEC']) {
 	error_log('Invalid token');
 	cc_rd_debug('Invalid token');
 	header('HTTP/1.0 500 Internal Server Error');
+} else {
+	$token = md5(uniqid());
+	$_SESSION['esrender']['token'] = $token;
+	setcookie('ESSEC', $token, time()+300);
 }
 	
-
-// check for Times_Of_Usage (note: NEGATIVE value means UNLIMITED times of access !)
-if (empty($_SESSION['esrender']['TOU'])) {
-    error_log('No more TOU available.');
-
-    $_SESSION['esrender'] = array();
-    session_destroy();
-
-    header('HTTP/1.0 403 Not Authorized');
-    cc_rd_debug('access denied (usage counter is empty)');
-
-}
-
-// count-down usage
-if ($_SESSION['esrender']['TOU'] > 0) {
-    $_SESSION['esrender']['TOU']--;
-}
-
 session_write_close();
 
 // check path access

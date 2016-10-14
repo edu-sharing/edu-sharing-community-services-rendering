@@ -29,7 +29,7 @@ function cc_rd_log_die($err_msg)
 	}
 	cc_rd_write_log(print_r($arr, true)."\n".$err_msg);
   
-	die(ob_get_clean().$err_msg);
+	die(ob_get_clean().'<hr>'.$err_msg);
 }
 
 function cc_rd_log_buffer($buffer)

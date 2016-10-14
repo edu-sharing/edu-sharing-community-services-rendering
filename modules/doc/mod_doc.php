@@ -55,7 +55,7 @@ extends ESRender_Module_ContentNode_Abstract {
     protected function renderTemplate(array $requestData, $TemplateName) {
         $Logger = $this -> getLogger();
         $template_data = parent::prepareRenderData($requestData);
-        $object_url = dirname($this -> _ESOBJECT -> getPath()) . '/' . basename($this -> getOutputFilename());
+        $object_url = dirname($this -> _ESOBJECT -> getPath()) . '/' . basename($this -> getOutputFilename()) . '?' . session_name() . '=' . session_id();
         $template_data['path'] = $object_url;
         $Template = $this -> getTemplate();
         $rendered = $Template -> render($TemplateName, $template_data);

@@ -56,7 +56,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     	if($getDefaultData)
         	$data = parent::prepareRenderData($requestData);
         
-        $object_url = dirname($this->_ESOBJECT->getPath()) . '/' . basename($this->getOutputFilename($this)) . '?token=' . $requestData['token'];
+        $object_url = dirname($this->_ESOBJECT->getPath()) . '/' . basename($this->getOutputFilename($this)) . '?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
         $data['audio_url'] = $object_url;
         return $data;
     }
@@ -87,7 +87,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
             .'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
             .$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
             .'&display=inline&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-        $data['authString'] = 'token='.$requestData['token'];
+        $data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
         //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
         $Template = $this->getTemplate();
         echo $Template->render('/module/audio/display', $data);
@@ -110,7 +110,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
     					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-    	$data['authString'] = 'token='.$requestData['token'];
+    	$data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
     	$data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');    	
     	echo $this->getTemplate()->render('/module/audio/dynamic', $data);
     	
@@ -145,7 +145,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
         if(empty($progress) || is_array($progress))
             $progress = '0';
         echo $template->render('/module/audio/lock', array('callback' => $requestData['callback'],
-        											'authString' => 'token='.$requestData['token'],
+        											'authString' => 'token='.$requestData['token'].'&'.session_name().'='.session_id(),
         											'progress' => $progress,
         											'positionInConversionQueue' => $positionInConversionQueue));
         return true;

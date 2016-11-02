@@ -1,14 +1,20 @@
-<div id="edusharing_rendering_metadata">
+<?php
+	global $Locale, $Translate;
+	$msg['hideInformation'] = new Phools_Message_Default('hideInformation');
+	$msg['hideInformation'] = new Phools_Message_Default('hideInformation');
+?>
+
+<div id="edusharing_rendering_metadata" role="contentinfo">
 		<div class="edusharing_rendering_metadata_header">
-			<span class="edusharing_rendering_metadata_header_x edusharing_rendering_cursor_pointer" onClick="close_edusharing_rendering_metadata()">&#x2716;</span>
-			<span class="edusharing_rendering_metadata_header_title"><?php echo $title ?></span>
+			<span role="button" title="<?php echo $msg['hideInformation']->localize($Locale, $Translate);?>" class="edusharing_rendering_metadata_header_x edusharing_rendering_cursor_pointer" onkeypress="(event.keyCode==13)?close_edusharing_rendering_metadata():0" onClick="close_edusharing_rendering_metadata()">&#x2716;</span>
+			<span property="name" title="<?php echo $title ?>" class="edusharing_rendering_metadata_header_title"><?php echo $title ?></span>
 		</div>
 		<div class="edusharing_rendering_metadata_body">
 <?php
 foreach($meta as $key => $value) {
 	echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($key)) . '</label>';
 	if(strpos($key, 'permalink') !== false)
-		echo '<span class="edusharing_rendering_metadata_body_value"><a href="'.htmlentities($value).'" target="_blank">' . htmlentities($key) . '</a></span>';
+		echo '<span class="edusharing_rendering_metadata_body_value"><a role="link" href="'.htmlentities($value).'" target="_blank">' . htmlentities($key) . '</a></span>';
 	else
 		echo '<span class="edusharing_rendering_metadata_body_value">' . $value . '</span>';
 }

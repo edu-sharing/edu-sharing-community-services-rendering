@@ -13,10 +13,10 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
 <?php include(dirname(__FILE__) . '/../../css/dynamic.css'); ?>
 </style>
 
-<div class="edusharing_rendering_wrapper">
-	<div class="edusharing_rendering_metadata_top"><span id="edusharing_rendering_metadata_top_toggle" class="edusharing_rendering_cursor_pointer" onClick="toggle_edusharing_rendering_metadata()"><?php echo $msg['hideInformation']->localize($Locale, $Translate);?></span></div>
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+	<div class="edusharing_rendering_metadata_top"><span id="edusharing_rendering_metadata_top_toggle" title="<?php echo $msg['hideInformation']->localize($Locale, $Translate);?>" class="edusharing_rendering_cursor_pointer" tabindex="0" onkeypress="(event.keyCode==13)?toggle_edusharing_rendering_metadata():0" onClick="toggle_edusharing_rendering_metadata()"><?php echo $msg['hideInformation']->localize($Locale, $Translate);?></span></div>
 		<?php echo $metadata?>
-	<div class="edusharing_rendering_content_wrapper">
+	<div class="edusharing_rendering_content_wrapper" role="main">
 		<h1><?php echo $msg['cannotOpenObject']->localize($Locale, $Translate);?></h1>
 		<?php echo $msg['cannotOpenObjectText']->localize($Locale, $Translate);?>
 		<img class="edusharing_rendering_content_preview" src="<?php echo $previewUrl?>">

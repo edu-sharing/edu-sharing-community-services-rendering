@@ -876,9 +876,5 @@ class ESObject {
         $this -> renderInfoLMSReturn = $renderInfoLMSReturn;
     	
     }
-    
-    public function getPreviewUrl() {
-    	return 'http://localhost:8080/edu-sharing/preview?nodeId=' . $this->ESOBJECT_OBJECT_ID;
-    }
 
 }

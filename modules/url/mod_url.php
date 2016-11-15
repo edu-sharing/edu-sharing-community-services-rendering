@@ -53,7 +53,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     		
     	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	$Template = $this -> getTemplate();
-    	echo $Template -> render('/module/url/dynamic', array('embedding' => $embedding, 'metadata' => $metadata, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT ->getPreviewUrl()));
+    	echo $Template -> render('/module/url/dynamic', array('embedding' => $embedding, 'metadata' => $metadata, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl));
     
     	return true;
     }

@@ -11,8 +11,12 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-	<div class="edusharing_rendering_metadata_top"><span id="edusharing_rendering_metadata_top_toggle" title="<?php echo $msg['hideInformation']->localize($Locale, $Translate);?>" class="edusharing_rendering_cursor_pointer" tabindex="0" onkeypress="(event.keyCode==13)?toggle_edusharing_rendering_metadata():0" onClick="toggle_edusharing_rendering_metadata()"><?php echo $msg['hideInformation']->localize($Locale, $Translate);?></span></div>
-		<?php echo $metadata?>
+	<?php
+		if(!empty($metadata)) {		
+			echo '<div class="edusharing_rendering_metadata_top"><span id="edusharing_rendering_metadata_top_toggle" title="' . $msg['hideInformation']->localize($Locale, $Translate) . '" class="edusharing_rendering_cursor_pointer" tabindex="0" onkeypress="(event.keyCode==13)?toggle_edusharing_rendering_metadata():0" onClick="toggle_edusharing_rendering_metadata()">' . $msg['hideInformation']->localize($Locale, $Translate) . '</span></div>';
+			echo $metadata;
+		}
+	?>
 	<div class="edusharing_rendering_content_wrapper" role="main">	
 		<?php if(empty($embedding)) {
 			echo '<img class="edusharing_rendering_content_preview" src="'.$previewUrl.'">';

@@ -167,7 +167,10 @@ extends ESRender_Module_ContentNode_Abstract {
     protected function dynamic(array $requestData) {
     	$Logger = $this -> getLogger();   	
     	$template_data['image_url'] = $this -> _ESOBJECT -> getPath() . '.jpg?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-    	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    	
+    	if($requestData['dynMetadata'])
+	    	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    	
     	echo $this -> getTemplate() -> render('/module/picture/dynamic', $template_data);
     	return true;
     }

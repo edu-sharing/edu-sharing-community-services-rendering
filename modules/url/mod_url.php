@@ -50,10 +50,13 @@ extends ESRender_Module_NonContentNode_Abstract {
     		$embedding = $this -> getVideoEmbedding();
     	else
     		$embedding = '';
-    		
-    	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    	
     	$Template = $this -> getTemplate();
-    	echo $Template -> render('/module/url/dynamic', array('embedding' => $embedding, 'metadata' => $metadata, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl));
+    	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl);
+    	if($requestData['dynMetadata'])
+    		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    		
+    	echo $Template -> render('/module/url/dynamic', $tempArray);
     
     	return true;
     }

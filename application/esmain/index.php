@@ -235,9 +235,7 @@ try {
         echo 'Decryption error';
         exit();
     }
-    
-    //metacoon fix
-    $user_name = str_replace('{{{at}}}', '@', $user_name);
+
     
     // VERSION (optional)
     $req_data['version'] = mc_Request::fetch('version', 'CHAR');
@@ -269,6 +267,13 @@ try {
             throw new ESRender_Exception_InvalidRequestParam('display');
         }
     }
+    
+    // METADATA MODE
+    $dynMetadata = true;
+    $dynMetadata_req = mc_Request::fetch('metadata', 'CHAR', 'true');
+    if($dynMetadata_req == 'false')
+    	$dynMetadata = false;
+    
     
     $req_data['token'] = mc_Request::fetch('token', 'CHAR', '');
     
@@ -732,7 +737,8 @@ try {
             'usernameEncrypted' => $req_data['usernameEncrypted'],
             'version' => $req_data['version'],
             'backLink' => $req_data['backLink'],
-        	'token' => $token
+        	'token' => $token,
+        	'dynMetadata' => $dynMetadata
         ),
         $Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash))) {
         $Logger -> error('Error processing object "' . $data['parentNodeId'] . '".');

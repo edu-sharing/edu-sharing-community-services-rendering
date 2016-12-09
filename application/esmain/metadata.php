@@ -30,7 +30,11 @@ $application = new ESApp();
 $application -> getApp('esmain');
 $hc = $application -> getHomeConf();
 
-$cep_url = $hc -> prop_array['scheme'] . '://' . $hc -> prop_array['host'] . ':' . $hc -> prop_array['port'] . '' . dirname($_SERVER['SCRIPT_NAME']) . '/' . 'index.php';
+$port = '';
+if(!empty($hc -> prop_array['port']))
+	$port = ':' . $hc -> prop_array['port'];
+
+$cep_url = $hc -> prop_array['scheme'] . '://' . $hc -> prop_array['host'] . $port . dirname($_SERVER['SCRIPT_NAME']) . '/' . 'index.php';
 
 if (empty($hc -> prop_array['public_key'])) {
     require_once (dirname(__FILE__) . '/../../func/classes.new/Helper/AppPropertyHelper.php');

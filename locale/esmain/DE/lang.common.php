@@ -57,6 +57,6 @@ $Translate
 	->addTranslation('de', 'showInformation', 'Informationen einblenden')
 	->addTranslation('de', 'hideInformation', 'Informationen ausblenden')
 	->addTranslation('de', 'toDownload', 'Herunterladen')
-	->addTranslation('de', 'cannotOpenObject', 'Öffnen des Objekts leider nicht möglich.')
-	->addTranslation('de', 'cannotOpenObjectText', 'Um das Objekt trotzdem zu benutzen, können Sie es herunterladen.')
+	->addTranslation('de', 'cannotOpenObject', 'Öffnen dieses Materials im Browser nicht möglich.')
+	->addTranslation('de', 'cannotOpenObjectText', 'Laden Sie das Material herunter, um es zu benutzen.')
 	->addTranslation('de', 'goToOrigin', 'Zur Originalseite springen');

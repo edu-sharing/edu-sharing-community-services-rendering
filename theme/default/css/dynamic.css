@@ -1,11 +1,25 @@
  @import url(https://fonts.googleapis.com/css?family=Roboto);
 
+body {
+	padding: 0;
+	margin: 0;
+	height: auto !important;
+}
+
+h2 {
+	background-color: #fff;
+	border-bottom: 1px solid #000;
+	padding: 5px 15px;
+	font-size: 110%;
+	margin-top:30px;
+}
+
 .edusharing_rendering_cursor_pointer {
 	cursor: pointer;
 }
 
 .edusharing_rendering_wrapper {
-	background-color: #eee;
+	background-color: #666;
 	padding: 0;
 	margin: 0;
 	font-family: 'Roboto', 'Noto', sans-serif;
@@ -17,64 +31,108 @@
 
 .edusharing_rendering_metadata_top {
 	text-align: right;
-	margin-bottom: 20px;
 }
 
 #edusharing_rendering_metadata_top_toggle {
-	color: #4F7A98;
-	padding: 20px;
+	display: inline-block;
+	color: #fff;
+	cursor: pointer;
+	padding: 10px;
 }
 
 #edusharing_rendering_metadata {
-	position: absolute;
-	right: 0;
-	-webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
-	-moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
-	box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
 	background-color: #eee;
-	z-index: 99;
-	max-width: 80%;
 }
 .edusharing_rendering_metadata_header {
-	background-color: #eee;
-	padding: 20px;
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: center;
+}
+
+img.edusharing_rendering_metadata_header_icon {
+	max-height: 40px;
+	margin: 10px 10px 10px 20px;
+}
+
+h1.edusharing_rendering_metadata_header_title {
 	font-size: 110%;
-}
-
-.edusharing_rendering_metadata_header_title {
-	display: inline-block;
-	max-width: 420px;
-	overflow: hidden;
+	font-weight: 400;
 	white-space:nowrap;
-	text-overflow:ellipsis;
+	flex: 1;
 }
 
-.edusharing_rendering_metadata_header_x {
-	padding: 19px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #eee;
+.edusharing_rendering_metadata_header_showcontent {
+	display: inline-block;
+	white-space:nowrap;
+	flex: 0; 
+	color: #4F7A98;
+	cursor: pointer;
+	padding: 20px;
 }
+
 
 .edusharing_rendering_metadata_body {
-	padding: 20px;
-	background-color: #fff;
+	display: flex;
+	flex-wrap: nowrap;
+}
+
+.edusharing_rendering_metadata_body_right, .edusharing_rendering_metadata_body_left {
+	flex: 50%;
+	padding: 0 20px;
 }
 
 .edusharing_rendering_metadata_body_label {
 	display: block;
-	font-weight: 700;
-	margin-top: 10px;
+	font-style: italic;
+	color: #999;
+	margin: 25px 0 0 15px;
 }
 
 .edusharing_rendering_metadata_body_value {
-	display: block;
+	display: inline-block;
+	margin: 7px 0 0 15px;
+}
+
+.edusharing_rendering_metadata_body_value.block {
+	display: block;	
+}
+
+.edusharing_rendering_metadata_body_value.rschip {
+	background-color: #ccc;
+	border-radius: 999px;
+	padding: 3px 10px;
+	margin-right: -10px;
+}
+
+.edusharing_rendering_metadata_body_value.rschip.people {
+	padding-left: 30px;
+	background-image: url('data:image/svg+xml;utf8,<svg width="13px" height="13px" viewBox="0 0 13 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>Shape</title><desc>Created with Sketch.</desc><defs></defs><g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="Chip-User" transform="translate(-10.000000, -9.000000)" fill="#8B8B8B"><g id="Chip"> <path d="M16.5,15.5 C18.295625,15.5 19.75,14.045625 19.75,12.25 C19.75,10.454375 18.295625,9 16.5,9 C14.704375,9 13.25,10.454375 13.25,12.25 C13.25,14.045625 14.704375,15.5 16.5,15.5 L16.5,15.5 Z M16.5,17.125 C14.330625,17.125 10,18.21375 10,20.375 L10,22 L23,22 L23,20.375 C23,18.21375 18.669375,17.125 16.5,17.125 L16.5,17.125 Z" id="Shape"></path></g></g></g></svg>');
+	background-repeat: no-repeat;
+	background-position: 9px center;
+}
+
+.edusharing_rendering_metadata_body_value.rschip.group {
+	padding-left: 30px;
+	background-image: url('data:image/svg+xml;utf8,<svg width="15px" height="10px" viewBox="0 0 15 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    <title>Shape</title><desc>Created with Sketch.</desc><defs></defs><g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="Chip-Group" transform="translate(-10.000000, -10.000000)" fill="#8B8B8B"><g id="Chip-Copy"><path d="M20.2272727,14.0909091 C21.3590909,14.0909091 22.2659091,13.1772727 22.2659091,12.0454545 C22.2659091,10.9136364 21.3590909,10 20.2272727,10 C19.0954545,10 18.1818182,10.9136364 18.1818182,12.0454545 C18.1818182,13.1772727 19.0954545,14.0909091 20.2272727,14.0909091 L20.2272727,14.0909091 Z M14.7727273,14.0909091 C15.9045455,14.0909091 16.8113636,13.1772727 16.8113636,12.0454545 C16.8113636,10.9136364 15.9045455,10 14.7727273,10 C13.6409091,10 12.7272727,10.9136364 12.7272727,12.0454545 C12.7272727,13.1772727 13.6409091,14.0909091 14.7727273 14.0909091 L14.7727273,14.0909091 Z M14.7727273,15.4545455 C13.1840909,15.4545455 10,16.2522727 10,17.8409091 L10,19.5454545 L19.5454545,19.5454545 L19.5454545,17.8409091 C19.5454545,16.2522727 16.3613636,15.4545455 14.7727273,15.4545455 L14.7727273,15.4545455 Z M20.2272727 15.4545455 C20.0295455,15.4545455 19.8045455,15.4681818 19.5659091,15.4886364 C20.3568182,16.0613636 20.9090909,16.8318182 20.9090909,17.8409091 L20.9090909,19.5454545 L25,19.5454545 L25,17.8409091 C25,16.2522727 21.8159091,15.4545455 20.2272727,15.4545455 L20.2272727,15.4545455 Z" id="Shape"></path></g></g></g></svg>');
+	background-repeat: no-repeat;
+	background-position: 9px center;
 }
 
 .edusharing_rendering_content_wrapper {
 	text-align: center;
-	padding: 0 20px;
+	margin: 30px 20px;
+}
+
+.edusharing_rendering_content_wrapper h3, .edusharing_rendering_content_wrapper h4 {
+	color: #fff;		
+}
+
+.edusharing_rendering_content_wrapper h3 {
+	font-size: 150%;
+}
+
+.edusharing_rendering_content_wrapper h4 {
+	font-size: 130%;
 }
 
 .edusharing_rendering_content {
@@ -103,4 +161,14 @@ img.edusharing_rendering_content_preview {
 	margin: 20px auto;
 	max-width: 400px;
 	max-height: 400px;
+}
+
+@media (max-width: 1200px) {
+		.edusharing_rendering_metadata_body {
+		display: block;
+	}
+	
+	.edusharing_rendering_metadata_body_right, .edusharing_rendering_metadata_body_left {
+		display: block;
+	}
 }

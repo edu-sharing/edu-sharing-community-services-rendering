@@ -13,8 +13,7 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
 	<?php
 		if(!empty($metadata)) {		
-			echo '<div class="edusharing_rendering_metadata_top"><span id="edusharing_rendering_metadata_top_toggle" title="' . $msg['hideInformation']->localize($Locale, $Translate) . '" class="edusharing_rendering_cursor_pointer" tabindex="0" onkeypress="(event.keyCode==13)?toggle_edusharing_rendering_metadata():0" onClick="toggle_edusharing_rendering_metadata()">' . $msg['hideInformation']->localize($Locale, $Translate) . '</span></div>';
-			echo $metadata;
+			echo '<div class="edusharing_rendering_metadata_top"><span id="edusharing_rendering_metadata_top_toggle" title="Informationen anzeigen" class="edusharing_rendering_cursor_pointer" tabindex="0" onkeypress="(event.keyCode==13)?showDetails():0" onClick="showDetails()">Informationen anzeigen</span></div>';
 		}
 	?>
 	<div class="edusharing_rendering_content_wrapper" role="main">	
@@ -25,6 +24,7 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 		}?>
 		<a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" ><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
 	</div>
+	<?php echo $metadata; ?>
 </div>
 
 <script>

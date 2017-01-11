@@ -1,25 +1,76 @@
-function toggle_edusharing_rendering_metadata() {
-	var el = document.getElementById('edusharing_rendering_metadata');
-	var toptoggle = document.getElementById('edusharing_rendering_metadata_top_toggle');
-	if(el.style.display != 'none') {
-		el.style.display = 'none';
-		toptoggle.innerHTML = '<?php echo $msg['showInformation']->localize($Locale, $Translate);?>';
-		toptoggle.title = '<?php echo $msg['showInformation']->localize($Locale, $Translate);?>';
-	} else {
-		el.style.display = '';
-		toptoggle.innerHTML = '<?php echo $msg['hideInformation']->localize($Locale, $Translate);?>';
-		toptoggle.title = '<?php echo $msg['hideInformation']->localize($Locale, $Translate);?>';
-	}
+// first add raf shim
+// http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+// main function
+function scrollToY(scrollTargetY, speed, easing) {
+    // scrollTargetY: the target scrollY property of the window
+    // speed: time in pixels per second
+    // easing: easing equation to use
+
+    var scrollY = window.scrollY || document.documentElement.scrollTop,
+        scrollTargetY = scrollTargetY || 0,
+        speed = speed || 2000,
+        easing = easing || 'easeOutSine',
+        currentTime = 0;
+
+    // min time .1, max time .8 seconds
+    var time = Math.max(.1, Math.min(Math.abs(scrollY - scrollTargetY) / speed, .8));
+
+    // easing equations from https://github.com/danro/easing-js/blob/master/easing.js
+    var easingEquations = {
+            easeOutSine: function (pos) {
+                return Math.sin(pos * (Math.PI / 2));
+            },
+            easeInOutSine: function (pos) {
+                return (-0.5 * (Math.cos(Math.PI * pos) - 1));
+            },
+            easeInOutQuint: function (pos) {
+                if ((pos /= 0.5) < 1) {
+                    return 0.5 * Math.pow(pos, 5);
+                }
+                return 0.5 * (Math.pow((pos - 2), 5) + 2);
+            }
+        };
+
+    // add animation loop
+    function tick() {
+        currentTime += 1 / 60;
+
+        var p = currentTime / time;
+        var t = easingEquations[easing](p);
+
+        if (p < 1) {
+            requestAnimFrame(tick);
+
+            window.scrollTo(0, scrollY + ((scrollTargetY - scrollY) * t));
+        } else {
+            console.log('scroll done');
+            window.scrollTo(0, scrollTargetY);
+        }
+    }
+
+    // call it once to get started
+    tick();
 }
 
-function close_edusharing_rendering_metadata() {
-	document.getElementById('edusharing_rendering_metadata').style.display = 'none';
-	document.getElementById('edusharing_rendering_metadata_top_toggle').innerHTML = '<?php echo $msg['showInformation']->localize($Locale, $Translate);?>';
-	document.getElementById('edusharing_rendering_metadata_top_toggle').title = '<?php echo $msg['showInformation']->localize($Locale, $Translate);?>';
-	return true;
+function showDetails() {
+	var rect = document.getElementById('edusharing_rendering_metadata').getBoundingClientRect();
+	scrollToY(rect.top, 1500, 'easeInOutQuint');
 }
 
+function showContent() {
+	scrollToY(0, 1500, 'easeInOutQuint');
+}
+/*
 var renderwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 if(renderwidth < 1000) {
 	toggle_edusharing_rendering_metadata();
-}
+}*/

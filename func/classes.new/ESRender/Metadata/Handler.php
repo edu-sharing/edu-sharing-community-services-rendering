@@ -11,6 +11,11 @@ class ESRender_Metadata_Handler {
 	}
 	
 	public function render(Phools_Template_Interface $template, $tmpl = '/metadata/default') {
+		if(strpos($tmpl, 'dynamic') !== false)
+			return $template -> render($tmpl, array(
+					'title' => $this -> esObject -> getTitle(),
+					'meta' => $this -> getFullMetadata()
+			));
 		return $template -> render($tmpl, array(
             'title' => $this -> esObject -> getTitle(),
 			'meta' => $this -> getMetadata()
@@ -26,6 +31,15 @@ class ESRender_Metadata_Handler {
 			}
 		}
 		return $key;
+	}
+	
+	private function getFullMetadata() {
+		$return = array();
+		foreach($this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->properties->item as $item) {
+				$return[$item->key]['label'] = $this->getLabels($item->key);
+				$return[$item->key]['value'] = $item->value;
+		}
+		return $return;
 	}
 	
 	

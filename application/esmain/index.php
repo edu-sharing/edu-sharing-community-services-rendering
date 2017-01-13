@@ -260,7 +260,7 @@ try {
     }
 
     // DISPLAY MODE
-    $display_kind = mc_Request::fetch('display', 'CHAR', 'window');
+    $display_kind = mc_Request::fetch('display', 'CHAR', 'dynamic');
     if ($display_kind) {
         $Validator = new ESRender_Validator_DisplayMode();
         if (!$Validator -> validate($display_kind)) {
@@ -340,7 +340,7 @@ try {
         $Plugin -> preSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
     }    
     
-    $skipSslVerification = false;
+    $skipSslVerification = true;//for testing
     
     if(!empty($req_data['token'])) {
     	if($req_data['token'] == $_SESSION['esrender']['token'] || empty($_SESSION['esrender']['token'])) {

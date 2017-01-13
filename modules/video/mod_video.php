@@ -150,6 +150,7 @@ extends ESRender_Module_AudioVideo_Abstract
             $template_data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
         if($requestData['dynMetadata'])
     		$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    	$template_data['title'] = $this->_ESOBJECT->getTitle();
     	echo $this->getTemplate()->render('/module/video/dynamic', $template_data);
     
     	return true;

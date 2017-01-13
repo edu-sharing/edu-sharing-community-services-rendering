@@ -240,6 +240,7 @@ extends ESRender_Module_Base
        if($requestData['dynMetadata'])
        		$data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);  
        $data['previewUrl'] = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl;
+       $data['title'] = $this->_ESOBJECT->getTitle();
        echo $this->getTemplate()->render('/module/default/dynamic', $data);
        
        return true;

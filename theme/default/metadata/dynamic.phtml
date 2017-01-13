@@ -1,19 +1,21 @@
 <?php
 	global $Locale, $Translate;
 	
-	$msg['hideInformation'] = new Phools_Message_Default('hideInformation');
+	$msg['meta_general'] = new Phools_Message_Default('meta_general');
+	$msg['meta_contributors'] = new Phools_Message_Default('meta_contributors');
+	$msg['meta_didactics'] = new Phools_Message_Default('meta_didactics');
 ?>
 
 <div id="edusharing_rendering_metadata" role="contentinfo">
 		<div class="edusharing_rendering_metadata_header">
-			<img class="edusharing_rendering_metadata_header_icon" src="<?php echo $meta['{http://www.alfresco.org/model/rendition/1.0}rendition']['value'] ?>">
+			<img tabindex="0" class="edusharing_rendering_metadata_header_icon" onclick="showContent()" onkeypress="(event.keyCode==13)?showContent():0" src="<?php echo $meta['{http://www.alfresco.org/model/rendition/1.0}rendition']['value'] ?>">
 			<h1 property="name" title="<?php echo $title ?>" class="edusharing_rendering_metadata_header_title"><?php echo $title ?></h1>
-			<span class="edusharing_rendering_metadata_header_showcontent" onClick="showContent()">Material anzeigen</span>
+			<span tabindex="0" class="edusharing_rendering_metadata_header_showcontent" onClick="showContent()" onkeypress="(event.keyCode==13)?showContent():0">Material anzeigen</span>
 		</div>
 		<div class="edusharing_rendering_metadata_body">
 			<div class="edusharing_rendering_metadata_body_left">
 			
-			<h2>BASIS-ANGABEN</h2>
+			<h2><?php echo $msg['meta_general']->localize($Locale, $Translate);?></h2>
 			<?php
 				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.alfresco.org/model/content/1.0}title']['label'])) . '</label>';
 				echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($meta['{http://www.alfresco.org/model/content/1.0}title']['value']) . '</span>';
@@ -25,7 +27,7 @@
 						echo '<span class="edusharing_rendering_metadata_body_value rschip">' . htmlentities($value) . '</span>';
 				}
 				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['label'])) . '</label>';
-				echo '<span class="edusharing_rendering_metadata_body_value">'.htmlentities($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['value']) . '</span>';
+				echo '<a class="edusharing_rendering_metadata_body_value" href="'.$meta['{virtualproperty}licenseurl']['value'].'" target="_blank" style="margin-left:15px"><img src="'.$meta['{virtualproperty}licenseicon']['value'].'"></a>';				
 				
 				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_publisherVCARD_EXT_LOM_CONTRIBUTE_DATE']['label'])) . '</label>';
 				echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities(date('d. F Y', strtotime($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_publisherVCARD_EXT_LOM_CONTRIBUTE_DATE']['value']))) . '</span>';
@@ -45,7 +47,7 @@
 			?>
 			
 			
-			<h2>BETEILIGTE</h2>
+			<h2><?php echo $msg['meta_contributors']->localize($Locale, $Translate);?></h2>
 			<?php 
 				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN']['label'])) . '</label>';
 				if(!empty($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN']['value']))
@@ -171,7 +173,7 @@
 			<div class="edusharing_rendering_metadata_body_right">
 			
 			
-				<h2>DIDAKTIK</h2>
+				<h2><?php echo $msg['meta_didactics']->localize($Locale, $Translate);?></h2>
 			
 			<?php 
 			

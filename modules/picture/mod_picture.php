@@ -171,6 +171,7 @@ extends ESRender_Module_ContentNode_Abstract {
     	if($requestData['dynMetadata'])
 	    	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	
+	    $template_data['title'] = $this->_ESOBJECT->getTitle();
     	echo $this -> getTemplate() -> render('/module/picture/dynamic', $template_data);
     	return true;
     }

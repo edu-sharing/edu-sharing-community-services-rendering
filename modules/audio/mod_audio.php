@@ -112,7 +112,9 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
     	$data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
     	if($requestData['dynMetadata'])
-    		$data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');    	
+    		$data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    	
+    	$data['title'] = $this->_ESOBJECT->getTitle();
     	echo $this->getTemplate()->render('/module/audio/dynamic', $data);
     	
     	return true;

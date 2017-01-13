@@ -63,7 +63,7 @@ function scrollToY(scrollTargetY, speed, easing) {
 
 function showDetails() {
 	var rect = document.getElementById('edusharing_rendering_metadata').getBoundingClientRect();
-	scrollToY(rect.top, 1500, 'easeInOutQuint');
+	scrollToY(rect.top - 60, 1500, 'easeInOutQuint');
 }
 
 function showContent() {

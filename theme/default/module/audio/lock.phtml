@@ -15,7 +15,7 @@ echo '<span data-view="lock"></span>';
 if($progress == 0 && $positionInConversionQueue) {
     $msg1 = new Phools_Message_Default('Resource is waiting for conversion.');
     $msg2 = new Phools_Message_Default('Postition in queue');
-    echo '<p>' . $msg1 -> localize($Locale, $Translate) . '<br/>';
+    echo '<p class="renderservice_message">' . $msg1 -> localize($Locale, $Translate) . '<br/>';
     echo $msg2 -> localize($Locale, $Translate) . ':&nbsp;' . $positionInConversionQueue . '</p>';
 } else {
     $msg1 = new Phools_Message_Default('Resource is being converted for your view ...');

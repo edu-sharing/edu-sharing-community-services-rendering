@@ -178,6 +178,24 @@ img.edusharing_rendering_content_preview {
 	margin: 0 auto;
 }
 
+.es_progressbar_container {
+	border: 5px solid #555 !important;
+	width: 100%;
+	text-align: left !important;
+	box-sizing: initial;
+	margin: 0 auto;
+}
+
+.es_progressbar_progress {
+	border-right: 1px solid #fff;
+}
+
+.renderservice_message {
+	color: #fff;
+	font-size: 120%;
+}
+
+
 @media (max-width: 1200px) {
 		.edusharing_rendering_metadata_body {
 		display: block;

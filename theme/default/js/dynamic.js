@@ -69,6 +69,14 @@ function showDetails() {
 function showContent() {
 	scrollToY(0, 1500, 'easeInOutQuint');
 }
+
+window.addEventListener("scroll", function() {
+	if((window.scrollY || document.documentElement.scrollTop) > 400)
+		document.getElementById('edusharing_scrolltotop').style.display = 'block';
+	else
+		document.getElementById('edusharing_scrolltotop').style.display = 'none';
+});
+
 /*
 var renderwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 if(renderwidth < 1000) {

@@ -10,7 +10,6 @@
 		<div class="edusharing_rendering_metadata_header">
 			<img tabindex="0" class="edusharing_rendering_metadata_header_icon" onclick="showContent()" onkeypress="(event.keyCode==13)?showContent():0" src="<?php echo $meta['{http://www.alfresco.org/model/rendition/1.0}rendition']['value'] ?>">
 			<h1 property="name" title="<?php echo $title ?>" class="edusharing_rendering_metadata_header_title"><?php echo $title ?></h1>
-			<span tabindex="0" class="edusharing_rendering_metadata_header_showcontent" onClick="showContent()" onkeypress="(event.keyCode==13)?showContent():0">Material anzeigen</span>
 		</div>
 		<div class="edusharing_rendering_metadata_body">
 			<div class="edusharing_rendering_metadata_body_left">
@@ -243,4 +242,5 @@
 			
 			</div>
 		</div>
+		<div tabindex="0" id="edusharing_scrolltotop" onClick="showContent()" onkeypress="(event.keyCode==13)?showContent():0"></div>
 	</div>

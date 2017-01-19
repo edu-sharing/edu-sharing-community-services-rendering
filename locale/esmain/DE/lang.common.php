@@ -62,4 +62,6 @@ $Translate
 	->addTranslation('de', 'goToOrigin', 'Zur Originalseite springen')
 	->addTranslation('de', 'meta_general', 'Basis-Informationen')
 	->addTranslation('de', 'meta_contributors', 'Beteiligte')
+	->addTranslation('de', 'meta_contributors_content', 'Mitarbeiter am Material')
+	->addTranslation('de', 'meta_contributors_metadata', 'Mitarbeiter an Metadaten')
 	->addTranslation('de', 'meta_didactics', 'Didaktik');

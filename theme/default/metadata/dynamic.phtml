@@ -1,8 +1,12 @@
 <?php
 	global $Locale, $Translate;
 	
+	require_once __DIR__ . '/../../../func/classes.new/Helper/MetadataRendererHelper.php';
+	
 	$msg['meta_general'] = new Phools_Message_Default('meta_general');
 	$msg['meta_contributors'] = new Phools_Message_Default('meta_contributors');
+	$msg['meta_contributors_content'] = new Phools_Message_Default('meta_contributors_content');
+	$msg['meta_contributors_metadata'] = new Phools_Message_Default('meta_contributors_metadata');
 	$msg['meta_didactics'] = new Phools_Message_Default('meta_didactics');
 ?>
 
@@ -12,233 +16,87 @@
 			<h1 property="name" title="<?php echo $title ?>" class="edusharing_rendering_metadata_header_title"><?php echo $title ?></h1>
 		</div>
 		<div class="edusharing_rendering_metadata_body">
-			<div class="edusharing_rendering_metadata_body_left">
+			<div class="edusharing_rendering_metadata_body_left">	
 			
-			<h2><?php echo $msg['meta_general']->localize($Locale, $Translate);?></h2>
-			<?php
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.alfresco.org/model/content/1.0}title']['label'])) . '</label>';
-				echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($meta['{http://www.alfresco.org/model/content/1.0}title']['value']) . '</span>';
-			
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/lom/1.0}general_keyword']['label'])) . '</label>';
-				$valArray = explode('[#]', $meta['{http://www.campuscontent.de/model/lom/1.0}general_keyword']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip">' . htmlentities($value) . '</span>';
-				}
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['label'])) . '</label>';
-				echo '<a class="edusharing_rendering_metadata_body_value" href="'.$meta['{virtualproperty}licenseurl']['value'].'" target="_blank" style="margin-left:15px"><img src="'.$meta['{virtualproperty}licenseicon']['value'].'"></a>';				
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_publisherVCARD_EXT_LOM_CONTRIBUTE_DATE']['label'])) . '</label>';
-				echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities(date('d. F Y', strtotime($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_publisherVCARD_EXT_LOM_CONTRIBUTE_DATE']['value']))) . '</span>';
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/lom/1.0}general_description']['label'])) . '</label>';
-				echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($meta['{http://www.campuscontent.de/model/lom/1.0}general_description']['value']) . '</span>';
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.alfresco.org/model/content/1.0}createdISO8601']['label'])) . '</label>';
-				echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities(date('d. F Y, H:i', strtotime($meta['{http://www.alfresco.org/model/content/1.0}createdISO8601']['value']))) . '</span>';
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.alfresco.org/model/content/1.0}modifiedISO8601']['label'])) . '</label>';
-				echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities(date('d. F Y, H:i', strtotime($meta['{http://www.alfresco.org/model/content/1.0}modifiedISO8601']['value']))) . '</span>';
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.alfresco.org/model/system/1.0}node-uuid']['label'])) . '</label>';
-				echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($meta['{http://www.alfresco.org/model/system/1.0}node-uuid']['value']) . '</span>';
-
-			?>
-			
-			
-			<h2><?php echo $msg['meta_contributors']->localize($Locale, $Translate);?></h2>
 			<?php 
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN']['label'])) . '</label>';
-				if(!empty($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN']['value']))
-					echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN']['value']) . '</span>';
+				/*
+				 * GENERAL INFORMATION
+				 */
+				$metadataGeneral = '<h2>'.$msg['meta_general']->localize($Locale, $Translate).'</h2>';
+				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.alfresco.org/model/content/1.0}title']);			
+				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}general_keyword'], '', array('rschip'));
 
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_publisherFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_publisherFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
+				if(!empty($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['value'])) {
+					$metadataGeneral .= '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['label'])) . '</label>';
+					$metadataGeneral .= '<a class="edusharing_rendering_metadata_body_value" href="'.$meta['{virtualproperty}licenseurl']['value'].'" target="_blank" style="margin-left:15px"><img src="'.$meta['{virtualproperty}licenseicon']['value'].'"></a>';
 				}
 				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_unknownFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_unknownFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
+				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_publisherVCARD_EXT_LOM_CONTRIBUTE_DATE']['label'], 'date');
+				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}general_description']);
+				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.alfresco.org/model/content/1.0}createdISO8601'], 'date');
+				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.alfresco.org/model/content/1.0}modifiedISO8601'], 'date');
+				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.alfresco.org/model/system/1.0}node-uuid']);
 				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_initiatorFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_initiatorFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
+				echo $metadataGeneral;
+	
 				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_terminatorFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_terminatorFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
+				/*
+				 * CONTRIBUTORS
+				 */
+				$metadataContributors = '<h2>'.$msg['meta_contributors']->localize($Locale, $Translate).'</h2>';
+				$metadataContributors .= '<h3>'.$msg['meta_contributors_content']->localize($Locale, $Translate).'</h3>';
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_publisherFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_initiatorFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_terminatorFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_validatorFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_editorFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_graphical_designerFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_technical_implementerFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_content_providerFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_educational_validatorFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_script_writerFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_instructional_designerFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_subject_matter_expertFN'],'', array('rschip', 'people'));
+				$metadataContributors .= '<h3>'.$msg['meta_contributors_metadata']->localize($Locale, $Translate).'</h3>';
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_validatorFN'],'', array('rschip', 'people'));
+				$metadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_providerFN'],'', array('rschip', 'people'));
 				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_validatorFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_validatorFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
+				echo $metadataContributors;
 				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_editorFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_editorFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_graphical_designerFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_graphical_designerFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_technical_implementerFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_technical_implementerFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_content_providerFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_content_providerFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_educational_validatorFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_educational_validatorFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_script_writerFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_script_writerFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_instructional_designerFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_instructional_designerFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_subject_matter_expertFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_subject_matter_expertFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
-				
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
-				
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_validatorFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_validatorFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
-				
-				echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_providerFN']['label'])) . '</label>';
-				$valArray = explode('[#]',$meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_providerFN']['value']);
-				foreach($valArray as $value) {
-					if(!empty($value))
-						echo '<span class="edusharing_rendering_metadata_body_value rschip people">' . htmlentities($value) . '</span>';
-				}
-				
-
-				?>
+			?>
 			</div>
 			<div class="edusharing_rendering_metadata_body_right">
 			
 			
-				<h2><?php echo $msg['meta_didactics']->localize($Locale, $Translate);?></h2>
-			
 			<?php 
-			
-			echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}taxonentry']['label'])) . '</label>';
-			$valArray = explode('[#]', $meta['{http://www.campuscontent.de/model/1.0}taxonentry']['value']);
-			foreach($valArray as $value) {
-				if(!empty($value))
-					echo '<span class="edusharing_rendering_metadata_body_value block">' . htmlentities($value) . '</span>';
-			}
-			
-			echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}educationallearningresourcetype']['label'])) . '</label>';
-			$valArray = explode('[#]', $meta['{http://www.campuscontent.de/model/1.0}educationallearningresourcetype']['value']);
-			foreach($valArray as $value) {
-				if(!empty($value))
-					echo '<span class="edusharing_rendering_metadata_body_value rschip">' . htmlentities($value) . '</span>';
-			}
-			
-			echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}educationalcontext']['label'])) . '</label>';
-			$valArray = explode('[#]', $meta['{http://www.campuscontent.de/model/1.0}educationalcontext']['value']);
-			foreach($valArray as $value) {
-				if(!empty($value))
-					echo '<span class="edusharing_rendering_metadata_body_value rschip">' . htmlentities($value) . '</span>';
-			}
-			
-			echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}educationalintendedenduserrole']['label'])) . '</label>';
-			$valArray = explode('[#]', $meta['{http://www.campuscontent.de/model/1.0}educationalintendedenduserrole']['value']);
-			foreach($valArray as $value) {
-				if(!empty($value))
-					echo '<span class="edusharing_rendering_metadata_body_value rschip group">' . htmlentities($value) . '</span>';
-			}
-			
-			echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['label'])) . '</label>';
-			echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) . '</span>';
-			if(!empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) && !empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value']))
-				echo '&nbsp;&ndash;&nbsp;';
-			echo '<span class="edusharing_rendering_metadata_body_value" style="margin-left: 0">' . htmlentities($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value']) . '</span>';
 				
-			echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/lom/1.0}general_language']['label'])) . '</label>';
-			echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($meta['{http://www.campuscontent.de/model/lom/1.0}general_language']['value']) . '</span>';
+				/*
+				 * DIDACTICS
+				 */
+				$metadataDidactics = '<h2>' . $msg['meta_didactics']->localize($Locale, $Translate) . '</h2>';
+				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}taxonentry']);
+				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}educationallearningresourcetype'], '', array('rschip'));
+				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}educationalcontext'], '', array('rschip'));
+				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}educationalintendedenduserrole'], '', array('rschip', 'group'));
 			
-			echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/lom/1.0}aggregationlevel']['label'])) . '</label>';
-			$valArray = explode('[#]', $meta['{http://www.campuscontent.de/model/lom/1.0}aggregationlevel']['value']);
-			foreach($valArray as $value) {
-				if(!empty($value))
-					echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($value) . '</span>';
-			}
-			
-			echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.edu-sharing.net/model/lisum/1.0}systematics_path']['label'])) . '</label>';
-			echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($meta['{http://www.edu-sharing.net/model/lisum/1.0}systematics_path']['value']) . '</span>';
-			
-			
-			echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}classification_keyword']['label'])) . '</label>';
-			$valArray = explode('[#]', $meta['{http://www.campuscontent.de/model/1.0}classification_keyword']['value']);
-			foreach($valArray as $value) {
-				if(!empty($value))
-					echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($value) . '</span>';
-			}
-			
-			echo '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.edu-sharing.net/model/lisum/1.0}keyword_geo']['label'])) . '</label>';
-			$valArray = explode('[#]', $meta['{http://www.edu-sharing.net/model/lisum/1.0}keyword_geo']['value']);
-			foreach($valArray as $value) {
-				if(!empty($value))
-					echo '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($value) . '</span>';
-			}
-			
-			?>
+				if(!empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) || !empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value'])) {
+					$metadataDidactics .= '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['label'])) . '</label>';
+					$metadataDidactics .=  '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) . '</span>';
+					if(!empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) && !empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value']))
+						$metadataDidactics .=  '&nbsp;&ndash;&nbsp;';
+					$metadataDidactics .=  '<span class="edusharing_rendering_metadata_body_value" style="margin-left: 0">' . htmlentities($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value']) . '</span>';
+				}
+
+				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}general_language']);
+				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}aggregationlevel']);
+				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.edu-sharing.net/model/lisum/1.0}systematics_path']);
+				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}classification_keyword'], '', array('rschip'));
+				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.edu-sharing.net/model/lisum/1.0}keyword_geo'], '', array('rschip'));
+				
+				echo $metadataDidactics;
+	
+				?>
 			
 			</div>
 		</div>

@@ -52,4 +52,6 @@ $Translate
 	->addTranslation('zh', 'goToOrigin', 'Go to origin')
 	->addTranslation('zh', 'meta_general', 'General information')
 	->addTranslation('zh', 'meta_contributors', 'Contributors')
+	->addTranslation('zh', 'meta_contributors_content', 'Contributor (object)')
+	->addTranslation('zh', 'meta_contributors_metadata', 'Contributor (metadata)')
 	->addTranslation('zh', 'meta_didactics', 'Didactics');

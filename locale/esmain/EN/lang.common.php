@@ -57,4 +57,6 @@ $Translate
 	->addTranslation('en', 'goToOrigin', 'Go to origin')
 	->addTranslation('en', 'meta_general', 'General information')
 	->addTranslation('en', 'meta_contributors', 'Contributors')
+	->addTranslation('en', 'meta_contributors_content', 'Contributor (object)')
+	->addTranslation('en', 'meta_contributors_metadata', 'Contributor (metadata)')
 	->addTranslation('en', 'meta_didactics', 'Didactics');

@@ -27,7 +27,7 @@
 				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}general_keyword'], '', array('rschip'));
 
 				if(!empty($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['value'])) {
-					$metadataGeneral .= '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['label'])) . '</label>';
+					$metadataGeneral .= '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key'])) . '</label>';
 					$metadataGeneral .= '<a class="edusharing_rendering_metadata_body_value" href="'.$meta['{virtualproperty}licenseurl']['value'].'" target="_blank" style="margin-left:15px"><img src="'.$meta['{virtualproperty}licenseicon']['value'].'"></a>';
 				}
 				

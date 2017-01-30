@@ -50,8 +50,6 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      */
     protected $render_path = '';
 
-    protected $requestingDevice = null;
-
     /**
      *
      * @param string $Name
@@ -491,10 +489,6 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      */
     protected function getTemplate() {
         return $this -> Template;
-    }
-
-    public function setRequestingDevice(WURFL_CustomDevice $requestingDevice) {
-        $this -> requestingDevice = $requestingDevice;
     }
 
     public function getRequestingDevice() {

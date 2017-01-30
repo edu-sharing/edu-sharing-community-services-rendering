@@ -402,11 +402,6 @@ try {
 
     }
 
-    //init wurfl
-    require_once (dirname(__FILE__) . '/../../vendor/lib/wurfl/index.php');
-
-   
-	
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin "' . $name . '"::postSslVerification()');
         $Plugin -> postSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
@@ -563,7 +558,6 @@ try {
 
     $_mod_class = 'mod_' . $moduleName;
     $Module = new $_mod_class($moduleName, $RenderApplication, $ESObject, $Logger, $Template);
-    $Module -> setRequestingDevice($requestingDevice);
 
     $Logger -> info('Loaded module "' . $moduleName . '".');
 

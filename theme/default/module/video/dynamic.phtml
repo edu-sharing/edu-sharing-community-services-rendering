@@ -20,9 +20,14 @@ $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
 <script>
+	var videoFormat = 'webm';
+	var v = document.createElement('video');
+	if(v.canPlayType && v.canPlayType('video/mp4').replace(/no/, '')) {
+		videoFormat = 'mp4';
+	}
 	get_resource = function(authstring) {
 	    jQuery.ajax({
-	        url:"<?php echo $ajax_url ?>&callback=get_resource&"+authstring,
+	        url:"<?php echo $ajax_url ?>&callback=get_resource&"+authstring+"&videoFormat="+videoFormat,
 	        success:function(data){
 	            jQuery("#edusharing_rendering_content").html(data);
 	        }

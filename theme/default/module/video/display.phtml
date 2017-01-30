@@ -20,9 +20,15 @@
         <link rel="stylesheet" type="text/css" href="../../theme/default/css/video.css">
         <script type="text/javascript" src="../../vendor/js/getJS.php?<?php echo filemtime($ROOT_PATH . '/vendor/js/getJS.php') ?>"></script>
         <script>
+	        var videoFormat = 'webm';
+	        var v = document.createElement('video');
+	        if(v.canPlayType && v.canPlayType('video/mp4').replace(/no/, '')) {
+	        	videoFormat = 'mp4';
+	        }
+	        
             get_resource = function(authstring) {
                 jQuery.ajax({
-                    url:"<?php echo $ajax_url ?>&callback=get_resource&"+authstring,
+                    url:"<?php echo $ajax_url ?>&callback=get_resource&"+authstring+'&videoFormat='+videoFormat,
                     success:function(result){
                         jQuery("#content").html(result);
                         document.getElementsByTagName('video')[0].play();

@@ -215,6 +215,9 @@ function run($installedVersion) {
 			)));';
 			file_put_contents(MC_ROOT_PATH . 'conf/system.conf.php', $mArr, FILE_APPEND | LOCK_EX);
 			
+			if(file_exists(MC_ROOT_PATH . 'vendor/lib/wurfl'))
+				rrmdir ( MC_ROOT_PATH . 'vendor/lib/wurfl' );
+			
 		}
 		
 		
@@ -225,6 +228,7 @@ function run($installedVersion) {
 	
 	return true;
 }
+
 function rrmdir($dir) {
 	if (is_dir ( $dir )) {
 		$objects = scandir ( $dir );

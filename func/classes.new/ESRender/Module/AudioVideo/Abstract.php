@@ -92,9 +92,10 @@ extends ESRender_Module_ContentNode_Abstract {
                 $formats = array(self::FORMAT_AUDIO_MP3);
             break;
             default:
-                $formats = $this->getVideoFormats($p_kind);    
+                $formats = $this->getVideoFormats();    
         }
 
+        
        	if(empty($formats))
         	return parent::process($p_kind, $requestData);
 

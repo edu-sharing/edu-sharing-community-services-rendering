@@ -1,5 +1,5 @@
 <?php
-	global $Locale, $Translate;
+	global $Locale, $Translate, $accessToken;
 	
 	require_once __DIR__ . '/../../../func/classes.new/Helper/MetadataRendererHelper.php';
 	
@@ -12,7 +12,7 @@
 
 <div id="edusharing_rendering_metadata" role="contentinfo">
 		<div class="edusharing_rendering_metadata_header">
-			<img tabindex="0" class="edusharing_rendering_metadata_header_icon" onclick="showContent()" onkeypress="(event.keyCode==13)?showContent():0" src="<?php echo $meta['{http://www.alfresco.org/model/rendition/1.0}rendition']['value'] ?>">
+			<img tabindex="0" class="edusharing_rendering_metadata_header_icon" onclick="showContent()" onkeypress="(event.keyCode==13)?showContent():0" src="<?php echo $meta['{http://www.alfresco.org/model/rendition/1.0}rendition']['value'] . '&accessToken=' . $accessToken ?>">
 			<h1 property="name" title="<?php echo $title ?>" class="edusharing_rendering_metadata_header_title"><?php echo $title ?></h1>
 		</div>
 		<div class="edusharing_rendering_metadata_body">
@@ -27,7 +27,7 @@
 
 				if(!empty($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['value'])) {
 					$metadataGeneral .= '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['label'])) . '</label>';
-					$metadataGeneral .= '<a class="edusharing_rendering_metadata_body_value" href="'.$meta['{virtualproperty}licenseurl']['value'].'" target="_blank" style="margin-left:15px"><img src="'.$meta['{virtualproperty}licenseicon']['value'].'"></a>';
+					$metadataGeneral .= '<a class="edusharing_rendering_metadata_body_value" href="'.$meta['{virtualproperty}licenseurl']['value'].'" target="_blank" style="margin-left:15px"><img src="'.$meta['{virtualproperty}licenseicon']['value'] . '&accessToken=' . $accessToken . '"></a>';
 				}
 				
 				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_publisherVCARD_EXT_LOM_CONTRIBUTE_DATE'], 'date');

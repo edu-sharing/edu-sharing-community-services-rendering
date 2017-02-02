@@ -70,8 +70,8 @@ h1.edusharing_rendering_metadata_header_title {
 	margin-bottom: -14px;
 }
 
-.edusharing_rendering_metadata_body_right, .edusharing_rendering_metadata_body_left {
-	flex: 50%;
+.edusharing_rendering_metadata_body_column {
+	flex: 1;
 	padding: 0 20px;
 }
 
@@ -213,7 +213,7 @@ img.edusharing_rendering_content_preview {
 		display: block;
 	}
 	
-	.edusharing_rendering_metadata_body_right, .edusharing_rendering_metadata_body_left {
+	.edusharing_rendering_metadata_body_column {
 		display: block;
 		padding: 0;
 	}

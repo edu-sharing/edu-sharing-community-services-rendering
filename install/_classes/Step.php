@@ -66,7 +66,7 @@ class Step
 		$deny = 'if ( ! defined("INST_PATH_TMPL") ) { die("access denied"); }';
 
 		// create log statement
-		$ser = '$log = "'.addcslashes(serialize($log), '\\"').'";';
+		$ser = '$log = "'.addcslashes(serialize($log), '\\$"').'";';
 
         // create log statement
         $dump = var_export($log, true);

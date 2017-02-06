@@ -265,8 +265,9 @@ implements ESRender_Module_Interface {
 
         $pdo = RsPDO::getInstance();
         try {
-            $sql = $pdo -> formatQuery('INSERT INTO `ESOBJECT_LOCK` (`ESOBJECT_LOCK_OBJECT_ID`,`ESOBJECT_LOCK_OBJECT_VERSION`,`ESOBJECT_LOCK_CONTENT_HASH`) VALUES (:objectid, :objectversion, :contenthash)');
+            $sql = $pdo -> formatQuery('INSERT INTO `ESOBJECT_LOCK` (`ESOBJECT_LOCK_REP_ID`,`ESOBJECT_LOCK_OBJECT_ID`,`ESOBJECT_LOCK_OBJECT_VERSION`,`ESOBJECT_LOCK_CONTENT_HASH`) VALUES (:repid, :objectid, :objectversion, :contenthash)');
             $stmt = $pdo -> prepare($sql);
+            $stmt -> bindValue(':repid', $instanceParams['rep_id']);
             $stmt -> bindValue(':objectid', $instanceParams['object_id']);
             $stmt -> bindValue(':objectversion', $instanceParams['version']);
             $stmt -> bindValue(':contenthash', $contentHash);

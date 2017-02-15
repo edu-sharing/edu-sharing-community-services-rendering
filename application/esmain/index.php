@@ -274,11 +274,6 @@ try {
     if($dynMetadata_req == 'false')
     	$dynMetadata = false;
 
-
-    // ACCESS TOKEN
-    global $accessToken;
-    $accessToken = mc_Request::fetch('accessToken', 'CHAR', '');
-
     $req_data['token'] = mc_Request::fetch('token', 'CHAR', '');
     
     // WIDTH
@@ -736,8 +731,7 @@ try {
             'version' => $req_data['version'],
             'backLink' => $req_data['backLink'],
         	'token' => $token,
-        	'dynMetadata' => $dynMetadata,
-            'accessToken' => $accessToken
+        	'dynMetadata' => $dynMetadata
         ),
         $Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash))) {
         $Logger -> error('Error processing object "' . $data['parentNodeId'] . '".');

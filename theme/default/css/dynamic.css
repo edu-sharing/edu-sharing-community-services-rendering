@@ -208,7 +208,7 @@ img.edusharing_rendering_content_preview {
 }
 
 
-@media (max-width: 1200px) {
+@media (max-width: 800px) {
 	.edusharing_rendering_metadata_body {
 		display: block;
 	}

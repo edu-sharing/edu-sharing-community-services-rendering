@@ -16,3 +16,7 @@ log/redirect.log
 modules/video/config.php
 vendor/lib/wurfl/resources/storage/cache/*
 vendor/lib/wurfl/resources/storage/persistence/*
+.idea/modules.xml
+.idea/rendering-service.iml
+.idea/vcs.xml
+.idea/workspace.xml

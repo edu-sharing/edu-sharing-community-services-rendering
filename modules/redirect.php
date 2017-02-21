@@ -60,8 +60,6 @@ function cc_rd_debug($err_msg) {
 // start session to read object-data
 if (!empty($_GET[$ESRENDER_SESSION_NAME])) {
     $l_sid = $_GET[$ESRENDER_SESSION_NAME];
-} else if (!empty($_COOKIE[$ESRENDER_SESSION_NAME])) {
-    $l_sid = $_COOKIE[$ESRENDER_SESSION_NAME];
 } else {
     header('HTTP/1.0 400 Bad Request');
     $l_sid = cc_rd_debug('esrender session missing');
@@ -82,28 +80,30 @@ session_start();
 
 if (empty($_SESSION['esrender'])) {
     error_log('Missing "esrender"-session-data.');
-
     header('HTTP/1.0 500 Internal Server Error');
     cc_rd_debug('missing session render data');
 }
 
-// check for Times_Of_Usage (note: NEGATIVE value means UNLIMITED times of access !)
-if (empty($_SESSION['esrender']['TOU'])) {
-    error_log('No more TOU available.');
-
-    $_SESSION['esrender'] = array();
-    session_destroy();
-
-    header('HTTP/1.0 403 Not Authorized');
-    cc_rd_debug('access denied (usage counter is empty)');
-
+if(empty($_SESSION['esrender']['token'])) {
+	error_log('Missing token (session)');
+	cc_rd_debug('Missing token (session)');
+	header('HTTP/1.0 500 Internal Server Error');
 }
-
-// count-down usage
-if ($_SESSION['esrender']['TOU'] > 0) {
-    $_SESSION['esrender']['TOU']--;
+if(empty($_REQUEST['token'])) {
+	error_log('Missing token (request)');
+	cc_rd_debug('Missing token (request)');
+	header('HTTP/1.0 500 Internal Server Error');
 }
-
+if(($_SESSION['esrender']['token'] !== $_REQUEST['token']) && ($_SESSION['esrender']['token'])!==$_COOKIE['ESSEC']) {
+	error_log('Invalid token');
+	cc_rd_debug('Invalid token');
+	header('HTTP/1.0 500 Internal Server Error');
+} else {
+	$token = md5(uniqid());
+	$_SESSION['esrender']['token'] = $token;
+	setcookie('ESSEC', $token, time()+300);
+}
+	
 session_write_close();
 
 // check path access
@@ -118,7 +118,7 @@ $dest_path = parse_url($l_dest, PHP_URL_PATH);
 
 if (strpos($dest_path, $l_check) !== 0) {
     header('HTTP/1.0 400 Bad Request');
-    cc_rd_debug('permission denied (path access check failed)');
+    cc_rd_debug('Permission denied (path access check failed)');
 }
 $dest_path = sanitizePath($dest_path);
 
@@ -167,6 +167,7 @@ if (!@include ('./' . $_SESSION['esrender']['mod_name'] . '/redirect_header.inc.
 $filesize = filesize($src_file);
 
 header("Content-length: " . $filesize);
+header('Access-Control-Allow-Origin: *');
 
 if($filesize <= 2048) {
     @readfile($src_file);

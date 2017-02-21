@@ -42,14 +42,18 @@ extends ESRender_Module_AudioVideo_Abstract
     protected $filename;
 
     protected function prepareRenderData(
-        array $requestData)
+        array $requestData, $getDefaultData = true)
     {
     	global $MC_URL;
 
-        $template_data = parent::prepareRenderData($requestData);
+    	
+    	$template_data = array();
+    	
+    	if($getDefaultData)
+        	$template_data = parent::prepareRenderData($requestData);
         
         $ext = $this -> getExtensionByFormat($this->getVideoFormatByRequestingDevice());
-        $object_url = dirname($this -> _ESOBJECT->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?' . session_name() . '=' . session_id();
+        $object_url = dirname($this -> _ESOBJECT->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?' . session_name() . '=' . session_id().'&token='.$requestData['token'];
         $template_data['ext'] = $ext;
         $template_data['url'] = $object_url;
         if(!empty($requestData['width']))
@@ -113,16 +117,45 @@ extends ESRender_Module_AudioVideo_Abstract
 
         //load resource asynchr. with display mode inline!
         $template_data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
-            .$requestData['app_id'].'&session='.$requestData['session']
+            .$requestData['app_id']
             .'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
             .$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
             .'&display=inline&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-		//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
+            $template_data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
+        //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
         $Template = $this->getTemplate();
         echo $Template->render('/module/video/display', $template_data);
 
         return true;
     }
+    
+    
+    /**
+     * (non-PHPdoc)
+     * @see ESRender_Module_Base::dynamic()
+     */
+    final public function dynamic(
+    		array $requestData)
+    {
+    	global $Locale, $ROOT_URI;
+    	$template_data = $this->prepareRenderData($requestData, false);
+    
+    	//load resource asynchr. with display mode inline!
+    	$template_data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
+    			.$requestData['app_id']
+    			.'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
+    					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
+    					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
+    					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
+            $template_data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
+        if($requestData['dynMetadata'])
+    		$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    	$template_data['title'] = $this->_ESOBJECT->getTitle();
+    	echo $this->getTemplate()->render('/module/video/dynamic', $template_data);
+    
+    	return true;
+    }
+    
 
     /**
      * (non-PHPdoc)
@@ -131,9 +164,14 @@ extends ESRender_Module_AudioVideo_Abstract
     final public function inline(
         array $requestData)
     {
-        $template_data = $this->prepareRenderData($requestData);
-
-        echo $this->renderInlineTemplate($template_data);
+    	
+    	if($_REQUEST['displayoption'] == 'min') {
+    		$template_data = $this->prepareRenderData($requestData, false);
+    	} else {
+    		$template_data = $this->prepareRenderData($requestData);
+    	}
+    	
+    	echo $this->renderInlineTemplate($template_data);
 
         return true;
     }
@@ -144,13 +182,17 @@ extends ESRender_Module_AudioVideo_Abstract
      * 
      */
     final public function locked(array $requestData) {
+    	    	
         $template = $this->getTemplate();
         $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> _ESOBJECT -> getObjectID() . $this->_ESOBJECT->getObjectVersion() . $this-> getVideoFormatByRequestingDevice(). '.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
         $positionInConversionQueue = $this->_ESOBJECT->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice());
         if(empty($progress) || is_array($progress))
             $progress = '0';
-        echo $template->render('/module/video/lock', array('callback' => $requestData['callback'], 'progress' => $progress, 'positionInConversionQueue' => $positionInConversionQueue));
+        echo $template->render('/module/video/lock', array('callback' => $requestData['callback'],
+        												'authString' => 'token='.$requestData['token'].'&'.session_name().'='.session_id(),
+        												'progress' => $progress,
+        												'positionInConversionQueue' => $positionInConversionQueue));
         return true;
     }
 

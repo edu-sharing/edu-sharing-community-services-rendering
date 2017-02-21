@@ -21,7 +21,7 @@
 
 global $Translate;
 $Translate
-    ->addTranslation('de', 'Error', '错误')
+    ->addTranslation('zh', 'Error', '错误')
     ->addTranslation('zh', 'Missing parameter ":name".', '缺少参数 ":name".')
 	->addTranslation('zh', 'Invalid parameter ":name".', '无效参数 ":name".')
 	->addTranslation('zh', 'Error loading configuration.', '载入配置信息失败')
@@ -41,6 +41,17 @@ $Translate
     ->addTranslation('zh', 'Chapter', 'Chapter')
     ->addTranslation('zh', 'Object does not exist in repository', 'Object does not exist in repository')
     ->addTranslation('zh', 'Error fetching object properties', 'Error fetching object properties')
-    ->addTranslation('en', 'title', 'Title')
-    ->addTranslation('en', 'showMetadata', 'Show metadata')
-    ->addTranslation('en', 'hideMetadata', 'hide metadata');
+    ->addTranslation('zh', 'title', 'Title')
+    ->addTranslation('zh', 'showMetadata', 'Show metadata')
+    ->addTranslation('zh', 'hideMetadata', 'hide metadata')
+    ->addTranslation('zh', 'showInformation', 'Show information')
+    ->addTranslation('zh', 'hideInformation', 'Hide information')
+	->addTranslation('zh', 'toDownload', 'Download')
+	->addTranslation('zh', 'cannotOpenObject', '此材料无法在浏览器中显示')
+	->addTranslation('zh', 'cannotOpenObjectText', '为了使用材料，请下载它')
+	->addTranslation('zh', 'goToOrigin', 'Go to origin')
+	->addTranslation('zh', 'meta_general', 'General information')
+	->addTranslation('zh', 'meta_contributors', 'Contributors')
+	->addTranslation('zh', 'meta_contributors_content', 'Contributor (object)')
+	->addTranslation('zh', 'meta_contributors_metadata', 'Contributor (metadata)')
+	->addTranslation('zh', 'meta_didactics', 'Didactics');

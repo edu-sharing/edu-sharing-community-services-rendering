@@ -28,7 +28,7 @@ class form
 
         if ( ! $this->checkApacheModules(
             // required extensions (space separated)
-            'mod_php5 mod_rewrite mod_ssl',
+            'mod_rewrite mod_ssl',
             // optional extensions (space separated)
             ''
         ) )

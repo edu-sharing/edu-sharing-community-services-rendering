@@ -30,9 +30,7 @@ require_once (MC_LIB_PATH . 'Plattform.php');
  * @package core
  * @subpackage classes.new
  */
-abstract class ESRender_Module_Base
-//extends Plattform
-implements ESRender_Module_Interface {
+abstract class ESRender_Module_Base implements ESRender_Module_Interface {
 
     /**
      * @var ESObject
@@ -51,8 +49,6 @@ implements ESRender_Module_Interface {
      * @var string
      */
     protected $render_path = '';
-
-    protected $requestingDevice = null;
 
     /**
      *
@@ -361,6 +357,13 @@ implements ESRender_Module_Interface {
                 $Logger -> debug('Calling Module::inline()');
                 return $this -> inline($requestData);
                 break;
+                
+                
+                case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC :
+                	$Logger -> debug('Calling Module::dynamic()');
+                	return $this -> dynamic($requestData);
+                	break;
+
 
             case ESRender_Application_Interface::DISPLAY_MODE_WINDOW :
                 $Logger -> debug('Calling Module::display()');
@@ -487,10 +490,6 @@ implements ESRender_Module_Interface {
      */
     protected function getTemplate() {
         return $this -> Template;
-    }
-
-    public function setRequestingDevice(WURFL_CustomDevice $requestingDevice) {
-        $this -> requestingDevice = $requestingDevice;
     }
 
     public function getRequestingDevice() {

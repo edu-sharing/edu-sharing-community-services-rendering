@@ -30,22 +30,28 @@ extends ESRender_Module_ContentNode_Abstract {
      */
     abstract protected function getOutputFilename($ext);
    
+    protected function getVideoFormats() {  
+    	    	
+    	switch($this->getVideoFormatByRequestingDevice()) {
+    		case self::FORMAT_VIDEO_MP4:
+    			return array(self::FORMAT_VIDEO_MP4, self::FORMAT_VIDEO_WEBM);
+    		break;
+    		case self::FORMAT_VIDEO_WEBM:
+    			return array(self::FORMAT_VIDEO_WEBM, self::FORMAT_VIDEO_MP4);
+    		break;
+    		default:
+    			return array();
+    	}
+    }
+    
     protected function getVideoFormatByRequestingDevice() {
-    
-        $modelName = $this -> getRequestingDevice() -> getCapability('model_name');
-    
-        //decide which format to deliver
-        //IE/Edge cannot play webm
-        //safari also
-
-        if(
-            $this -> getRequestingDevice() -> getCapability('playback_mp4') != 'false'
-            || strpos($modelName, 'Internet Explorer') !== false
-            || empty($modelName)
-            || strpos($_SERVER['HTTP_USER_AGENT'], 'Edge') !== false)
-            return self::FORMAT_VIDEO_MP4;
-        else
-            return self::FORMAT_VIDEO_WEBM;
+    	if(isset($_REQUEST['videoFormat']) && $_REQUEST['videoFormat'] == self::FORMAT_VIDEO_MP4_EXT) {
+    		return self::FORMAT_VIDEO_MP4;
+    	} else if(isset($_REQUEST['videoFormat']) && $_REQUEST['videoFormat'] == self::FORMAT_VIDEO_WEBM_EXT) {
+    		return self::FORMAT_VIDEO_WEBM;
+    	} else {
+    		return '';
+    	}
     }
 
     /**
@@ -53,11 +59,9 @@ extends ESRender_Module_ContentNode_Abstract {
      * @see ESRender_Module_ContentNode_Abstract::createInstance()
      */
     final public function createInstance(array $requestData) {
-
         if (!parent::createInstance($requestData)) {
             return false;
         }
-
         return true;
     }
 
@@ -70,8 +74,8 @@ extends ESRender_Module_ContentNode_Abstract {
      */
     public function process($p_kind, array $requestData, $objectLocked = false) {
 
-    global $CC_RENDER_PATH;
-    
+    	global $CC_RENDER_PATH;
+    	
         if ($objectLocked) {
             return parent::process(ESRender_Application_Interface::DISPLAY_MODE_LOCKED, $requestData);
         }
@@ -88,26 +92,25 @@ extends ESRender_Module_ContentNode_Abstract {
                 $formats = array(self::FORMAT_AUDIO_MP3);
             break;
             default:
-                $formats = array($this->getVideoFormatByRequestingDevice());
-                
-                if($formats[0] == self::FORMAT_VIDEO_MP4)
-                    $formats[] = self::FORMAT_VIDEO_WEBM;
-                else
-                    $formats[] = self::FORMAT_VIDEO_MP4;          
+                $formats = $this->getVideoFormats();    
         }
+
+        
+       	if(empty($formats))
+        	return parent::process($p_kind, $requestData);
 
         foreach ($formats as $format) {
             $output_filename = $this -> getOutputFilename($this->getExtensionByFormat($format));
             /*
-             * if there is no output file add object to conversion queue fi needed
+             * if there is no output file add object to conversion queue if needed
              * for failed conversions skip this
              * */
             if (!file_exists($output_filename) && !$this -> _ESOBJECT -> conversionFailed($format)) {
                 if (!$this -> _ESOBJECT -> inConversionQueue($format)) {
                     $this -> _ESOBJECT -> addToConversionQueue($format, DIRECTORY_SEPARATOR, $this -> getCacheFileName(), $this -> getOutputFilename($this->getExtensionByFormat($format)), $CC_RENDER_PATH, $this -> _ESOBJECT -> getMimeType());
                 }
-                //show lock screen (progress bar) but not in display mode 'window'
-                if ($formats[0] == $format && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_WINDOW)
+                //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
+                if ($formats[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_WINDOW && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC))
                     $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
             } 
         }

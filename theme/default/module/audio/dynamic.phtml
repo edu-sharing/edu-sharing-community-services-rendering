@@ -1,0 +1,36 @@
+<?php 
+global $Locale, $Translate;
+$msg = array();
+$msg['showInformation'] = new Phools_Message_Default('showInformation');
+$msg['hideInformation'] = new Phools_Message_Default('hideInformation');
+?>
+
+<style scoped>
+<?php include(dirname(__FILE__) . '/../../css/dynamic.css'); ?>
+</style>
+
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
+	<div class="edusharing_rendering_content_wrapper" role="main">
+		<div id="edusharing_rendering_content"></div>
+	</div>
+	<?php echo $metadata; ?>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+<script>
+	get_resource = function(authstring) {
+	    jQuery.ajax({
+	        url:"<?php echo $ajax_url ?>&callback=get_resource&"+authstring,
+	        success:function(data){
+	            jQuery("#edusharing_rendering_content").html(data);
+	        }
+	    });
+	}
+	
+	get_resource("<?php echo $authString ?>");
+	
+	<?php include(dirname(__FILE__) . '/../../js/dynamic.js'); ?>
+	
+</script>

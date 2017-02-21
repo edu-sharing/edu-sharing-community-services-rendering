@@ -21,6 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: *");
+
+
+
 try {
     include_once ('../../conf.inc.php');
 
@@ -29,8 +36,14 @@ try {
         error_log('ESRENDER_SESSION_NAME not set in conf/system.conf.php');
         $ESRENDER_SESSION_NAME = 'ESSID';
     }
-
+    
     session_name($ESRENDER_SESSION_NAME);
+
+    $sessid = mc_Request::fetch($ESRENDER_SESSION_NAME, 'CHAR', '');
+    if(!empty($sessid))
+    	session_id($sessid);
+ 
+    
     if (!session_start()) {
         throw new Exception('Could not start session.');
     }
@@ -222,9 +235,7 @@ try {
         echo 'Decryption error';
         exit();
     }
-    
-    //metacoon fix
-    $user_name = str_replace('{{{at}}}', '@', $user_name);
+
     
     // VERSION (optional)
     $req_data['version'] = mc_Request::fetch('version', 'CHAR');
@@ -249,14 +260,22 @@ try {
     }
 
     // DISPLAY MODE
-    $display_kind = mc_Request::fetch('display', 'CHAR', $RenderApplication -> getDefaultDisplayMode());
+    $display_kind = mc_Request::fetch('display', 'CHAR', 'window');
     if ($display_kind) {
         $Validator = new ESRender_Validator_DisplayMode();
         if (!$Validator -> validate($display_kind)) {
             throw new ESRender_Exception_InvalidRequestParam('display');
         }
     }
+    
+    // METADATA MODE
+    $dynMetadata = true;
+    $dynMetadata_req = mc_Request::fetch('metadata', 'CHAR', 'true');
+    if($dynMetadata_req == 'false')
+    	$dynMetadata = false;
 
+    $req_data['token'] = mc_Request::fetch('token', 'CHAR', '');
+    
     // WIDTH
     $req_data['width'] = mc_Request::fetch('width', 'INT', 0);
 
@@ -320,12 +339,23 @@ try {
         $Plugin -> preSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
     }    
     
-    $skipSslVerification = false;
+    $skipSslVerification = true;//for testing
     
-    if(!empty($_SESSION[$req_data['usernameEncrypted']][$req_data['obj_id']]) && !empty($_COOKIE[$req_data['obj_id']]) && $_SESSION[$req_data['usernameEncrypted']][$req_data['obj_id']] == $_COOKIE[$req_data['obj_id']]) {
-        $skipSslVerification = true;
+    if(!empty($req_data['token'])) {
+    	if($req_data['token'] == $_SESSION['esrender']['token'] || empty($_SESSION['esrender']['token'])) {
+        	$skipSslVerification = true;
+    	} else {
+    		$Logger->error('Token not valid!');
+    	}
+    }
+    
+    try {
+    	$token = md5(uniqid());
+    } catch (Exception $e) {
+    	throw new Exception('Cannot generate token.');
     }
 
+    
     if(!$skipSslVerification) {
     
         $req_data['timestamp'] = mc_Request::fetch('ts', 'CHAR');   
@@ -371,15 +401,6 @@ try {
 
     }
 
-    //init wurfl
-    require_once (dirname(__FILE__) . '/../../vendor/lib/wurfl/index.php');
-
-    if($display_kind == 'window' || $skipSslVerification) {
-        $token = md5(microtime(true) * rand());
-        $_SESSION[$req_data['usernameEncrypted']][$req_data['obj_id']] = md5($token);
-        setcookie($req_data['obj_id'], md5($token), time() + 60, '/');
-    }
-    
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin "' . $name . '"::postSslVerification()');
         $Plugin -> postSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
@@ -536,7 +557,6 @@ try {
 
     $_mod_class = 'mod_' . $moduleName;
     $Module = new $_mod_class($moduleName, $RenderApplication, $ESObject, $Logger, $Template);
-    $Module -> setRequestingDevice($requestingDevice);
 
     $Logger -> info('Loaded module "' . $moduleName . '".');
 
@@ -639,9 +659,7 @@ try {
     $moduleSessionId = session_id();
     $moduleSessionSavePath = session_save_path();
     session_write_close();
-
     session_save_path($sessionSavePath);
-
     session_name($ESRENDER_SESSION_NAME);
     session_id($esrenderSessionId);
     session_start();
@@ -662,17 +680,15 @@ try {
         'check' => parse_url($ESObject -> getPathfile(), PHP_URL_PATH),
         'display_kind' => $display_kind, 
         // real module path, independent from cache
-        'moduleRoot' => realpath(dirname(__FILE__) . '/../../modules/' . $moduleName));
+        'moduleRoot' => realpath(dirname(__FILE__) . '/../../modules/' . $moduleName),
+    	'token' => $token
+    );
     
     $cookie_path = '/';
     $cookie_expire = 0;
     $cookie_domain = MC_HOST;
 
-    $Logger -> debug('Setting esrender-cookie for host "' . MC_HOST . '".');
-    if (!setcookie($ESRENDER_SESSION_NAME, session_id(), $cookie_expire, $cookie_path, $cookie_domain)) {
-        $Logger -> error('Error setting esrender-cookie named "' . $ESRENDER_SESSION_NAME . '" = "' . session_id() . '" for host "' . MC_HOST . '".');
-    }
-    // re-start module-session to finish processing
+    // re-start module-session to finish processing    
     session_write_close();
 
     session_save_path($moduleSessionSavePath);
@@ -713,13 +729,14 @@ try {
             'sessionId' => $esrenderSessionId,
             'usernameEncrypted' => $req_data['usernameEncrypted'],
             'version' => $req_data['version'],
-            'backLink' => $req_data['backLink']),
+            'backLink' => $req_data['backLink'],
+        	'token' => $token,
+        	'dynMetadata' => $dynMetadata
+        ),
         $Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash))) {
         $Logger -> error('Error processing object "' . $data['parentNodeId'] . '".');
-
         throw new Exception('Error processing object.');
     }
-
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin "' . $name . '"::postProcessObject()');
         $Plugin -> postProcessObject();

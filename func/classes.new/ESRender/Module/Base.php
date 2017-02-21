@@ -30,9 +30,7 @@ require_once (MC_LIB_PATH . 'Plattform.php');
  * @package core
  * @subpackage classes.new
  */
-abstract class ESRender_Module_Base
-//extends Plattform
-implements ESRender_Module_Interface {
+abstract class ESRender_Module_Base implements ESRender_Module_Interface {
 
     /**
      * @var ESObject
@@ -51,8 +49,6 @@ implements ESRender_Module_Interface {
      * @var string
      */
     protected $render_path = '';
-
-    protected $requestingDevice = null;
 
     /**
      *
@@ -265,8 +261,9 @@ implements ESRender_Module_Interface {
 
         $pdo = RsPDO::getInstance();
         try {
-            $sql = $pdo -> formatQuery('INSERT INTO `ESOBJECT_LOCK` (`ESOBJECT_LOCK_OBJECT_ID`,`ESOBJECT_LOCK_OBJECT_VERSION`,`ESOBJECT_LOCK_CONTENT_HASH`) VALUES (:objectid, :objectversion, :contenthash)');
+            $sql = $pdo -> formatQuery('INSERT INTO `ESOBJECT_LOCK` (`ESOBJECT_LOCK_REP_ID`,`ESOBJECT_LOCK_OBJECT_ID`,`ESOBJECT_LOCK_OBJECT_VERSION`,`ESOBJECT_LOCK_CONTENT_HASH`) VALUES (:repid, :objectid, :objectversion, :contenthash)');
             $stmt = $pdo -> prepare($sql);
+            $stmt -> bindValue(':repid', $instanceParams['rep_id']);
             $stmt -> bindValue(':objectid', $instanceParams['object_id']);
             $stmt -> bindValue(':objectversion', $instanceParams['version']);
             $stmt -> bindValue(':contenthash', $contentHash);
@@ -360,6 +357,13 @@ implements ESRender_Module_Interface {
                 $Logger -> debug('Calling Module::inline()');
                 return $this -> inline($requestData);
                 break;
+                
+                
+                case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC :
+                	$Logger -> debug('Calling Module::dynamic()');
+                	return $this -> dynamic($requestData);
+                	break;
+
 
             case ESRender_Application_Interface::DISPLAY_MODE_WINDOW :
                 $Logger -> debug('Calling Module::display()');
@@ -486,10 +490,6 @@ implements ESRender_Module_Interface {
      */
     protected function getTemplate() {
         return $this -> Template;
-    }
-
-    public function setRequestingDevice(WURFL_CustomDevice $requestingDevice) {
-        $this -> requestingDevice = $requestingDevice;
     }
 
     public function getRequestingDevice() {

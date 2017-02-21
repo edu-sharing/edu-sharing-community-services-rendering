@@ -158,10 +158,11 @@ extends ESRender_Module_Base
             $url .= '&u=' . urlencode($requestData['usernameEncrypted']);
         }
 
-        $redirector = '{{{LMS_INLINE_HELPER_SCRIPT}}}&';
+        $url .= '&token=' . $requestData['token'];
 
-        $url = $redirector . 'url=' . urlencode($url);     
+        $redirector = '{{{LMS_INLINE_HELPER_SCRIPT}}}&';
         
+        $url = $redirector . 'url=' . urlencode($url);     
         
         return $url;
     }
@@ -172,7 +173,7 @@ extends ESRender_Module_Base
     protected function download(array $requestData)
     {
         $Logger = $this->getLogger();
-        $url = $this->_ESOBJECT -> getPathfile();
+        $url = $this->_ESOBJECT -> getPathfile() .  '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
         $Logger->debug('Redirecting to location: "' . $url . '"');
 
         header('HTTP/1.1 303 See other');
@@ -188,7 +189,7 @@ extends ESRender_Module_Base
     {
         $Logger = $this->getLogger();
 
-        $url = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id();
+        $url = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
         $Logger->debug('Redirecting to location: "' . $url . '"');
 
         header('HTTP/1.1 303 See other');
@@ -227,5 +228,24 @@ extends ESRender_Module_Base
 
         return true;
     }
+    
+    
+    protected function dynamic(array $requestData) {
+    	 
+       $Logger = $this->getLogger();
+       $Logger->debug('ESRender_Module_Base::dynamic Snippet "' . $snippet . '"');
+       
+       $data = array();
+       $data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
+       if($requestData['dynMetadata'])
+       		$data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic', $valuesToShow);  
+       $data['previewUrl'] = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl;
+       $data['title'] = $this->_ESOBJECT->getTitle();
+       echo $this->getTemplate()->render('/module/default/dynamic', $data);
+       
+       return true;
+    	
+    }
+
 
 }

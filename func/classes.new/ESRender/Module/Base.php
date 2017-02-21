@@ -122,56 +122,6 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
     abstract protected function inline(array $requestData);
 
     /**
-     * Helper-method to generate a URL to icon for the object's license.
-     *
-     * @param string $license
-     */
-    protected function getLicenseIconUrl($license) {
-        $url = MC_URL . '/theme/default/license/';
-        switch( strtoupper($license) ) {
-            case ESObject::COMMON_LICENSE_CUSTOM :
-                $url .= ESObject::COMMON_LICENSE_CUSTOM . '.png';
-                break;
-            case ESObject::COMMON_LICENSE_EDU_NC :
-                $url .= ESObject::COMMON_LICENSE_EDU_NC . '.png';
-                break;
-            case ESObject::COMMON_LICENSE_EDU_NC_ND :
-                $url .= ESObject::COMMON_LICENSE_EDU_NC_ND . '.png';
-                break;
-            case ESObject::COMMON_LICENSE_EDU_P_NR :
-                $url .= ESObject::COMMON_LICENSE_EDU_P_NR . '.png';
-                break;
-            case ESObject::COMMON_LICENSE_EDU_P_NR_ND :
-                $url .= ESObject::COMMON_LICENSE_EDU_P_NR_ND . '.png';
-                break;
-            case ESObject::CC_BY :
-                $url .= 'by.png';
-                break;
-            case ESObject::CC_BY_NC :
-                $url .= 'by-nc.png';
-                break;
-            case ESObject::CC_BY_NC_ND :
-                $url .= 'by-nc-nd.png';
-                break;
-            case ESObject::CC_BY_NC_SA :
-                $url .= 'by-nc-sa.png';
-                break;
-            case ESObject::CC_BY_ND :
-                $url .= 'by-nd.png';
-                break;
-            case ESObject::CC_BY_SA :
-                $url .= 'by-sa.png';
-                break;
-
-            default :
-                error_log('Unhandled or unknown license.');
-                return false;
-        }
-
-        return $url;
-    }
-
-    /**
      *
      */
     protected function _buildUsername(array $requestData) {

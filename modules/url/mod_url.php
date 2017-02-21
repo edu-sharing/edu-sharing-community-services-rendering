@@ -74,11 +74,7 @@ extends ESRender_Module_NonContentNode_Abstract {
         }
 
         if ($this -> detectVideo()) {
-        	$factory = new ESRender_LicenseFactory_Implementation();
-        	$lic = $factory -> getLicense(ESRender_License_Interface::CC_BY, 'Youtube', '', $this->_ESOBJECT->ESOBJECT_TITLE);
-        	$license = $lic -> renderFooter($this -> getTemplate());
-            $embedding = $this -> getVideoEmbedding($requestData['width']) .  utf8_encode($license) . utf8_encode($metadata);
-        	
+            $embedding = $this -> getVideoEmbedding($requestData['width']) . utf8_encode($metadata);
         } else {
         	$license = $this->_ESOBJECT->ESOBJECT_LICENSE;
         	if(!empty($license)) {

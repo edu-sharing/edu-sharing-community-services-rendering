@@ -3,23 +3,25 @@
 class ESRender_Metadata_Handler {
 	
 	private $esObject = null;
-	private $valuesToShow = array(
-			'{http://www.alfresco.org/model/content/1.0}creator',
-			'{http://www.campuscontent.de/model/1.0}commonlicense_key',
-			'{http://www.alfresco.org/model/content/1.0}versionLabel',
-			'REPOSITORY_ID');
+	private $valuesToShow = array();
 	
-	public function __construct(ESObject $esObject) {
+	public function __construct(ESObject $esObject) {		
 		$this -> esObject = $esObject;
+		$this -> valuesToShow = unserialize(DISPLAY_DYNAMIC_METADATA_KEYS);
 	}
 	
-	public function render(Phools_Template_Interface $template) {
-		return $template -> render('/metadata/default', array(
+	public function render(Phools_Template_Interface $template, $tmpl = '/metadata/default') {
+		if(strpos($tmpl, 'dynamic') !== false)
+			return $template -> render($tmpl, array(
+					'title' => $this -> esObject -> getTitle(),
+					'meta' => $this -> getFullMetadata()
+			));
+		return $template -> render($tmpl, array(
             'title' => $this -> esObject -> getTitle(),
 			'meta' => $this -> getMetadata()
 		));
 	}
-	
+		
 	private function getLabels($key) {
 		
 		if(!empty($this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->labels->item)) {		
@@ -30,6 +32,16 @@ class ESRender_Metadata_Handler {
 		}
 		return $key;
 	}
+	
+	private function getFullMetadata() {
+		$return = array();
+		foreach($this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->properties->item as $item) {
+				$return[$item->key]['label'] = $this->getLabels($item->key);
+				$return[$item->key]['value'] = $item->value;
+		}
+		return $return;
+	}
+	
 	
 	private function getMetaData() {
 		$return = array();

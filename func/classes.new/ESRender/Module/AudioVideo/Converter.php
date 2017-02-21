@@ -104,6 +104,7 @@ class converter {
                         }
                         break; 
                     default :
+                    	var_dump($conv -> ESOBJECT_CONVERSION_FORMAT);
                         throw new Exception('Unhandled format.');
                 }
 

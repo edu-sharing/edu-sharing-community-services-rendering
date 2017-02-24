@@ -41,6 +41,8 @@ extends ESRender_Module_NonContentNode_Abstract {
     
     protected function dynamic(array $requestData) {
     
+    	global $accessToken;
+    	
     	if (!$this -> validate()) {
     		error_log('URL-property is empty.');
     		return false;
@@ -52,7 +54,10 @@ extends ESRender_Module_NonContentNode_Abstract {
     		$embedding = '';
     	
     	$Template = $this -> getTemplate();
-    	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl);
+    	$previewUrl = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl;
+    	if(!empty($accessToken))
+    		$previewUrl .= '&accessToken=' . $accessToken;
+    	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $previewUrl);
     	if($requestData['dynMetadata'])
     		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	

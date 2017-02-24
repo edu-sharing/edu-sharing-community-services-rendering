@@ -274,6 +274,11 @@ try {
     if($dynMetadata_req == 'false')
     	$dynMetadata = false;
 
+
+    // ACCESS TOKEN
+    global $accessToken;
+    $accessToken = mc_Request::fetch('accessToken', 'CHAR', '');
+
     $req_data['token'] = mc_Request::fetch('token', 'CHAR', '');
     
     // WIDTH

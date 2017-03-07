@@ -78,7 +78,7 @@ extends ESRender_Module_ContentNode_Abstract
 		$Logger = $this->getLogger();
 
 		header('HTTP/1.1 303 See other');
-		header('Location: '.$this->_ESOBJECT->getPath().'/index.html');
+		header('Location: '.$this->_ESOBJECT->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . $requestData['token']);
 
 		return true;
 	}
@@ -92,7 +92,7 @@ extends ESRender_Module_ContentNode_Abstract
 		$Logger = $this->getLogger();
 
 		header('HTTP/1.1 303 See other');
-		header('Location: '.$this->_ESOBJECT->getPath().'.zip');
+		header('Location: '.$this->_ESOBJECT->getPath().'.zip?' . session_name() . '=' . session_id(). '&token=' . $requestData['token']);
 
 		return true;
 	}

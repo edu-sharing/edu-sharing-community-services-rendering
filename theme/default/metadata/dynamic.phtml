@@ -1,5 +1,5 @@
 <?php
-	global $Locale, $Translate;
+	global $Locale, $Translate, $accessToken;
 	
 	require_once __DIR__ . '/../../../func/classes.new/Helper/MetadataRendererHelper.php';
 	
@@ -12,7 +12,7 @@
 
 <div id="edusharing_rendering_metadata" role="contentinfo">
 		<div class="edusharing_rendering_metadata_header">
-			<img tabindex="0" class="edusharing_rendering_metadata_header_icon" onclick="showContent()" onkeypress="(event.keyCode==13)?showContent():0" src="<?php echo $meta['{http://www.alfresco.org/model/rendition/1.0}rendition']['value'] ?>">
+			<img tabindex="0" class="edusharing_rendering_metadata_header_icon" onclick="showContent()" onkeypress="(event.keyCode==13)?showContent():0" src="<?php echo $meta['{http://www.alfresco.org/model/rendition/1.0}rendition']['value'] . '&accessToken=' . $accessToken ?>&crop=true&width=68&height=51">
 			<h1 property="name" title="<?php echo $title ?>" class="edusharing_rendering_metadata_header_title"><?php echo $title ?></h1>
 		</div>
 		<div class="edusharing_rendering_metadata_body">

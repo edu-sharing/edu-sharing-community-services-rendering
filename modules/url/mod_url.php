@@ -30,6 +30,8 @@ extends ESRender_Module_NonContentNode_Abstract {
 
         if ($this -> detectVideo())
             $embedding = $this -> getVideoEmbedding();
+        else if($this -> detectAudio())
+        	$embedding = $this -> getAudioEmbedding();
         else
             $embedding = $this -> getLinkEmbedding();
 
@@ -41,6 +43,8 @@ extends ESRender_Module_NonContentNode_Abstract {
     
     protected function dynamic(array $requestData) {
     
+    	global $accessToken;
+    	
     	if (!$this -> validate()) {
     		error_log('URL-property is empty.');
     		return false;
@@ -52,7 +56,10 @@ extends ESRender_Module_NonContentNode_Abstract {
     		$embedding = '';
     	
     	$Template = $this -> getTemplate();
-    	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl);
+    	$previewUrl = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl;
+    	if(!empty($accessToken))
+    		$previewUrl .= '&accessToken=' . $accessToken;
+    	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $previewUrl);
     	if($requestData['dynMetadata'])
     		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	
@@ -74,11 +81,9 @@ extends ESRender_Module_NonContentNode_Abstract {
         }
 
         if ($this -> detectVideo()) {
-        	$factory = new ESRender_LicenseFactory_Implementation();
-        	$lic = $factory -> getLicense(ESRender_License_Interface::CC_BY, 'Youtube', '', $this->_ESOBJECT->ESOBJECT_TITLE);
-        	$license = $lic -> renderFooter($this -> getTemplate());
-            $embedding = $this -> getVideoEmbedding($requestData['width']) .  utf8_encode($license) . utf8_encode($metadata);
-        	
+            $embedding = $this -> getVideoEmbedding($requestData['width']) . utf8_encode($metadata);
+        } else if($this -> detectAudio()) {
+        	$embedding = $this -> getAudioEmbedding() . utf8_encode($metadata);
         } else {
         	$license = $this->_ESOBJECT->ESOBJECT_LICENSE;
         	if(!empty($license)) {
@@ -123,6 +128,11 @@ extends ESRender_Module_NonContentNode_Abstract {
         return $htm;         
     }
     
+    protected function getAudioEmbedding() {
+    	return '<audio style="max-width:100%" src="'.$this -> getUrl().'" type="'. $this->_ESOBJECT->getMimeType() .'" controls="controls" oncontextmenu="return false;"></audio>
+        		<p class="caption"><es:title></es:title></p>';
+    }
+    
     protected function getVideoEmbedding($width = NULL) {
 
         if(empty($width)) {
@@ -136,7 +146,12 @@ extends ESRender_Module_NonContentNode_Abstract {
         //wrappers needed to handle max width
         if($this -> isYoutubeRemoteObject()){
             $vidId = $this->_ESOBJECT->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/1.0}remotenodeid');
-            return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;"><div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;"><iframe id="' . $objId . '" width="' . $width . '" height="' . $height . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div></div><p class="caption"><es:title></es:title></p>';
+            return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
+            			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+            				<iframe id="' . $objId . '" width="' . $width . '" height="' . $height . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            			</div>
+            		</div>
+            		<p class="caption"><es:title></es:title></p>';
          }
         else if (strpos($this -> getUrl(), VIDEO_TOKEN_YOUTUBE) !== false) {
                     $parsedUrl = parse_url($this -> getUrl());
@@ -146,12 +161,31 @@ extends ESRender_Module_NonContentNode_Abstract {
                         $params[$item[0]] = $item[1];
                     }
                     $vidId = $params['v'];
-                    return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;"><div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;"><iframe id="' . $objId . '" width="' . $width . '" height="'.$height.'" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div></div><p class="caption"><es:title></es:title></p>';
+                    return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
+                    			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+                    				<iframe id="' . $objId . '" width="' . $width . '" height="'.$height.'" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+                    			</div>
+                    		</div>
+                    		<p class="caption"><es:title></es:title></p>';
                 }
         else if (strpos($this -> getUrl(), VIDEO_TOKEN_VIMEO) !== false) {
             $urlArr = explode('/', $this -> getUrl());
             $vidId = end($urlArr);
-            return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;"><div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;"><iframe id="' . $objId . '" width="'.$width.'" height="'.$height.'" src="//player.vimeo.com/video/' . $vidId . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div></div><p class="caption"><es:title></es:title></p>';
+            return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
+            			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+            				<iframe id="' . $objId . '" width="'.$width.'" height="'.$height.'" src="//player.vimeo.com/video/' . $vidId . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            			</div>
+            		</div>
+            		<p class="caption"><es:title></es:title></p>';
+        } else {
+        	return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
+        				<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+        					<video data-tap-disabled="true" controls style="max-width: 100%; width: '.$width.'px" oncontextmenu="return false;">
+							    <source src="' . $this -> getUrl() . '" type="' . $this->_ESOBJECT->getMimeType() . '"></source>
+							</video>
+        				</div>
+        			</div>
+        			<p class="caption"><es:title></es:title></p>';
         }
         return '';
     }
@@ -173,7 +207,16 @@ extends ESRender_Module_NonContentNode_Abstract {
             if (strpos($this -> getUrl(), $needle) !== false)
                 return true;
         }
+        
+        if(strpos($this->_ESOBJECT->getMimeType(), 'video') !== false)
+        	return true;
+        
         return false;
+    }
+    
+    protected function detectAudio() {
+    	if(strpos($this->_ESOBJECT->getMimeType(), 'audio') !== false)
+    		return true;
     }
 
     /**

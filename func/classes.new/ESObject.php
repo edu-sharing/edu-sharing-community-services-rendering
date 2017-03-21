@@ -388,7 +388,8 @@ class ESObject {
      */
     final public function getFilePath()// deprecated
     {
-        return CC_RENDER_PATH . DIRECTORY_SEPARATOR . $this -> ESModule -> getName() . DIRECTORY_SEPARATOR . $this -> getSubPath() . DIRECTORY_SEPARATOR . $this -> getObjectIdVersion();
+    	global $CC_RENDER_PATH;
+        return $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $this -> ESModule -> getName() . DIRECTORY_SEPARATOR . $this -> getSubPath() . DIRECTORY_SEPARATOR . $this -> getObjectIdVersion();
     }
 
     /**

@@ -15,10 +15,10 @@ extends ESRender_Module_Base
      * @return string
      */
     protected function getCacheFileName()
-    {
+    {global $CC_RENDER_PATH;
         $Logger = $this->getLogger();
 
-        $Filename = CC_RENDER_PATH . DIRECTORY_SEPARATOR;
+        $Filename = $CC_RENDER_PATH . DIRECTORY_SEPARATOR;
         $Filename .= $this->getName() . DIRECTORY_SEPARATOR;
         $Filename .= $this->_ESOBJECT->getEsobjectFilePath() . DIRECTORY_SEPARATOR;
         $Filename .= $this->_ESOBJECT->getObjectID() . $this->_ESOBJECT->getObjectVersion();
@@ -31,6 +31,7 @@ extends ESRender_Module_Base
      * @see ESRender_Module_Base::createInstance()
      */
     public function createInstance(array $requestData) {
+    	global $CC_RENDER_PATH;
         ini_set('memory_limit', '4000M');
         $Logger = $this->getLogger();
 
@@ -43,7 +44,7 @@ extends ESRender_Module_Base
         $this->filename = $this->_ESOBJECT->getObjectIdVersion();
 
         // real path
-        $this->render_path = CC_RENDER_PATH . DIRECTORY_SEPARATOR
+        $this->render_path = $CC_RENDER_PATH . DIRECTORY_SEPARATOR
             . $this->_ESOBJECT->ESModule->getName()
             .DIRECTORY_SEPARATOR
             .$upath;

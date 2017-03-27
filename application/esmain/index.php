@@ -274,6 +274,11 @@ try {
     if($dynMetadata_req == 'false')
     	$dynMetadata = false;
 
+
+    // ACCESS TOKEN
+    global $accessToken;
+    $accessToken = mc_Request::fetch('accessToken', 'CHAR', '');
+
     $req_data['token'] = mc_Request::fetch('token', 'CHAR', '');
     
     // WIDTH
@@ -491,7 +496,14 @@ try {
     require_once(dirname(__FILE__) . '/../../func/classes.new/ESContentNode.php');
     $contentNode = new ESContentNode();
     $contentNode -> setProperties($renderInfoLMSReturn->getRenderInfoLMSReturn->properties->item);
-
+    
+    
+    $eduscopename = $contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}eduscopename');
+    if($eduscopename === 'safe') {
+    	if(!empty($CC_RENDER_PATH_SAFE))
+    		$CC_RENDER_PATH = $CC_RENDER_PATH_SAFE;
+    }
+        
     //if not set by usage set it with property value
     if($req_data['version'] < 1) {
         //set alf version
@@ -675,7 +687,7 @@ try {
         // absolute path e.g. '/srv/www/htdocs/esrender/modules/doc/files/'
         'mod_root' => MC_ROOT_PATH . $ESObject -> ESModule -> getTmpFilepath() . DIRECTORY_SEPARATOR,
         // absolute path, e.g. '/srv/www/docs/'.$mod_name.'/'
-        'src_root' => CC_RENDER_PATH . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR,
+        'src_root' => $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR,
         'TOU' => $Module -> getTimesOfUsage(), // times of usage (0:forbidden, -1:unlimited)
         'check' => parse_url($ESObject -> getPathfile(), PHP_URL_PATH),
         'display_kind' => $display_kind, 

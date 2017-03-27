@@ -29,8 +29,8 @@ body {
 	padding-bottom: 30px;
 }
 img.edusharing_rendering_metadata_header_icon {
-	max-height: 40px;
-	max-width: 100px;
+	height: 51px;
+	width: 68px;
 	margin: 10px -10px -10px 20px;
 	cursor: pointer;
 	float: left;

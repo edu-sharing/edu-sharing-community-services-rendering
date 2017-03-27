@@ -186,14 +186,19 @@ class ESModule {
 				$this->ESMODULE_NAME = 'qti21';
 				break;
 
-			case ($p_RESOURCE_TYPE == 'moodle' && substr($p_RESOURCE_VERSION, 0, 1) == '1') :
+			/*case ($p_RESOURCE_TYPE == 'moodle' && substr($p_RESOURCE_VERSION, 0, 1) == '1') :
 				$this->ESMODULE_NAME = 'moodle';
 				break;
 
 			case ($p_RESOURCE_TYPE == 'moodle' && substr($p_RESOURCE_VERSION, 0, 1) == '2') :
 				$this->ESMODULE_NAME = 'moodle2';
                 //$this->ESMODULE_TMP_FILEPATH = 'modules/moodle2/files';
+				break;*/
+			
+			case ($p_RESOURCE_TYPE == 'moodle') :
+				$this->ESMODULE_NAME = 'moodle3';
 				break;
+				
 
 			case ($p_RESOURCE_TYPE == 'Edu-Sharing Scenario' && substr($p_RESOURCE_VERSION, 0, 1) == '1') :
 				$this->ESMODULE_NAME = 'scenario';

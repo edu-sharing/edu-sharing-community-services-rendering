@@ -3,6 +3,7 @@
 define('RATIO_MAX', 0.8);
 
 error_reporting(0);
+
 require_once (dirname(__FILE__) . '/../../../conf.inc.php');
 require_once (dirname(__FILE__) . '/../RsPDO.php');
 
@@ -10,6 +11,8 @@ class cacheCleaner {
 
     private $logger;
     private $pass = 0;
+    public $renderPath = '';
+    public $renderPathSave = '';
 
     public function __construct() {
         $this -> initLogger();
@@ -85,11 +88,19 @@ class cacheCleaner {
         $module = $esobject -> getModule();
         
         //delete cache folder
-        $dirPath = CC_RENDER_PATH . $module -> getName() . '/' . $esobject -> getSubUri_file();
+        $dirPath = $this->renderPath . $module -> getName() . '/' . $esobject -> getSubUri_file();
         if (!$this -> removeDir($dirPath))
             $this -> logger -> info('could not delete ' . $dirPath);
         else
             $this -> logger -> info('deleted ' . $dirPath . ' ########### ' . $esobject -> getFilename());
+        
+        if(!empty($this->renderPathSave)) {
+        	$dirPath = $this->renderPathSave . $module -> getName() . '/' . $esobject -> getSubUri_file();
+        	if (!$this -> removeDir($dirPath))
+        		$this -> logger -> info('could not delete ' . $dirPath);
+        	else
+        		$this -> logger -> info('deleted ' . $dirPath . ' ########### ' . $esobject -> getFilename());
+        }
 
         return true;
     }
@@ -112,11 +123,14 @@ class cacheCleaner {
     }
 
     public function cleanUp($forceDelete = false) {
-
+   	
         try {
-
-            $availableSpace = disk_total_space(CC_RENDER_PATH);
-            $cacheSize = $this -> dirSize(CC_RENDER_PATH);
+            $availableSpace = disk_total_space($this->renderPath);
+            $cacheSize = $this -> dirSize($this->renderPath);
+            if(!empty($this->renderPathSave)) {
+            	$availableSpace += disk_total_space($this->renderPathSave);
+            	$cacheSize += $this -> dirSize($this->renderPathSave);
+            }
             $diskUsageRatio = $cacheSize / $availableSpace;
 
             $this -> logger -> info('#### cleanup (pass ' . ++$this -> pass . ')');
@@ -138,4 +152,7 @@ class cacheCleaner {
 }
 
 $cleaner = new cacheCleaner();
+$cleaner -> renderPath = $CC_RENDER_PATH;
+if(!empty($CC_RENDER_PATH_SAFE))
+	$cleaner -> renderPathSave = $CC_RENDER_PATH_SAFE;
 $cleaner -> cleanUp();

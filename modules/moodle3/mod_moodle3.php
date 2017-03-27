@@ -41,9 +41,7 @@ extends ESRender_Module_ContentNode_Abstract {
 			$ch = curl_init ();
 			curl_setopt ( $ch, CURLOPT_URL, $url );
 			curl_setopt ( $ch, CURLOPT_POST, true );
-			//48b38ed8-2f90-4025-ae9f-a6ecbd493bbc
-			
-			$params = array('nodeid'=> '48b38ed8-2f90-4025-ae9f-a6ecbd493bbc','category' => '1', 'title' => htmlentities($this->_ESOBJECT->getTitle()));
+			$params = array('nodeid'=> $requestData['object_id'],'category' => '1', 'title' => htmlentities($this->_ESOBJECT->getTitle()));
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);

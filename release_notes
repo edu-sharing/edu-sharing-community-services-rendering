@@ -1,3 +1,16 @@
+v3.1/3.2
+- add PHP7 support
+- revised license rendering
+- revised updater
+- add inline metadata rendering
+- additional mimetypes (video)
+- update ffmpeg
+- introduce view with comprehensive metadata rendering
+- remove WURFL, get video capability direct from client
+- support rendering for edu-sharing mobile app
+- optimizations for mobile devices
+- opportunity to use a separate cache for "safe" objects
+
 v3.0
 - support PostgreSQL
 - image module now uses PHP gd instead of imagemagick

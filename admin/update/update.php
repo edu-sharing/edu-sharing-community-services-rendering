@@ -224,6 +224,15 @@ function run($installedVersion) {
 			if(file_exists(MC_ROOT_PATH . 'modules/moodle2'))
 				rrmdir ( MC_ROOT_PATH . 'modules/moodle2' );
 			
+			if(file_exists(MC_ROOT_PATH . "/func/classes.new/ESRender/Module/Moodle1Base.php"))
+				unlink ( MC_ROOT_PATH . "/func/classes.new/ESRender/Module/Moodle1Base.php");
+			
+			if(file_exists(MC_ROOT_PATH . "/func/classes.new/ESRender/Module/Moodle2Base.php"))
+				unlink ( MC_ROOT_PATH . "/func/classes.new/ESRender/Module/Moodle2Base.php");
+				
+			if(file_exists(MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php"))
+				unlink ( MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php");
+			
 		}
 		
 		

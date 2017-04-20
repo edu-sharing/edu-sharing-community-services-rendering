@@ -35,9 +35,9 @@ extends ESRender_Module_ContentNode_Abstract {
 	public function createInstance(array $requestData) {
 		
 		parent::createInstance($requestData);
-		
+		$logger = $this->getLogger();
 		if(!empty(MOODLE_BASE_DIR)) {
-			$url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_educopu_restore&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
+			$url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_edusharing_restore&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
 			$ch = curl_init ();
 			curl_setopt ( $ch, CURLOPT_URL, $url );
 			curl_setopt ( $ch, CURLOPT_POST, true );
@@ -52,21 +52,21 @@ extends ESRender_Module_ContentNode_Abstract {
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
 			if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
-				$courseId = json_decode(json_decode($resp))->id;
-				$this->cacheUrl($courseId);
+				$courseId = json_decode($resp);
+				$logger->error('Restored course with id ' . $courseId);
+				$this->cacheCourseId($courseId);
 				return true;
 			}
-			$logger = $this->getLogger();
-			$logger->error('Error pushing course to moodle - ' . $httpcode . ' ' . json_decode($resp)->exception);
+			$logger->error('Error restoring course to moodle - ' . $httpcode . ' ' . json_decode($resp)->exception);
 			return false;
 		}
 		
 		return true;
 	}
 	
-	private function cacheUrl($courseId) {
+	private function cacheCourseId($courseId) {
 		$filename = $this->_ESOBJECT->getFilePath() . '.txt';
-		$data = MOODLE_BASE_DIR.'/course/view.php?id='.$courseId;
+		$data = $courseId;
 		file_put_contents($filename, $data);
 	}
 	
@@ -74,36 +74,79 @@ extends ESRender_Module_ContentNode_Abstract {
 		return parent::instanceExists($ESObject, $requestData, $contentHash);
 	}
 	
-	public function display(array $requestData) {
-		$url = $this->getUrl();
-		if($url === false) {
+	public function display(array $requestData) {	
+		$id = $this->getCourseId();
+		if($id === false) {
 			return parent::display($requestData);
 		}
-		header('Location: ' . $url);
+		
+		header('Location: ' . $this-> getForwardUrl($requestData));
 		return true;
 	}
 	
+	
+	/*
+	 * Call moodle WS local_edusharing_handleuser
+	 * create/fetch user
+	 * enroll user
+	 * retrieve token for login
+	 * */
+	private function getUserToken($requestData) {
+
+		$logger = $this->getLogger();
+		if(!empty(MOODLE_BASE_DIR)) {
+			$url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_edusharing_handleuser&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
+			$ch = curl_init ();
+			curl_setopt ( $ch, CURLOPT_URL, $url );
+			curl_setopt ( $ch, CURLOPT_POST, true );
+			$params = array('user_name' => htmlentities($requestData['user_name']), 'user_givenname' => htmlentities($requestData['user_givenname']), 'user_surname' => htmlentities($requestData['user_surname']), 'user_email' => htmlentities($requestData['user_email']) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 30 );
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			$resp = curl_exec($ch);
+			echo curl_error($ch);
+			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_close($ch);
+			if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
+				$logger->error(json_decode($resp));
+				return json_decode($resp);
+			}
+			
+			$logger->error('Error retrieving user token - ' . $httpcode . ' ' . json_decode($resp)->exception);
+			return false;
+		}
+		$logger->error('MOODLE_BASE_DIR not set');
+		return false;
+		
+	}
+	
+	
 	public function inline(array $requestData) {
-		$url = $this->getUrl();
-		if($url === false) {
-			return parent::display($requestData);
+
+		$id = $this->getId();
+		
+		if($id === false) {
+			return parent::inline($requestData);
 		}
 		$Template = $this -> getTemplate();
-		echo $Template -> render('/module/moodle3/inline', array('url' => $url));
+		echo $Template -> render('/module/moodle3/inline', array('url' => $this-> getForwardUrl($requestData)));
 		return true;
 	}
 	
 	public function dynamic(array $requestData) {
 		global $accessToken;
-		$url = $this->getUrl();
-		if($url === false) {
-			return parent::display($requestData);
+				
+		$id = $this->getCourseId();
+		if($id === false) {
+			return parent::dynamic($requestData);
 		}
 		$Template = $this -> getTemplate();
 		$previewUrl = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl;
 		if(!empty($accessToken))
 			$previewUrl .= '&accessToken=' . $accessToken;
-		$tempArray = array('url' => $url, 'previewUrl' => $previewUrl);
+		$tempArray = array('url' => $this-> getForwardUrl($requestData), 'previewUrl' => $previewUrl);
 		
 		if($requestData['dynMetadata'])
 			$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
@@ -113,10 +156,14 @@ extends ESRender_Module_ContentNode_Abstract {
 		return true;
 	}
 	
-	protected function getUrl() {
+	protected function getCourseId() {
 		$filename = $this->_ESOBJECT->getFilePath() . '.txt';
-		$url = file_get_contents($filename);
-		return $url;
+		$id = file_get_contents($filename);
+		return $id;
+	}
+	
+	protected function getForwardUrl($requestData) {
+		return MOODLE_BASE_DIR . '/local/edusharing/forwardUser.php?token=' . urlencode($this-> getUserToken($requestData));
 	}
 	
 	

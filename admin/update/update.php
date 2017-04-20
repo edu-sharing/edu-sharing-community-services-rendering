@@ -218,6 +218,12 @@ function run($installedVersion) {
 			if(file_exists(MC_ROOT_PATH . 'vendor/lib/wurfl'))
 				rrmdir ( MC_ROOT_PATH . 'vendor/lib/wurfl' );
 			
+			if(file_exists(MC_ROOT_PATH . 'modules/moodle/edu-sharing'))
+				rrmdir ( MC_ROOT_PATH . 'modules/moodle/edu-sharing' );
+			
+			if(file_exists(MC_ROOT_PATH . 'modules/moodle2'))
+				rrmdir ( MC_ROOT_PATH . 'modules/moodle2' );
+			
 		}
 		
 		

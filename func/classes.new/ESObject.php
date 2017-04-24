@@ -625,7 +625,8 @@ class ESObject {
         if (!empty($ressourceversion))
             $this -> ESOBJECT_RESOURCE_VERSION = $ressourceversion;
         
-        if(!empty($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}commonlicense_key')))
+        $commonlicense_key = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}commonlicense_key');
+        if(!empty($commonlicense_key))
         	$this -> ESOBJECT_LICENSE = new ESRender_License($this);
         
         $this -> metadatahandler = new ESRender_Metadata_Handler($this);

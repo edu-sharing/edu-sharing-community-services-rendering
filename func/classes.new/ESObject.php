@@ -596,8 +596,9 @@ class ESObject {
         $this -> ESOBJECT_RESOURCE_VERSION = '';
 
         $title = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
-        if(!empty($title))
-            $this -> ESOBJECT_TITLE = $title;
+        if(empty($title))
+        	$title = $this -> AlfrescoNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name');
+        $this -> ESOBJECT_TITLE = $title;
 
         $mimetype = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}format');
         if(!empty($mimetype))

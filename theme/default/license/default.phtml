@@ -19,7 +19,7 @@ $licenceContent = '<a class="license_permalink" href="'.$license_permalink.'" ta
                     . '&nbsp;';
                     if(!empty($license_icon_url)) {
                         $licenceContent .= '<a target="_blank" class="license_link" href="' . htmlspecialchars($license_url, ENT_QUOTES, 'utf-8') . '">';
-                        $licenceContent .= '<img class="license_icon" src="' . htmlspecialchars($license_icon_url, ENT_QUOTES, 'utf-8') . '" />';
+                        $licenceContent .= '<img class="license_icon" style="height: 16px" src="' . htmlspecialchars($license_icon_url, ENT_QUOTES, 'utf-8') . '" />';
                         $licenceContent .= '</a>';    
                     } else { 
                         $licenceContent .= $msg['customLicense']->localize($Locale, $Translate);

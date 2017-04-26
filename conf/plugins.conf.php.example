@@ -50,3 +50,8 @@
  //SERLO
      $serlo = new ESRender_Plugin_RemoteObject_Serlo();
     $Plugins['serlo'] = $serlo;
+    
+ //FWU/OMEGA
+ $Plugin = new ESRender_Plugin_OmegaVideo('', '');
+ $Plugins[] = $Plugin;
+ 

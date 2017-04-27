@@ -746,7 +746,7 @@ try {
         	'dynMetadata' => $dynMetadata
         ),
         $Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash))) {
-        $Logger -> error('Error processing object "' . $data['parentNodeId'] . '".');
+        $Logger -> error('Error processing object "' . $req_data['obj_id'] . '".');
         throw new Exception('Error processing object.');
     }
     foreach ($Plugins as $name => $Plugin) {

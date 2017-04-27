@@ -35,12 +35,15 @@ extends ESRender_Plugin_Abstract
         &$username)
 	{
 		
-		if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU' ) {
-			$prop = new stdClass();
-			$prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
-			$prop -> value = $this->getWwwurl($contentNode);
-			$contentNode -> setProperties(array($prop));
-		}
+	if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU'
+			&& strpos($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format'), 'video') !== false)  {
+				
+            $prop = new stdClass();
+            $prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
+            $prop -> value = $this->getWwwurl($contentNode);
+            $contentNode -> setProperties(array($prop));
+        }
+		
 	}
 	
 	protected function getWwwurl($contentNode) {

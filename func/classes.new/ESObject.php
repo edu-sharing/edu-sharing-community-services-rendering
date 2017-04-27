@@ -515,6 +515,14 @@ class ESObject {
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
             return true;
         }
+        
+        if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU') {
+        	error_log('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "DE.FWU", using module "url".');
+        	$this -> ESModule -> setName('url');
+        	$this -> ESModule -> loadModuleData();
+        	$this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+        	return true;
+        }
 
         // load appropriate module
         $wwwurl = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');

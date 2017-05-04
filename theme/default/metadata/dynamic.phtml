@@ -45,25 +45,53 @@
 				 */
                 $metadataContributors = $metadataContentContributors = $metadataMetadataContributors = '';
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN'],'', array('rschip', 'people'));
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_initiatorFN'],'', array('rschip', 'people'));
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_initiatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_terminatorFN'],'', array('rschip', 'people'));
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_terminatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_validatorFN'],'', array('rschip', 'people'));
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_validatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_editorFN'],'', array('rschip', 'people'));
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_editorVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_graphical_designerFN'],'', array('rschip', 'people'));
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_graphical_designerVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_technical_implementerFN'],'', array('rschip', 'people'));
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_technical_implementerVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_content_providerFN'],'', array('rschip', 'people'));
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_content_providerVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_educational_validatorFN'],'', array('rschip', 'people'));
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_educational_validatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_script_writerFN'],'', array('rschip', 'people'));
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_script_writerVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_instructional_designerFN'],'', array('rschip', 'people'));
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_instructional_designerVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_subject_matter_expertFN'],'', array('rschip', 'people'));
-
+                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_subject_matter_expertVCARD_ORG'],'', array('rschip', 'group'), '', true);
+                
                 if(!empty($metadataContentContributors))
                     $metadataContributors .= '<h3>'.$msg['meta_contributors_content']->localize($Locale, $Translate).'</h3>' . $metadataContentContributors;
 
 				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN'],'', array('rschip', 'people'));
-                $metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_validatorFN'],'', array('rschip', 'people'));
-                $metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_providerFN'],'', array('rschip', 'people'));
-
+				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
+				
+				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_validatorFN'],'', array('rschip', 'people'));
+				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_validatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
+				
+				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_providerFN'],'', array('rschip', 'people'));
+				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_providerVCARD_ORG'],'', array('rschip', 'group'), '', true);
+				
                 if(!empty($metadataMetadataContributors))
                     $metadataContributors .= '<h3>'.$msg['meta_contributors_metadata']->localize($Locale, $Translate).'</h3>' . $metadataMetadataContributors;
 

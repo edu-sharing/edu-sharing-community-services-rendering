@@ -2,7 +2,7 @@
 
 class MetadataRendererHelper {
 	
-	public static function render($metadata, $type = '', $cssClasses = '', $alternativeLabel = '') {
+	public static function render($metadata, $type = '', $cssClasses = '', $alternativeLabel = '', $hideLabel = false) {
 
         $label = $metadata['label'];
 	    if(!empty($alternativeLabel)) {
@@ -41,8 +41,11 @@ class MetadataRendererHelper {
 					if(!empty(trim($metadata['value'])))
 						$valString = '<span class="edusharing_rendering_metadata_body_value ' . $cssClasses . '">' . htmlentities($metadata['value']) . '</span>';
 				}
-				if(!empty($valString))
+				if(!empty($valString) && !$hideLabel)
 					return '<label class="edusharing_rendering_metadata_body_label">' . ucfirst($label) . '</label>' . $valString;
+				
+				if(!empty($valString))
+					return $valString;
 		}
 		
 		return '';

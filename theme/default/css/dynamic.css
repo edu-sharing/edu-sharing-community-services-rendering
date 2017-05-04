@@ -165,7 +165,7 @@ a.edusharing_rendering_content {
 img.edusharing_rendering_content_preview {
 	display: block;
 	margin: 20px auto;
-	max-width: 400px;
+	max-width: 100%;
 	max-height: 400px;
 }
 

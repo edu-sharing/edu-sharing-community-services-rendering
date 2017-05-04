@@ -23,6 +23,7 @@
 				 */
 				$metadataGeneral = '';
 				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}title']);
+				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.alfresco.org/model/content/1.0}name']);
 				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}general_keyword'], '', array('rschip'));
 
 				if(!empty($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['value'])) {

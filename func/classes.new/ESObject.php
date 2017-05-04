@@ -364,7 +364,11 @@ class ESObject {
      *
      */
     final public function getTitle() {
-        return $this -> ESOBJECT_TITLE;
+    	$title = $this->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
+    	if(!empty($title))
+    		return $title;
+    	else
+    		return $this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name');
     }
 
     /**

@@ -87,7 +87,7 @@
 				if(!empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) || !empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value'])) {
 					$metadataDidactics .= '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['label'])) . '</label>';
 					$metadataDidactics .=  '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) . '</span>';
-					if(!empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) && !empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value']))
+					if((!empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) || intval($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) === 0) && !empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value']))
 						$metadataDidactics .=  '&nbsp;&ndash;&nbsp;';
 					$metadataDidactics .=  '<span class="edusharing_rendering_metadata_body_value" style="margin-left: 0">' . htmlentities($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value']) . '</span>';
 				}

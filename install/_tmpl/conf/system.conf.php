@@ -1,8 +1,5 @@
 <?php
 
-date_default_timezone_set('Etc/GMT+1');
-
-
 # SYSTEM PATH SETTINGS
 $MC_URL = '[[[TOKEN_URL]]]';
 $MC_DOCROOT= '[[[TOKEN_DOCROOT]]]';

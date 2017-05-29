@@ -100,7 +100,7 @@
                     $metadataContributors = '<h2>'.$msg['meta_contributors']->localize($Locale, $Translate).'</h2>' . $metadataContributors;
 
 
-				if(!empty($metadataGeneral.$metadataContributors))
+				if(!empty($metadataGeneral) || !empty($metadataContributors))
 				    echo '<div class="edusharing_rendering_metadata_body_column">'.$metadataGeneral.$metadataContributors.'</div>';
 
 

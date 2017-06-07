@@ -513,6 +513,10 @@ try {
             $req_data['version'] = $contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}versionLabel');
     }
 
+    if($req_data['version'] === false) {
+    	throw new ESRender_Exception_CorruptVersion();
+    }
+
     $ESObject = new ESObject($req_data['obj_id'], $req_data['version']);
     $ESObject -> setAlfrescoNode($contentNode);
     $ESObject -> setInfoLmsData($renderInfoLMSReturn);
@@ -761,22 +765,18 @@ try {
     $Logger -> error('Missing parameter "' . $exception -> getParamName() . '"');
     $Logger -> error($exception);
 
-    //header('HTTP/1.0 400 Bad Request');
-
     $Message = new Phools_Message_Default('Missing parameter ":name".', array(new Phools_Message_Param_String(':name', $exception -> getParamName())));
 
     echo $Template -> render('/error/missing_request_param', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_SslVerification $exception) {
     $Logger -> error('SSL verification error "' . $exception -> getMessage() . '"');
     $Logger -> error($exception);
-    //header('HTTP/1.0 400 Bad Request');
+
     $Message = new Phools_Message_Default($exception -> getMessage());
     echo $Template -> render('/error/ssl_verification', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_InvalidRequestParam $exception) {
     $Logger -> error('Invalid parameter "' . $exception -> getParamName() . '"');
     $Logger -> error($exception);
-
-    //header('HTTP/1.0 400 Bad Request');
 
     $Message = new Phools_Message_Default('Invalid parameter ":name".', array(new Phools_Message_Param_String(':name', $exception -> getParamName())));
 
@@ -785,16 +785,12 @@ try {
     $Logger -> error('Error loading home-configuration.');
     $Logger -> error($exception);
 
-    //header('HTTP/1.0 500 Internal Server Error');
-
     $Message = new Phools_Message_Default('Error loading configuration.');
 
     echo $Template -> render('/error/load_home_config', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_AppConfigNotLoaded $exception) {
     $Logger -> error('Error loading config for application "' . $exception -> getAppId() . '".');
     $Logger -> error($exception);
-
-    //header('HTTP/1.0 500 Internal Server Error');
 
     $Message = new Phools_Message_Default('Error loading config for application ":app_id".', array(new Phools_Message_Param_String(':app_id', $exception -> getAppId())));
 
@@ -803,16 +799,12 @@ try {
     $Logger -> error('A network error occurred.');
     $Logger -> error($exception);
 
-    //header('HTTP/1.0 500 Internal Server Error');
-
     $Message = new Phools_Message_Default('A network error occurred.');
 
     echo $Template -> render('/error/network_error', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_Unauthorized $exception) {
     $Logger -> error('You\'re not authorized to access this resource.');
     $Logger -> error($exception);
-
-    //header('HTTP/1.0 401 Unauthorized');
 
     $Message = new Phools_Message_Default('You\'re not authorized to access this resource.');
 
@@ -821,16 +813,12 @@ try {
     $Logger -> error('Missing or wrong config parameter "' . $exception -> getParam() . '".');
     $Logger -> error($exception);
 
-    //header('HTTP/1.0 500 Internal Server Error');
-
     $Message = new Phools_Message_Default('The config param ":param" for app ":app" is invalid or missing. Please contact your system-administrator.');
 
     echo $Template -> render('/error/config_param_invalid', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_UsageError $exception) {
     $Logger -> error($exception -> getMessage());
     $Logger -> debug($exception);
-
-    //header('HTTP/1.0 500 Internal Server Error');
 
     $Message = new Phools_Message_Default($exception -> getMessage());
 
@@ -839,8 +827,6 @@ try {
 } catch(ESRender_Exception_InfoLms $exception) {
     $Logger -> error($exception -> getMessage());
     $Logger -> debug($exception);
-
-    //header('HTTP/1.0 500 Internal Server Error');
 
     if(strpos(strtoupper($exception -> getMessage()), 'NODE_DOES_NOT_EXISTS') !== false)
         $message = 'Object does not exist in repository';
@@ -852,11 +838,18 @@ try {
     echo $Template -> render('/error/infoLms', array('error' => $Message -> localize($Locale, $Translate), ));
 
     
+} catch(ESRender_Exception_CorruptVersion $exception) {
+	
+	$Logger -> error($exception -> getMessage());
+	$Logger -> debug($exception);
+
+	$Message = new Phools_Message_Default('The requested version or the object itself is corrupt.');
+
+	echo $Template -> render('/error/corruptVersion', array('error' => $Message -> localize($Locale, $Translate), ));
+	
 } catch(Exception $exception) {
     $Logger -> error('An internal server error occurred.');
     $Logger -> debug($exception);
-
-    //header('HTTP/1.0 500 Internal Server Error');
 
     $Message = new Phools_Message_Default('An internal server error occurred.');
 

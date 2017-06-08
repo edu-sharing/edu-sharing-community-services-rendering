@@ -514,7 +514,10 @@ try {
     }
 
     if($req_data['version'] === false) {
-    	throw new ESRender_Exception_CorruptVersion();
+    	$displayTitle = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
+    	if(empty($displayTitle))
+    		$displayTitle = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}name');
+    	throw new ESRender_Exception_CorruptVersion($displayTitle);
     }
 
     $ESObject = new ESObject($req_data['obj_id'], $req_data['version']);
@@ -767,55 +770,55 @@ try {
 
     $Message = new Phools_Message_Default('Missing parameter ":name".', array(new Phools_Message_Param_String(':name', $exception -> getParamName())));
 
-    echo $Template -> render('/error/missing_request_param', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_SslVerification $exception) {
     $Logger -> error('SSL verification error "' . $exception -> getMessage() . '"');
     $Logger -> error($exception);
 
     $Message = new Phools_Message_Default($exception -> getMessage());
-    echo $Template -> render('/error/ssl_verification', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_InvalidRequestParam $exception) {
     $Logger -> error('Invalid parameter "' . $exception -> getParamName() . '"');
     $Logger -> error($exception);
 
     $Message = new Phools_Message_Default('Invalid parameter ":name".', array(new Phools_Message_Param_String(':name', $exception -> getParamName())));
 
-    echo $Template -> render('/error/invalid_request_param', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_HomeConfigNotLoaded $exception) {
     $Logger -> error('Error loading home-configuration.');
     $Logger -> error($exception);
 
     $Message = new Phools_Message_Default('Error loading configuration.');
 
-    echo $Template -> render('/error/load_home_config', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_AppConfigNotLoaded $exception) {
     $Logger -> error('Error loading config for application "' . $exception -> getAppId() . '".');
     $Logger -> error($exception);
 
     $Message = new Phools_Message_Default('Error loading config for application ":app_id".', array(new Phools_Message_Param_String(':app_id', $exception -> getAppId())));
 
-    echo $Template -> render('/error/load_app_config', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_NetworkError $exception) {
     $Logger -> error('A network error occurred.');
     $Logger -> error($exception);
 
     $Message = new Phools_Message_Default('A network error occurred.');
 
-    echo $Template -> render('/error/network_error', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_Unauthorized $exception) {
     $Logger -> error('You\'re not authorized to access this resource.');
     $Logger -> error($exception);
 
     $Message = new Phools_Message_Default('You\'re not authorized to access this resource.');
 
-    echo $Template -> render('/error/unauthorized', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_ConfigParamInvalidOrMissing $exception) {
     $Logger -> error('Missing or wrong config parameter "' . $exception -> getParam() . '".');
     $Logger -> error($exception);
 
     $Message = new Phools_Message_Default('The config param ":param" for app ":app" is invalid or missing. Please contact your system-administrator.');
 
-    echo $Template -> render('/error/config_param_invalid', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
 } catch(ESRender_Exception_UsageError $exception) {
     $Logger -> error($exception -> getMessage());
     $Logger -> debug($exception);
@@ -835,17 +838,16 @@ try {
 
     $Message = new Phools_Message_Default($message);
 
-    echo $Template -> render('/error/infoLms', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
 
     
 } catch(ESRender_Exception_CorruptVersion $exception) {
-	
+
 	$Logger -> error($exception -> getMessage());
 	$Logger -> debug($exception);
 
-	$Message = new Phools_Message_Default('The requested version or the object itself is corrupt.');
-
-	echo $Template -> render('/error/corruptVersion', array('error' => $Message -> localize($Locale, $Translate), ));
+	$Message = new Phools_Message_Default('The requested version of ":title" is corrupt or missing.', array(new Phools_Message_Param_String(':title', $exception -> getTitle())));
+	echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate)));
 	
 } catch(Exception $exception) {
     $Logger -> error('An internal server error occurred.');

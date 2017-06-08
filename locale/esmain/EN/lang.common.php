@@ -29,7 +29,7 @@ $Translate
 	->addTranslation('en', 'A network error occured.', 'A network error occured.')
 	->addTranslation('en', 'You\'re not authorized to access this resource.', 'You\'re not authorized to access this resource.')
 	->addTranslation('en', 'An internal server error occured.', 'An internal server error occured.')
-	->addTranslation('en', 'The requested version or the object itself is corrupt.', 'The requested version or the object itself is corrupt.')
+	->addTranslation('en', 'The requested version of ":title" is corrupt or missing.', 'The requested version of ":title" is corrupt or not present.')
 
 	->addTranslation('en', 'authored_by', 'by')
 	->addTranslation('en', 'author', 'author')

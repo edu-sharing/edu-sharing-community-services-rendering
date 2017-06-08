@@ -2,17 +2,31 @@
 global $Locale, $Translate;
 $msg = array();
 $msg['error'] = new Phools_Message_Default('Error');
-$msg['back'] = new Phools_Message_Default('back');
 ?>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title><?php echo $msg['error'] -> localize($Locale, $Translate); ?></title>
     <link rel="stylesheet" type="text/css" href="../../theme/default/css/display.css">
+    <style scoped>
+        div.error {
+            padding: 100px 10px;
+            text-align: center;
+        }
+        div.message_wrapper {
+            display: inline-block;
+            background-color: #c6c6c6;
+            color: #383838;
+            padding: 5px;
+            border-radius: 3px;
+        }
+    </style>
 </head>
 <body>
     <div class="error">
-        <span class="message"><?php echo htmlentities($error) ?> </span>
+        <div class="message_wrapper">
+       		<span class="message"><?php echo htmlentities($error) ?> </span>
+        </div>
     </div>
 </body>
 </html>

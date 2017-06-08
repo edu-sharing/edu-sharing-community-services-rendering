@@ -516,7 +516,7 @@ try {
     if($req_data['version'] === false) {
     	$displayTitle = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
     	if(empty($displayTitle))
-    		$displayTitle = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}name');
+    		$displayTitle = $contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name');
     	throw new ESRender_Exception_CorruptVersion($displayTitle);
     }
 
@@ -847,6 +847,8 @@ try {
 	$Logger -> debug($exception);
 
 	$Message = new Phools_Message_Default('The requested version of ":title" is corrupt or missing.', array(new Phools_Message_Param_String(':title', $exception -> getTitle())));
+	
+	
 	echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate)));
 	
 } catch(Exception $exception) {

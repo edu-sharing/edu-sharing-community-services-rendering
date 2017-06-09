@@ -364,7 +364,11 @@ class ESObject {
      *
      */
     final public function getTitle() {
-        return $this -> ESOBJECT_TITLE;
+    	$title = $this->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
+    	if(!empty($title))
+    		return $title;
+    	else
+    		return $this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name');
     }
 
     /**
@@ -515,6 +519,14 @@ class ESObject {
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
             return true;
         }
+        
+        if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU') {
+        	error_log('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "DE.FWU", using module "url".');
+        	$this -> ESModule -> setName('url');
+        	$this -> ESModule -> loadModuleData();
+        	$this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+        	return true;
+        }
 
         // load appropriate module
         $wwwurl = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
@@ -596,8 +608,9 @@ class ESObject {
         $this -> ESOBJECT_RESOURCE_VERSION = '';
 
         $title = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
-        if(!empty($title))
-            $this -> ESOBJECT_TITLE = $title;
+        if(empty($title))
+        	$title = $this -> AlfrescoNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name');
+        $this -> ESOBJECT_TITLE = $title;
 
         $mimetype = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}format');
         if(!empty($mimetype))
@@ -624,7 +637,8 @@ class ESObject {
         if (!empty($ressourceversion))
             $this -> ESOBJECT_RESOURCE_VERSION = $ressourceversion;
         
-        if(!empty($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}commonlicense_key')))
+        $commonlicense_key = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}commonlicense_key');
+        if(!empty($commonlicense_key))
         	$this -> ESOBJECT_LICENSE = new ESRender_License($this);
         
         $this -> metadatahandler = new ESRender_Metadata_Handler($this);

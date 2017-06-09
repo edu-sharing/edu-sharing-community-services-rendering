@@ -29,7 +29,8 @@ $Translate
 	->addTranslation('zh', 'A network error occured.', '发生网络错误')
 	->addTranslation('zh', 'You\'re not authorized to access this resource.', '您无权访问该资源')
 	->addTranslation('zh', 'An internal server error occured.', '发生服务器内部错误')
-
+	->addTranslation('zh', 'The requested version of ":title" is corrupt or missing.', 'The requested version of ":title" is corrupt or missing.')
+	
 	->addTranslation('zh', 'authored_by', '由')
 	->addTranslation('zh', 'author', '作者')
     ->addTranslation('zh', 'Resource is being converted for your view ...','资源正在转换 ...')

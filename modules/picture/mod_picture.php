@@ -106,7 +106,7 @@ extends ESRender_Module_ContentNode_Abstract {
         if($getDefaultData)
         	$template_data = parent::prepareRenderData($requestData);
         
-        $template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
+        $template_data['title'] = $this -> _ESOBJECT -> getTitle();
         $template_data['image_url'] = $imageUrl;
         $Template = $this -> getTemplate();
         $rendered = $Template -> render($TemplateName, $template_data);

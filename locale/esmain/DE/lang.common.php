@@ -31,6 +31,7 @@ $Translate
 	->addTranslation('de', 'A network error occured.', 'Ein Netzwerkfehler ist aufgetreten.')
 	->addTranslation('de', 'You\'re not authorized to access this resource.', 'Sie sind nicht authorisiert.')
 	->addTranslation('de', 'An internal server error occurred.', 'Ein interner Fehler ist aufgetreten.')
+	->addTranslation('de', 'The requested version of ":title" is corrupt or missing.', 'Die angeforderte Version von ":title" ist beschädigt oder nicht vorhanden.')
 
 	->addTranslation('de', 'authored_by', 'von')
 	->addTranslation('de', 'author', 'Author')

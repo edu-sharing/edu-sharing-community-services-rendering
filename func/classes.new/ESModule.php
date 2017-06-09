@@ -183,7 +183,12 @@ class ESModule {
 				break;
 
 			case ($p_RESOURCE_TYPE == 'imsqti' && $p_RESOURCE_VERSION == 'xmlv2p1') :
-				$this->ESMODULE_NAME = 'qti21';
+				if (file_exists(dirname(__FILE__).'/../../modules/qti21/config.php')) {
+					$this->ESMODULE_NAME = 'qti21';
+				} else {
+					error_log('Module qti21 not configured so use default ("doc") module.');
+					$this->ESMODULE_NAME = 'doc';
+				}
 				break;
 
 			case ($p_RESOURCE_TYPE == 'moodle') :

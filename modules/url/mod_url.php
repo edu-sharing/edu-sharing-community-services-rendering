@@ -90,10 +90,10 @@ extends ESRender_Module_NonContentNode_Abstract {
         		$license = $license -> renderFooter($this -> getTemplate());
         	}
             $embedding = $this -> getLinkEmbedding();
-            if(!empty($license || !empty($metadata))) {
+            if(!empty($license) || !empty($metadata)) {
             	$embedding .= ' (';
             	$embedding .= '<span style="display: inline-block">' . utf8_encode($license) . '</span>';
-            	if(!empty($license && !empty($metadata)))
+            	if(!empty($license) && !empty($metadata))
             		$embedding .= '&nbsp|&nbsp';
             	$embedding .= '<span style="display: inline-block">' . utf8_encode($metadata) . '</span>';
             	$embedding .= ')';
@@ -193,7 +193,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     protected function getUrl() {
         $urlProp = $this -> _ESOBJECT -> AlfrescoNode -> getProperty($this -> getUrlProperty());
         if(!empty($urlProp))
-            return $this -> _ESOBJECT -> AlfrescoNode -> getProperty($this -> getUrlProperty());
+            return $urlProp;
         return false;
     }
 

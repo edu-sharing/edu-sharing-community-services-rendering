@@ -29,6 +29,7 @@ include_once ('../../conf.inc.php');
 
 define('DOCTYPE_PDF', 'DOCTYPE_PDF');
 define('DOCTYPE_ODF', 'DOCTYPE_ODF');
+define('DOCTYPE_HTML', 'DOCTYPE_HTML');
 define('DOCTYPE_UNKNOWN', 'DOCTYPE_UNKNOWN');
 
 /**
@@ -55,11 +56,39 @@ extends ESRender_Module_ContentNode_Abstract {
     protected function renderTemplate(array $requestData, $TemplateName) {
         $Logger = $this -> getLogger();
         $template_data = parent::prepareRenderData($requestData);
-        $object_url = dirname($this -> _ESOBJECT -> getPath()) . '/' . basename($this -> getOutputFilename()) . '?' . session_name() . '=' . session_id();
+        $object_url = dirname($this -> _ESOBJECT -> getPath()) . '/' . basename($this -> getOutputFilename());
+        if($this->getDoctype() == DOCTYPE_HTML)
+        	$object_url .= '_purified.html';
+        $object_url .= '?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
         $template_data['path'] = $object_url;
+        if($requestData['dynMetadata'])
+        	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
         $Template = $this -> getTemplate();
         $rendered = $Template -> render($TemplateName, $template_data);
         return $rendered;
+    }
+    
+    public function createInstance(array $requestData) {
+    	
+    	if (!parent::createInstance($requestData)) {
+    		return false;
+    	}
+    	
+    	if($this->getDoctype() == DOCTYPE_HTML) {
+	    	$Logger = $this->getLogger();
+	    	try {
+	    		require_once __dir__ . '/../../func/extern/htmlpurifier/HTMLPurifier.standalone.php';
+			   	$htmlPurifier = new HTMLPurifier();
+			   	$originalHTML = file_get_contents($this->getCacheFileName());
+			   	$purified = $htmlPurifier->purify($originalHTML);
+			   	file_put_contents($this->getCacheFileName().'_purified.html', $purified);
+			   	$Logger->info('Stored content in file "'.$cacheFile.'"_purified.html.');
+			   	return true;
+	    	} catch(Exception $e) {
+	    		$Logger->info('Error storing content in file "'.$cacheFile.'"_purified.html.');
+	    		return false;
+	    	}  
+    	}
     }
 
     protected function getOutputFilename() {
@@ -71,10 +100,15 @@ extends ESRender_Module_ContentNode_Abstract {
 
     final protected function display(array $requestData) {
         $Logger = $this -> getLogger();
-        echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype());
+        echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'display');
         return true;
     }
     
+    final protected function dynamic(array $requestData) {
+    	$Logger = $this -> getLogger();
+    	echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'dynamic');
+    	return true;
+    }
 
    
     /**
@@ -82,11 +116,14 @@ extends ESRender_Module_ContentNode_Abstract {
      */
     protected function getThemeByDoctype() {
         switch($this->getDoctype()) {
+        	case DOCTYPE_HTML :
+        		return '/module/doc/html/';
+        		break;
             case DOCTYPE_PDF :
-                return '/module/doc/pdf/display';
+                return '/module/doc/pdf/';
                 break;
             case DOCTYPE_ODF :
-                return '/module/doc/odf/display';
+                return '/module/doc/odf/';
                 break;
             default :
                 return '';
@@ -99,9 +136,12 @@ extends ESRender_Module_ContentNode_Abstract {
     protected function setDoctype() {
         
         
-        $this -> doctype = DOCTYPE_UNKNOWN;
+    	if (strpos($this -> _ESOBJECT -> getMimeType(), 'text/html') !== false)
+    		$this->doctype = DOCTYPE_HTML;
+    	else
+        	$this -> doctype = DOCTYPE_UNKNOWN;
         return;
-        
+        /*
         
         if (strpos($this -> _ESOBJECT -> getMimeType(), 'opendocument') !== false) {
             $this -> doctype = DOCTYPE_UNKNOWN;
@@ -110,7 +150,7 @@ extends ESRender_Module_ContentNode_Abstract {
             $this -> doctype = DOCTYPE_PDF;
         } else {
             $this -> doctype = DOCTYPE_UNKNOWN;
-        }
+        }*/
     }
 
     /**
@@ -143,12 +183,15 @@ extends ESRender_Module_ContentNode_Abstract {
             case DOCTYPE_ODF :
                 return true;
                 break;
+            case DOCTYPE_HTML:
+            	return true;
+            	break;
             default :
                 return false;
         }
     }
     
-    public function checkPdfUserAgents() {
+   /* public function checkPdfUserAgents() {
         global $requestingDevice;
         switch($requestingDevice -> getCapability('model_name')) {
             case 'Chrome':
@@ -164,6 +207,6 @@ extends ESRender_Module_ContentNode_Abstract {
             default:
                 return false;
         }
-    }
+    }*/
 
 }

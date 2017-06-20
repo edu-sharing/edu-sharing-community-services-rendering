@@ -195,13 +195,13 @@ function run($installedVersion) {
 			$sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
 			$stmt = $pdo->prepare ( $sql );
 			$stmt->bindValue ( ':modid', '8' );
-			$stmt->bindValue ( ':mime', '%audio/vorbis%' );
+			$stmt->bindValue ( ':mime', 'audio/vorbis' );
 			$stmt->execute ();
 			
 			$sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
 			$stmt = $pdo->prepare ( $sql );
 			$stmt->bindValue ( ':modid', '8' );
-			$stmt->bindValue ( ':mime', '%audio/x-aiff%' );
+			$stmt->bindValue ( ':mime', 'audio/x-aiff' );
 			$stmt->execute ();
 		}
 		

@@ -1,0 +1,39 @@
+<?php 
+global $Locale, $Translate;
+$msg = array();
+$msg['error'] = new Phools_Message_Default('The object to which this collection object refers is no longer present.');
+
+
+?>
+
+<style scoped>
+<?php include(dirname(__FILE__) . '/../../css/dynamic.css'); ?>
+div.error {
+    padding: 100px 10px;
+    text-align: center;
+}
+div.message_wrapper {
+    display: inline-block;
+    background-color: #c6c6c6;
+    color: #383838;
+    padding: 5px;
+    border-radius: 3px;
+}
+</style>
+
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+	<div class="edusharing_rendering_content_wrapper" role="main">
+        <div class="error">
+            <div class="message_wrapper">
+                <span class="message"><?php echo $msg['error']-> localize($Locale, $Translate);?></span>
+            </div>
+        </div>
+	</div>
+	<?php echo $metadata; ?>
+</div>
+
+<script>
+	<?php include(dirname(__FILE__) . '/../../js/dynamic.js'); ?>
+</script>
+
+

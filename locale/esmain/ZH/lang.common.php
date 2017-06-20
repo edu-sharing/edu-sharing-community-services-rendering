@@ -30,7 +30,7 @@ $Translate
 	->addTranslation('zh', 'You\'re not authorized to access this resource.', '您无权访问该资源')
 	->addTranslation('zh', 'An internal server error occured.', '发生服务器内部错误')
 	->addTranslation('zh', 'The requested version of ":title" is corrupt or missing.', 'The requested version of ":title" is corrupt or missing.')
-	
+    ->addTranslation('zh', 'The object to which this collection object refers is no longer present.', 'The object to which this collection object refers is no longer present.')
 	->addTranslation('zh', 'authored_by', '由')
 	->addTranslation('zh', 'author', '作者')
     ->addTranslation('zh', 'Resource is being converted for your view ...','资源正在转换 ...')

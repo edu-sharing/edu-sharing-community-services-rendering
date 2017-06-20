@@ -71,10 +71,12 @@ function showContent() {
 }
 
 window.addEventListener("scroll", function() {
-	if((window.scrollY || document.documentElement.scrollTop) > 400)
-		document.getElementById('edusharing_scrolltotop').style.display = 'block';
-	else
-		document.getElementById('edusharing_scrolltotop').style.display = 'none';
+    if (document.getElementById('edusharing_scrolltotop') != 'undefined') {
+        if ((window.scrollY || document.documentElement.scrollTop) > 400)
+            document.getElementById('edusharing_scrolltotop').style.display = 'block';
+        else
+            document.getElementById('edusharing_scrolltotop').style.display = 'none';
+    }
 });
 
 /*

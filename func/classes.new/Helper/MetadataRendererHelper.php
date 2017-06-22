@@ -29,26 +29,30 @@ class MetadataRendererHelper {
 			break;
 			
 			default:
-				
+			
 				$valString = '';
 				if(strpos($metadata['value'], '[#]') !== false) {
-					$valArray = explode('[#]', $metadata['value']);
-					foreach($valArray as $value) {
-						if(!empty($value))
-							$valString .= '<span class="edusharing_rendering_metadata_body_value ' . $cssClasses . '">' . htmlentities($value) . '</span>';
+					if(strpos($cssClasses, 'taxonomies') !== false) {
+						$valString = '<span class="edusharing_rendering_metadata_body_value ' . $cssClasses . '">' . str_replace('[#]', ' &gt; ', $metadata['value']) . '</span>';
+					} else {
+						$valArray = explode('[#]', $metadata['value']);
+						foreach($valArray as $value) {
+							if(!empty($value))
+								$valString .= '<span class="edusharing_rendering_metadata_body_value ' . $cssClasses . '">' . htmlentities($value) . '</span>';
+						}
 					}
 				} else {
-					if(!empty($metadata['value']))
+					if(!empty(trim($metadata['value'])))
 						$valString = '<span class="edusharing_rendering_metadata_body_value ' . $cssClasses . '">' . htmlentities($metadata['value']) . '</span>';
 				}
 				if(!empty($valString) && !$hideLabel)
 					return '<label class="edusharing_rendering_metadata_body_label">' . ucfirst($label) . '</label>' . $valString;
-				
-				if(!empty($valString))
-					return $valString;
-		}
-		
-		return '';
+			
+					if(!empty($valString))
+						return $valString;
+			}
+			
+			return '';
 		
 	}
 	

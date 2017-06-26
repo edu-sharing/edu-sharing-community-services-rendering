@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '3.2.0' );
+define ( 'UPDATEVERSION', '4.0.0' );
 function run($installedVersion) {
 	
 	try {
@@ -234,6 +234,34 @@ function run($installedVersion) {
 				unlink ( MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php");
 			
 		}
+
+        if (version_compare ( '4.0.0', $installedVersion ) > 0) {
+
+            $files = array();
+
+            $directory = new \RecursiveDirectoryIterator(CC_RENDER_PATH . '/picture/');
+            $iterator = new \RecursiveIteratorIterator($directory);
+            foreach ($iterator as $info) {
+                $parts = pathinfo($info->getPathname());
+                if($parts['extension'] === 'jpg')
+                    $files[] = $info->getPathname();
+            }
+
+            if(file_exists (CC_RENDER_PATH_SAFE . '/picture/')) {
+                $directory = new \RecursiveDirectoryIterator(CC_RENDER_PATH_SAFE . '/picture/');
+                $iterator = new \RecursiveIteratorIterator($directory);
+                foreach ($iterator as $info) {
+                    $parts = pathinfo($info->getPathname());
+                    if($parts['extension'] === 'jpg')
+                        $files[] = $info->getPathname();
+                }
+            }
+
+            foreach($files as $file) {
+                $image = imagecreatefromjpeg($file);
+                imagepng($image, str_replace('.jpg', '.png', $file));
+            }
+        }
 		
 		
 	} catch ( Exception $e ) {

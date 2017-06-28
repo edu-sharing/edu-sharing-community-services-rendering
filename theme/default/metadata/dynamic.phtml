@@ -108,7 +108,7 @@
 				 * DIDACTICS
 				 */
 				$metadataDidactics = '';
-				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}taxonentry']);
+				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}taxonentry'], '', array('taxonomies'));
 				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}educationallearningresourcetype'], '', array('rschip'));
 				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}educationalcontext'], '', array('rschip'));
 				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}educationalintendedenduserrole'], '', array('rschip', 'group'));

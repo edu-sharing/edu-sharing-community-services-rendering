@@ -81,4 +81,5 @@ INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_M
 (102, 9, 'x-ms-asf'),
 (103, 9, 'video/x-matroska'),
 (104, 9, 'video/x-ogm'),
-(105, 9, 'video/ogg');
+(105, 9, 'video/ogg'),
+(106, 8, 'audio/mp3');

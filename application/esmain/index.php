@@ -545,6 +545,11 @@ try {
 
     $Logger -> info('Successfully initialized instance.');
 
+    $originalDeleted = $ESObject -> AlfrescoNode -> getProperty('{virtualproperty}originaldeleted');
+    if(!empty($originalDeleted)) {
+        $ESObject -> renderOriginalDeleted(array_merge($req_data, array('dynMetadata'=>$dynMetadata)), $display_kind, $Template);
+    }
+
     // stop session to allow flawless module-operation
     session_write_close();
     $sessionSavePath = session_save_path();

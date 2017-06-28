@@ -195,13 +195,13 @@ function run($installedVersion) {
 			$sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
 			$stmt = $pdo->prepare ( $sql );
 			$stmt->bindValue ( ':modid', '8' );
-			$stmt->bindValue ( ':mime', '%audio/vorbis%' );
+			$stmt->bindValue ( ':mime', 'audio/vorbis' );
 			$stmt->execute ();
 			
 			$sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
 			$stmt = $pdo->prepare ( $sql );
 			$stmt->bindValue ( ':modid', '8' );
-			$stmt->bindValue ( ':mime', '%audio/x-aiff%' );
+			$stmt->bindValue ( ':mime', 'audio/x-aiff' );
 			$stmt->execute ();
 		}
 		
@@ -233,6 +233,12 @@ function run($installedVersion) {
 			if(file_exists(MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php"))
 				unlink ( MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php");
 			
+			$pdo = RsPDO::getInstance();
+			$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':modid', '8' );
+			$stmt->bindValue ( ':mime', 'audio/mp3' );
+			$stmt->execute ();
 		}
 
         if (version_compare ( '4.0.0', $installedVersion ) > 0) {

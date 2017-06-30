@@ -83,12 +83,12 @@ extends ESRender_Module_ContentNode_Abstract {
 			   	$purified = $htmlPurifier->purify($originalHTML);
 			   	file_put_contents($this->getCacheFileName().'_purified.html', $purified);
 			   	$Logger->info('Stored content in file "'.$cacheFile.'"_purified.html.');
-			   	return true;
 	    	} catch(Exception $e) {
 	    		$Logger->info('Error storing content in file "'.$cacheFile.'"_purified.html.');
 	    		return false;
 	    	}  
     	}
+        return true;
     }
 
     protected function getOutputFilename() {

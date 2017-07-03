@@ -61,6 +61,7 @@ extends ESRender_Module_ContentNode_Abstract {
         	$object_url .= '_purified.html';
         $object_url .= '?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
         $template_data['path'] = $object_url;
+        $template_data['html'] = file_get_contents($this->getCacheFileName() . '_purified.html');
         if($requestData['dynMetadata'])
         	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
         $Template = $this -> getTemplate();

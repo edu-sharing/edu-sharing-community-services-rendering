@@ -198,6 +198,7 @@ img.edusharing_rendering_content_preview {
 	max-width: 1024px;
 	margin: 0 auto;
 	padding: 20px 40px;
+	text-align: left;
 }
 
 #edusharing_scrolltotop {

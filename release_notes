@@ -10,6 +10,7 @@ v3.1/3.2
 - support rendering for edu-sharing mobile app
 - optimizations for mobile devices
 - opportunity to use a separate cache for "safe" objects
+- render html snippets
 
 v3.0
 - support PostgreSQL

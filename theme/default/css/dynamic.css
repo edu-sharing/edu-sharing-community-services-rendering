@@ -190,6 +190,16 @@ img.edusharing_rendering_content_preview {
 	font-size: 120%;
 }
 
+#edusharing_htmlobject {
+	display: block;
+	min-height: 400px;
+	width: 100%;
+	background: #fff;
+	max-width: 1024px;
+	margin: 0 auto;
+	padding: 20px 40px;
+}
+
 #edusharing_scrolltotop {
 	position: fixed;
 	bottom: 20px;
@@ -234,6 +244,10 @@ img.edusharing_rendering_content_preview {
 	
 	img.edusharing_rendering_content_preview {
 		margin: 10px auto;
+	}
+
+	#edusharing_htmlobject {
+		max-width: 100%;
 	}
 
 }

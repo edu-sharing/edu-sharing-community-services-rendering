@@ -83,3 +83,13 @@ a.action:active, .license a:active, a.action:focus, .license a:focus {
 .edusharing_metadata_wrapper {
         display: none;
 }
+
+#edusharing_htmlobject {
+        display: block;
+        min-height: 400px;
+        width: 100%;
+        background: #fff;
+        max-width: 1024px;
+        margin: 0 auto;
+        padding: 20px 40px;
+}

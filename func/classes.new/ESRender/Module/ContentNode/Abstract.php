@@ -235,8 +235,8 @@ extends ESRender_Module_Base
     	global $accessToken;
     	 
        $Logger = $this->getLogger();
-       $Logger->debug('ESRender_Module_Base::dynamic Snippet "' . $snippet . '"');
-       
+       $Logger->debug('ESRender_Module_Base::dynamic');
+
        $data = array();
        $data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
        if($requestData['dynMetadata'])

@@ -104,14 +104,15 @@ extends ESRender_Module_ContentNode_Abstract {
         echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'display');
         return true;
     }
-    
+
     final protected function dynamic(array $requestData) {
-    	$Logger = $this -> getLogger();
-    	echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'dynamic');
-    	return true;
+        if($this->getDoctype() === DOCTYPE_HTML) {
+            echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'dynamic');
+            return true;
+        }
+        return parent::dynamic($requestData);
     }
 
-   
     /**
      * Load theme according to current doctype
      */

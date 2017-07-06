@@ -457,7 +457,7 @@ try {
     } catch (Exception $e) {
         throw new ESRender_Exception_InfoLms($e);
     }
-    
+
     // check usage
     if ($req_data['rep_id'] != $req_data['app_id']) {
         // non-repositories MUST supply usage-info
@@ -496,7 +496,7 @@ try {
     require_once(dirname(__FILE__) . '/../../func/classes.new/ESContentNode.php');
     $contentNode = new ESContentNode();
     $contentNode -> setProperties($renderInfoLMSReturn->getRenderInfoLMSReturn->properties->item);
-    
+
     
     $eduscopename = $contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}eduscopename');
     if($eduscopename === 'safe') {
@@ -675,6 +675,28 @@ try {
         $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
 
     }
+var_dump($renderInfoLMSReturn);
+    $renderInfoLMSReturn->getRenderInfoLMSReturn->mdsTemplate = 'general information
+title (optional)
+-
+filename
+300px-Oer-Weimarer_Musenhof.jpg
+general keyword
+-
+license
+
+description
+-
+created
+June 27, 2017 1:22 PM
+modified
+June 27, 2017 1:22 PM
+identifier
+8f645e94-0246-4c28-9e15-5fef369ecb5f
+Contributors
+general information
+author
+personAdministrator';
 
     $Logger -> info('Successfully fetched instance.');
 

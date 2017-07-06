@@ -92,4 +92,5 @@ a.action:active, .license a:active, a.action:focus, .license a:focus {
         max-width: 1024px;
         margin: 0 auto;
         padding: 20px 40px;
+        text-align: left;
 }

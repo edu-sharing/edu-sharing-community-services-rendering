@@ -61,6 +61,7 @@ extends ESRender_Module_ContentNode_Abstract {
         	$object_url .= '_purified.html';
         $object_url .= '?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
         $template_data['path'] = $object_url;
+        $template_data['html'] = file_get_contents($this->getCacheFileName() . '_purified.html');
         if($requestData['dynMetadata'])
         	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
         $Template = $this -> getTemplate();
@@ -103,14 +104,15 @@ extends ESRender_Module_ContentNode_Abstract {
         echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'display');
         return true;
     }
-    
+
     final protected function dynamic(array $requestData) {
-    	$Logger = $this -> getLogger();
-    	echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'dynamic');
-    	return true;
+        if($this->getDoctype() === DOCTYPE_HTML) {
+            echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'dynamic');
+            return true;
+        }
+        return parent::dynamic($requestData);
     }
 
-   
     /**
      * Load theme according to current doctype
      */

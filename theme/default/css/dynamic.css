@@ -100,7 +100,12 @@ h1.edusharing_rendering_metadata_header_title {
 }
 
 
-
+.mdsCrontributorTitle {
+	font-weight: 600;
+	font-style: italic;
+	margin: 25px 0 -15px 16px;
+	color: #000;
+}
 
 
 .edusharing_rendering_content_wrapper {

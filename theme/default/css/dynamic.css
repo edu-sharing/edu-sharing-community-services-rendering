@@ -35,6 +35,7 @@ img.edusharing_rendering_metadata_header_icon {
 	margin: 10px -10px -10px 20px;
 	cursor: pointer;
 	float: left;
+	object-fit: contain;
 }
 
 h1.edusharing_rendering_metadata_header_title {

@@ -528,11 +528,14 @@ class ESObject {
         	return true;
         }
 
-        // load appropriate module
         $wwwurl = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
+        $tool_instance_ref = ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_ref'));
         if (!empty($wwwurl)) {
             error_log('Property {http://www.campuscontent.de/model/1.0}wwwurl found, using module "url".');
             $this -> ESModule -> setName('url');
+        } else if (!empty($tool_instance_ref)) {
+            error_log('Property{http://www.campuscontent.de/model/1.0}tool_instance_ref found, using module "lti".');
+            $this -> ESModule -> setName('lti');
         } else if ($this -> ESOBJECT_MIMETYPE == 'application/zip') {
             if (!$this -> ESModule -> setModuleByResource($this -> ESOBJECT_RESOURCE_TYPE, $this -> ESOBJECT_RESOURCE_VERSION)) {
                 error_log('Could not set module by resource-type/-version, using default ("doc") module.');

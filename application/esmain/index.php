@@ -555,7 +555,6 @@ try {
     $sessionSavePath = session_save_path();
     // find appropriate module
     $ESObject -> setModule();
-
     $moduleName = $ESObject -> ESModule -> getName();
     if (empty($moduleName)) {
         //.oO no display modul for this file

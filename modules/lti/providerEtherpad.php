@@ -6,7 +6,7 @@ class providerEtherpad {
 
     public function __construct() {
         $this -> getConfig();
-	$this -> setToken();
+	    $this -> setToken();
     }
 
     public function display(array $requestData) {

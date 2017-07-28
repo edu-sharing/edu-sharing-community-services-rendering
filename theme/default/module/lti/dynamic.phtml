@@ -1,0 +1,27 @@
+<?php 
+global $Locale, $Translate;
+$msg = array();
+$msg['showInformation'] = new Phools_Message_Default('showInformation');
+$msg['hideInformation'] = new Phools_Message_Default('hideInformation');
+?>
+
+<style scoped>
+<?php include(dirname(__FILE__) . '/../../css/dynamic.css'); ?>
+</style>
+
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
+	<div class="edusharing_rendering_content_wrapper" role="main">
+		<iframe name="lti_frame_<?php echo $objectId?>" src="" style="border: none; width: 80%; min-height: 400px;"></iframe>
+	</div>
+	<?php echo $metadata; ?>
+</div>
+
+<?php echo $launchForm?>
+
+<script>
+	<?php include(dirname(__FILE__) . '/../../js/dynamic.js'); ?>
+    $(document).ready(function() {
+        $('#ltiLaunchForm_<?php echo $objectId?>').submit();
+    })
+</script>

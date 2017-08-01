@@ -8,9 +8,9 @@
 <?php echo $metadata?>
 <script>
 
-    $(document).ready(function() {
-        $('#ltiLaunchForm_<?php echo $objectId?>').submit();
-    })
+
+    //$('#ltiLaunchForm_<?php echo $objectId?>').submit();
+    document.getElementById('ltiLaunchForm_'+<?php echo $objectId?>).submit();
 
     var obj_<?php echo $licid;?> = document.querySelector("[data-licid='<?php echo $licid;?>']");
     obj_<?php echo $licid;?>.onload = function() {

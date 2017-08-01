@@ -10,7 +10,7 @@
 
 
     //$('#ltiLaunchForm_<?php echo $objectId?>').submit();
-    document.getElementById('ltiLaunchForm_'+<?php echo $objectId?>).submit();
+    document.getElementById('ltiLaunchForm_<?php echo $objectId?>').submit();
 
     var obj_<?php echo $licid;?> = document.querySelector("[data-licid='<?php echo $licid;?>']");
     obj_<?php echo $licid;?>.onload = function() {

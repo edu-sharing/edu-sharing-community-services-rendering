@@ -74,7 +74,6 @@ class ltiProvider {
 
 
     public function inline(array $requestData) {
-        //$template_data = parent::prepareRenderData($requestData);
         $template_data['title'] = $this -> esobject -> getTitle();
         $template_data['launchForm'] = $this->getLaunchForm();
         $template_data['objectId'] = $this->esobject->getObjectID();

@@ -28,7 +28,7 @@ class form
 
         if ( ! $this->checkApacheModules(
             // required extensions (space separated)
-            'mod_rewrite mod_ssl',
+            'mod_rewrite',
             // optional extensions (space separated)
             ''
         ) )
@@ -38,7 +38,7 @@ class form
 
         if ( !$this->checkPhpExtensions(
             // required extensions (space separated)
-            'session dom soap sockets iconv gd mbstring fileinfo mcrypt openssl zip',
+            'session dom soap sockets iconv gd mbstring fileinfo mcrypt openssl zip curl',
             // optional extensions (space separated)
             'mysql pgsql zlib wddx'
         ) )

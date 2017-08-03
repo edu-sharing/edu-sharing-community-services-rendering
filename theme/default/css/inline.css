@@ -1,0 +1,12 @@
+.edusharing_metadata {
+    padding: 0 0 20px 0;
+    background-color: #f6f6f6;
+}
+
+.mdsGroup {
+    padding: 0;
+}
+
+.mdsGroup:first-child {
+    margin-top: -30px;
+}

@@ -212,7 +212,7 @@ extends ESRender_Module_Base
             	'url' => $this->renderUrl($requestData));
 
         if(ENABLE_METADATA_RENDERING) {
-        	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
+        	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
         	$data['metadata'] = $metadata;
         }
         

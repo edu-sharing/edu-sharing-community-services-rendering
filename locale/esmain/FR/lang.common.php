@@ -60,9 +60,4 @@ $Translate
 	->addTranslation('fr', 'toDownload', 'Télécharger')
 	->addTranslation('fr', 'cannotOpenObject', 'Ce matériel ne peut pas être affiché dans le navigateur.')
 	->addTranslation('fr', 'cannotOpenObjectText', 'Pour utiliser le matériel, veuillez le télécharger.')
-	->addTranslation('fr', 'goToOrigin', 'Aller à l`origine')
-	->addTranslation('fr', 'meta_general', 'Informations générales')
-	->addTranslation('fr', 'meta_contributors', 'Contributeurs')
-	->addTranslation('fr', 'meta_contributors_content', 'Collaborateur (propriété)')
-	->addTranslation('fr', 'meta_contributors_metadata', 'Collaborateur (métadonnées)')
-	->addTranslation('fr', 'meta_didactics', 'Didactique');
+	->addTranslation('fr', 'goToOrigin', 'Aller à l`origine');

@@ -1,3 +1,7 @@
+<style scoped>
+    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/inline.css'); ?>
+</style>
 <span>
 <a href="<?php echo htmlentities($url, ENT_COMPAT, 'utf-8') ?>" target="_blank"  ><es:title xmlns:es="http://edu-sharing.net/object" ><?php echo $title;?></es:title></a>
 <?php if(!empty($metadata) || !empty($license)) {

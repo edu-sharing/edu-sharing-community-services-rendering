@@ -60,9 +60,4 @@ $Translate
 	->addTranslation('de', 'toDownload', 'Herunterladen')
 	->addTranslation('de', 'cannotOpenObject', 'Öffnen dieses Materials im Browser nicht möglich.')
 	->addTranslation('de', 'cannotOpenObjectText', 'Laden Sie das Material herunter, um es zu benutzen.')
-	->addTranslation('de', 'goToOrigin', 'Zur Originalseite springen')
-	->addTranslation('de', 'meta_general', 'Basis-Informationen')
-	->addTranslation('de', 'meta_contributors', 'Beteiligte')
-	->addTranslation('de', 'meta_contributors_content', 'Mitarbeiter am Material')
-	->addTranslation('de', 'meta_contributors_metadata', 'Mitarbeiter an Metadaten')
-	->addTranslation('de', 'meta_didactics', 'Didaktik');
+	->addTranslation('de', 'goToOrigin', 'Zur Originalseite springen');

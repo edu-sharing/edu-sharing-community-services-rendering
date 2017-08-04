@@ -850,14 +850,9 @@ class ESObject {
 
     public function renderOriginalDeleted($requestData, $display_kind, $template) {
         if($display_kind == 'dynamic') {
-            if($requestData['dynMetadata'])
-                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/dynamic');
             $tempArray['title'] = $this->getTitle();
             echo $template -> render('/special/originaldeleted/dynamic', $tempArray);
         } else if($display_kind == 'inline') {
-            if(ENABLE_METADATA_RENDERING) {
-                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/inline');
-            }
             $tempArray['title'] = $this->getTitle();
             echo $template -> render('/special/originaldeleted/inline', $tempArray);
         } else {

@@ -76,14 +76,14 @@ extends ESRender_Module_NonContentNode_Abstract {
         }
         
         if(ENABLE_METADATA_RENDERING) {
-	        $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
+	        $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
 	        $data['metadata'] = $metadata;
         }
 
         if ($this -> detectVideo()) {
-            $embedding = $this -> getVideoEmbedding($requestData['width']) . utf8_encode($metadata);
+            $embedding = $this -> getVideoEmbedding($requestData['width']) . $metadata;
         } else if($this -> detectAudio()) {
-        	$embedding = $this -> getAudioEmbedding() . utf8_encode($metadata);
+        	$embedding = $this -> getAudioEmbedding() . $metadata;
         } else {
         	$license = $this->_ESOBJECT->ESOBJECT_LICENSE;
         	if(!empty($license)) {
@@ -95,7 +95,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             	$embedding .= '<span style="display: inline-block">' . utf8_encode($license) . '</span>';
             	if(!empty($license) && !empty($metadata))
             		$embedding .= '&nbsp|&nbsp';
-            	$embedding .= '<span style="display: inline-block">' . utf8_encode($metadata) . '</span>';
+            	$embedding .= '<span style="display: inline-block">' . $metadata . '</span>';
             	$embedding .= ')';
         
             }

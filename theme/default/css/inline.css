@@ -1,6 +1,8 @@
 .edusharing_metadata {
     padding: 0 0 20px 0;
     background-color: #f6f6f6;
+    max-height :400px;
+    overflow-y: auto;
 }
 
 .mdsGroup {

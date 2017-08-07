@@ -13,12 +13,6 @@ DEFINE("ES_IV","initvect");
 DEFINE("ENABLE_TRACK_OBJECT", true);
 DEFINE("DISABLE_TRACK_ANONYMIZATION", false);
 DEFINE("ENABLE_METADATA_RENDERING", false);
-DEFINE("DISPLAY_DYNAMIC_METADATA_KEYS", serialize(array(
-		'{http://www.alfresco.org/model/content/1.0}creator',
-		'{http://www.campuscontent.de/model/1.0}commonlicense_key',
-		'{http://www.alfresco.org/model/content/1.0}versionLabel',
-		'REPOSITORY_ID'
-)));
 
 $ESRENDER_SESSION_NAME = 'ESSID';
 

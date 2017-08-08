@@ -63,27 +63,25 @@ extends ESRender_Module_ContentNode_Abstract {
                     throw new Exception('Cannot create temporary image file');
             }
 
-            if (!empty($width) && !empty($height)) {
-                $newImage = imagecreatetruecolor($width, $height);
-                imageAlphaBlending($newImage, false);
-                imageSaveAlpha($newImage, true);
-                if (!imagecopyresampled($newImage, $tmpFile, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight))
-                    throw new Exception('Cannot resample image');
-                $Logger -> debug('Resampled picture (' . $width . ' px x ' . $height . ' px).');
-                if (!imagepng($newImage, $DestinationFile))
-                    throw new Exception('Cannot convert image');
-                imagedestroy($newImage);
-            } else {
-                if(IMAGETYPE_PNG === $type) { // to keep transparency
-                    if (!copy($SourceFile, $DestinationFile))
-                        throw new Exception('Cannot copy image');
-                } else {
-                    if (!imagepng($tmpFile, $DestinationFile))
-                        throw new Exception('Cannot convert image');
+            if(empty($width) && empty($height)) {
+                $width = $origWidth;
+                $height = $origHeight;
+                while($width * $height > 1500000) {
+                    $width *= 0.9;
+                    $height *= 0.9;
                 }
-
-                imagedestroy($tmpFile);
             }
+
+            $newImage = imagecreatetruecolor($width, $height);
+            imageAlphaBlending($newImage, false);
+            imageSaveAlpha($newImage, true);
+            if (!imagecopyresampled($newImage, $tmpFile, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight))
+                throw new Exception('Cannot resample image');
+            $Logger -> debug('Resampled picture (' . $width . ' px x ' . $height . ' px).');
+            if (!imagepng($newImage, $DestinationFile))
+                throw new Exception('Cannot convert image');
+            imagedestroy($newImage);
+
             $Logger -> debug('Converted picture to png.');
 
         } catch (Exception $e) {

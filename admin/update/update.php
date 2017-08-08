@@ -1,7 +1,10 @@
 <?php
 define ( 'UPDATEVERSION', '4.0.0' );
+set_time_limit(1800);
+ini_set('memory_limit', '2048M');
+
 function run($installedVersion) {
-	
+
 	try {
 		if (version_compare ( '3.0.0', $installedVersion ) > 0) {
 			rename ( MC_ROOT_PATH . 'conf/system.conf.php', MC_ROOT_PATH . 'conf/bk_system.conf.php' );

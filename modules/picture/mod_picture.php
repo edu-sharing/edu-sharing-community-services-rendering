@@ -70,6 +70,8 @@ extends ESRender_Module_ContentNode_Abstract {
                     $width *= 0.9;
                     $height *= 0.9;
                 }
+                $width = round($width);
+                $height = round($height);
             }
 
             $newImage = imagecreatetruecolor($width, $height);

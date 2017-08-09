@@ -48,8 +48,6 @@ $Translate
     ->addTranslation('en', 'published under a', 'published under a')
     ->addTranslation('en', 'custom license', 'custom license')
     ->addTranslation('en', 'title', 'Title')
-    ->addTranslation('en', 'showMetadata', 'Show metadata')
-    ->addTranslation('en', 'hideMetadata', 'Hide metadata')
 	->addTranslation('en', 'showInformation', 'Show information')
 	->addTranslation('en', 'hideInformation', 'Hide information')
 	->addTranslation('en', 'toDownload', 'Download')

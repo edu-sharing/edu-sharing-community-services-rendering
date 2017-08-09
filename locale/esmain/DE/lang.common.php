@@ -53,8 +53,6 @@ $Translate
     ->addTranslation('de', 'custom license', 'eigenen Lizenz')
     ->addTranslation('de', 'Token expired', 'Sicherheitstoken abgelaufen')
 	->addTranslation('de', 'title', 'Titel')
-	->addTranslation('de', 'showMetadata', 'Metadaten einblenden')
-	->addTranslation('de', 'hideMetadata', 'Metadaten ausblenden')
 	->addTranslation('de', 'showInformation', 'Informationen einblenden')
 	->addTranslation('de', 'hideInformation', 'Informationen ausblenden')
 	->addTranslation('de', 'toDownload', 'Herunterladen')

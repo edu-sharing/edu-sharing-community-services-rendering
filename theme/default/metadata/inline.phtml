@@ -8,6 +8,8 @@
 <div class="edusharing_metadata_wrapper">
 	<a class="edusharing_metadata_toggle_button" data-textopen="<?php echo $msg['showInformation']->localize($Locale, $Translate);?>" data-textclose="<?php echo $msg['hideInformation']->localize($Locale, $Translate);?>"><?php echo $msg['showInformation']->localize($Locale, $Translate);?></a>
 	<div class="edusharing_metadata" style="display:none">
+        <div class="edusharing_metadata_inner">
 		<?php echo utf8_encode($metadataHtml) ?>
+        </div>
 	</div>
 </div>

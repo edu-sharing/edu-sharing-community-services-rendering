@@ -30,6 +30,7 @@ include_once ('../../conf.inc.php');
 define('DOCTYPE_PDF', 'DOCTYPE_PDF');
 define('DOCTYPE_ODF', 'DOCTYPE_ODF');
 define('DOCTYPE_HTML', 'DOCTYPE_HTML');
+define('DOCTYPE_TEXT', 'DOCTYPE_TEXT');
 define('DOCTYPE_UNKNOWN', 'DOCTYPE_UNKNOWN');
 
 /**
@@ -56,12 +57,12 @@ extends ESRender_Module_ContentNode_Abstract {
     protected function renderTemplate(array $requestData, $TemplateName) {
         $Logger = $this -> getLogger();
         $template_data = parent::prepareRenderData($requestData);
-        $object_url = dirname($this -> _ESOBJECT -> getPath()) . '/' . basename($this -> getOutputFilename());
+        $filename = $this->getCacheFileName();
         if($this->getDoctype() == DOCTYPE_HTML)
-        	$object_url .= '_purified.html';
-        $object_url .= '?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
-        $template_data['path'] = $object_url;
-        $template_data['html'] = file_get_contents($this->getCacheFileName() . '_purified.html');
+            $filename .= '_purified.html';
+        $template_data['content'] = file_get_contents($filename);
+        if($this->getDoctype() === DOCTYPE_TEXT)
+            $template_data['content'] = nl2br($template_data['content']);
         if($requestData['dynMetadata'])
         	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
         $Template = $this -> getTemplate();
@@ -106,7 +107,7 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
     final protected function dynamic(array $requestData) {
-        if($this->getDoctype() === DOCTYPE_HTML) {
+        if($this->getDoctype() === DOCTYPE_HTML || $this->getDoctype() === DOCTYPE_TEXT) {
             echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'dynamic');
             return true;
         }
@@ -119,6 +120,7 @@ extends ESRender_Module_ContentNode_Abstract {
     protected function getThemeByDoctype() {
         switch($this->getDoctype()) {
         	case DOCTYPE_HTML :
+            case DOCTYPE_TEXT :
         		return '/module/doc/html/';
         		break;
             case DOCTYPE_PDF :
@@ -140,6 +142,8 @@ extends ESRender_Module_ContentNode_Abstract {
         
     	if (strpos($this -> _ESOBJECT -> getMimeType(), 'text/html') !== false)
     		$this->doctype = DOCTYPE_HTML;
+    	else if(strpos($this -> _ESOBJECT -> getMimeType(), 'text/plain') !== false)
+            $this->doctype = DOCTYPE_TEXT;
     	else
         	$this -> doctype = DOCTYPE_UNKNOWN;
         return;

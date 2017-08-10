@@ -270,6 +270,14 @@ function run($installedVersion) {
                 $image = imagecreatefromjpeg($file);
                 imagepng($image, str_replace('.jpg', '.png', $file));
             }
+
+            $pdo = RsPDO::getInstance();
+            $sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':modid', '3' );
+            $stmt->bindValue ( ':mime', 'text/plain' );
+            $stmt->execute ();
+
         }
 		
 		

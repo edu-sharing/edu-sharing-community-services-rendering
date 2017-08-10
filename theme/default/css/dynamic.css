@@ -144,6 +144,7 @@ img.edusharing_rendering_content_preview {
 	padding: 20px 40px;
 	text-align: left;
 	overflow: auto;
+	max-height: calc(100vh - 165px);
 }
 
 #edusharing_scrolltotop {

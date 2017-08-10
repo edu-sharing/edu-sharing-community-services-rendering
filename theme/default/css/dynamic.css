@@ -6,6 +6,10 @@
 	text-rendering: optimizeLegibility;
 }
 
+i.material-icons {
+	font-family: 'Material Icons';
+}
+
 body {
 	padding: 0;
 	margin: 0;

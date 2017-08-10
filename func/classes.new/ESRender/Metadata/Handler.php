@@ -9,7 +9,7 @@ class ESRender_Metadata_Handler {
 	}
 
 	public function render(Phools_Template_Interface $template, $tmpl) {
-        $templateData = array('metadataHtml' => $this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->mdsTemplate, 'title' => $this->esObject->getTitle(), 'previewUrl' => $this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl);
+        $templateData = array('metadataHtml' => $this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->mdsTemplate, 'title' => $this->esObject->getTitle(), 'previewUrl' => $this->esObject->getPreviewUrl());
         return $template -> render($tmpl, $templateData);
 	}
 }

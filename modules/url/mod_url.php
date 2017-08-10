@@ -56,7 +56,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     		$embedding = '';
     	
     	$Template = $this -> getTemplate();
-    	$previewUrl = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl;
+    	$previewUrl = $this->_ESOBJECT->getPreviewUrl();
     	if(!empty($accessToken))
     		$previewUrl .= '&accessToken=' . $accessToken;
     	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $previewUrl);

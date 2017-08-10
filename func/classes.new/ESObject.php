@@ -845,7 +845,10 @@ class ESObject {
     
     public function setInfoLmsData($renderInfoLMSReturn) {
         $this -> renderInfoLMSReturn = $renderInfoLMSReturn;
-    	
+    }
+
+    public function getPreviewUrl() {
+        return $this -> renderInfoLMSReturn -> getRenderInfoLMSReturn->previewUrl . '&version=' . $this -> getObjectVersion();
     }
 
     public function renderOriginalDeleted($requestData, $display_kind, $template) {

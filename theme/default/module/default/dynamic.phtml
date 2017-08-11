@@ -3,7 +3,6 @@ global $Locale, $Translate;
 $msg = array();
 $msg['showInformation'] = new Phools_Message_Default('showInformation');
 $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
-$msg['toDownload'] = new Phools_Message_Default('toDownload');
 $msg['cannotOpenObject'] = new Phools_Message_Default('cannotOpenObject');
 $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText');
 
@@ -20,7 +19,6 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
 		<h4><?php echo $msg['cannotOpenObjectText']->localize($Locale, $Translate);?></h4>
 		<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
 		<img class="edusharing_rendering_content_preview" src="<?php echo $previewUrl?>">
-		<a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" ><?php echo $msg['toDownload']->localize($Locale, $Translate);?></a>
 	</div>
 	<?php echo $metadata; ?>
 </div>

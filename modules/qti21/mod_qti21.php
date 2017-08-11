@@ -119,7 +119,7 @@ extends ESRender_Module_ContentNode_Abstract
 			$Template = $this->getTemplate();
 			if($this->p_kind == ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC) {
 				
-				$previewUrl = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl;
+				$previewUrl = $this->_ESOBJECT->getPreviewUrl();
 				if(!empty($accessToken))
 					$previewUrl .= '&accessToken=' . $accessToken;
 

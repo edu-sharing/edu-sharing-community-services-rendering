@@ -60,6 +60,7 @@ extends ESRender_Module_ContentNode_Abstract {
 
         if($this->getDoctype() == DOCTYPE_PDF) {
             $template_data['content'] = $this -> _ESOBJECT -> getPath() . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+            $template_data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
         }
 
         if($this->getDoctype() == DOCTYPE_HTML) {
@@ -92,9 +93,9 @@ extends ESRender_Module_ContentNode_Abstract {
 			   	$originalHTML = file_get_contents($this->getCacheFileName());
 			   	$purified = $htmlPurifier->purify($originalHTML);
 			   	file_put_contents($this->getCacheFileName().'_purified.html', $purified);
-			   	$Logger->info('Stored content in file "'.$cacheFile.'"_purified.html.');
+			   	$Logger->info('Stored content in file "'.$this->getCacheFileName().'"_purified.html.');
 	    	} catch(Exception $e) {
-	    		$Logger->info('Error storing content in file "'.$cacheFile.'"_purified.html.');
+	    		$Logger->info('Error storing content in file "'.$this->getCacheFileName().'"_purified.html.');
 	    		return false;
 	    	}  
     	}

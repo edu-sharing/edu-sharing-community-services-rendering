@@ -3,6 +3,7 @@ global $Locale, $Translate;
 $msg = array();
 $msg['showInformation'] = new Phools_Message_Default('showInformation');
 $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
+$msg['toDownload'] = new Phools_Message_Default('toDownload');
 ?>
 
 <style scoped>
@@ -16,7 +17,7 @@ $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
         <div class="edusharing_rendering_content edusharing_rendering_content_embedded">
             <object data="<?php echo $content?>" type="application/pdf" width="100%" height="100%">
                 <iframe src="<?php echo $content?>" width="100%" height="100%" style="border: none;">
-                    This browser does not support PDFs. Please download the PDF to view it: <a href="<?php echo $content?>">Download PDF</a>
+                    <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" ><?php echo $msg['toDownload']->localize($Locale, $Translate);?></a>
                 </iframe>
             </object>
         </div>

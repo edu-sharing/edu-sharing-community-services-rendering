@@ -45,6 +45,7 @@ $Translate
     ->addTranslation('zh', 'title', 'Title')
     ->addTranslation('zh', 'showInformation', 'Show information')
     ->addTranslation('zh', 'hideInformation', 'Hide information')
+	->addTranslation('zh', 'toDownload', 'Download')
 	->addTranslation('zh', 'cannotOpenObject', '此材料无法在浏览器中显示')
 	->addTranslation('zh', 'cannotOpenObjectText', '为了使用材料，请下载它')
 	->addTranslation('zh', 'goToOrigin', 'Go to origin');

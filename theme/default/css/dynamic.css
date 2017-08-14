@@ -106,6 +106,10 @@ a.edusharing_rendering_content {
 	max-height: calc(100vh - 170px);
 }
 
+.edusharing_rendering_content.edusharing_rendering_content_embedded {
+	height: calc(100vh - 170px);
+}
+
 img.edusharing_rendering_content_preview {
 	display: block;
 	margin: 20px auto;

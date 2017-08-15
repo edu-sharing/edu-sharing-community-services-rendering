@@ -60,10 +60,8 @@ extends ESRender_Module_ContentNode_Abstract
         }
 
 		try {
-			$m_mimeType = $this->_ESOBJECT->getMimeType();
 			$m_path = $this->_ESOBJECT->getFilePath();
 			$m_name = $this->_ESOBJECT->getTitle();
-			$m_objectID = $this->_ESOBJECT->getObjectID();
 
 			$SoapClientParams = array();
 			if ( defined('USE_HTTP_PROXY') && USE_HTTP_PROXY )
@@ -92,6 +90,9 @@ extends ESRender_Module_ContentNode_Abstract
 
 			$wrappedParams = new stdClass();
 			$wrappedParams->uniqueId = $requestData["rep_id"]."-".$requestData["app_id"]."-".$requestData["course_id"]."-".$requestData["user_id"]."-".$requestData["tracking_id"]."-".$requestData['object_id'];
+
+            $wrappedParams->uniqueId .= '-' . $requestData['user_name'];
+
 			$wrappedParams->contentPackage = $contents;
 			$wrappedParams->language = $LanguageCode;
 			$wrappedParams->instructions = '<html><body><h1>ONYX</h1></body></html>';

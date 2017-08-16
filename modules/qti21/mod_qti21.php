@@ -35,6 +35,8 @@ class mod_qti21
 extends ESRender_Module_ContentNode_Abstract
 {
 
+	private $p_kind;
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_Base::display()
@@ -92,7 +94,7 @@ extends ESRender_Module_ContentNode_Abstract
 			$wrappedParams->uniqueId = $requestData["rep_id"]."-".$requestData["app_id"]."-".$requestData["course_id"]."-".$requestData["user_id"]."-".$requestData["tracking_id"]."-".$requestData['object_id'];
 			$wrappedParams->contentPackage = $contents;
 			$wrappedParams->language = $LanguageCode;
-			$wrappedParams->instructions = '<html><body><h1>O N Y X</h1></body></html>';
+			$wrappedParams->instructions = '<html><body><h1>ONYX</h1></body></html>';
 			$wrappedParams->tempalteId  = 'onyxdefault';
 			// @todo move to config
 			$wrappedParams->serviceName =  'esrender';
@@ -115,7 +117,18 @@ extends ESRender_Module_ContentNode_Abstract
 			}
 
 			$Template = $this->getTemplate();
-			if ( $_SESSION['esrender']['display_kind']=='inline')
+			if($this->p_kind == ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC) {
+				
+				$previewUrl = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl;
+				if(!empty($accessToken))
+					$previewUrl .= '&accessToken=' . $accessToken;
+
+				if($requestData['dynMetadata'])
+					$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+				
+				echo $Template->render('/module/qti21/dynamic', array('oru' => $oru, 'title' => $m_name, 'metadata' => $metadata, 'previewUrl' => $previewUrl));
+				
+			}else if ( $_SESSION['esrender']['display_kind']=='inline')
  			{
                      echo $Template->render('/module/qti21/inline', array('oru' => $oru, 'title' => $m_name));
 
@@ -171,6 +184,8 @@ extends ESRender_Module_ContentNode_Abstract
 		if(empty($p_kind))
 		  $p_kind = $obj_module -> getConf('defaultdisplay', $p_kind);
 
+		  $this->p_kind = $p_kind;
+		  
 		switch($p_kind)
 		{
 			case ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD:
@@ -179,6 +194,7 @@ extends ESRender_Module_ContentNode_Abstract
 
             case ESRender_Application_Interface::DISPLAY_MODE_INLINE:
 			case ESRender_Application_Interface::DISPLAY_MODE_WINDOW:
+			case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC:
 				return $this -> display($requestData);
 			break;
 

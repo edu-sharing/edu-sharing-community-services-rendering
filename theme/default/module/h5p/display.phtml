@@ -1,0 +1,45 @@
+<?php 
+global $Locale, $Translate;
+$msg = array();
+$msg['back'] = new Phools_Message_Default('back');
+if(!empty($backLink))
+	$backCloseHref = $backLink;
+	else
+		$backCloseHref = 'javascript:window.close();';
+?>
+<html>
+<head>
+<title>edu-sharing H5P module</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" type="text/css"
+	href="../../theme/default/css/display.css">
+<link rel="stylesheet" type="text/css"
+	href="../../theme/default/css/custom.css">
+<link type="text/css" rel="stylesheet" media="all"
+	href="http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/styles/h5p.css" />
+
+<!-- js modified!!!!!!!! -->
+<script type="text/javascript"
+	src="http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
+<script type="text/javascript">
+	    (function($) {
+	      $(function() {
+	        $('.h5p-container').h5p({
+	          frameJs: 'http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
+	          frameCss: 'http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/styles/h5p.css',
+	          h5pContent: '<?php echo $content?>'
+	        });
+	      });
+	    })(H5P.jQuery);
+	  </script>
+
+</head>
+  <body>
+   <nav>
+      <a class="action back" href="<?php echo $backCloseHref; ?>"><?php echo $msg['back']->localize($Locale, $Translate);?></a>
+   </nav><section style="max-width: 80%">
+    <div class="h5p-container"></div>
+    </section>
+  </body>
+</html>

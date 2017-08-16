@@ -1,0 +1,23 @@
+<?php ?>
+
+<link type="text/css" rel="stylesheet" media="all"
+	href="http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/styles/h5p.css" />
+
+<!-- js modified!!!!!!!! -->
+  <script type="text/javascript"
+	src="http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
+
+
+<script> 
+	    (function($) {
+	      $(function() {
+	        $('.h5p-container').h5p({
+	          frameJs: 'http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
+	          frameCss: 'http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/styles/h5p.css',
+	          h5pContent: '<?php echo $content?>'
+	        });
+	      });
+	    })(H5P.jQuery);
+	  </script>
+
+    <div class="h5p-container"></div>

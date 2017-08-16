@@ -31,7 +31,8 @@ $Translate
 	->addTranslation('de', 'A network error occured.', 'Ein Netzwerkfehler ist aufgetreten.')
 	->addTranslation('de', 'You\'re not authorized to access this resource.', 'Sie sind nicht authorisiert.')
 	->addTranslation('de', 'An internal server error occurred.', 'Ein interner Fehler ist aufgetreten.')
-
+	->addTranslation('de', 'The requested version of ":title" is corrupt or missing.', 'Die angeforderte Version von ":title" ist beschädigt oder nicht vorhanden.')
+    ->addTranslation('de', 'The object to which this collection object refers is no longer present.', 'Das Objekt, auf das sich dieses Sammlungsobjekt bezieht, ist nicht mehr vorhanden.')
 	->addTranslation('de', 'authored_by', 'von')
 	->addTranslation('de', 'author', 'Author')
     ->addTranslation('de', 'Resource is being converted for your view ...', 'Die Ressource wird für Ihre Ansicht konvertiert ...')

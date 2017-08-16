@@ -29,7 +29,8 @@ $Translate
 	->addTranslation('en', 'A network error occured.', 'A network error occured.')
 	->addTranslation('en', 'You\'re not authorized to access this resource.', 'You\'re not authorized to access this resource.')
 	->addTranslation('en', 'An internal server error occured.', 'An internal server error occured.')
-
+	->addTranslation('en', 'The requested version of ":title" is corrupt or missing.', 'The requested version of ":title" is corrupt or not present.')
+    ->addTranslation('en', 'The object to which this collection object refers is no longer present.', 'The object to which this collection object refers is no longer present.')
 	->addTranslation('en', 'authored_by', 'by')
 	->addTranslation('en', 'author', 'author')
     ->addTranslation('en', 'Resource is being converted for your view ...', 'Resource is being converted for your view ...')

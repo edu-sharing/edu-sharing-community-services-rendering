@@ -13,5 +13,6 @@ log/scr/*
 log/cacheCleaner.log
 log/esrender.log
 log/redirect.log
+modules/moodle3/config.php
 modules/video/config.php
 .idea

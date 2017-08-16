@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '3.2.0' );
+define ( 'UPDATEVERSION', '4.0.0' );
 function run($installedVersion) {
 	
 	try {
@@ -195,13 +195,13 @@ function run($installedVersion) {
 			$sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
 			$stmt = $pdo->prepare ( $sql );
 			$stmt->bindValue ( ':modid', '8' );
-			$stmt->bindValue ( ':mime', '%audio/vorbis%' );
+			$stmt->bindValue ( ':mime', 'audio/vorbis' );
 			$stmt->execute ();
 			
 			$sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
 			$stmt = $pdo->prepare ( $sql );
 			$stmt->bindValue ( ':modid', '8' );
-			$stmt->bindValue ( ':mime', '%audio/x-aiff%' );
+			$stmt->bindValue ( ':mime', 'audio/x-aiff' );
 			$stmt->execute ();
 		}
 		
@@ -218,7 +218,56 @@ function run($installedVersion) {
 			if(file_exists(MC_ROOT_PATH . 'vendor/lib/wurfl'))
 				rrmdir ( MC_ROOT_PATH . 'vendor/lib/wurfl' );
 			
+			if(file_exists(MC_ROOT_PATH . 'modules/moodle/edu-sharing'))
+				rrmdir ( MC_ROOT_PATH . 'modules/moodle/edu-sharing' );
+			
+			if(file_exists(MC_ROOT_PATH . 'modules/moodle2'))
+				rrmdir ( MC_ROOT_PATH . 'modules/moodle2' );
+			
+			if(file_exists(MC_ROOT_PATH . "/func/classes.new/ESRender/Module/Moodle1Base.php"))
+				unlink ( MC_ROOT_PATH . "/func/classes.new/ESRender/Module/Moodle1Base.php");
+			
+			if(file_exists(MC_ROOT_PATH . "/func/classes.new/ESRender/Module/Moodle2Base.php"))
+				unlink ( MC_ROOT_PATH . "/func/classes.new/ESRender/Module/Moodle2Base.php");
+				
+			if(file_exists(MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php"))
+				unlink ( MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php");
+			
+			$pdo = RsPDO::getInstance();
+			$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':modid', '8' );
+			$stmt->bindValue ( ':mime', 'audio/mp3' );
+			$stmt->execute ();
 		}
+
+        if (version_compare ( '4.0.0', $installedVersion ) > 0) {
+
+            $files = array();
+
+            $directory = new \RecursiveDirectoryIterator(CC_RENDER_PATH . '/picture/');
+            $iterator = new \RecursiveIteratorIterator($directory);
+            foreach ($iterator as $info) {
+                $parts = pathinfo($info->getPathname());
+                if($parts['extension'] === 'jpg')
+                    $files[] = $info->getPathname();
+            }
+
+            if(file_exists (CC_RENDER_PATH_SAFE . '/picture/')) {
+                $directory = new \RecursiveDirectoryIterator(CC_RENDER_PATH_SAFE . '/picture/');
+                $iterator = new \RecursiveIteratorIterator($directory);
+                foreach ($iterator as $info) {
+                    $parts = pathinfo($info->getPathname());
+                    if($parts['extension'] === 'jpg')
+                        $files[] = $info->getPathname();
+                }
+            }
+
+            foreach($files as $file) {
+                $image = imagecreatefromjpeg($file);
+                imagepng($image, str_replace('.jpg', '.png', $file));
+            }
+        }
 		
 		
 	} catch ( Exception $e ) {

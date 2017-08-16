@@ -20,130 +20,166 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-require_once(dirname(__FILE__).'/config.php');
-require_once(MOODLE_BASE_DIR.'/config.php');
+require_once dirname(__FILE__). '/config.php';
 
-global $CFG;
-
-require_once($CFG->libdir.'/xmlize.php');
-require_once(MOODLE_BASE_DIR."/lib/accesslib.php");
-require_once(MOODLE_BASE_DIR."/backup/lib.php");
-require_once(MOODLE_BASE_DIR."/backup/restorelib.php");
-
-require_once(dirname(__FILE__) . '/../../conf.inc.php');
-require_once(MC_LIB_PATH . '/MCMoodleCourse.class.php');
 
 /**
- * handles
- *
- * @author steffen gross / matthias hupfer
+ * @author shippeli
  * @version 1.0
  * @package core
  * @subpackage classes.new
  */
-class mod_moodle
-extends ESRender_Module_Moodle1Base
-{
+class mod_moodle3
+extends ESRender_Module_ContentNode_Abstract {
 
-	/*
-	 *
-	 */
-	protected function _createCourse(
-		stdClass $CourseCategory)
-	{
-		$Logger = $this->getLogger();
-
-		// create object
-		$file_name = $this->render_path . DIRECTORY_SEPARATOR . $this->filename;
-		$zip_file = $file_name . '.zip';
-
-		if ( ! copy($file_name, $zip_file) )
-		{
-			$Logger->error('Error renaming "'.$file_name.'" to "'.$zip_file.'".');
+	public function createInstance(array $requestData) {
+		
+		parent::createInstance($requestData);
+		$logger = $this->getLogger();
+		
+		
+		if(empty(MOODLE_BASE_DIR)) {
+			$logger->error('MOODLE_BASE_DIR not set');
 			return false;
 		}
-
-		$sname = substr( basename($zip_file), 0 , -4);
-		$fhash = $sname.'_'.rand(100000, 999999);
-
-		//.oO count the sections from the course
-		require_once(MOODLE_BASE_DIR."/lib/pclzip/pclzip.lib.php");
-		$l_file = new PclZip($zip_file);
-
-		$x_file = $l_file->extract(PCLZIP_OPT_BY_NAME, "moodle.xml", PCLZIP_OPT_EXTRACT_AS_STRING);
-		if ( ! $x_file )
-		{
-			$Logger->error('Error extracting zip-file "'.$zip_file.'".');
+		
+		if(empty(MOODLE_TOKEN)) {
+			$logger->error('MOODLE_TOKEN not set');
 			return false;
 		}
-
-		$doc = new DOMDocument(1.0);
-		if ( ! $doc->loadXML($x_file[0]['content']) )
-		{
-			$Logger->error('Error loading xml-document moodle.xml.');
-			return false;
+		
+		$url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_edusharing_restore&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
+		$ch = curl_init ();
+		curl_setopt ( $ch, CURLOPT_URL, $url );
+		curl_setopt ( $ch, CURLOPT_POST, true );
+		$params = array('nodeid'=> $requestData['object_id'],'category' => '1', 'title' => htmlentities($this->_ESOBJECT->getTitle()));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30 );
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		$resp = curl_exec($ch);
+		echo curl_error($ch);
+		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
+			$courseId = json_decode($resp);
+			$logger->error('Restored course with id ' . $courseId);
+			$this->cacheCourseId($courseId);
+			return true;
 		}
-
-		$nodes = $doc->getElementsByTagName('SECTION');
-		if ( 0 == $nodes->length )
-		{
-			$Logger->error('Could not find nodes by tag-name "SECTION".');
-			return false;
-		}
-
-		$sections = $nodes->length;
-
-		//.oO get format from XML (lams, scorm, social, topics, weeks, weekscss)
-		$nodes = $doc->getElementsByTagName('FORMAT');
-		if ( 0 == $nodes->length )
-		{
-			$Logger->error('Could not find nodes by tag-name "FORMAT".');
-			return false;
-		}
-
-		$format = ($nodes->length == 1) ? $nodes->item(0)->nodeValue : 'topics';
-
-		$newcourse = new stdClass();
-		$newcourse->fullname = "CC_".$fhash;
-		$newcourse->shortname = "CC_".$fhash;
-		$newcourse->category = $CourseCategory->id;
-		$newcourse->numsections = $sections;
-		$newcourse->format = $format;
-
-		// allow guest if course is not requested by an user of an LMS
-		if ( 'REPOSITORY' == strtoupper($RemoteApplication->getType() ) )
-		{
-			$Logger->debug('Allowing guest-access as remote-app is not an LMS.');
-			$newcourse->guest = 1;
-		}
-		else {
-			$Logger->debug('Disallowing guest-access as remote-app is an LMS.');
-			$newcourse->guest = 0;
-		}
-
-		// create course we will add our object to
-		$Logger->info('Creating course "'.$newcourse->fullname.'".');
-
-		$MoodleCourse = new MCMoodleCourse();
-		$newcourse2 = $MoodleCourse->createCourse($newcourse);
-		if ( ! $newcourse2 )
-		{
-			$Logger->error('Error creating course "'.$newcourse->fullname.'".');
-			return false;
-		}
-
-		// restore object from "backup", which is the zip we just created
-		$Logger->info('Importing backup-file "'.$zip_file.'" for course "'.$newcourse2->id.'".');
-		if ( ! import_backup_file_silently($zip_file,$newcourse2->id,$emptyfirst=true) )
-		{
-			$Logger->error('Error importing moodle-course.');
-			return false;
-		}
-
-		$Logger->info('Course "'.$newcourse2->id.'" imported successfully.');
-
-		return $newcourse2;
+		$logger->error('Error restoring course to moodle - ' . $httpcode . ' ' . json_decode($resp)->exception);
+		return false;
 	}
+	
+	private function cacheCourseId($courseId) {
+		$filename = $this->_ESOBJECT->getFilePath() . '.txt';
+		$data = $courseId;
+		file_put_contents($filename, $data);
+	}
+	
+	public function instanceExists(ESObject $ESObject, array $requestData, $contentHash) {
+		return parent::instanceExists($ESObject, $requestData, $contentHash);
+	}
+	
+	public function display(array $requestData) {	
+		$id = $this->getCourseId();
+		if($id === false) {
+			return parent::display($requestData);
+		}
+		
+		header('Location: ' . $this-> getForwardUrl($requestData));
+		return true;
+	}
+	
+	
+	/*
+	 * Call moodle WS local_edusharing_handleuser
+	 * create/fetch user
+	 * enroll user
+	 * retrieve token for login
+	 * */
+	private function getUserToken($requestData) {
 
+		$logger = $this->getLogger();
+		
+		if(empty(MOODLE_BASE_DIR)) {
+			$logger->error('MOODLE_BASE_DIR not set');
+			return false;
+		}
+		
+		if(empty(MOODLE_TOKEN)) {
+			$logger->error('MOODLE_TOKEN not set');
+			return false;
+		}
+				
+		$url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_edusharing_handleuser&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
+		$ch = curl_init ();
+		curl_setopt ( $ch, CURLOPT_URL, $url );
+		curl_setopt ( $ch, CURLOPT_POST, true );
+		$params = array('user_name' => htmlentities($requestData['user_name']), 'user_givenname' => htmlentities($requestData['user_givenname']), 'user_surname' => htmlentities($requestData['user_surname']), 'user_email' => htmlentities($requestData['user_email']) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30 );
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		$resp = curl_exec($ch);
+		echo curl_error($ch);
+		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
+			$logger->error(json_decode($resp));
+			return json_decode($resp);
+		}
+		
+		$logger->error('Error retrieving user token - ' . $httpcode . ' ' . json_decode($resp)->exception);
+		return false;
+	}
+	
+	
+	public function inline(array $requestData) {
+
+		$id = $this->getId();
+		
+		if($id === false) {
+			return parent::inline($requestData);
+		}
+		$Template = $this -> getTemplate();
+		echo $Template -> render('/module/moodle3/inline', array('url' => $this-> getForwardUrl($requestData)));
+		return true;
+	}
+	
+	public function dynamic(array $requestData) {
+		global $accessToken;
+				
+		$id = $this->getCourseId();
+		if($id === false) {
+			return parent::dynamic($requestData);
+		}
+		$Template = $this -> getTemplate();
+		$previewUrl = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl;
+		if(!empty($accessToken))
+			$previewUrl .= '&accessToken=' . $accessToken;
+		$tempArray = array('url' => $this-> getForwardUrl($requestData), 'previewUrl' => $previewUrl);
+		
+		if($requestData['dynMetadata'])
+			$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+			 
+		$tempArray['title'] = $this->_ESOBJECT->getTitle();
+		echo $Template -> render('/module/moodle3/dynamic', $tempArray);
+		return true;
+	}
+	
+	protected function getCourseId() {
+		$filename = $this->_ESOBJECT->getFilePath() . '.txt';
+		$id = file_get_contents($filename);
+		return $id;
+	}
+	
+	protected function getForwardUrl($requestData) {
+		return MOODLE_BASE_DIR . '/local/edusharing/forwardUser.php?token=' . urlencode($this-> getUserToken($requestData));
+	}
+	
+	
+	
 }
-

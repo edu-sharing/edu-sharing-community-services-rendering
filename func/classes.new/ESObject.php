@@ -34,24 +34,6 @@ include_once "ESModule.php";
 class ESObject {
 
     /**
-     * License-constants
-     *
-     * @var string
-     */
-    const COMMON_LICENSE_CUSTOM = 'CUSTOM';
-    const COMMON_LICENSE_EDU_NC = 'EDU_NC';
-    const COMMON_LICENSE_EDU_NC_ND = 'EDU_NC_ND';
-    const COMMON_LICENSE_EDU_P_NR = 'EDU_P_NR';
-    const COMMON_LICENSE_EDU_P_NR_ND = 'EDU_P_NR';
-
-    const CC_BY = 'CC_BY';
-    const CC_BY_NC = 'CC_BY_NC';
-    const CC_BY_NC_ND = 'CC_BY_NC_ND';
-    const CC_BY_NC_SA = 'CC_BY_NC_SA';
-    const CC_BY_ND = 'CC_BY_ND';
-    const CC_BY_SA = 'CC_BY_SA';
-
-    /**
      * Conversion-constants
      *
      */
@@ -166,12 +148,6 @@ class ESObject {
      * @var string
      */
     protected $ESOBJECT_LICENSE = '';
-
-    /**
-     *
-     * @var string
-     */
-    protected $ESOBJECT_LICENSE_AUTHOR = '';
 
     /**
      * @var ESModule
@@ -388,7 +364,11 @@ class ESObject {
      *
      */
     final public function getTitle() {
-        return $this -> ESOBJECT_TITLE;
+    	$title = $this->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
+    	if(!empty($title))
+    		return $title;
+    	else
+    		return $this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name');
     }
 
     /**
@@ -412,7 +392,8 @@ class ESObject {
      */
     final public function getFilePath()// deprecated
     {
-        return CC_RENDER_PATH . DIRECTORY_SEPARATOR . $this -> ESModule -> getName() . DIRECTORY_SEPARATOR . $this -> getSubPath() . DIRECTORY_SEPARATOR . $this -> getObjectIdVersion();
+    	global $CC_RENDER_PATH;
+        return $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $this -> ESModule -> getName() . DIRECTORY_SEPARATOR . $this -> getSubPath() . DIRECTORY_SEPARATOR . $this -> getObjectIdVersion();
     }
 
     /**
@@ -511,13 +492,6 @@ class ESObject {
         return $this -> ESOBJECT_LICENSE;
     }
 
-    /**
-     *
-     * @return string
-     */
-    public function getLicenseAuthor() {
-        return $this -> ESOBJECT_LICENSE_AUTHOR;
-    }
 
     /**
      * Set the appropriate module for this object.
@@ -544,6 +518,14 @@ class ESObject {
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
             return true;
+        }
+        
+        if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU') {
+        	error_log('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "DE.FWU", using module "url".');
+        	$this -> ESModule -> setName('url');
+        	$this -> ESModule -> loadModuleData();
+        	$this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+        	return true;
         }
 
         // load appropriate module
@@ -626,8 +608,9 @@ class ESObject {
         $this -> ESOBJECT_RESOURCE_VERSION = '';
 
         $title = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
-        if(!empty($title))
-            $this -> ESOBJECT_TITLE = $title;
+        if(empty($title))
+        	$title = $this -> AlfrescoNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name');
+        $this -> ESOBJECT_TITLE = $title;
 
         $mimetype = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}format');
         if(!empty($mimetype))
@@ -653,23 +636,11 @@ class ESObject {
         $ressourceversion = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}ccressourceversion');
         if (!empty($ressourceversion))
             $this -> ESOBJECT_RESOURCE_VERSION = $ressourceversion;
-
-        // license-handling
-        $this -> ESOBJECT_LICENSE = null;
-        $licenseKey =  $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}commonlicense_key');
-        $author = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}lifecyclecontributer_author');
-        if (!empty($licenseKey)) {
-            if (!empty($author)) {
-                $name = $this -> getFNfromVcard($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}lifecyclecontributer_author'));
-                if($name) {
-                    $this -> ESOBJECT_LICENSE_AUTHOR = $name;
-                }
-            }
-
-            $factory = new ESRender_LicenseFactory_Implementation();
-            $this -> ESOBJECT_LICENSE = $factory -> getLicense($licenseKey, $this -> ESOBJECT_LICENSE_AUTHOR, $this -> AlfrescoNode -> getProperty('{virtualproperty}permalink'), $this -> ESOBJECT_TITLE);
-        }
-
+        
+        $commonlicense_key = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}commonlicense_key');
+        if(!empty($commonlicense_key))
+        	$this -> ESOBJECT_LICENSE = new ESRender_License($this);
+        
         $this -> metadatahandler = new ESRender_Metadata_Handler($this);
 
         return true;
@@ -877,4 +848,21 @@ class ESObject {
     	
     }
 
+    public function renderOriginalDeleted($requestData, $display_kind, $template) {
+        if($display_kind == 'dynamic') {
+            if($requestData['dynMetadata'])
+                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/dynamic');
+            $tempArray['title'] = $this->getTitle();
+            echo $template -> render('/special/originaldeleted/dynamic', $tempArray);
+        } else if($display_kind == 'inline') {
+            if(ENABLE_METADATA_RENDERING) {
+                $tempArray['metadata'] = $this -> metadatahandler -> render($template);
+            }
+            $tempArray['title'] = $this->getTitle();
+            echo $template -> render('/special/originaldeleted/inline', $tempArray);
+        } else {
+            throw new ESRender_Exception_CorruptVersion($this->getTitle());
+        }
+        exit();
+    }
 }

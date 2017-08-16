@@ -65,18 +65,26 @@ extends ESRender_Module_ContentNode_Abstract {
 
             if (!empty($width) && !empty($height)) {
                 $newImage = imagecreatetruecolor($width, $height);
+                imageAlphaBlending($newImage, false);
+                imageSaveAlpha($newImage, true);
                 if (!imagecopyresampled($newImage, $tmpFile, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight))
                     throw new Exception('Cannot resample image');
                 $Logger -> debug('Resampled picture (' . $width . ' px x ' . $height . ' px).');
-                if (!imagejpeg($newImage, $DestinationFile))
+                if (!imagepng($newImage, $DestinationFile))
                     throw new Exception('Cannot convert image');
                 imagedestroy($newImage);
             } else {
-                if (!imagejpeg($tmpFile, $DestinationFile))
-                    throw new Exception('Cannot convert image');
+                if(IMAGETYPE_PNG === $type) { // to keep transparency
+                    if (!copy($SourceFile, $DestinationFile))
+                        throw new Exception('Cannot copy image');
+                } else {
+                    if (!imagepng($tmpFile, $DestinationFile))
+                        throw new Exception('Cannot convert image');
+                }
+
                 imagedestroy($tmpFile);
             }
-            $Logger -> debug('Converted picture to jpg.');
+            $Logger -> debug('Converted picture to png.');
 
         } catch (Exception $e) {
             $Logger -> debug($e -> getMessage());
@@ -90,7 +98,7 @@ extends ESRender_Module_ContentNode_Abstract {
      * @return string
      */
     protected function getImageFilename() {
-        return $this -> _ESOBJECT -> getFilePath() . '.jpg';
+        return $this -> _ESOBJECT -> getFilePath() . '.png';
     }
 
     protected function renderTemplate(array $requestData, $TemplateName, $getDefaultData = true) {
@@ -101,12 +109,12 @@ extends ESRender_Module_ContentNode_Abstract {
         $m_name = $this -> _ESOBJECT -> getTitle();
         $f_path = $this -> _ESOBJECT -> getFilePath();
 
-        $imageUrl = $m_path . '.jpg?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+        $imageUrl = $m_path . '.png?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
 
         if($getDefaultData)
         	$template_data = parent::prepareRenderData($requestData);
         
-        $template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
+        $template_data['title'] = $this -> _ESOBJECT -> getTitle();
         $template_data['image_url'] = $imageUrl;
         $Template = $this -> getTemplate();
         $rendered = $Template -> render($TemplateName, $template_data);
@@ -166,7 +174,7 @@ extends ESRender_Module_ContentNode_Abstract {
      */
     protected function dynamic(array $requestData) {
     	$Logger = $this -> getLogger();   	
-    	$template_data['image_url'] = $this -> _ESOBJECT -> getPath() . '.jpg?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+    	$template_data['image_url'] = $this -> _ESOBJECT -> getPath() . '.png?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
     	
     	if($requestData['dynMetadata'])
 	    	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');

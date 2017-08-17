@@ -278,6 +278,11 @@ function run($installedVersion) {
             $stmt->bindValue ( ':mime', 'text/plain' );
             $stmt->execute ();
 
+            rename ( MC_ROOT_PATH . 'conf/system.conf.php', MC_ROOT_PATH . 'conf/bk_system.conf.php' );
+            $fileContents = file_get_contents ( MC_ROOT_PATH . 'conf/bk_system.conf.php' );
+            $fileContents = str_replace ('ENABLE_METADATA_RENDERING', 'ENABLE_METADATA_INLINE_RENDERING', $fileContents );
+            file_put_contents ( MC_ROOT_PATH . 'conf/system.conf.php', $fileContents );
+
         }
 		
 		

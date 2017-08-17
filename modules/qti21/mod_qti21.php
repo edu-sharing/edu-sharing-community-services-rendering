@@ -124,7 +124,7 @@ extends ESRender_Module_ContentNode_Abstract
 				if(!empty($accessToken))
 					$previewUrl .= '&accessToken=' . $accessToken;
 
-				if($requestData['dynMetadata'])
+				if(Config::get('showMetadata'))
 					$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
 				
 				echo $Template->render('/module/qti21/dynamic', array('oru' => $oru, 'title' => $m_name, 'metadata' => $metadata, 'previewUrl' => $previewUrl));

@@ -162,7 +162,7 @@ extends ESRender_Module_ContentNode_Abstract {
 			$previewUrl .= '&accessToken=' . $accessToken;
 		$tempArray = array('url' => $this-> getForwardUrl($requestData), 'previewUrl' => $previewUrl);
 		
-		if($requestData['dynMetadata'])
+		if(Config::get('showMetadata'))
 			$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
 			 
 		$tempArray['title'] = $this->_ESOBJECT->getTitle();

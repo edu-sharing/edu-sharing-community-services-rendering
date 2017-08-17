@@ -267,13 +267,19 @@ try {
             throw new ESRender_Exception_InvalidRequestParam('display');
         }
     }
-    
-    // METADATA MODE
-    $dynMetadata = true;
-    $dynMetadata_req = mc_Request::fetch('metadata', 'CHAR', 'true');
-    if($dynMetadata_req == 'false')
-    	$dynMetadata = false;
 
+    // Display parameters
+    Config::set('showMetadata', true);
+    if(mc_Request::fetch('showMetadata', 'CHAR') === 'false')
+        Config::set('showMetadata', false);
+
+    Config::set('showDownloadButton', true);
+    if(mc_Request::fetch('showDownloadButton', 'CHAR') === 'false')
+        Config::set('showDownloadButton', false);
+
+    Config::set('showDownloadAdvice', true);
+    if(mc_Request::fetch('showDownloadAdvice', 'CHAR') === 'false')
+        Config::set('showDownloadAdvice', false);
 
     // ACCESS TOKEN
     global $accessToken;
@@ -547,7 +553,7 @@ try {
 
     $originalDeleted = $ESObject -> AlfrescoNode -> getProperty('{virtualproperty}originaldeleted');
     if(!empty($originalDeleted)) {
-        $ESObject -> renderOriginalDeleted(array_merge($req_data, array('dynMetadata'=>$dynMetadata)), $display_kind, $Template);
+        $ESObject -> renderOriginalDeleted($req_data, $display_kind, $Template);
     }
 
     // stop session to allow flawless module-operation
@@ -754,8 +760,7 @@ try {
             'usernameEncrypted' => $req_data['usernameEncrypted'],
             'version' => $req_data['version'],
             'backLink' => $req_data['backLink'],
-        	'token' => $token,
-        	'dynMetadata' => $dynMetadata
+        	'token' => $token
         ),
         $Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash))) {
         $Logger -> error('Error processing object "' . $req_data['obj_id'] . '".');

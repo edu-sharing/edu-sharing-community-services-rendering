@@ -115,7 +115,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		/*$Logger = $this -> getLogger();
 		$template_data['image_url'] = $this -> _ESOBJECT -> getPath() . '.jpg?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
 		 
-		if($requestData['dynMetadata'])
+		if(Config::get('showMetadata'))
 			$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
 			 
 			$template_data['title'] = $this->_ESOBJECT->getTitle();

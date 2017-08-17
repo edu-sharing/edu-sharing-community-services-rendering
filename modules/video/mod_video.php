@@ -148,7 +148,7 @@ extends ESRender_Module_AudioVideo_Abstract
     					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
     					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
             $template_data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
-        if($requestData['dynMetadata'])
+        if(Config::get('showMetadata'))
     		$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	$template_data['title'] = $this->_ESOBJECT->getTitle();
     	echo $this->getTemplate()->render('/module/video/dynamic', $template_data);

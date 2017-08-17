@@ -211,7 +211,7 @@ extends ESRender_Module_Base
         		'title' => $this->_ESOBJECT->getTitle(),
             	'url' => $this->renderUrl($requestData));
 
-        if(ENABLE_METADATA_RENDERING) {
+        if(ENABLE_METADATA_INLINE_RENDERING) {
         	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
         	$data['metadata'] = $metadata;
         }
@@ -239,7 +239,7 @@ extends ESRender_Module_Base
 
        $data = array();
        $data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
-       if($requestData['dynMetadata'])
+       if(Config::get('showMetadata'))
        		$data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
        $data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
        if(!empty($accessToken))

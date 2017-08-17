@@ -71,7 +71,7 @@ extends ESRender_Module_ContentNode_Abstract {
             $template_data['content'] = nl2br(file_get_contents($this->getCacheFileName()));
         }
 
-        if($requestData['dynMetadata'])
+        if(Config::get('showMetadata'))
         	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
 
         $Template = $this -> getTemplate();

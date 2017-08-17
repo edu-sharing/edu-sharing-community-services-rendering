@@ -92,7 +92,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
                     'height' => $requestData['height'],
                     'backLink' => $requestData['backLink']);
 
-        if(ENABLE_METADATA_RENDERING) {
+        if(ENABLE_METADATA_INLINE_RENDERING) {
 	       	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
 			$data['metadata'] = $metadata;
         }

@@ -60,7 +60,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     	if(!empty($accessToken))
     		$previewUrl .= '&accessToken=' . $accessToken;
     	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $previewUrl);
-    	if($requestData['dynMetadata'])
+    	if(Config::get('showMetadata'))
     		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	
     	$tempArray['title'] = $this->_ESOBJECT->getTitle();
@@ -75,7 +75,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             return false;
         }
         
-        if(ENABLE_METADATA_RENDERING) {
+        if(ENABLE_METADATA_INLINE_RENDERING) {
 	        $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
 	        $data['metadata'] = $metadata;
         }

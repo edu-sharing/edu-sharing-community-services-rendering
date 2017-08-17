@@ -29,7 +29,7 @@ require_once dirname(__FILE__). '/config.php';
  * @package core
  * @subpackage classes.new
  */
-class mod_moodle3
+class mod_moodle
 extends ESRender_Module_ContentNode_Abstract {
 
 	public function createInstance(array $requestData) {
@@ -145,7 +145,7 @@ extends ESRender_Module_ContentNode_Abstract {
 			return parent::inline($requestData);
 		}
 		$Template = $this -> getTemplate();
-		echo $Template -> render('/module/moodle3/inline', array('url' => $this-> getForwardUrl($requestData)));
+		echo $Template -> render('/module/moodle/inline', array('url' => $this-> getForwardUrl($requestData)));
 		return true;
 	}
 	
@@ -166,7 +166,7 @@ extends ESRender_Module_ContentNode_Abstract {
 			$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
 			 
 		$tempArray['title'] = $this->_ESOBJECT->getTitle();
-		echo $Template -> render('/module/moodle3/dynamic', $tempArray);
+		echo $Template -> render('/module/moodle/dynamic', $tempArray);
 		return true;
 	}
 	

@@ -12,27 +12,27 @@ if(!empty($backLink))
 <title>edu-sharing H5P module</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<link rel="stylesheet" type="text/css"
-	href="../../theme/default/css/display.css">
-<link rel="stylesheet" type="text/css"
-	href="../../theme/default/css/custom.css">
-<link type="text/css" rel="stylesheet" media="all"
-	href="http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/styles/h5p.css" />
+    <link rel="stylesheet" type="text/css"
+          href="../../theme/default/css/display.css">
+    <link rel="stylesheet" type="text/css"
+          href="../../theme/default/css/custom.css">
+    <link type="text/css" rel="stylesheet" media="all"
+          href="../../theme/default/module/h5p/dist/styles/h5p.css" />
 
-<!-- js modified!!!!!!!! -->
-<script type="text/javascript"
-	src="http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
-<script type="text/javascript">
-	    (function($) {
-	      $(function() {
-	        $('.h5p-container').h5p({
-	          frameJs: 'http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
-	          frameCss: 'http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/styles/h5p.css',
-	          h5pContent: '<?php echo $content?>'
-	        });
-	      });
-	    })(H5P.jQuery);
-	  </script>
+    <!-- js modified!!!!!!!! -->
+    <script type="text/javascript" src="../../theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
+
+    <script type="text/javascript">
+        (function($) {
+            $(function() {
+                $('.h5p-container').h5p({
+                    frameJs: '../../theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
+                    frameCss: '../../theme/default/module/h5p/dist/styles/h5p.css',
+                    h5pContent: '<?php echo str_replace('cache/', '', $content)?>'
+                });
+            });
+        })(H5P.jQuery);
+    </script>
 
 </head>
   <body>

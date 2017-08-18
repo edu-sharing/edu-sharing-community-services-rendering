@@ -528,6 +528,15 @@ class ESObject {
         	return true;
         }
 
+        //better application/octed-stream with content h5p.json
+        if(strpos($this->getFilename(), 'h5p') !== false) {
+            error_log('Found extension "h5p", using module "h5p".');
+            $this -> ESModule -> setName('h5p');
+            $this -> ESModule -> loadModuleData();
+            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            return true;
+        }
+
         // load appropriate module
         $wwwurl = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
         if (!empty($wwwurl)) {

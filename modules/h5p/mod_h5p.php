@@ -40,8 +40,10 @@ extends ESRender_Module_ContentNode_Abstract {
 		if($getDefaultData)
 			$template_data = parent::prepareRenderData($requestData);
 			$template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
-			$template_data['content'] = $this -> _ESOBJECT -> getPath();// . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-			$Template = $this -> getTemplate();
+			$template_data['content'] = $this -> _ESOBJECT -> getPath();// no, causes trouble with internal h5p urls . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+           if(Config::get('showMetadata'))
+                $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+            $Template = $this -> getTemplate();
 			$rendered = $Template -> render($TemplateName, $template_data);
 
 			return $rendered;
@@ -66,13 +68,16 @@ extends ESRender_Module_ContentNode_Abstract {
 		if ( ! mkdir($path, 0744) ) {
 			return false;
 		}
-		
-		require_once(MC_LIB_PATH."File.class.php");
-		if ( ! $l_zip = mc_File::factory($path.'.zip') ) {
-			throw new Exception(__FILE__.'::'.__METHOD__.'('.__LINE__.')', '(failed : zip load)'.'<br>'.($zip_file));
-		}
-		
-		$l_zip->extract($path.DIRECTORY_SEPARATOR);
+
+        $zip = new ZipArchive;
+        $res = $zip->open($path.'.zip');
+        if ($res === TRUE) {
+            $zip->extractTo($path.DIRECTORY_SEPARATOR);
+            $zip->close();
+        } else {
+            error_log('error unzipping ' . $path.'.zip');
+            return false;
+        }
 
 		return true;
 	}
@@ -110,8 +115,11 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * @see ESRender_Module_ContentNode_Abstract::dynamic()
 	 */
 	protected function dynamic(array $requestData) {
-		
-		die('no');
+
+        echo $this -> renderTemplate($requestData, '/module/h5p/dynamic');
+
+        return true;
+
 		/*$Logger = $this -> getLogger();
 		$template_data['image_url'] = $this -> _ESOBJECT -> getPath() . '.jpg?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
 		 

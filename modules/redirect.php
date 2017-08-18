@@ -103,7 +103,7 @@ if(($_SESSION['esrender']['token'] !== $_REQUEST['token']) && ($_SESSION['esrend
 	$_SESSION['esrender']['token'] = $token;
 	setcookie('ESSEC', $token, time()+300);
 }
-	
+
 session_write_close();
 
 // check path access

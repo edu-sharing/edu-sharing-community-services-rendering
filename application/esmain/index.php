@@ -281,10 +281,7 @@ try {
     if(mc_Request::fetch('showDownloadAdvice', 'CHAR') === 'false')
         Config::set('showDownloadAdvice', false);
 
-    // ACCESS TOKEN
-    global $accessToken;
-    $accessToken = mc_Request::fetch('accessToken', 'CHAR', '');
-
+    // Internal
     $req_data['token'] = mc_Request::fetch('token', 'CHAR', '');
     
     // WIDTH
@@ -350,7 +347,7 @@ try {
         $Plugin -> preSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
     }    
     
-    $skipSslVerification = true;//for testing
+    $skipSslVerification = false;
     
     if(!empty($req_data['token'])) {
     	if($req_data['token'] == $_SESSION['esrender']['token'] || empty($_SESSION['esrender']['token'])) {

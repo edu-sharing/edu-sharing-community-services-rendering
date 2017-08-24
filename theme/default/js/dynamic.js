@@ -78,9 +78,3 @@ window.addEventListener("scroll", function() {
             document.getElementById('edusharing_scrolltotop').style.display = 'none';
     }
 });
-
-/*
-var renderwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-if(renderwidth < 1000) {
-	toggle_edusharing_rendering_metadata();
-}*/

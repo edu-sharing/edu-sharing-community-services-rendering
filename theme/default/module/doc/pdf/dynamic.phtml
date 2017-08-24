@@ -17,7 +17,6 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
 	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
 	<div class="edusharing_rendering_content_wrapper" role="main">
         <div class="edusharing_rendering_content edusharing_rendering_content_embedded">
-            <object data="<?php echo $content?>" type="application/pdf" width="100%" height="100%">
                 <iframe src="<?php echo $content?>" width="100%" height="100%" style="border: none;">
                     <?php
                         echo '<h3>' . $msg['cannotOpenObject']->localize($Locale, $Translate) . '</h3>' .
@@ -26,7 +25,6 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
                             echo '<a href="' . $url .'" target="_blank" class="edusharing_rendering_content" >' . $msg['toDownload']->localize($Locale, $Translate) . '</a>';
                     ?>
                 </iframe>
-            </object>
         </div>
     </div>
 	<?php echo $metadata; ?>

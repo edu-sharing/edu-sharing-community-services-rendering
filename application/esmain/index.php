@@ -281,6 +281,10 @@ try {
     if(mc_Request::fetch('showDownloadAdvice', 'CHAR') === 'false')
         Config::set('showDownloadAdvice', false);
 
+    // ACCESS TOKEN
+    $accessToken = mc_Request::fetch('accessToken', 'CHAR', '');
+    Config::set('accessToken', $accessToken);
+
     // Internal
     $req_data['token'] = mc_Request::fetch('token', 'CHAR', '');
     

@@ -278,14 +278,18 @@ function run($installedVersion) {
             $stmt->bindValue ( ':mime', 'text/plain' );
             $stmt->execute ();
 
-            rename ( MC_ROOT_PATH . 'conf/system.conf.php', MC_ROOT_PATH . 'conf/bk_system.conf.php' );
-            $fileContents = file_get_contents ( MC_ROOT_PATH . 'conf/bk_system.conf.php' );
+            $fileContents = file_get_contents ( MC_ROOT_PATH . 'conf/system.conf.php' );
             $fileContents = str_replace ('ENABLE_METADATA_RENDERING', 'ENABLE_METADATA_INLINE_RENDERING', $fileContents );
             file_put_contents ( MC_ROOT_PATH . 'conf/system.conf.php', $fileContents );
 
+            $fileContents = file_get_contents ( MC_ROOT_PATH . 'conf/system.conf.php' );
+            $fileContents = str_replace ('date_default_timezone_set', '#date_default_timezone_set', $fileContents );
+            file_put_contents ( MC_ROOT_PATH . 'conf/system.conf.php', $fileContents );
+
+            file_put_contents(MC_ROOT_PATH . 'conf/system.conf.php', '$INTERNAL_URL = "";', FILE_APPEND | LOCK_EX);
+            file_put_contents(MC_ROOT_PATH . 'conf/defines.conf.php', 'define("INTERNAL_URL", $INTERNAL_URL);', FILE_APPEND | LOCK_EX);
         }
-		
-		
+
 	} catch ( Exception $e ) {
 		error_log ( print_r ( $e, true ) );
 		return false;

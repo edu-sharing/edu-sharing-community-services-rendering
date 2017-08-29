@@ -294,6 +294,11 @@ try {
     // HEIGHT
     $req_data['height'] = mc_Request::fetch('height', 'INT', 0);
 
+    // Internal communication
+    Config::set('internal_request', true);
+    if(mc_Request::fetch('com', 'CHAR') === 'internal')
+        Config::set('internal_request', true);
+
     $CurrentDirectoryName = basename(dirname(__FILE__));
     $application = new ESApp();
     $application -> getApp($CurrentDirectoryName);

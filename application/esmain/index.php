@@ -295,7 +295,7 @@ try {
     $req_data['height'] = mc_Request::fetch('height', 'INT', 0);
 
     // Internal communication
-    Config::set('internal_request', true);
+    Config::set('internal_request', false);
     if(mc_Request::fetch('com', 'CHAR') === 'internal')
         Config::set('internal_request', true);
 

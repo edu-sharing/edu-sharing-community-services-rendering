@@ -525,6 +525,10 @@ try {
             $req_data['version'] = $contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}versionLabel');
     }
 
+    //set version to 1 for remote repository type youtube
+    if($contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'YOUTUBE')
+        $req_data['version'] = 1;
+
     if($req_data['version'] === false) {
     	$displayTitle = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
     	if(empty($displayTitle))

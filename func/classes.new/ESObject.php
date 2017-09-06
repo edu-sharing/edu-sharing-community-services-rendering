@@ -864,6 +864,9 @@ class ESObject {
             echo $template -> render('/special/originaldeleted/dynamic', $tempArray);
         } else if($display_kind == 'inline') {
             $tempArray['title'] = $this->getTitle();
+            if(ENABLE_METADATA_INLINE_RENDERING) {
+                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/inline');
+            }
             echo $template -> render('/special/originaldeleted/inline', $tempArray);
         } else {
             throw new ESRender_Exception_CorruptVersion($this->getTitle());

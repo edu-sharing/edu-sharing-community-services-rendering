@@ -526,8 +526,8 @@ try {
     }
 
     //set version to 1 for remote repository type youtube
-    if($contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'YOUTUBE')
-        $req_data['version'] = 1;
+    if($contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') != 'ALFRESCO')
+        $req_data['version'] = '';
 
     if($req_data['version'] === false) {
     	$displayTitle = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');

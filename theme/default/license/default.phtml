@@ -5,7 +5,7 @@ global $Locale, $Translate;
 $msg = array();
 $msg['customLicense'] = new Phools_Message_Default('custom license');
 
-$licenceContent = '<a class="license_permalink" href="'.$license_permalink.'" target="_blank" title="'.htmlentities($license_filename).'">'
+$licenceContent = '<a class="license_permalink" href="'.$license_permalink.'?closeOnBack=true" target="_blank" title="'.htmlentities($license_filename).'">'
                     . htmlentities($license_filename)
                     . '</a>'
                     . '&nbsp;'

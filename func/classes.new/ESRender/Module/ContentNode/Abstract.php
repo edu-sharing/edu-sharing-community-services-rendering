@@ -84,7 +84,7 @@ extends ESRender_Module_Base
             
             if($content === false) {
                 fclose($handle);    
-                $Logger->info('Error fetching content.');
+                $Logger->error('Error fetching content from ' . $url);
                 return false;
             }
             
@@ -93,7 +93,7 @@ extends ESRender_Module_Base
             $Logger->info('Stored content in file "'.$cacheFile.'".');
 
         } catch (Exception $e) {
-            $Logger->info('Error storing content in file "'.$cacheFile.'".');
+            $Logger->error('Error storing content in file "'.$cacheFile.'".');
             return false;
         }
         

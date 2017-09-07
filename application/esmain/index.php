@@ -515,7 +515,7 @@ try {
     	if(!empty($CC_RENDER_PATH_SAFE))
     		$CC_RENDER_PATH = $CC_RENDER_PATH_SAFE;
     }
-        
+
     //if not set by usage set it with property value
     if($req_data['version'] < 1) {
         //set alf version
@@ -525,8 +525,8 @@ try {
             $req_data['version'] = $contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}versionLabel');
     }
 
-    //set version to 1 for remote repository type youtube
-    if($contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') != 'ALFRESCO')
+    //set version to 1 for remote objects
+    if($contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype'))
         $req_data['version'] = '';
 
     if($req_data['version'] === false) {

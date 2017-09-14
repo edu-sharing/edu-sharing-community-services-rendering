@@ -12,7 +12,7 @@ $licenceContent = '<a class="license_permalink" href="'.$license_permalink.'?clo
                     . htmlentities($this->translate('authored_by'), ENT_COMPAT, 'utf-8')
                     . '&nbsp;'
                     . '<span class="author">'
-                    . htmlspecialchars($license_author, ENT_QUOTES, 'utf-8')
+                    . $license_author
                     . '</span>'
                     . '&nbsp;'
                     . htmlentities($this->translate('published under a'), ENT_COMPAT, 'utf-8')

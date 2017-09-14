@@ -273,7 +273,7 @@ try {
     if(mc_Request::fetch('showMetadata', 'CHAR') === 'false')
         Config::set('showMetadata', false);
 
-    Config::set('showDownloadButton', true);
+    Config::set('showDownloadButton', true); 
     if(mc_Request::fetch('showDownloadButton', 'CHAR') === 'false')
         Config::set('showDownloadButton', false);
 

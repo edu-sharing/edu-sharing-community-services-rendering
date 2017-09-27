@@ -66,13 +66,14 @@ extends ESRender_Module_ContentNode_Abstract {
 		if ( ! mkdir($path, 0744) ) {
 			return false;
 		}
-		
-		require_once(MC_LIB_PATH."File.class.php");
-		if ( ! $l_zip = mc_File::factory($path.'.zip') ) {
-			throw new Exception(__FILE__.'::'.__METHOD__.'('.__LINE__.')', '(failed : zip load)'.'<br>'.($zip_file));
-		}
-		
-		$l_zip->extract($path.DIRECTORY_SEPARATOR);
+
+        $zip = new ZipArchive;
+        $res = $zip->open($path.'.zip');
+        if ($res === TRUE) {
+            $zip->extractTo($path.DIRECTORY_SEPARATOR);
+            $zip->close();
+            return true;
+        }
 
 		return true;
 	}

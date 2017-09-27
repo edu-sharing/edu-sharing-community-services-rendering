@@ -199,7 +199,7 @@ extends ESRender_Module_ContentNode_Abstract {
     public function requestingDeviceCanRenderContent() {
         switch($this->getDoctype()) {
             case DOCTYPE_PDF :
-                return $this -> checkPdfUserAgents();
+                return true;
                 break;
             case DOCTYPE_ODF :
                 return true;

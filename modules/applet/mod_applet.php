@@ -67,15 +67,15 @@ class mod_applet
 			return false;
 		}
 
-		require_once(MC_LIB_PATH."File.class.php");
-		if ( ! $l_zip = mc_File::factory($zip_file) )
-		{
-			throw new SoapFault(__FILE__.'::'.__METHOD__.'('.__LINE__.')', '(failed : zip load)'.'<br>'.($zip_file));
-		}
+        $zip = new ZipArchive;
+        $res = $zip->open($zip_file);
+        if ($res === TRUE) {
+            $zip->extractTo($extraction_path . DIRECTORY_SEPARATOR);
+            $zip->close();
+            return true;
+        }
 
-		$l_list = $l_zip->extract($extraction_path . DIRECTORY_SEPARATOR);
-
-		return true;
+		return false;
 	}
 
 	/**

@@ -223,7 +223,7 @@ extends ESRender_Module_Base
 
         $snippet = $this->getTemplate()->render('/module/default/inline', $data);
                 
-        $Logger->debug('ESRender_Module_Base::inline Snippet "' . $snippet . '"');
+        $Logger->debug('ESRender_Module_Base::inline');
 
         echo $snippet;
 

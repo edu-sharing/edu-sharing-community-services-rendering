@@ -485,9 +485,11 @@ try {
         $dummy_lmsId = $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> lmsId;
         $dummy_resourceId = $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> resourceId;
 
-        $xmlParams = simplexml_load_string($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> usageXmlParams);
-        if (!$xmlParams) {
-            throw new Exception('Error loading usageXmlParams.');
+        if(!empty($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> usageXmlParams)) {
+            $xmlParams = simplexml_load_string($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> usageXmlParams);
+            if (!$xmlParams) {
+                throw new Exception('Error loading usageXmlParams.');
+            }
         }
 
         foreach ($Plugins as $name => $Plugin) {

@@ -6,7 +6,7 @@
  *
  */
 
-class mod_url
+class mod_learningapps
 extends ESRender_Module_NonContentNode_Abstract {
 
     protected function display(array $requestData) {

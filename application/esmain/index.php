@@ -658,21 +658,18 @@ try {
                 'renderAppId' => $hc->prop_array['appid']);
             
             if (!$Module -> createInstance($paramsCreate)) {
-            
                 $Logger -> error('Error creating new object-instance. Attempting to remove created object.');
-
                 if (!$ESObject -> deleteFromDb()) {
                     $Logger -> error('Error removing object-instance "' . $ESObject -> getObjectID() . '".');
                 }
-
+                $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
                 $Logger -> info('Successfully removed created object.');
-
                 throw new Exception('Error creating instance.');
             }
 
             if (!$ESObject -> setData2Db()) {
+                $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
                 $Logger -> error('Error storing object-data in database.');
-
                 throw new Exception('Error storing instance-data.');
             }
         } catch (Exception $e) {
@@ -689,9 +686,7 @@ try {
             $Plugin -> postInstanciateObject();
         }
 
-        //unlock instance
         $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
-
     }
 
     $Logger -> info('Successfully fetched instance.');

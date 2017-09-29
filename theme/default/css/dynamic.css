@@ -192,3 +192,12 @@ img.edusharing_rendering_content_preview {
 	}
 
 }
+
+
+/*to override inline style (brought by video dynamic)*/
+.mdsGroup {
+	padding: 0 20px !important;
+}
+.mdsGroup:first-child {
+	margin-top: 0 !important;
+}

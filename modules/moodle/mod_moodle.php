@@ -63,6 +63,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 		if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
+		    $resp = str_replace('<?php', '', $resp); // moodle reponse sometimes contains '<?php' for some reason
 			$courseId = json_decode($resp);
 			$logger->error('Restored course with id ' . $courseId);
 			$this->cacheCourseId($courseId);

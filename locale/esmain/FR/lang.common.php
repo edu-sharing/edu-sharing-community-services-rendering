@@ -59,4 +59,5 @@ $Translate
 	->addTranslation('fr', 'cannotOpenObject', 'Ce matériel ne peut pas être affiché dans le navigateur.')
 	->addTranslation('fr', 'cannotOpenObjectText', 'Pour utiliser le matériel, veuillez le télécharger.')
 	->addTranslation('fr', 'goToOrigin', 'Aller à l`origine')
-    ->addTranslation('fr', 'showDocument', 'Afficher le document');
+    ->addTranslation('fr', 'showDocument', 'Afficher le document')
+    ->addTranslation('fr', 'contentReadPermissionDenied', 'Vous n`avez pas la permission de voir le contenu de ce matériel.');

@@ -9,11 +9,7 @@ class ESRender_Metadata_Handler {
 	}
 
 	public function render(Phools_Template_Interface $template, $tmpl) {
-        $previewUrl = $this->esObject->getPreviewUrl();
-        if(!in_array('ReadAll', Config::get('permissions'))) {
-            $previewUrl = '';
-        }
-        $templateData = array('metadataHtml' => $this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->mdsTemplate, 'title' => $this->esObject->getTitle(), 'previewUrl' => $previewUrl);
+        $templateData = array('metadataHtml' => $this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->mdsTemplate, 'title' => $this->esObject->getTitle(), 'previewUrl' => $this->esObject->getPreviewUrl());
         return $template -> render($tmpl, $templateData);
 	}
 }

@@ -1,10 +1,16 @@
 <?php
 global $Locale, $Translate;
-$msg['error'] = new Phools_Message_Default('The object to which this collection object refers is no longer present.');
+$msg['contentReadPermissionDenied'] = new Phools_Message_Default('contentReadPermissionDenied');
 ?>
-<style scoped>
-    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
-    <?php include(dirname(__FILE__) . '/../../css/inline.css'); ?>
-</style>
-<img src="https://kkytbsncd.org/wp-content/uploads/2017/02/66949567.jpg">
+    <style scoped>
+        <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+        <?php include(dirname(__FILE__) . '/../../css/inline.css'); ?>
+    </style>
+    <span>
+    <div class="error">
+        <div class="message_wrapper">
+            <span class="message"><?php echo $msg['contentReadPermissionDenied']-> localize($Locale, $Translate);?></span>
+        </div>
+    </div>
+</span>
 <?php echo $metadata?>

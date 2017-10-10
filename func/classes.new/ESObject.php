@@ -857,13 +857,13 @@ class ESObject {
     }
 
     public function renderContentReadPermissionDenied($requestData, $display_kind, $template) {
+        $tempArray['title'] = $this->getTitle();
+        $tempArray['previewUrl'] = $this->getPreviewUrl();
         if($display_kind == 'dynamic') {
-            $tempArray['title'] = $this->getTitle();
             if(Config::get('showMetadata'))
                 $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/dynamic');
             echo $template -> render('/special/contentreadpermissiondenied/dynamic', $tempArray);
         } else if($display_kind == 'inline') {
-            $tempArray['title'] = $this->getTitle();
             if(ENABLE_METADATA_INLINE_RENDERING) {
                 $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/inline');
             }

@@ -470,6 +470,9 @@ try {
         throw new ESRender_Exception_InfoLms($e);
     }
 
+    $permissions = $renderInfoLMSReturn->getRenderInfoLMSReturn->permissions;
+    Config::set('permissions', $permissions);
+
     // check usage
     if ($req_data['rep_id'] != $req_data['app_id']) {
         // non-repositories MUST supply usage-info
@@ -563,7 +566,7 @@ try {
 
     $Logger -> info('Successfully initialized instance.');
 
-    if($contentReadPermissionDenied || 1)
+    if(!in_array('ReadAll', Config::get('permissions')))
         $ESObject -> renderContentReadPermissionDenied($req_data, $display_kind, $Template);
 
     $originalDeleted = $ESObject -> AlfrescoNode -> getProperty('{virtualproperty}originaldeleted');

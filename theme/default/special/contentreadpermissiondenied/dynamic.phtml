@@ -8,7 +8,7 @@ $msg['contentReadPermissionDenied'] = new Phools_Message_Default('contentReadPer
     <?php include(dirname(__FILE__) . '/../../css/dynamic.css'); ?>
     <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
     div.error {
-        padding: 10px;
+        padding: 100px 10px;
         text-align: center;
     }
     div.message_wrapper {
@@ -23,7 +23,7 @@ $msg['contentReadPermissionDenied'] = new Phools_Message_Default('contentReadPer
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
     <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
 	<div class="edusharing_rendering_content_wrapper" role="main">
-       <img src="<?php echo $previewUrl?>" style="max-width: 400px; max-height: 400px">
+       <img src="<?php echo $previewUrl?>">
         <div class="error">
             <div class="message_wrapper">
                 <span class="message"><?php echo $msg['contentReadPermissionDenied']-> localize($Locale, $Translate);?></span>

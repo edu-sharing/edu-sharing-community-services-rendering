@@ -470,7 +470,7 @@ try {
         throw new ESRender_Exception_InfoLms($e);
     }
 
-    $permissions = $renderInfoLMSReturn->getRenderInfoLMSReturn->permissions->item;
+    $permissions = $renderInfoLMSReturn->getRenderInfoLMSReturn->permissions;
     Config::set('permissions', $permissions);
 
     // check usage

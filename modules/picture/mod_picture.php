@@ -80,6 +80,28 @@ extends ESRender_Module_ContentNode_Abstract {
             if (!imagecopyresampled($newImage, $tmpFile, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight))
                 throw new Exception('Cannot resample image');
             $Logger -> debug('Resampled picture (' . $width . ' px x ' . $height . ' px).');
+
+
+	    $exif = @exif_read_data($SourceFile);
+            $orientation = $exif['IFD0']['Orientation'];
+
+	    if(empty($orientation)) {
+		$orientation = $exif['Orientation'];
+	    }
+
+            switch($orientation) {
+                case 3:
+                    $newImage = imagerotate($newImage, 180, 0);
+                    break;
+                case 6:
+                    $newImage = imagerotate($newImage, -90, 0);
+                    break;
+                case 8:
+                    $newImage = imagerotate($newImage, 90, 0);
+                    break;
+            }
+
+
             if (!imagepng($newImage, $DestinationFile))
                 throw new Exception('Cannot convert image');
             imagedestroy($newImage);

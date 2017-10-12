@@ -267,18 +267,25 @@ try {
             throw new ESRender_Exception_InvalidRequestParam('display');
         }
     }
-    
-    // METADATA MODE
-    $dynMetadata = true;
-    $dynMetadata_req = mc_Request::fetch('metadata', 'CHAR', 'true');
-    if($dynMetadata_req == 'false')
-    	$dynMetadata = false;
 
+    // Display parameters
+    Config::set('showMetadata', true);
+    if(mc_Request::fetch('showMetadata', 'CHAR') === 'false')
+        Config::set('showMetadata', false);
+
+    Config::set('showDownloadButton', true); 
+    if(mc_Request::fetch('showDownloadButton', 'CHAR') === 'false')
+        Config::set('showDownloadButton', false);
+
+    Config::set('showDownloadAdvice', true);
+    if(mc_Request::fetch('showDownloadAdvice', 'CHAR') === 'false')
+        Config::set('showDownloadAdvice', false);
 
     // ACCESS TOKEN
-    global $accessToken;
     $accessToken = mc_Request::fetch('accessToken', 'CHAR', '');
+    Config::set('accessToken', $accessToken);
 
+    // Internal
     $req_data['token'] = mc_Request::fetch('token', 'CHAR', '');
     
     // WIDTH
@@ -286,6 +293,11 @@ try {
 
     // HEIGHT
     $req_data['height'] = mc_Request::fetch('height', 'INT', 0);
+
+    // Internal communication
+    Config::set('internal_request', false);
+    if(mc_Request::fetch('com', 'CHAR') === 'internal')
+        Config::set('internal_request', true);
 
     $CurrentDirectoryName = basename(dirname(__FILE__));
     $application = new ESApp();
@@ -344,7 +356,7 @@ try {
         $Plugin -> preSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
     }    
     
-    $skipSslVerification = true;//for testing
+    $skipSslVerification = false;
     
     if(!empty($req_data['token'])) {
     	if($req_data['token'] == $_SESSION['esrender']['token'] || empty($_SESSION['esrender']['token'])) {
@@ -473,9 +485,11 @@ try {
         $dummy_lmsId = $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> lmsId;
         $dummy_resourceId = $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> resourceId;
 
-        $xmlParams = simplexml_load_string($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> usageXmlParams);
-        if (!$xmlParams) {
-            throw new Exception('Error loading usageXmlParams.');
+        if(!empty($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> usageXmlParams)) {
+            $xmlParams = simplexml_load_string($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> usageXmlParams);
+            if (!$xmlParams) {
+                throw new Exception('Error loading usageXmlParams.');
+            }
         }
 
         foreach ($Plugins as $name => $Plugin) {
@@ -503,7 +517,7 @@ try {
     	if(!empty($CC_RENDER_PATH_SAFE))
     		$CC_RENDER_PATH = $CC_RENDER_PATH_SAFE;
     }
-        
+
     //if not set by usage set it with property value
     if($req_data['version'] < 1) {
         //set alf version
@@ -512,6 +526,10 @@ try {
         if(empty($req_data['version']))
             $req_data['version'] = $contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}versionLabel');
     }
+
+    //set version to 1 for remote objects
+    if($contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype'))
+        $req_data['version'] = '';
 
     if($req_data['version'] === false) {
     	$displayTitle = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
@@ -545,9 +563,13 @@ try {
 
     $Logger -> info('Successfully initialized instance.');
 
+    $permissions = ($renderInfoLMSReturn->getRenderInfoLMSReturn->permissions->item)?$renderInfoLMSReturn->getRenderInfoLMSReturn->permissions->item:array();
+    if(!in_array('ReadAll', $permissions))
+        $ESObject -> renderContentReadPermissionDenied($req_data, $display_kind, $Template);
+
     $originalDeleted = $ESObject -> AlfrescoNode -> getProperty('{virtualproperty}originaldeleted');
     if(!empty($originalDeleted)) {
-        $ESObject -> renderOriginalDeleted(array_merge($req_data, array('dynMetadata'=>$dynMetadata)), $display_kind, $Template);
+        $ESObject -> renderOriginalDeleted($req_data, $display_kind, $Template);
     }
 
     // stop session to allow flawless module-operation
@@ -639,21 +661,18 @@ try {
                 'renderAppId' => $hc->prop_array['appid']);
             
             if (!$Module -> createInstance($paramsCreate)) {
-            
                 $Logger -> error('Error creating new object-instance. Attempting to remove created object.');
-
                 if (!$ESObject -> deleteFromDb()) {
                     $Logger -> error('Error removing object-instance "' . $ESObject -> getObjectID() . '".');
                 }
-
+                $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
                 $Logger -> info('Successfully removed created object.');
-
                 throw new Exception('Error creating instance.');
             }
 
             if (!$ESObject -> setData2Db()) {
+                $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
                 $Logger -> error('Error storing object-data in database.');
-
                 throw new Exception('Error storing instance-data.');
             }
         } catch (Exception $e) {
@@ -670,9 +689,7 @@ try {
             $Plugin -> postInstanciateObject();
         }
 
-        //unlock instance
         $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
-
     }
 
     $Logger -> info('Successfully fetched instance.');
@@ -753,8 +770,7 @@ try {
             'usernameEncrypted' => $req_data['usernameEncrypted'],
             'version' => $req_data['version'],
             'backLink' => $req_data['backLink'],
-        	'token' => $token,
-        	'dynMetadata' => $dynMetadata
+        	'token' => $token
         ),
         $Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash))) {
         $Logger -> error('Error processing object "' . $req_data['obj_id'] . '".');

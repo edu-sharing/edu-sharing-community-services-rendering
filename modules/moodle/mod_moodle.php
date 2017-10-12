@@ -29,7 +29,7 @@ require_once dirname(__FILE__). '/config.php';
  * @package core
  * @subpackage classes.new
  */
-class mod_moodle3
+class mod_moodle
 extends ESRender_Module_ContentNode_Abstract {
 
 	public function createInstance(array $requestData) {
@@ -63,8 +63,13 @@ extends ESRender_Module_ContentNode_Abstract {
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 		if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
+		    $resp = str_replace('<?php', '', $resp); // moodle reponse sometimes contains '<?php' for some reason
 			$courseId = json_decode($resp);
 			$logger->error('Restored course with id ' . $courseId);
+            if(!is_numeric($courseId)) {
+                $logger->error('No valid course id received');
+                return false;
+            }
 			$this->cacheCourseId($courseId);
 			return true;
 		}
@@ -87,7 +92,6 @@ extends ESRender_Module_ContentNode_Abstract {
 		if($id === false) {
 			return parent::display($requestData);
 		}
-		
 		header('Location: ' . $this-> getForwardUrl($requestData));
 		return true;
 	}
@@ -145,7 +149,7 @@ extends ESRender_Module_ContentNode_Abstract {
 			return parent::inline($requestData);
 		}
 		$Template = $this -> getTemplate();
-		echo $Template -> render('/module/moodle3/inline', array('url' => $this-> getForwardUrl($requestData)));
+		echo $Template -> render('/module/moodle/inline', array('url' => $this-> getForwardUrl($requestData)));
 		return true;
 	}
 	
@@ -162,11 +166,11 @@ extends ESRender_Module_ContentNode_Abstract {
 			$previewUrl .= '&accessToken=' . $accessToken;
 		$tempArray = array('url' => $this-> getForwardUrl($requestData), 'previewUrl' => $previewUrl);
 		
-		if($requestData['dynMetadata'])
+		if(Config::get('showMetadata'))
 			$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
 			 
 		$tempArray['title'] = $this->_ESOBJECT->getTitle();
-		echo $Template -> render('/module/moodle3/dynamic', $tempArray);
+		echo $Template -> render('/module/moodle/dynamic', $tempArray);
 		return true;
 	}
 	

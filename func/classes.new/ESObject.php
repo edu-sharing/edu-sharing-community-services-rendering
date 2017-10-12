@@ -813,6 +813,11 @@ class ESObject {
     }
 
     final public function getPathfile() {
+        if(Config::get('internal_request')){
+            if(empty(INTERNAL_URL))
+                throw new Exception('Config value "$INTERNAL_URL" is empty.');
+            return INTERNAL_URL . '/' . $this -> ESModule -> getTmpFilepath() . '/' . $this -> getSubUri_file() . '/' . $this -> getObjectIdVersion();
+        }
         return MC_ROOT_URI . $this -> ESModule -> getTmpFilepath() . '/' . $this -> getSubUri_file() . '/' . $this -> getObjectIdVersion();
     }
 
@@ -854,12 +859,33 @@ class ESObject {
         return $this -> renderInfoLMSReturn -> getRenderInfoLMSReturn->previewUrl . '&version=' . $this -> getObjectVersion();
     }
 
+    public function renderContentReadPermissionDenied($requestData, $display_kind, $template) {
+        $tempArray['title'] = $this->getTitle();
+        $tempArray['previewUrl'] = $this->getPreviewUrl();
+        if($display_kind == 'dynamic') {
+            if(Config::get('showMetadata'))
+                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/dynamic');
+            echo $template -> render('/special/contentreadpermissiondenied/dynamic', $tempArray);
+        } else if($display_kind == 'inline') {
+            if(ENABLE_METADATA_INLINE_RENDERING) {
+                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/inline');
+            }
+            echo $template -> render('/special/contentreadpermissiondenied/inline', $tempArray);
+        }
+        exit();
+    }
+
     public function renderOriginalDeleted($requestData, $display_kind, $template) {
         if($display_kind == 'dynamic') {
             $tempArray['title'] = $this->getTitle();
+            if(Config::get('showMetadata'))
+                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/dynamic');
             echo $template -> render('/special/originaldeleted/dynamic', $tempArray);
         } else if($display_kind == 'inline') {
             $tempArray['title'] = $this->getTitle();
+            if(ENABLE_METADATA_INLINE_RENDERING) {
+                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/inline');
+            }
             echo $template -> render('/special/originaldeleted/inline', $tempArray);
         } else {
             throw new ESRender_Exception_CorruptVersion($this->getTitle());

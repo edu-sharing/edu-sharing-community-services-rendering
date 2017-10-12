@@ -1,0 +1,16 @@
+<?php
+global $Locale, $Translate;
+$msg['contentReadPermissionDenied'] = new Phools_Message_Default('contentReadPermissionDenied');
+?>
+    <style scoped>
+        <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+        <?php include(dirname(__FILE__) . '/../../css/inline.css'); ?>
+    </style>
+    <span>
+    <div class="error">
+        <div class="message_wrapper">
+            <span class="message"><?php echo $msg['contentReadPermissionDenied']-> localize($Locale, $Translate);?></span>
+        </div>
+    </div>
+</span>
+<?php echo $metadata?>

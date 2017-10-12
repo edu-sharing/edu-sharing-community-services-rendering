@@ -57,14 +57,23 @@ extends ESRender_Module_ContentNode_Abstract {
     protected function renderTemplate(array $requestData, $TemplateName) {
         $Logger = $this -> getLogger();
         $template_data = parent::prepareRenderData($requestData);
-        $filename = $this->getCacheFileName();
-        if($this->getDoctype() == DOCTYPE_HTML)
-            $filename .= '_purified.html';
-        $template_data['content'] = file_get_contents($filename);
-        if($this->getDoctype() === DOCTYPE_TEXT)
-            $template_data['content'] = nl2br($template_data['content']);
-        if($requestData['dynMetadata'])
+
+        if($this->getDoctype() == DOCTYPE_PDF) {
+            $template_data['content'] = $this -> _ESOBJECT -> getPath() . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+            $template_data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
+        }
+
+        if($this->getDoctype() == DOCTYPE_HTML) {
+            $template_data['content'] = file_get_contents($this->getCacheFileName() . '_purified.html');
+        }
+
+        if($this->getDoctype() === DOCTYPE_TEXT) {
+            $template_data['content'] = nl2br(file_get_contents($this->getCacheFileName()));
+        }
+
+        if(Config::get('showMetadata'))
         	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+
         $Template = $this -> getTemplate();
         $rendered = $Template -> render($TemplateName, $template_data);
         return $rendered;
@@ -84,9 +93,9 @@ extends ESRender_Module_ContentNode_Abstract {
 			   	$originalHTML = file_get_contents($this->getCacheFileName());
 			   	$purified = $htmlPurifier->purify($originalHTML);
 			   	file_put_contents($this->getCacheFileName().'_purified.html', $purified);
-			   	$Logger->info('Stored content in file "'.$cacheFile.'"_purified.html.');
+			   	$Logger->info('Stored content in file "'.$this->getCacheFileName().'"_purified.html.');
 	    	} catch(Exception $e) {
-	    		$Logger->info('Error storing content in file "'.$cacheFile.'"_purified.html.');
+	    		$Logger->info('Error storing content in file "'.$this->getCacheFileName().'"_purified.html.');
 	    		return false;
 	    	}  
     	}
@@ -111,7 +120,11 @@ extends ESRender_Module_ContentNode_Abstract {
             echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'dynamic');
             return true;
         }
-        return parent::dynamic($requestData);
+        else if($this->getDoctype() === DOCTYPE_PDF) {
+            echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'dynamic');
+            return true;
+        }
+        else return parent::dynamic($requestData);
     }
 
     /**
@@ -144,7 +157,9 @@ extends ESRender_Module_ContentNode_Abstract {
     		$this->doctype = DOCTYPE_HTML;
     	else if(strpos($this -> _ESOBJECT -> getMimeType(), 'text/plain') !== false)
             $this->doctype = DOCTYPE_TEXT;
-    	else
+        else if(strpos($this -> _ESOBJECT -> getMimeType(), 'application/pdf') !== false)
+            $this->doctype = DOCTYPE_PDF;
+        else
         	$this -> doctype = DOCTYPE_UNKNOWN;
         return;
         /*
@@ -184,7 +199,7 @@ extends ESRender_Module_ContentNode_Abstract {
     public function requestingDeviceCanRenderContent() {
         switch($this->getDoctype()) {
             case DOCTYPE_PDF :
-                return $this -> checkPdfUserAgents();
+                return true;
                 break;
             case DOCTYPE_ODF :
                 return true;

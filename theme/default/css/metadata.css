@@ -19,6 +19,11 @@
     color: #6f6f6f;
     margin: 25px 0 0 15px;
 }
+
+.mdsWidgetContent{
+    white-space: pre-line;
+}
+
 .mdsWidgetContent > div{
     display: inline-block;
     margin: 7px 0 0 15px;
@@ -45,7 +50,7 @@
 }
 
 
-.mdsCrontributorTitle {
+.mdsContributorTitle {
     font-weight: 600;
     font-style: italic;
     margin: 25px 0 -15px 16px;

@@ -55,6 +55,9 @@ $Translate
 	->addTranslation('de', 'title', 'Titel')
 	->addTranslation('de', 'showInformation', 'Informationen einblenden')
 	->addTranslation('de', 'hideInformation', 'Informationen ausblenden')
+	->addTranslation('de', 'toDownload', 'Herunterladen')
 	->addTranslation('de', 'cannotOpenObject', 'Öffnen dieses Materials im Browser nicht möglich.')
 	->addTranslation('de', 'cannotOpenObjectText', 'Laden Sie das Material herunter, um es zu benutzen.')
-	->addTranslation('de', 'goToOrigin', 'Zur Originalseite springen');
+	->addTranslation('de', 'goToOrigin', 'Zur Originalseite springen')
+    ->addTranslation('de', 'showDocument', 'Dokument anzeigen')
+    ->addTranslation('de', 'contentReadPermissionDenied', 'Sie haben leider kein Recht den Inhalt des Materials zu sehen.');

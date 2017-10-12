@@ -3,6 +3,7 @@ v4.0
 - use png as standard format in picture module
 - performance improvements
 - layout/css bugfixes
+- remove java applet module
 
 v3.1/3.2
 - add PHP7 support

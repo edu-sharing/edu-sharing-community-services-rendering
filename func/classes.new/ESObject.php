@@ -856,22 +856,6 @@ class ESObject {
         return $this -> renderInfoLMSReturn -> getRenderInfoLMSReturn->previewUrl . '&version=' . $this -> getObjectVersion();
     }
 
-    public function renderContentReadPermissionDenied($requestData, $display_kind, $template) {
-        if($display_kind == 'dynamic') {
-            $tempArray['title'] = $this->getTitle();
-            if(Config::get('showMetadata'))
-                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/dynamic');
-            echo $template -> render('/special/contentreadpermissiondenied/dynamic', $tempArray);
-        } else if($display_kind == 'inline') {
-            $tempArray['title'] = $this->getTitle();
-            if(ENABLE_METADATA_INLINE_RENDERING) {
-                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/inline');
-            }
-            echo $template -> render('/special/contentreadpermissiondenied/inline', $tempArray);
-        }
-        exit();
-    }
-
     public function renderOriginalDeleted($requestData, $display_kind, $template) {
         if($display_kind == 'dynamic') {
             $tempArray['title'] = $this->getTitle();

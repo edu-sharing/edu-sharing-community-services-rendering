@@ -563,10 +563,6 @@ try {
 
     $Logger -> info('Successfully initialized instance.');
 
-    $permissions = ($renderInfoLMSReturn->getRenderInfoLMSReturn->permissions->item)?$renderInfoLMSReturn->getRenderInfoLMSReturn->permissions->item:array();
-    if(!in_array('ReadAll', $permissions))
-        $ESObject -> renderContentReadPermissionDenied($req_data, $display_kind, $Template);
-
     $originalDeleted = $ESObject -> AlfrescoNode -> getProperty('{virtualproperty}originaldeleted');
     if(!empty($originalDeleted)) {
         $ESObject -> renderOriginalDeleted($req_data, $display_kind, $Template);

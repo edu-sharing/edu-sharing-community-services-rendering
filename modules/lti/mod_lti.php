@@ -36,6 +36,10 @@ class mod_lti extends ESRender_Module_NonContentNode_Abstract {
         }
     }
 
+    protected function dynamic(array $requestData) {
+        return $this -> provider -> display($requestData);
+    }
+
     protected function display(array $requestData) {
         return $this -> provider -> display($requestData);
     }

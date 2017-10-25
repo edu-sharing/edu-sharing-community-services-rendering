@@ -81,7 +81,7 @@ extends ESRender_Module_Base
             $handle = fopen($cacheFile, "wb");
             
             $content = $this->getContent($url);
-            
+
             if($content === false) {
                 fclose($handle);    
                 $Logger->error('Error fetching content from ' . $url);

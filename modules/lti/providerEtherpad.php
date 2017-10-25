@@ -24,6 +24,24 @@ class providerEtherpad {
         return true;
         
     }
+
+    public function dynamic(array $requestData) {
+
+
+        $courseId = $requestData['app_id'] . '_';
+        $courseId .= empty($requestData['course_id']) ? 'default' : $requestData['course_id'];
+        $resource_link_id = empty($requestData['resource_id']) ? 'default' : $requestData['resource_id'];
+        $userId = $requestData['user_name'];
+        $fname = $requestData['user_name'];
+
+        $params = '?fname=' . $fname . '&course_id=' . $courseId . '&resource_link_id=' . $resource_link_id . '&user_id=' . $userId .'&token=' . $this->token;
+
+        header('HTTP/1.1 303 See other');
+        header('Location: ' . ETHERPAD_PROVIDER . $params);
+        return true;
+
+
+    }
     
     public function inline(array $requestData) {
         

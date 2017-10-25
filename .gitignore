@@ -8,8 +8,6 @@ conf/system.conf.php
 install/_tmpl/log.php
 log/conversion/*
 !log/conversion/.gitignore
-modules/lti/etherpad/token/*
-!modules/lti/etherpad/token/.gitignore
 log/debug/*
 log/scr/*
 log/cacheCleaner.log

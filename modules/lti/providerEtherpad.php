@@ -55,8 +55,19 @@ class providerEtherpad {
     }
 
     private function setToken() {
+        global $CC_RENDER_PATH;
+        $tokenPath = $CC_RENDER_PATH . '/etherpad/token/';
+        if ( ! file_exists($tokenPath) )  {
+            if ( ! mkdir($tokenPath, 0777, true) ) {
+                throw new Exception('Error creating path "'.$tokenPath.'".');
+            }
+
+            if ( ! chmod($tokenPath, 0777) )  {
+                throw new Exception('Error changing permissions on "'.$tokenPath.'".');
+            }
+        }
         $token = md5(microtime(true));
-        $file = fopen(realpath(dirname(__FILE__)).'/etherpad/token/'.$token, "w");
+        $file = fopen($tokenPath . $token, "w");
         fclose($file);
         $this -> token = $token;
     }

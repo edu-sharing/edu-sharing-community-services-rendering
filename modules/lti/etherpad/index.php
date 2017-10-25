@@ -1,6 +1,7 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+global $CC_RENDER_PATH;
 //todo check params
 if(!isset($_POST['formSubmitted'])) {
 
@@ -9,7 +10,7 @@ if(!isset($_POST['formSubmitted'])) {
 	exit();
 }
 
-$token = realpath(dirname(__FILE__)).'/token/'.$_GET['token'];
+$token = $CC_RENDER_PATH . '/etherpad/token/'.$_GET['token'];
 
 if(!file_exists($token)) {
     header('Location: https://esrender.logineo.de/esrender');

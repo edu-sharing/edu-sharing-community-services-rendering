@@ -153,6 +153,7 @@ img.edusharing_rendering_content_preview {
 
 .edusharing_etherpad {
 	border: 0;
+	padding: 0;
 }
 
 #edusharing_scrolltotop {

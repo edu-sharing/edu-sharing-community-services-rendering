@@ -9,7 +9,7 @@ if(!isset($_POST['formSubmitted'])) {
 	exit();
 }
 
-$token = realpath(dirname(__FILE__)).'/../'.$_GET['token'];
+$token = realpath(dirname(__FILE__)).'/token/'.$_GET['token'];
 
 if(!file_exists($token)) {
     header('Location: https://esrender.logineo.de/esrender');

@@ -138,7 +138,7 @@ img.edusharing_rendering_content_preview {
 	font-size: 120%;
 }
 
-#edusharing_htmlobject {
+#edusharing_htmlobject, .edusharing_etherpad {
 	display: block;
 	min-height: 400px;
 	width: 100%;
@@ -149,6 +149,10 @@ img.edusharing_rendering_content_preview {
 	text-align: left;
 	overflow: auto;
 	max-height: calc(100vh - 165px);
+}
+
+.edusharing_etherpad {
+	border: 0;
 }
 
 #edusharing_scrolltotop {
@@ -187,7 +191,7 @@ img.edusharing_rendering_content_preview {
 	h1.edusharing_rendering_metadata_header_title {
 		margin: 1.8rem 0 2rem 20px;
 	}
-	#edusharing_htmlobject {
+	#edusharing_htmlobject, .edusharing_etherpad {
 		max-width: 100%;
 	}
 

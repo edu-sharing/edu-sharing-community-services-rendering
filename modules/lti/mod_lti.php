@@ -14,22 +14,20 @@ class mod_lti extends ESRender_Module_NonContentNode_Abstract {
         ESRender_Application_Interface $RenderApplication,
         ESObject $p_esobject,
         Logger $Logger,
-        Phools_Template_Interface $Template) {
-            
-        parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $Template);
-                
-        $this -> instantiateProvider();
+        Phools_Template_Interface $template) {
+        parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $template);
+        $this -> instantiateProvider($p_esobject, $template);
     }
         
-    private function instantiateProvider() {
+    private function instantiateProvider($esobject, $template) {
         
         //@todo factory pattern
         switch($this->_ESOBJECT->ESOBJECT_RESOURCE_TYPE) {
             case 'edutool-vanilla':
-                $this -> provider = new providerVanilla();
+                $this -> provider = new providerVanilla($esobject, $template);
             break;
             case 'edutool-etherpad':
-                $this -> provider = new providerEtherpad();
+                $this -> provider = new providerEtherpad($esobject, $template);
             break;
             default:
                 throw new Exception('provider could not be determined');
@@ -37,7 +35,7 @@ class mod_lti extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function dynamic(array $requestData) {
-        return $this -> provider -> display($requestData);
+        return $this -> provider -> dynamic($requestData);
     }
 
     protected function display(array $requestData) {

@@ -512,6 +512,14 @@ class ESObject {
             return true;
         }
 
+        if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'LEARNINGAPPS') {
+            error_log('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
+            $this -> ESModule -> setName('learningapps');
+            $this -> ESModule -> loadModuleData();
+            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            return true;
+        }
+
         if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'oai:dmglib.org') {
             error_log('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "oai:dmglib.org", using module "url".');
             $this -> ESModule -> setName('url');

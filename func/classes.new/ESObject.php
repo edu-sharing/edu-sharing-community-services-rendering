@@ -512,6 +512,14 @@ class ESObject {
             return true;
         }
 
+        if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'LEARNINGAPPS') {
+            error_log('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
+            $this -> ESModule -> setName('learningapps');
+            $this -> ESModule -> loadModuleData();
+            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            return true;
+        }
+
         if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'oai:dmglib.org') {
             error_log('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "oai:dmglib.org", using module "url".');
             $this -> ESModule -> setName('url');
@@ -810,6 +818,11 @@ class ESObject {
     }
 
     final public function getPathfile() {
+        if(Config::get('internal_request')){
+            if(empty(INTERNAL_URL))
+                throw new Exception('Config value "$INTERNAL_URL" is empty.');
+            return INTERNAL_URL . '/' . $this -> ESModule -> getTmpFilepath() . '/' . $this -> getSubUri_file() . '/' . $this -> getObjectIdVersion();
+        }
         return MC_ROOT_URI . $this -> ESModule -> getTmpFilepath() . '/' . $this -> getSubUri_file() . '/' . $this -> getObjectIdVersion();
     }
 
@@ -845,20 +858,23 @@ class ESObject {
     
     public function setInfoLmsData($renderInfoLMSReturn) {
         $this -> renderInfoLMSReturn = $renderInfoLMSReturn;
-    	
+    }
+
+    public function getPreviewUrl() {
+        return $this -> renderInfoLMSReturn -> getRenderInfoLMSReturn->previewUrl . '&version=' . $this -> getObjectVersion();
     }
 
     public function renderOriginalDeleted($requestData, $display_kind, $template) {
         if($display_kind == 'dynamic') {
-            if($requestData['dynMetadata'])
-                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/dynamic');
             $tempArray['title'] = $this->getTitle();
+            if(Config::get('showMetadata'))
+                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/dynamic');
             echo $template -> render('/special/originaldeleted/dynamic', $tempArray);
         } else if($display_kind == 'inline') {
-            if(ENABLE_METADATA_RENDERING) {
-                $tempArray['metadata'] = $this -> metadatahandler -> render($template);
-            }
             $tempArray['title'] = $this->getTitle();
+            if(ENABLE_METADATA_INLINE_RENDERING) {
+                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/inline');
+            }
             echo $template -> render('/special/originaldeleted/inline', $tempArray);
         } else {
             throw new ESRender_Exception_CorruptVersion($this->getTitle());

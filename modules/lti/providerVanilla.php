@@ -4,12 +4,11 @@ require_once ("ims-blti/blti_util.php");
 
 class providerVanilla {
     
-    public function __construct() {
+    public function __construct($esobject, $template) {
         $this -> getConfig();
     }
 
     public function display(array $requestData) {
-//var_dump($requestData);die();
         $parms = array();
         $parms['resource_link_id'] = '123';
         $parms['lis_person_name_full'] = $requestData['user_name'];

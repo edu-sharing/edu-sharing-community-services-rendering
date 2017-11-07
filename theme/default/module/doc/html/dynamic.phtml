@@ -7,12 +7,13 @@ $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
 
 <style scoped>
 <?php include(dirname(__FILE__) . '/../../../css/dynamic.css'); ?>
+<?php include(dirname(__FILE__) . '/../../../css/metadata.css'); ?>
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
 	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
 	<div class="edusharing_rendering_content_wrapper" role="main">
-        <div id="edusharing_htmlobject"><?php echo $html; ?></div>
+        <div id="edusharing_htmlobject"><?php echo $content; ?></div>
 	</div>
 	<?php echo $metadata; ?>
 </div>

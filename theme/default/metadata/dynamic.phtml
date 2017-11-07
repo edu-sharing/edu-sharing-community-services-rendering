@@ -1,140 +1,14 @@
 <?php
 	global $Locale, $Translate, $accessToken;
-	
-	require_once __DIR__ . '/../../../func/classes.new/Helper/MetadataRendererHelper.php';
-	
-	$msg['meta_general'] = new Phools_Message_Default('meta_general');
-	$msg['meta_contributors'] = new Phools_Message_Default('meta_contributors');
-	$msg['meta_contributors_content'] = new Phools_Message_Default('meta_contributors_content');
-	$msg['meta_contributors_metadata'] = new Phools_Message_Default('meta_contributors_metadata');
-	$msg['meta_didactics'] = new Phools_Message_Default('meta_didactics');
 ?>
 
 <div id="edusharing_rendering_metadata" role="contentinfo">
-		<div class="edusharing_rendering_metadata_header">
-			<img tabindex="0" class="edusharing_rendering_metadata_header_icon" onclick="showContent()" onkeypress="(event.keyCode==13)?showContent():0" src="<?php echo $meta['{http://www.alfresco.org/model/rendition/1.0}rendition']['value'] . '&accessToken=' . $accessToken ?>&crop=true&width=68&height=51">
-			<h1 property="name" title="<?php echo $title ?>" class="edusharing_rendering_metadata_header_title"><?php echo $title ?></h1>
-		</div>
-		<div class="edusharing_rendering_metadata_body">
-
-			<?php 
-				/*
-				 * GENERAL INFORMATION
-				 */
-				$metadataGeneral = '';
-				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}title']);
-				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.alfresco.org/model/content/1.0}name']);
-				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}general_keyword'], '', array('rschip'));
-
-				if(!empty($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['value'])) {
-					$metadataGeneral .= '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}commonlicense_key']['label'])) . '</label>';
-					$metadataGeneral .= '<a class="edusharing_rendering_metadata_body_value" href="'.$meta['{virtualproperty}licenseurl']['value'].'" target="_blank" style="margin-left:15px"><img src="'.$meta['{virtualproperty}licenseicon']['value'].'"></a>';
-				}
-				
-				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_publisherVCARD_EXT_LOM_CONTRIBUTE_DATE'], 'date');
-				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}general_description']);
-				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.alfresco.org/model/content/1.0}createdISO8601'], 'date', '', $meta['{http://www.alfresco.org/model/content/1.0}created']['label']);
-				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.alfresco.org/model/content/1.0}modifiedISO8601'], 'date', '', $meta['{http://www.alfresco.org/model/content/1.0}modified']['label']);
-				$metadataGeneral .= MetadataRendererHelper::render($meta['{http://www.alfresco.org/model/system/1.0}node-uuid']);
-
-				if(!empty($metadataGeneral))
-				    $metadataGeneral = '<h2>'.$msg['meta_general']->localize($Locale, $Translate).'</h2>' . $metadataGeneral;
-
-				
-				/*
-				 * CONTRIBUTORS
-				 */
-                $metadataContributors = $metadataContentContributors = $metadataMetadataContributors = '';
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_initiatorFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_initiatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_terminatorFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_terminatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_validatorFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_validatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_editorFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_editorVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_graphical_designerFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_graphical_designerVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_technical_implementerFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_technical_implementerVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_content_providerFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_content_providerVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_educational_validatorFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_educational_validatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_script_writerFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_script_writerVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_instructional_designerFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_instructional_designerVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_subject_matter_expertFN'],'', array('rschip', 'people'));
-                $metadataContentContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}lifecyclecontributer_subject_matter_expertVCARD_ORG'],'', array('rschip', 'group'), '', true);
-                
-                if(!empty($metadataContentContributors))
-                    $metadataContributors .= '<h3>'.$msg['meta_contributors_content']->localize($Locale, $Translate).'</h3>' . $metadataContentContributors;
-
-				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN'],'', array('rschip', 'people'));
-				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
-				
-				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_validatorFN'],'', array('rschip', 'people'));
-				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_validatorVCARD_ORG'],'', array('rschip', 'group'), '', true);
-				
-				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_providerFN'],'', array('rschip', 'people'));
-				$metadataMetadataContributors .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}metadatacontributer_providerVCARD_ORG'],'', array('rschip', 'group'), '', true);
-				
-                if(!empty($metadataMetadataContributors))
-                    $metadataContributors .= '<h3>'.$msg['meta_contributors_metadata']->localize($Locale, $Translate).'</h3>' . $metadataMetadataContributors;
-
-                if(!empty($metadataContributors))
-                    $metadataContributors = '<h2>'.$msg['meta_contributors']->localize($Locale, $Translate).'</h2>' . $metadataContributors;
-
-
-				if(!empty($metadataGeneral) || !empty($metadataContributors))
-				    echo '<div class="edusharing_rendering_metadata_body_column">'.$metadataGeneral.$metadataContributors.'</div>';
-
-
-				/*
-				 * DIDACTICS
-				 */
-				$metadataDidactics = '';
-				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}taxonentry'], '', array('taxonomies'));
-				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}educationallearningresourcetype'], '', array('rschip'));
-				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}educationalcontext'], '', array('rschip'));
-				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}educationalintendedenduserrole'], '', array('rschip', 'group'));
-			
-				if(!empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) || !empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value'])) {
-					$metadataDidactics .= '<label class="edusharing_rendering_metadata_body_label">' . htmlentities(ucfirst($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['label'])) . '</label>';
-					$metadataDidactics .=  '<span class="edusharing_rendering_metadata_body_value">' . htmlentities($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) . '</span>';
-					if((!empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) || intval($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_from']['value']) === 0) && !empty($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value']))
-						$metadataDidactics .=  '&nbsp;&ndash;&nbsp;';
-					$metadataDidactics .=  '<span class="edusharing_rendering_metadata_body_value" style="margin-left: 0">' . htmlentities($meta['{http://www.campuscontent.de/model/1.0}educationaltypicalagerange_to']['value']) . '</span>';
-				}
-
-				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}general_language']);
-				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/lom/1.0}aggregationlevel']);
-				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.edu-sharing.net/model/lisum/1.0}systematics_path']);
-				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.campuscontent.de/model/1.0}classification_keyword'], '', array('rschip'));
-				$metadataDidactics .= MetadataRendererHelper::render($meta['{http://www.edu-sharing.net/model/lisum/1.0}keyword_geo'], '', array('rschip'));
-
-                if(!empty($metadataDidactics))
-                    $metadataDidactics = '<h2>' . $msg['meta_didactics']->localize($Locale, $Translate) . '</h2>' . $metadataDidactics;
-
-                if(!empty($metadataDidactics))
-                    echo '<div class="edusharing_rendering_metadata_body_column">'.$metadataDidactics.'</div>';
-
-				?>
-
-		</div>
-		<div tabindex="0" id="edusharing_scrolltotop" onClick="showContent()" onkeypress="(event.keyCode==13)?showContent():0"></div>
-	</div>
+    <div class="edusharing_rendering_metadata_header">
+        <img tabindex="0" class="edusharing_rendering_metadata_header_icon" onclick="showContent()" onkeypress="(event.keyCode==13)?showContent():0" src="<?php echo $previewUrl . '&accessToken=' . Config::get('accessToken') ?>&crop=true&width=68&height=51">
+        <h1 property="name" title="<?php echo $title ?>" class="edusharing_rendering_metadata_header_title"><?php echo $title ?></h1>
+    </div>
+    <div class="edusharing_rendering_metadata_body">
+        <?php echo $metadataHtml; ?>
+    </div>
+    <div tabindex="0" id="edusharing_scrolltotop" onClick="showContent()" onkeypress="(event.keyCode==13)?showContent():0"></div>
+</div>

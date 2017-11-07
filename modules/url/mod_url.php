@@ -56,11 +56,11 @@ extends ESRender_Module_NonContentNode_Abstract {
     		$embedding = '';
     	
     	$Template = $this -> getTemplate();
-    	$previewUrl = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->previewUrl;
+    	$previewUrl = $this->_ESOBJECT->getPreviewUrl();
     	if(!empty($accessToken))
     		$previewUrl .= '&accessToken=' . $accessToken;
     	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $previewUrl);
-    	if($requestData['dynMetadata'])
+    	if(Config::get('showMetadata'))
     		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	
     	$tempArray['title'] = $this->_ESOBJECT->getTitle();
@@ -75,27 +75,28 @@ extends ESRender_Module_NonContentNode_Abstract {
             return false;
         }
         
-        if(ENABLE_METADATA_RENDERING) {
-	        $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate());
+        if(ENABLE_METADATA_INLINE_RENDERING) {
+	        $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
 	        $data['metadata'] = $metadata;
         }
 
+        $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
+        if(!empty($license)) {
+            $license = $license -> renderFooter($this -> getTemplate());
+        }
+
         if ($this -> detectVideo()) {
-            $embedding = $this -> getVideoEmbedding($requestData['width']) . utf8_encode($metadata);
+            $embedding = $this -> getVideoEmbedding($requestData['width']) . $license . $metadata;
         } else if($this -> detectAudio()) {
-        	$embedding = $this -> getAudioEmbedding() . utf8_encode($metadata);
+        	$embedding = $this -> getAudioEmbedding() . $license . $metadata;
         } else {
-        	$license = $this->_ESOBJECT->ESOBJECT_LICENSE;
-        	if(!empty($license)) {
-        		$license = $license -> renderFooter($this -> getTemplate());
-        	}
             $embedding = $this -> getLinkEmbedding();
             if(!empty($license) || !empty($metadata)) {
             	$embedding .= ' (';
             	$embedding .= '<span style="display: inline-block">' . utf8_encode($license) . '</span>';
             	if(!empty($license) && !empty($metadata))
             		$embedding .= '&nbsp|&nbsp';
-            	$embedding .= '<span style="display: inline-block">' . utf8_encode($metadata) . '</span>';
+            	$embedding .= '<span style="display: inline-block">' . $metadata . '</span>';
             	$embedding .= ')';
         
             }
@@ -172,7 +173,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             $urlArr = explode('/', $this -> getUrl());
             $vidId = end($urlArr);
             return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-            			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+            			<div class="videoWrapperInner" style="position: relative; padding-top: 25px;">
             				<iframe id="' . $objId . '" width="'.$width.'" height="'.$height.'" src="//player.vimeo.com/video/' . $vidId . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
             			</div>
             		</div>

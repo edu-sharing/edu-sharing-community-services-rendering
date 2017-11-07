@@ -1,18 +1,22 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+
+include __DIR__ . '/../../../conf/system.conf.php';
+
+global $CC_RENDER_PATH;
 //todo check params
 if(!isset($_POST['formSubmitted'])) {
 
     if(empty($_GET['user_id']) || empty($_GET['course_id']) || empty($_GET['resource_link_id']) || empty($_GET['token'])) {
-	header('Location: https://esrender.logineo.de/esrender');
+	echo 'Invalid parameters';
 	exit();
 }
 
-$token = realpath(dirname(__FILE__)).'/../'.$_GET['token'];
+$token = $CC_RENDER_PATH . '/etherpad/token/'.$_GET['token'];
 
 if(!file_exists($token)) {
-    header('Location: https://esrender.logineo.de/esrender');
+    echo 'Invalid token ' . $token;
     exit();
 } else {
     unlink($token);

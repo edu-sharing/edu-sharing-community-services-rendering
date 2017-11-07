@@ -59,6 +59,7 @@ define("CC_LOCALE_PATH",   MC_ROOT_PATH."locale/");
 define("CC_LOCALE_FILE",  "lang.common.php");
 define('CC_RENDER_PATH',   $CC_RENDER_PATH);
 define("MC_ROOT_URI",  $ROOT_URI);
+define("INTERNAL_URL", $INTERNAL_URL);
 
 // declaring include paths
 $MC_INCLUDE_PATH[] = MC_ROOT_PATH."func/extern/pear1.7.2/";

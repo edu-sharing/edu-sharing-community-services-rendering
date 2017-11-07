@@ -48,16 +48,10 @@ $Translate
     ->addTranslation('en', 'published under a', 'published under a')
     ->addTranslation('en', 'custom license', 'custom license')
     ->addTranslation('en', 'title', 'Title')
-    ->addTranslation('en', 'showMetadata', 'Show metadata')
-    ->addTranslation('en', 'hideMetadata', 'Hide metadata')
 	->addTranslation('en', 'showInformation', 'Show information')
 	->addTranslation('en', 'hideInformation', 'Hide information')
 	->addTranslation('en', 'toDownload', 'Download')
 	->addTranslation('en', 'cannotOpenObject', 'This material can not be displayed in the browser.')
 	->addTranslation('en', 'cannotOpenObjectText', 'In order to use the material please download it.')
 	->addTranslation('en', 'goToOrigin', 'Go to origin')
-	->addTranslation('en', 'meta_general', 'General information')
-	->addTranslation('en', 'meta_contributors', 'Contributors')
-	->addTranslation('en', 'meta_contributors_content', 'Contributor (object)')
-	->addTranslation('en', 'meta_contributors_metadata', 'Contributor (metadata)')
-	->addTranslation('en', 'meta_didactics', 'Didactics');
+    ->addTranslation('en', 'showDocument', 'Show document');

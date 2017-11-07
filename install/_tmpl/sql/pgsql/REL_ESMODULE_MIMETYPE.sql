@@ -26,7 +26,7 @@ INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_M
 (31, 1, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
 (32, 1, 'application/mspowerpoint'),
 (33, 1, 'application/vnd.openxmlformats-officedocument.presentationml.presentation'),
-(34, 1, 'text/plain'),
+(34, 3, 'text/plain'),
 (35, 1, 'text/comma-separated-values'),
 (36, 3, 'application/vnd.oasis.opendocument.text'),
 (37, 3, 'application/vnd.oasis.opendocument.spreadsheet'),

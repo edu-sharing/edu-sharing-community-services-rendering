@@ -1,7 +1,10 @@
 <?php
 define ( 'UPDATEVERSION', '4.0.0' );
+set_time_limit(1800);
+ini_set('memory_limit', '2048M');
+
 function run($installedVersion) {
-	
+
 	try {
 		if (version_compare ( '3.0.0', $installedVersion ) > 0) {
 			rename ( MC_ROOT_PATH . 'conf/system.conf.php', MC_ROOT_PATH . 'conf/bk_system.conf.php' );
@@ -241,7 +244,21 @@ function run($installedVersion) {
 			$stmt->execute ();
 		}
 
+		if(version_compare ( '3.3', $installedVersion ) > 0) {
+
+            $fileContents = file_get_contents ( MC_ROOT_PATH . 'conf/system.conf.php' );
+            $fileContents = str_replace ('date_default_timezone_set', '#date_default_timezone_set', $fileContents );
+            file_put_contents ( MC_ROOT_PATH . 'conf/system.conf.php', $fileContents );
+
+            file_put_contents(MC_ROOT_PATH . 'conf/system.conf.php', '$INTERNAL_URL = "";', FILE_APPEND | LOCK_EX);
+            file_put_contents(MC_ROOT_PATH . 'conf/defines.conf.php', 'define("INTERNAL_URL", $INTERNAL_URL);', FILE_APPEND | LOCK_EX);
+        }
+
         if (version_compare ( '4.0.0', $installedVersion ) > 0) {
+
+            $fileContents = file_get_contents ( MC_ROOT_PATH . 'conf/system.conf.php' );
+            $fileContents = str_replace ('ENABLE_METADATA_RENDERING', 'ENABLE_METADATA_INLINE_RENDERING', $fileContents );
+            file_put_contents ( MC_ROOT_PATH . 'conf/system.conf.php', $fileContents );
 
             $files = array();
 
@@ -267,9 +284,21 @@ function run($installedVersion) {
                 $image = imagecreatefromjpeg($file);
                 imagepng($image, str_replace('.jpg', '.png', $file));
             }
+
+            $pdo = RsPDO::getInstance();
+            $sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':modid', '3' );
+            $stmt->bindValue ( ':mime', 'text/plain' );
+            $stmt->execute ();
+
+            $pdo = RsPDO::getInstance();
+            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modname, :moddesc)' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':modname', 'learningapps' );
+            $stmt->bindValue ( ':moddesc', 'learningapps' );
+            $stmt->execute ();
         }
-		
-		
 	} catch ( Exception $e ) {
 		error_log ( print_r ( $e, true ) );
 		return false;

@@ -63,27 +63,49 @@ extends ESRender_Module_ContentNode_Abstract {
                     throw new Exception('Cannot create temporary image file');
             }
 
-            if (!empty($width) && !empty($height)) {
-                $newImage = imagecreatetruecolor($width, $height);
-                imageAlphaBlending($newImage, false);
-                imageSaveAlpha($newImage, true);
-                if (!imagecopyresampled($newImage, $tmpFile, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight))
-                    throw new Exception('Cannot resample image');
-                $Logger -> debug('Resampled picture (' . $width . ' px x ' . $height . ' px).');
-                if (!imagepng($newImage, $DestinationFile))
-                    throw new Exception('Cannot convert image');
-                imagedestroy($newImage);
-            } else {
-                if(IMAGETYPE_PNG === $type) { // to keep transparency
-                    if (!copy($SourceFile, $DestinationFile))
-                        throw new Exception('Cannot copy image');
-                } else {
-                    if (!imagepng($tmpFile, $DestinationFile))
-                        throw new Exception('Cannot convert image');
+            if(empty($width) && empty($height)) {
+                $width = $origWidth;
+                $height = $origHeight;
+                while($width * $height > 1500000) {
+                    $width *= 0.9;
+                    $height *= 0.9;
                 }
-
-                imagedestroy($tmpFile);
+                $width = round($width);
+                $height = round($height);
             }
+
+            $newImage = imagecreatetruecolor($width, $height);
+            imageAlphaBlending($newImage, false);
+            imageSaveAlpha($newImage, true);
+            if (!imagecopyresampled($newImage, $tmpFile, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight))
+                throw new Exception('Cannot resample image');
+            $Logger -> debug('Resampled picture (' . $width . ' px x ' . $height . ' px).');
+
+
+	    $exif = @exif_read_data($SourceFile);
+            $orientation = $exif['IFD0']['Orientation'];
+
+	    if(empty($orientation)) {
+		$orientation = $exif['Orientation'];
+	    }
+
+            switch($orientation) {
+                case 3:
+                    $newImage = imagerotate($newImage, 180, 0);
+                    break;
+                case 6:
+                    $newImage = imagerotate($newImage, -90, 0);
+                    break;
+                case 8:
+                    $newImage = imagerotate($newImage, 90, 0);
+                    break;
+            }
+
+
+            if (!imagepng($newImage, $DestinationFile))
+                throw new Exception('Cannot convert image');
+            imagedestroy($newImage);
+
             $Logger -> debug('Converted picture to png.');
 
         } catch (Exception $e) {
@@ -161,10 +183,7 @@ extends ESRender_Module_ContentNode_Abstract {
      * @see ESRender_Module_ContentNode_Abstract::inline()
      */
     protected function inline(array $requestData) {
-        $Logger = $this -> getLogger();
-
         echo $this -> renderTemplate($requestData, '/module/picture/inline');
-
         return true;
     }
     
@@ -173,12 +192,11 @@ extends ESRender_Module_ContentNode_Abstract {
      * @see ESRender_Module_ContentNode_Abstract::dynamic()
      */
     protected function dynamic(array $requestData) {
-    	$Logger = $this -> getLogger();   	
     	$template_data['image_url'] = $this -> _ESOBJECT -> getPath() . '.png?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-    	
-    	if($requestData['dynMetadata'])
+
+    	if(Config::get('showMetadata'))
 	    	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
-    	
+
 	    $template_data['title'] = $this->_ESOBJECT->getTitle();
     	echo $this -> getTemplate() -> render('/module/picture/dynamic', $template_data);
     	return true;

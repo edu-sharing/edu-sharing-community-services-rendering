@@ -58,16 +58,16 @@ extends ESRender_Module_ContentNode_Abstract
 			return false;
 		}
 
-		require_once(MC_LIB_PATH."File.class.php");
-		if ( ! $l_zip = mc_File::factory($zip_file) )
-		{
-			throw new SoapFault(__FILE__.'::'.__METHOD__.'('.__LINE__.')', '(failed : zip load)'.'<br>'.($zip_file));
-		}
+        $zip = new ZipArchive;
+        $res = $zip->open($zip_file);
+        if ($res === TRUE) {
+            $zip->extractTo($extraction_path.DIRECTORY_SEPARATOR);
+            $zip->close();
+            return true;
+        }
 
-		$l_list = $l_zip->extract($extraction_path.DIRECTORY_SEPARATOR);
-
-		return true;
-	}
+        return false;
+    }
 
 	/**
 	 * (non-PHPdoc)
@@ -83,27 +83,32 @@ extends ESRender_Module_ContentNode_Abstract
 		return true;
 	}
 
+    protected function dynamic(array $requestData)
+    {
+        $template_data['url'] = $this->_ESOBJECT->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
+        if(Config::get('showMetadata'))
+            $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+        $template_data['title'] = $this->_ESOBJECT->getTitle();
+        $previewUrl = $this->_ESOBJECT->getPreviewUrl();
+        if(!empty($accessToken))
+            $previewUrl .= '&accessToken=' . $accessToken;
+        $template_data['previewUrl'] = $previewUrl;
+        echo $this -> getTemplate() -> render('/module/html/dynamic', $template_data);
+        return true;
+    }
+
 	/**
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::download()
 	 */
 	protected function download(array $requestData)
 	{
-		$Logger = $this->getLogger();
-
+	    $Logger = $this->getLogger();
+        $Logger->debug('Redirecting to location: "' . $this->_ESOBJECT->getPath().'.zip?"');
 		header('HTTP/1.1 303 See other');
 		header('Location: '.$this->_ESOBJECT->getPath().'.zip?' . session_name() . '=' . session_id(). '&token=' . $requestData['token']);
 
 		return true;
-	}
-
-	/**
-	 * (non-PHPdoc)
-	 * @see ESRender_Module_Base::getTimesOfUsage()
-	 */
-	public function getTimesOfUsage()
-	{
-		return PHP_INT_MAX;
 	}
 
 }

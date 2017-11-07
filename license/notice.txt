@@ -16,8 +16,7 @@ pear1.7.2				PHP License v3.01, copyright (c) the PHP Group.
 ffmpeg					GNU/LGPL https://www.ffmpeg.org/legal.html
 Zend Framework			New BSD License http://framework.zend.com/license/new-bsd
 moodle module			GPL 2 Copyright (C) 1999 onwards Martin Dougiamas http://moodle.com
-picture module			The MIT License https://github.com/mark-rolich/Magnifier.js
-qti2 module				Licensed under the Apache License, Version 2.0 Onyx plugin http://onyx.bps-system.de 
+qti2 module				Licensed under the Apache License, Version 2.0 Onyx plugin http://onyx.bps-system.de
 
 
 All rights reserved.

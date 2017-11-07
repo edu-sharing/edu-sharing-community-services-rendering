@@ -2,16 +2,15 @@
 global $Locale, $Translate;
 $msg['error'] = new Phools_Message_Default('The object to which this collection object refers is no longer present.');
 ?>
+<style scoped>
+    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/inline.css'); ?>
+</style>
 <span>
     <div class="error">
         <div class="message_wrapper">
             <span class="message"><?php echo $msg['error']-> localize($Locale, $Translate);?></span>
         </div>
     </div>
-<?php if(!empty($metadata) || !empty($license)) {
-	echo '&nbsp;(<span style="display: inline-block">'.$license.'</span>';
-	if(!empty($metadata) && !empty($license))
-		echo '&nbsp|&nbsp';
-	echo '<span style="display: inline-block">'.$metadata.'</span>)';
-}?>
 </span>
+<?php echo $metadata?>

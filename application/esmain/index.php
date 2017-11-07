@@ -230,7 +230,7 @@ try {
         $decrypted = mdecrypt_generic($handler, base64_decode($req_data['username']));
         mcrypt_generic_deinit($handler);
         $user_name = trim($decrypted);
-        mcrypt_module_close($handler);      
+        mcrypt_module_close($handler);
     } catch(Exception $e) {
         echo 'Decryption error';
         exit();
@@ -391,7 +391,7 @@ try {
             $signature = rawurldecode($_GET['sig']);
             $dataSsl = urldecode($req_data['rep_id']);
             $signature = base64_decode($signature);
-            $ok = openssl_verify($dataSsl . $req_data['timestamp'], $signature, $pubkeyid);
+            $ok = openssl_verify($dataSsl . $req_data['timestamp'] . $req_data['obj_id'], $signature, $pubkeyid);
         } catch (Exception $e) {
             throw new ESRender_Exception_SslVerification('SSL signature check failed');
         }
@@ -437,7 +437,7 @@ try {
     try
     {
         $timestamp = round(microtime(true) * 1000);
-        $signData = $hc->prop_array['appid'] . $timestamp;
+        $signData = $hc->prop_array['appid'] . $timestamp . $req_data['obj_id'];
         $priv_key = $hc -> prop_array['private_key'];
         $pkeyid = openssl_get_privatekey($priv_key);      
         openssl_sign($signData, $signature, $pkeyid);

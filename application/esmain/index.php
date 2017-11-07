@@ -391,7 +391,7 @@ try {
             $signature = rawurldecode($_GET['sig']);
             $dataSsl = urldecode($req_data['rep_id']);
             $signature = base64_decode($signature);
-            $ok = openssl_verify($dataSsl . $req_data['timestamp'] . $req_data['obj_id'], $signature, $pubkeyid);
+            $ok = openssl_verify(urldecode($req_data['rep_id']) . $req_data['obj_id']  . $req_data['timestamp'], $signature, $pubkeyid);
         } catch (Exception $e) {
             throw new ESRender_Exception_SslVerification('SSL signature check failed');
         }

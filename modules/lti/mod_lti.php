@@ -1,32 +1,36 @@
 <?php
 
-require_once dirname(__FILE__) . '/ltiProvider.php';
+//@todo autoload
+require_once(dirname(__FILE__) . '/providerEtherpad.php');
+require_once(dirname(__FILE__) . '/providerVanilla.php');
+
 
 class mod_lti extends ESRender_Module_NonContentNode_Abstract {
+    
+    private $providerType = '';
 
     public function __construct(
         $Name,
         ESRender_Application_Interface $RenderApplication,
         ESObject $p_esobject,
         Logger $Logger,
-        Phools_Template_Interface $Template) {
-
-        parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $Template);
-        $this -> instantiateProvider();
+        Phools_Template_Interface $template) {
+        parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $template);
+        $this -> instantiateProvider($p_esobject, $template);
     }
         
-    private function instantiateProvider() {
+    private function instantiateProvider($esobject, $template) {
+        
+        //@todo factory pattern
         switch($this->_ESOBJECT->ESOBJECT_RESOURCE_TYPE) {
             case 'edutool-vanilla':
-                require_once(dirname(__FILE__) . '/providerVanilla.php');
-                $this -> provider = new providerVanilla();
+                $this -> provider = new providerVanilla($esobject, $template);
             break;
             case 'edutool-etherpad':
-                require_once(dirname(__FILE__) . '/providerEtherpad.php');
-                $this -> provider = new providerEtherpad();
+                $this -> provider = new providerEtherpad($esobject, $template);
             break;
             default:
-                $this->provider = new ltiProvider($this->_ESOBJECT, $this->getTemplate());
+                throw new Exception('provider could not be determined');
         }
     }
 

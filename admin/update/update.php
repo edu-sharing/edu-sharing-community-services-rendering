@@ -291,8 +291,14 @@ function run($installedVersion) {
             $stmt->bindValue ( ':modid', '3' );
             $stmt->bindValue ( ':mime', 'text/plain' );
             $stmt->execute ();
-        }
 
+            $pdo = RsPDO::getInstance();
+            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modname, :moddesc)' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':modname', 'learningapps' );
+            $stmt->bindValue ( ':moddesc', 'learningapps' );
+            $stmt->execute ();
+        }
 	} catch ( Exception $e ) {
 		error_log ( print_r ( $e, true ) );
 		return false;

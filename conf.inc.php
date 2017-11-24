@@ -23,7 +23,7 @@ define('gen_time_start', microtime());
 
 // dont display errors, but log all of them.
 ini_set('error_reporting', E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE);
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 ini_set('log_errors', 1);
 ini_set('html_errors', 1);

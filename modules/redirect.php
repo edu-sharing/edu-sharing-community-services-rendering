@@ -25,6 +25,8 @@ ob_start();
 set_time_limit(0);
 include_once ('../conf.inc.php');
 
+$skipToken = false;
+
 if (empty($ESRENDER_SESSION_NAME)) {
     error_log('ESRENDER_SESSION_NAME not set in conf/system.conf.php');
     $ESRENDER_SESSION_NAME = 'ESSID';
@@ -56,10 +58,12 @@ function cc_rd_debug($err_msg) {
         cc_rd_log_die($err_msg);
     }
 }
-
 // start session to read object-data
 if (!empty($_GET[$ESRENDER_SESSION_NAME])) {
     $l_sid = $_GET[$ESRENDER_SESSION_NAME];
+} else if(!empty($_COOKIE[$ESRENDER_SESSION_NAME])) {
+    header('HTTP/1.0 400 Bad Request');
+    $l_sid = $_COOKIE[$ESRENDER_SESSION_NAME];
 } else {
     header('HTTP/1.0 400 Bad Request');
     $l_sid = cc_rd_debug('esrender session missing');
@@ -84,24 +88,30 @@ if (empty($_SESSION['esrender'])) {
     cc_rd_debug('missing session render data');
 }
 
-if(empty($_SESSION['esrender']['token'])) {
-	error_log('Missing token (session)');
-	cc_rd_debug('Missing token (session)');
-	header('HTTP/1.0 500 Internal Server Error');
-}
-if(empty($_REQUEST['token'])) {
-	error_log('Missing token (request)');
-	cc_rd_debug('Missing token (request)');
-	header('HTTP/1.0 500 Internal Server Error');
-}
-if(($_SESSION['esrender']['token'] !== $_REQUEST['token']) && ($_SESSION['esrender']['token'])!==$_COOKIE['ESSEC']) {
-	error_log('Invalid token');
-	cc_rd_debug('Invalid token');
-	header('HTTP/1.0 500 Internal Server Error');
-} else {
-	$token = md5(uniqid());
-	$_SESSION['esrender']['token'] = $token;
-	setcookie('ESSEC', $token, time()+300);
+@include ('./' . $_SESSION['esrender']['mod_name'] . '/redirect.inc.php');
+
+if(!$skipToken) {
+
+    if (empty($_SESSION['esrender']['token'])) {
+        error_log('Missing token (session)');
+        cc_rd_debug('Missing token (session)');
+        header('HTTP/1.0 500 Internal Server Error');
+    }
+    if (empty($_REQUEST['token'])) {
+        error_log('Missing token (request)');
+        cc_rd_debug('Missing token (request)');
+        header('HTTP/1.0 500 Internal Server Error');
+    }
+    if (($_SESSION['esrender']['token'] !== $_REQUEST['token']) && ($_SESSION['esrender']['token']) !== $_COOKIE['ESSEC']) {
+        error_log('Invalid token');
+        cc_rd_debug('Invalid token');
+        header('HTTP/1.0 500 Internal Server Error');
+    } else {
+        $token = md5(uniqid());
+        $_SESSION['esrender']['token'] = $token;
+        setcookie('ESSEC', $token, time() + 300);
+    }
+
 }
 
 session_write_close();
@@ -120,6 +130,7 @@ if (strpos($dest_path, $l_check) !== 0) {
     header('HTTP/1.0 400 Bad Request');
     cc_rd_debug('Permission denied (path access check failed)');
 }
+
 $dest_path = sanitizePath($dest_path);
 
 if (empty($_SESSION['esrender']['file_name'])) {
@@ -146,9 +157,9 @@ if ((!is_file($src_file)) || (!is_readable($src_file))) {
     trigger_error('Source-file "' . $src_file . '" not found.', E_USER_ERROR);
 }
 
-
-$finfo = finfo_open(FILEINFO_MIME); // since php 5.3.0 : FILEINFO_MIME_TYPE
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
 $mime_type = finfo_file($finfo, $src_file);
+
 finfo_close($finfo);
 
 $buffer = ob_get_clean();

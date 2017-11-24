@@ -63,8 +63,13 @@ extends ESRender_Module_ContentNode_Abstract {
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 		if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
+		    $resp = str_replace('<?php', '', $resp); // moodle reponse sometimes contains '<?php' for some reason
 			$courseId = json_decode($resp);
 			$logger->error('Restored course with id ' . $courseId);
+            if(!is_numeric($courseId)) {
+                $logger->error('No valid course id received');
+                return false;
+            }
 			$this->cacheCourseId($courseId);
 			return true;
 		}
@@ -87,7 +92,6 @@ extends ESRender_Module_ContentNode_Abstract {
 		if($id === false) {
 			return parent::display($requestData);
 		}
-		
 		header('Location: ' . $this-> getForwardUrl($requestData));
 		return true;
 	}

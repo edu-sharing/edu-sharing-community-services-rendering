@@ -80,15 +80,16 @@ extends ESRender_Module_NonContentNode_Abstract {
 	        $data['metadata'] = $metadata;
         }
 
+        $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
+        if(!empty($license)) {
+            $license = $license -> renderFooter($this -> getTemplate());
+        }
+
         if ($this -> detectVideo()) {
-            $embedding = $this -> getVideoEmbedding($requestData['width']) . $metadata;
+            $embedding = $this -> getVideoEmbedding($requestData['width']) . $license . $metadata;
         } else if($this -> detectAudio()) {
-        	$embedding = $this -> getAudioEmbedding() . $metadata;
+        	$embedding = $this -> getAudioEmbedding() . $license . $metadata;
         } else {
-        	$license = $this->_ESOBJECT->ESOBJECT_LICENSE;
-        	if(!empty($license)) {
-        		$license = $license -> renderFooter($this -> getTemplate());
-        	}
             $embedding = $this -> getLinkEmbedding();
             if(!empty($license) || !empty($metadata)) {
             	$embedding .= ' (';

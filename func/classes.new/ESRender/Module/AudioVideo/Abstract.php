@@ -45,13 +45,10 @@ extends ESRender_Module_ContentNode_Abstract {
     }
     
     protected function getVideoFormatByRequestingDevice() {
-    	if(isset($_REQUEST['videoFormat']) && $_REQUEST['videoFormat'] == self::FORMAT_VIDEO_MP4_EXT) {
-    		return self::FORMAT_VIDEO_MP4;
-    	} else if(isset($_REQUEST['videoFormat']) && $_REQUEST['videoFormat'] == self::FORMAT_VIDEO_WEBM_EXT) {
+    	if(isset($_REQUEST['videoFormat']) && $_REQUEST['videoFormat'] == self::FORMAT_VIDEO_WEBM_EXT) {
     		return self::FORMAT_VIDEO_WEBM;
-    	} else {
-    		return '';
     	}
+    	return self::FORMAT_VIDEO_MP4;
     }
 
     /**

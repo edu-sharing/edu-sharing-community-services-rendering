@@ -8,7 +8,7 @@ class ESRender_License {
 	private $filename = '';
 
 	public function __construct($esobject) {
-		$this -> author = $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN');
+		$this -> author = ($esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN')) ? $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN') : $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN');	
 		$this -> icon = $esobject -> AlfrescoNode -> getProperty('{virtualproperty}licenseicon');
 		$this -> url = $esobject -> AlfrescoNode -> getProperty('{virtualproperty}licenseurl');
 		$this -> permalink = $esobject -> AlfrescoNode -> getProperty('{virtualproperty}permalink');

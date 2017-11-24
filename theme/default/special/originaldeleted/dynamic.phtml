@@ -7,7 +7,9 @@ $msg['error'] = new Phools_Message_Default('The object to which this collection 
 ?>
 
 <style scoped>
-<?php include(dirname(__FILE__) . '/../../css/dynamic.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/dynamic.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+
 div.error {
     padding: 100px 10px;
     text-align: center;
@@ -29,6 +31,7 @@ div.message_wrapper {
             </div>
         </div>
 	</div>
+    <?php echo $metadata; ?>
 </div>
 
 <script>

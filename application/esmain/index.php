@@ -230,7 +230,7 @@ try {
         $decrypted = mdecrypt_generic($handler, base64_decode($req_data['username']));
         mcrypt_generic_deinit($handler);
         $user_name = trim($decrypted);
-        mcrypt_module_close($handler);      
+        mcrypt_module_close($handler);
     } catch(Exception $e) {
         echo 'Decryption error';
         exit();
@@ -273,13 +273,17 @@ try {
     if(mc_Request::fetch('showMetadata', 'CHAR') === 'false')
         Config::set('showMetadata', false);
 
-    Config::set('showDownloadButton', true);
+    Config::set('showDownloadButton', true); 
     if(mc_Request::fetch('showDownloadButton', 'CHAR') === 'false')
         Config::set('showDownloadButton', false);
 
     Config::set('showDownloadAdvice', true);
     if(mc_Request::fetch('showDownloadAdvice', 'CHAR') === 'false')
         Config::set('showDownloadAdvice', false);
+
+    // ACCESS TOKEN
+    $accessToken = mc_Request::fetch('accessToken', 'CHAR', '');
+    Config::set('accessToken', $accessToken);
 
     // Internal
     $req_data['token'] = mc_Request::fetch('token', 'CHAR', '');
@@ -289,6 +293,11 @@ try {
 
     // HEIGHT
     $req_data['height'] = mc_Request::fetch('height', 'INT', 0);
+
+    // Internal communication
+    Config::set('internal_request', false);
+    if(mc_Request::fetch('com', 'CHAR') === 'internal')
+        Config::set('internal_request', true);
 
     $CurrentDirectoryName = basename(dirname(__FILE__));
     $application = new ESApp();
@@ -382,7 +391,7 @@ try {
             $signature = rawurldecode($_GET['sig']);
             $dataSsl = urldecode($req_data['rep_id']);
             $signature = base64_decode($signature);
-            $ok = openssl_verify($dataSsl . $req_data['timestamp'], $signature, $pubkeyid);
+            $ok = openssl_verify(urldecode($req_data['rep_id']) . $req_data['obj_id']  . $req_data['timestamp'], $signature, $pubkeyid);
         } catch (Exception $e) {
             throw new ESRender_Exception_SslVerification('SSL signature check failed');
         }
@@ -428,7 +437,7 @@ try {
     try
     {
         $timestamp = round(microtime(true) * 1000);
-        $signData = $hc->prop_array['appid'] . $timestamp;
+        $signData = $hc->prop_array['appid'] . $timestamp . $req_data['obj_id'];
         $priv_key = $hc -> prop_array['private_key'];
         $pkeyid = openssl_get_privatekey($priv_key);      
         openssl_sign($signData, $signature, $pkeyid);
@@ -476,9 +485,11 @@ try {
         $dummy_lmsId = $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> lmsId;
         $dummy_resourceId = $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> resourceId;
 
-        $xmlParams = simplexml_load_string($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> usageXmlParams);
-        if (!$xmlParams) {
-            throw new Exception('Error loading usageXmlParams.');
+        if(!empty($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> usageXmlParams)) {
+            $xmlParams = simplexml_load_string($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> usageXmlParams);
+            if (!$xmlParams) {
+                throw new Exception('Error loading usageXmlParams.');
+            }
         }
 
         foreach ($Plugins as $name => $Plugin) {
@@ -506,7 +517,7 @@ try {
     	if(!empty($CC_RENDER_PATH_SAFE))
     		$CC_RENDER_PATH = $CC_RENDER_PATH_SAFE;
     }
-        
+
     //if not set by usage set it with property value
     if($req_data['version'] < 1) {
         //set alf version
@@ -515,6 +526,10 @@ try {
         if(empty($req_data['version']))
             $req_data['version'] = $contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}versionLabel');
     }
+
+    //set version to 1 for remote objects
+    if($contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype'))
+        $req_data['version'] = '';
 
     if($req_data['version'] === false) {
     	$displayTitle = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
@@ -643,21 +658,18 @@ try {
                 'renderAppId' => $hc->prop_array['appid']);
             
             if (!$Module -> createInstance($paramsCreate)) {
-            
                 $Logger -> error('Error creating new object-instance. Attempting to remove created object.');
-
                 if (!$ESObject -> deleteFromDb()) {
                     $Logger -> error('Error removing object-instance "' . $ESObject -> getObjectID() . '".');
                 }
-
+                $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
                 $Logger -> info('Successfully removed created object.');
-
                 throw new Exception('Error creating instance.');
             }
 
             if (!$ESObject -> setData2Db()) {
+                $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
                 $Logger -> error('Error storing object-data in database.');
-
                 throw new Exception('Error storing instance-data.');
             }
         } catch (Exception $e) {
@@ -674,9 +686,7 @@ try {
             $Plugin -> postInstanciateObject();
         }
 
-        //unlock instance
         $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
-
     }
 
     $Logger -> info('Successfully fetched instance.');

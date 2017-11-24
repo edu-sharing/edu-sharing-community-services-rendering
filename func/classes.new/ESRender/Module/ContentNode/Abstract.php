@@ -81,10 +81,10 @@ extends ESRender_Module_Base
             $handle = fopen($cacheFile, "wb");
             
             $content = $this->getContent($url);
-            
+
             if($content === false) {
                 fclose($handle);    
-                $Logger->info('Error fetching content.');
+                $Logger->error('Error fetching content from ' . $url);
                 return false;
             }
             
@@ -93,7 +93,7 @@ extends ESRender_Module_Base
             $Logger->info('Stored content in file "'.$cacheFile.'".');
 
         } catch (Exception $e) {
-            $Logger->info('Error storing content in file "'.$cacheFile.'".');
+            $Logger->error('Error storing content in file "'.$cacheFile.'".');
             return false;
         }
         
@@ -223,7 +223,7 @@ extends ESRender_Module_Base
 
         $snippet = $this->getTemplate()->render('/module/default/inline', $data);
                 
-        $Logger->debug('ESRender_Module_Base::inline Snippet "' . $snippet . '"');
+        $Logger->debug('ESRender_Module_Base::inline');
 
         echo $snippet;
 

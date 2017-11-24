@@ -53,4 +53,5 @@ $Translate
 	->addTranslation('en', 'toDownload', 'Download')
 	->addTranslation('en', 'cannotOpenObject', 'This material can not be displayed in the browser.')
 	->addTranslation('en', 'cannotOpenObjectText', 'In order to use the material please download it.')
-	->addTranslation('en', 'goToOrigin', 'Go to origin');
+	->addTranslation('en', 'goToOrigin', 'Go to origin')
+    ->addTranslation('en', 'showDocument', 'Show document');

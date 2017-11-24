@@ -84,29 +84,10 @@ extends ESRender_Module_ContentNode_Abstract {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see ESRender_Module_ContentNode_Abstract::display()
-	 */
-	final protected function display(array $requestData) {
-		$Logger = $this -> getLogger();
-		
-		
-		//header("Location: " . $this -> _ESOBJECT -> getPath() . '/index.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token']);
-		//exit();
-		
-		echo $this -> renderTemplate($requestData, '/module/h5p/display');
-
-		return true;
-	}
-
-	/**
-	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::inline()
 	 */
 	protected function inline(array $requestData) {
-		$Logger = $this -> getLogger();
-
 		echo $this -> renderTemplate($requestData, '/module/h5p/inline');
-
 		return true;
 	}
 
@@ -115,20 +96,8 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * @see ESRender_Module_ContentNode_Abstract::dynamic()
 	 */
 	protected function dynamic(array $requestData) {
-
         echo $this -> renderTemplate($requestData, '/module/h5p/dynamic');
-
         return true;
-
-		/*$Logger = $this -> getLogger();
-		$template_data['image_url'] = $this -> _ESOBJECT -> getPath() . '.jpg?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-		 
-		if(Config::get('showMetadata'))
-			$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
-			 
-			$template_data['title'] = $this->_ESOBJECT->getTitle();
-			echo $this -> getTemplate() -> render('/module/picture/dynamic', $template_data);
-			return true;*/
 	}
 
 	/**

@@ -40,7 +40,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		if($getDefaultData)
 			$template_data = parent::prepareRenderData($requestData);
 			$template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
-			$template_data['content'] = $this -> _ESOBJECT -> getPath();// no, causes trouble with internal h5p urls . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+			$template_data['content'] = $this -> _ESOBJECT -> getPath() . $this -> getContentPathSuffix();// no, causes trouble with internal h5p urls . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
            if(Config::get('showMetadata'))
                 $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
             $Template = $this -> getTemplate();
@@ -54,6 +54,8 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * @see ESRender_Module_ContentNode_Abstract::createInstance()
 	 */
 	final public function createInstance(array $requestData) {
+
+        $logger = $this -> getLogger();
 			
 		if (!parent::createInstance($requestData)) {
 			return false;
@@ -61,21 +63,22 @@ extends ESRender_Module_ContentNode_Abstract {
 
 		$path = str_replace('\\', '/', $this -> _ESOBJECT -> getFilePath());
 
-		if ( ! rename($path, $path . '.zip') ) {
-			return false;
-		}
-		
-		if ( ! mkdir($path, 0744) ) {
-			return false;
-		}
+        try {
+            if (!copy($path, $path . '.zip')) {
+                throw new Exception('Error copy zip.');
+            }
+            if (!mkdir($path . $this -> getContentPathSuffix(), 0744) ) {
+                throw new Exception('Error creating content folder.');
+            }
 
-        $zip = new ZipArchive;
-        $res = $zip->open($path.'.zip');
-        if ($res === TRUE) {
-            $zip->extractTo($path.DIRECTORY_SEPARATOR);
+            $zip = new ZipArchive;
+            $res = $zip -> open($path . '.zip');
+            if ($res !== true)
+                throw new Exception('Error opening zip');
+            $zip->extractTo($path . $this->getContentPathSuffix() . DIRECTORY_SEPARATOR);
             $zip->close();
-        } else {
-            error_log('error unzipping ' . $path.'.zip');
+        } catch (Exception $e) {
+            $logger -> error('Error unzipping ' . $path . '.zip ');
             return false;
         }
 
@@ -107,6 +110,10 @@ extends ESRender_Module_ContentNode_Abstract {
 	public function getTimesOfUsage() {
 		return 20;
 	}
+
+	private function getContentPathSuffix() {
+	    return '_content';
+}
 
 
 }

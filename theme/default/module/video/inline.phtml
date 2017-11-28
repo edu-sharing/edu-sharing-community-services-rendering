@@ -10,7 +10,7 @@
     <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
     <?php include(dirname(__FILE__) . '/../../css/inline.css'); ?>
 </style>
-<video <?php echo $styleVideoWith?> data-tap-disabled="true" id="<?php echo htmlentities($videoObjectIdentifier, ENT_QUOTES, 'UTF-8') ?>" data-licid="<?php echo $licid;?>" controls style="max-width: 100%" oncontextmenu="return false;">
+<video <?php echo $styleVideoWith?> data-tap-disabled="true" id="<?php echo htmlentities($videoObjectIdentifier, ENT_QUOTES, 'UTF-8') ?>" data-licid="<?php echo $licid;?>" controls controlsList="nodownload" style="max-width: 100%" oncontextmenu="return false;">
     <?php
        echo '<source src="' . $url . '" type="video/' . $ext . '"></source>';
     ?>

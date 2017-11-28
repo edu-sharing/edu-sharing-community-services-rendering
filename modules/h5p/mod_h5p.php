@@ -65,7 +65,7 @@ extends ESRender_Module_ContentNode_Abstract {
 
         try {
             if (!copy($path, $path . '.zip')) {
-                throw new Exception('Error copy zip.');
+                throw new Exception('Error copying zip.');
             }
             if (!mkdir($path . $this -> getContentPathSuffix(), 0744) ) {
                 throw new Exception('Error creating content folder.');
@@ -101,14 +101,6 @@ extends ESRender_Module_ContentNode_Abstract {
 	protected function dynamic(array $requestData) {
         echo $this -> renderTemplate($requestData, '/module/h5p/dynamic');
         return true;
-	}
-
-	/**
-	 * (non-PHPdoc)
-	 * @see ESRender_Module_Base::getTimesOfUsage()
-	 */
-	public function getTimesOfUsage() {
-		return 20;
 	}
 
 	private function getContentPathSuffix() {

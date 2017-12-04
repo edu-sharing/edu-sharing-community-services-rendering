@@ -63,6 +63,9 @@ extends ESRender_Module_ContentNode_Abstract {
                     throw new Exception('Cannot create temporary image file');
             }
 
+            $origHeight = imagesy($tmpFile);
+            $origWidth = imagesx($tmpFile);
+
             if(empty($width) && empty($height)) {
                 $width = $origWidth;
                 $height = $origHeight;

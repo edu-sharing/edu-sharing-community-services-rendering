@@ -18,15 +18,13 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
 	<div class="edusharing_rendering_content_wrapper" role="main">
 
 
-        <?php if(Config::get('forcePreview') || 1) {
+        <?php if(Config::get('forcePreview')) {
             if(Config::get('showDownloadAdvice')) {
                 echo '<h3>' . $msg['cannotOpenObject']->localize($Locale, $Translate) . '</h3>' .
                     '<h4>' . $msg['cannotOpenObjectText']->localize($Locale, $Translate) . '</h4>';
             }
             echo '<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>' .
                     '<img class="edusharing_rendering_content_preview" src="' . $previewUrl . '">';
-
-
         } else {
             echo '<div class="edusharing_rendering_content edusharing_rendering_content_embedded">' .
                 '<iframe src="' . $content . '" width="100%" height="100%" style="border: none;">' .

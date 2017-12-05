@@ -85,6 +85,7 @@ extends ESRender_Module_ContentNode_Abstract
 
     protected function dynamic(array $requestData)
     {
+        global $accessToken;
         $template_data['url'] = $this->_ESOBJECT->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
         if(Config::get('showMetadata'))
             $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');

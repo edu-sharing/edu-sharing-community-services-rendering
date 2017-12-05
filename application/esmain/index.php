@@ -281,6 +281,12 @@ try {
     if(mc_Request::fetch('showDownloadAdvice', 'CHAR') === 'false')
         Config::set('showDownloadAdvice', false);
 
+    Config::set('forcePreview', false);
+    if(mc_Request::fetch('forcePreview', 'CHAR') === 'true')
+        Config::set('forcePreview', true);
+
+
+
     // ACCESS TOKEN
     $accessToken = mc_Request::fetch('accessToken', 'CHAR', '');
     Config::set('accessToken', $accessToken);

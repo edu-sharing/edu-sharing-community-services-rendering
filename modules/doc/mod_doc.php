@@ -55,8 +55,16 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
     protected function renderTemplate(array $requestData, $TemplateName) {
+        global $accessToken;
+
         $Logger = $this -> getLogger();
         $template_data = parent::prepareRenderData($requestData);
+
+        $previewUrl = $this->_ESOBJECT->getPreviewUrl();
+        if(!empty($accessToken))
+            $previewUrl .= '&accessToken=' . $accessToken;
+
+        $template_data['previewUrl'] = $previewUrl;
 
         if($this->getDoctype() == DOCTYPE_PDF) {
             $template_data['content'] = $this -> _ESOBJECT -> getPath() . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];

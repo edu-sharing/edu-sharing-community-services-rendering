@@ -16,16 +16,24 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
 	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
 	<div class="edusharing_rendering_content_wrapper" role="main">
-        <div class="edusharing_rendering_content edusharing_rendering_content_embedded">
-            <iframe src="<?php echo $content?>" width="100%" height="100%" style="border: none;">
-                <?php
-                    echo '<h3>' . $msg['cannotOpenObject']->localize($Locale, $Translate) . '</h3>' .
-                        '<h4>' . $msg['cannotOpenObjectText']->localize($Locale, $Translate) . '</h4>';
-                    if(Config::get('showDownloadButton'))
-                        echo '<a href="' . $url .'" target="_blank" class="edusharing_rendering_content" >' . $msg['toDownload']->localize($Locale, $Translate) . '</a>';
-                ?>
-            </iframe>
-        </div>
+
+
+        <?php if(Config::get('forcePreview')) {
+            if(Config::get('showDownloadAdvice')) {
+                echo '<h3>' . $msg['cannotOpenObject']->localize($Locale, $Translate) . '</h3>' .
+                    '<h4>' . $msg['cannotOpenObjectText']->localize($Locale, $Translate) . '</h4>';
+            }
+            echo '<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>' .
+                    '<img class="edusharing_rendering_content_preview" src="' . $previewUrl . '">';
+        } else {
+            echo '<div class="edusharing_rendering_content edusharing_rendering_content_embedded">' .
+                '<iframe src="' . $content . '" width="100%" height="100%" style="border: none;">' .
+                '<h3>' . $msg['cannotOpenObject']->localize($Locale, $Translate) . '</h3>' .
+                '<h4>' . $msg['cannotOpenObjectText']->localize($Locale, $Translate) . '</h4>' .
+                '</iframe>'.
+            '</div>';
+        }
+        ?>
     </div>
 	<?php echo $metadata; ?>
 </div>

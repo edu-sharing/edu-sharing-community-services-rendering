@@ -11,8 +11,8 @@
 	    (function($) {
 	      $(function() {
 	        $('.h5p-container').h5p({
-	          frameJs: 'http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
-	          frameCss: 'http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/styles/h5p.css',
+	          frameJs: '<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
+	          frameCss: '<?php echo $MC_URL?>/theme/default/module/h5p/dist/styles/h5p.css',
                 h5pContent: '<?php echo str_replace('cache/', '', $content)?>'
 	        });
 	      });

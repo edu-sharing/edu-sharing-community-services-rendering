@@ -245,25 +245,23 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         if (empty($version))
             $version = 0;
 
+
+        $resource_id = $requestData['resource_id'];
+        if (empty($resource_id))
+            $resource_id = 0;
+
         $pdo = RsPDO::getInstance();
 
         try {
-            $sql = 'SELECT * FROM `ESOBJECT` ' . 'WHERE `ESOBJECT_REP_ID` = :repid ' . 'AND `ESOBJECT_CONTENT_HASH` = :contenthash ' . 'AND `ESOBJECT_OBJECT_ID` = :objectid ' . 'AND `ESOBJECT_LMS_ID` = :appid ' . 'AND `ESOBJECT_OBJECT_VERSION` = :version';
-    
-            /*
-             * As every module can have different reuirements, when an already
-             * rendered instance is considered appropriate for current request,
-             * let it refine the search-conditions.
-             */
-            $sql = $pdo -> formatQuery($this -> refineInstanceConstraints($sql, $requestData));
-            
+            $sql = 'SELECT * FROM `ESOBJECT` ' . 'WHERE `ESOBJECT_REP_ID` = :repid ' . 'AND `ESOBJECT_CONTENT_HASH` = :contenthash ' . 'AND `ESOBJECT_OBJECT_ID` = :objectid ' . 'AND `ESOBJECT_LMS_ID` = :appid ' . 'AND `ESOBJECT_OBJECT_VERSION` = :version ' . 'AND `ESOBJECT_RESOURCE_ID` = :resourceid';
+
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':repid', $requestData['rep_id']);
             $stmt -> bindValue(':contenthash', $contentHash);
             $stmt -> bindValue(':objectid', $ESObject -> getObjectID());
             $stmt -> bindValue(':appid', $requestData['app_id']);
             $stmt -> bindValue(':version', $version);
-    
+            $stmt -> bindValue(':resourceid', $resource_id);
             $stmt -> execute();
             
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);

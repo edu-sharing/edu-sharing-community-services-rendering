@@ -34,15 +34,23 @@ extends ESRender_Module_NonContentNode_Abstract {
             $data['license'] = $license -> renderFooter($this -> getTemplate());
         }
         $data['url'] = $this->getUrl();
+        $data['originUrl'] = $this->getOriginUrl();
         $Template = $this -> getTemplate();
         echo $Template -> render('/module/learningapps/inline', $data);
         return true;
     }
 
-    protected function getUrl() {
+    protected function getOriginUrl() {
         $urlProp = $this -> _ESOBJECT -> AlfrescoNode -> getProperty($this -> getUrlProperty());
         if(!empty($urlProp))
             return $urlProp;
+        return false;
+    }
+
+    protected function getUrl() {
+        $urlProp = $this -> _ESOBJECT -> AlfrescoNode -> getProperty($this -> getUrlProperty());
+        if(!empty($urlProp))
+            return str_replace('https://learningapps.org/', 'https://learningapps.org/view', $urlProp);
         return false;
     }
 

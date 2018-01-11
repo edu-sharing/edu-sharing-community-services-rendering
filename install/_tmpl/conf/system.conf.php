@@ -9,8 +9,6 @@ $MC_DOCROOT= '[[[TOKEN_DOCROOT]]]';
 # required ends with a slash
 $CC_RENDER_PATH = '[[[TOKEN_DATA_DIR]]]';
 
-DEFINE("ES_KEY","thetestkey");
-DEFINE("ES_IV","initvect");
 DEFINE("ENABLE_TRACK_OBJECT", true);
 DEFINE("DISABLE_TRACK_ANONYMIZATION", false);
 DEFINE("ENABLE_METADATA_RENDERING", false);

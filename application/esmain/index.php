@@ -222,21 +222,7 @@ try {
     //BACKLINK
     $req_data['backLink'] = mc_Request::fetch('backLink', 'CHAR'); 
 
-    try {
-        $handler = mcrypt_module_open('blowfish', '', 'cbc', '');
-        $secretKey = ES_KEY;
-        $iv = ES_IV;
-        mcrypt_generic_init($handler, $secretKey, $iv);
-        $decrypted = mdecrypt_generic($handler, base64_decode($req_data['username']));
-        mcrypt_generic_deinit($handler);
-        $user_name = trim($decrypted);
-        mcrypt_module_close($handler);
-    } catch(Exception $e) {
-        echo 'Decryption error';
-        exit();
-    }
 
-    
     // VERSION (optional)
     $req_data['version'] = mc_Request::fetch('version', 'CHAR');
     if ($req_data['version']) {
@@ -348,6 +334,15 @@ try {
     }
 
     $Logger -> debug('Successfully loaded home repository by id "' . $homeRepId . '".');
+
+
+    $user_name = '';
+    $privateKey = openssl_pkey_get_private($hc -> prop_array['private_key']);
+    $decryptStatus = openssl_private_decrypt ( base64_decode($req_data['username']), $user_name, $privateKey);
+    if(!$decryptStatus)
+        throw new Exception('Could not decrypt user');
+    $user_name = trim($user_name);
+    openssl_free_key($privateKey);
 
 
     foreach ($Plugins as $name => $Plugin) {

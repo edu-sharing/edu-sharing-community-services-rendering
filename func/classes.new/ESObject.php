@@ -819,7 +819,8 @@ class ESObject {
 
     final public function getPathfile() {
         if(Config::get('internal_request')){
-            if(empty(INTERNAL_URL))
+            $internalUrl = INTERNAL_URL;
+            if(empty($internalUrl))
                 throw new Exception('Config value "$INTERNAL_URL" is empty.');
             return INTERNAL_URL . '/' . $this -> ESModule -> getTmpFilepath() . '/' . $this -> getSubUri_file() . '/' . $this -> getObjectIdVersion();
         }

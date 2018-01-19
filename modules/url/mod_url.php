@@ -181,7 +181,7 @@ extends ESRender_Module_NonContentNode_Abstract {
         } else {
         	return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
         				<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
-        					<video data-tap-disabled="true" controls style="max-width: 100%; width: '.$width.'px" oncontextmenu="return false;">
+        					<video data-tap-disabled="true" controls style="max-width: 100%;" oncontextmenu="return false;">
 							    <source src="' . $this -> getUrl() . '" type="' . $this->_ESOBJECT->getMimeType() . '"></source>
 							</video>
         				</div>

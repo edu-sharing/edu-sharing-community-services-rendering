@@ -32,8 +32,11 @@ body {
 	background-color: #f6f6f6;
 	padding-bottom: 30px;
 }
-
+.edusharing_rendering_metadata_header{
+	display:flex;
+}
 img.edusharing_rendering_metadata_header_icon {
+	display:flex;
 	height: 51px;
 	width: 68px;
 	margin: 10px -10px -10px 20px;
@@ -43,6 +46,8 @@ img.edusharing_rendering_metadata_header_icon {
 }
 
 h1.edusharing_rendering_metadata_header_title {
+	display:flex;
+	flex-grow: 1;
 	font-size: 130%;
 	font-weight: 400;
 	margin-top: 1.8rem;

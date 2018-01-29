@@ -473,7 +473,7 @@ try {
 
     // Content license
     Config::set('hasContentLicense', true);
-    if($renderInfoLMSReturn -> getRenderInfoLMSReturn -> hasContentLicense === 'false')
+    if($renderInfoLMSReturn -> getRenderInfoLMSReturn -> hasContentLicense === false)
         Config::set('hasContentLicense', false);
 
     // check usage

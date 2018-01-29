@@ -55,4 +55,5 @@ $Translate
 	->addTranslation('en', 'cannotOpenObjectText', 'In order to use the material please download it.')
 	->addTranslation('en', 'goToOrigin', 'Go to origin')
     ->addTranslation('en', 'showDocument', 'Show document')
-    ->addTranslation('en', 'showInLearningAppsOrg', 'Open in learningapps.org');
+    ->addTranslation('en', 'showInLearningAppsOrg', 'Open in learningapps.org')
+    ->addTranslation('en', 'hasNoContentLicense', 'You\'re not allowed to use the content because of licence restrictions.');

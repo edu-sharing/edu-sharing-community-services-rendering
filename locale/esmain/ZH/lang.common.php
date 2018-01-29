@@ -50,4 +50,5 @@ $Translate
 	->addTranslation('zh', 'cannotOpenObjectText', '为了使用材料，请下载它')
 	->addTranslation('zh', 'goToOrigin', 'Go to origin')
     ->addTranslation('zh', 'showDocument', 'Show document')
-	->addTranslation('zh', 'showInLearningAppsOrg', 'Open in learningapps.org');
+	->addTranslation('zh', 'showInLearningAppsOrg', 'Open in learningapps.org')
+    ->addTranslation('zh', 'hasNoContentLicense', '由于许可限制，您不能使用这些内容.');

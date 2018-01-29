@@ -35,13 +35,14 @@ extends ESRender_Plugin_Abstract
         &$username)
 	{
 		
-	if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU'
+       if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU'
 			&& strpos($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format'), 'video') !== false)  {
-				
             $prop = new stdClass();
             $prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
             $prop -> value = $this->getWwwurl($contentNode);
-            $contentNode -> setProperties(array($prop));
+			$contentNode -> setProperties(array($prop));
+			if(strpos(strtolower($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid')), 'fwu-055') !== false || strpos(strtolower($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid')), 'fwu-055') !== false)
+				Config::set('renderInIframe', true);
         }
 		
 	}

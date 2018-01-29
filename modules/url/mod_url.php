@@ -179,21 +179,14 @@ extends ESRender_Module_NonContentNode_Abstract {
             		</div>
             		<p class="caption"><es:title></es:title></p>';
         } else {
-            if(Config::get('renderInIframe')) {
-                return '<div class="videoWrapperOuter">
-                        <iframe src="'.$this -> getUrl().'" style="border: 0; width:100%; height:600px;"></iframe>
+            return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
+                    <div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+                        <video data-tap-disabled="true" controls style="max-width: 100%;" oncontextmenu="return false;">
+                            <source src="' . $this -> getUrl() . '" type="' . $this->_ESOBJECT->getMimeType() . '"></source>
+                        </video>
                     </div>
-                    <p class="caption"><es:title></es:title></p>';
-            } else {
-                return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-                        <div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
-                            <video data-tap-disabled="true" controls style="max-width: 100%;" oncontextmenu="return false;">
-                                <source src="' . $this -> getUrl() . '" type="' . $this->_ESOBJECT->getMimeType() . '"></source>
-                            </video>
-                        </div>
-                    </div>
-                    <p class="caption"><es:title></es:title></p>';
-            }
+                </div>
+                <p class="caption"><es:title></es:title></p>';
         }
         return '';
     }
@@ -216,7 +209,8 @@ extends ESRender_Module_NonContentNode_Abstract {
                 return true;
         }
         
-        if(strpos($this->_ESOBJECT->getMimeType(), 'video') !== false)
+        //filter videos that are embedded in html
+        if(strpos($this->_ESOBJECT->getMimeType(), 'video') !== false && strpos($this -> getUrl(), '.htm') === false && strpos($this -> getUrl(), '.php') === false)
         	return true;
         
         return false;

@@ -53,7 +53,7 @@ h1.edusharing_rendering_metadata_header_title {
 .edusharing_rendering_metadata_body {
 	clear: both;
 	display: flex;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
 }
 
 .edusharing_rendering_content_wrapper {

@@ -49,4 +49,5 @@ $Translate
 	->addTranslation('zh', 'cannotOpenObject', '此材料无法在浏览器中显示')
 	->addTranslation('zh', 'cannotOpenObjectText', '为了使用材料，请下载它')
 	->addTranslation('zh', 'goToOrigin', 'Go to origin')
-    ->addTranslation('zh', 'showDocument', 'Show document');
+    ->addTranslation('zh', 'showDocument', 'Show document')
+	->addTranslation('zh', 'showInLearningAppsOrg', 'Open in learningapps.org');

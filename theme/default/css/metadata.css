@@ -2,6 +2,7 @@
 .mdsGroup{
     flex: 1;
     padding: 0 20px;
+    min-width: 50%;
 }
 .mdsCaption{
     background-color: #fff;
@@ -32,7 +33,7 @@
     background-color: #DDDDDD;
     border-radius: 999px;
     padding: 3px 10px;
-    margin-right: -10px;
+    margin-left: 10px;
 }
 
 /*not good*/

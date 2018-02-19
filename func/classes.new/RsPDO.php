@@ -15,7 +15,7 @@ class RsPDO extends PDO {
         if (null === self::$instance) {
             self::$instance = new self;
         }
-        self::setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return self::$instance;
     }
     

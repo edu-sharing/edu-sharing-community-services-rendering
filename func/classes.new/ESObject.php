@@ -701,8 +701,6 @@ class ESObject {
     }
 
     public function addToConversionQueue($format, $dirSep, $filename, $outputFilename, $renderPath, $mimeType) {
-
-
         $arr = array(
             'ESOBJECT_CONVERSION_OBJECT_ID' => $this -> ESOBJECT_ID,
             'ESOBJECT_CONVERSION_FORMAT' => $format,
@@ -882,4 +880,40 @@ class ESObject {
         }
         exit();
     }
+
+    public function update() {
+        if($this->getTitle() !== $this->ESOBJECT_TITLE) {
+            try {
+                $pdo = RsPDO::getInstance();
+                $sql = 'UPDATE `ESOBJECT` SET `ESOBJECT_TITLE` = :title WHERE `ESOBJECT_ID` = :id';
+                $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
+                $stmt -> bindValue(':title', $this->getTitle());
+                $stmt -> bindValue(':id', $this->ESOBJECT_ID, PDO::PARAM_INT);
+                $result = $stmt -> execute();
+                if(!$result)
+                    throw new Exception('Error updating title ' . print_r($pdo -> errorInfo(), true));
+                $this->ESOBJECT_TITLE = $this->getTitle();
+            } catch(PDOException $e) {
+                throw new Exception($e -> getMessage());
+            }
+        }
+
+        if($this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name') !== $this->ESOBJECT_ALF_FILENAME) {
+            try {
+                $pdo = RsPDO::getInstance();
+                $sql = 'UPDATE `ESOBJECT` SET `ESOBJECT_ALF_FILENAME` = :name WHERE `ESOBJECT_ID` = :id';
+                $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
+                $stmt -> bindValue(':name', $this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name'));
+                $stmt -> bindValue(':id', $this->ESOBJECT_ID, PDO::PARAM_INT);
+                $result = $stmt -> execute();
+                if(!$result)
+                    throw new Exception('Error updating name ' . print_r($pdo -> errorInfo(), true));
+                $this->ESOBJECT_ALF_FILENAME = $this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name');
+            } catch(PDOException $e) {
+                throw new Exception($e -> getMessage());
+            }
+        }
+
+    }
+
 }

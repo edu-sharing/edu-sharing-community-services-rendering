@@ -695,6 +695,8 @@ try {
         $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
     }
 
+    $ESObject ->update();
+
     $Logger -> info('Successfully fetched instance.');
 
     // start session to store esrender-data.

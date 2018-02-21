@@ -272,7 +272,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
                 return true;
             }
     
-            $Logger -> debug('Instance does not exists.');
+            $Logger -> debug('Instance does not exist.');
             return false;
         } catch (PDOException $e) {
             throw new Exception($e -> getMessage());

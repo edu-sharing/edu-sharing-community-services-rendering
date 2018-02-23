@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '4.0.5' );
+define ( 'UPDATEVERSION', '4.0.6' );
 set_time_limit(1800);
 ini_set('memory_limit', '2048M');
 
@@ -235,13 +235,17 @@ function run($installedVersion) {
 				
 			if(file_exists(MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php"))
 				unlink ( MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php");
-			
-			$pdo = RsPDO::getInstance();
-			$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
-			$stmt = $pdo->prepare ( $sql );
-			$stmt->bindValue ( ':modid', '8' );
-			$stmt->bindValue ( ':mime', 'audio/mp3' );
-			$stmt->execute ();
+
+			try {
+                $pdo = RsPDO::getInstance();
+                $sql = $pdo->formatQuery('INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)');
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindValue(':modid', '8');
+                $stmt->bindValue(':mime', 'audio/mp3');
+                $stmt->execute();
+            } catch(PDOException $e) {
+                //catch postgresql uniue error
+            }
 		}
 
 		if(version_compare ( '3.3', $installedVersion ) > 0) {
@@ -299,6 +303,13 @@ function run($installedVersion) {
             $stmt->bindValue ( ':moddesc', 'learningapps' );
             $stmt->execute ();
         }
+
+        if (version_compare ( '4.0.6', $installedVersion ) > 0) {
+            if(file_exists (MC_ROOT_PATH . '/modules/doc/redirect_header.inc.php')) {
+                unlink(MC_ROOT_PATH . '/modules/doc/redirect_header.inc.php');
+            }
+        }
+
 	} catch ( Exception $e ) {
 		error_log ( print_r ( $e, true ) );
 		return false;

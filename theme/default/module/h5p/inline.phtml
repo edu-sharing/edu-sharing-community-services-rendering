@@ -1,10 +1,10 @@
 <?php ?>
 
 <link type="text/css" rel="stylesheet" media="all"
-	href="http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/styles/h5p.css" />
+	href="<?php echo $MC_URL?>/theme/default/css/h5p.css" />
 
   <script type="text/javascript"
-	src="http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
+	src="<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
 
 
 <script>
@@ -12,7 +12,7 @@
 	      $(function() {
 	        $('.h5p-container').h5p({
 	          frameJs: '<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
-	          frameCss: '<?php echo $MC_URL?>/theme/default/module/h5p/dist/styles/h5p.css',
+	          frameCss: '<?php echo $MC_URL?>/theme/default/css/h5p.css',
                 h5pContent: '<?php echo str_replace('cache/', '', $content)?>'
 	        });
 	      });

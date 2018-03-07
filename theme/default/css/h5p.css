@@ -1,0 +1,6 @@
+@import url("../module/h5p/dist/styles/h5p.css");
+
+/* we cannot provide download or embed links */
+ul.h5p-actions {
+    display: none;
+}

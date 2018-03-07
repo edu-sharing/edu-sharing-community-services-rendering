@@ -504,14 +504,6 @@ class ESObject {
             throw new Exception('No Alfresco-properties set.');
         }
 
-        if(false === Config::get('hasContentLicense')) {
-            error_log('hasContentLicense is false, using default ("doc") module');
-            $this -> ESModule -> setName('doc');
-            $this -> ESModule -> loadModuleData();
-            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
-            return true;
-        }
-
         if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'YOUTUBE') {
             error_log('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "YOUTUBE", using module "url".');
             $this -> ESModule -> setName('url');
@@ -544,14 +536,20 @@ class ESObject {
         	return true;
         }
 
+        //better application/octed-stream with content h5p.json
+        if(strpos($this->getFilename(), 'h5p') !== false) {
+            error_log('Found extension "h5p", using module "h5p".');
+            $this -> ESModule -> setName('h5p');
+            $this -> ESModule -> loadModuleData();
+            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            return true;
+        }
+
+        // load appropriate module
         $wwwurl = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
-        $tool_instance_ref = ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_ref'));
         if (!empty($wwwurl)) {
             error_log('Property {http://www.campuscontent.de/model/1.0}wwwurl found, using module "url".');
             $this -> ESModule -> setName('url');
-        } else if (!empty($tool_instance_ref)) {
-            error_log('Property{http://www.campuscontent.de/model/1.0}tool_instance_ref found, using module "lti".');
-            $this -> ESModule -> setName('lti');
         } else if ($this -> ESOBJECT_MIMETYPE == 'application/zip') {
             if (!$this -> ESModule -> setModuleByResource($this -> ESOBJECT_RESOURCE_TYPE, $this -> ESOBJECT_RESOURCE_VERSION)) {
                 error_log('Could not set module by resource-type/-version, using default ("doc") module.');
@@ -712,6 +710,8 @@ class ESObject {
     }
 
     public function addToConversionQueue($format, $dirSep, $filename, $outputFilename, $renderPath, $mimeType) {
+
+
         $arr = array(
             'ESOBJECT_CONVERSION_OBJECT_ID' => $this -> ESOBJECT_ID,
             'ESOBJECT_CONVERSION_FORMAT' => $format,
@@ -828,8 +828,7 @@ class ESObject {
 
     final public function getPathfile() {
         if(Config::get('internal_request')){
-            $internalUrl = INTERNAL_URL;
-            if(empty($internalUrl))
+            if(empty(INTERNAL_URL))
                 throw new Exception('Config value "$INTERNAL_URL" is empty.');
             return INTERNAL_URL . '/' . $this -> ESModule -> getTmpFilepath() . '/' . $this -> getSubUri_file() . '/' . $this -> getObjectIdVersion();
         }
@@ -891,40 +890,4 @@ class ESObject {
         }
         exit();
     }
-
-    public function update() {
-        if($this->getTitle() !== $this->ESOBJECT_TITLE) {
-            try {
-                $pdo = RsPDO::getInstance();
-                $sql = 'UPDATE `ESOBJECT` SET `ESOBJECT_TITLE` = :title WHERE `ESOBJECT_ID` = :id';
-                $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
-                $stmt -> bindValue(':title', $this->getTitle());
-                $stmt -> bindValue(':id', $this->ESOBJECT_ID, PDO::PARAM_INT);
-                $result = $stmt -> execute();
-                if(!$result)
-                    throw new Exception('Error updating title ' . print_r($pdo -> errorInfo(), true));
-                $this->ESOBJECT_TITLE = $this->getTitle();
-            } catch(PDOException $e) {
-                throw new Exception($e -> getMessage());
-            }
-        }
-
-        if($this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name') !== $this->ESOBJECT_ALF_FILENAME) {
-            try {
-                $pdo = RsPDO::getInstance();
-                $sql = 'UPDATE `ESOBJECT` SET `ESOBJECT_ALF_FILENAME` = :name WHERE `ESOBJECT_ID` = :id';
-                $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
-                $stmt -> bindValue(':name', $this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name'));
-                $stmt -> bindValue(':id', $this->ESOBJECT_ID, PDO::PARAM_INT);
-                $result = $stmt -> execute();
-                if(!$result)
-                    throw new Exception('Error updating name ' . print_r($pdo -> errorInfo(), true));
-                $this->ESOBJECT_ALF_FILENAME = $this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name');
-            } catch(PDOException $e) {
-                throw new Exception($e -> getMessage());
-            }
-        }
-
-    }
-
 }

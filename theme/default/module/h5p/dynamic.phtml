@@ -1,0 +1,38 @@
+<?php
+global $Locale, $Translate, $MC_URL;
+$msg = array();
+$msg['showInformation'] = new Phools_Message_Default('showInformation');
+$msg['hideInformation'] = new Phools_Message_Default('hideInformation');
+$msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
+?>
+
+<style scoped>
+    <?php include(dirname(__FILE__) . '/../../css/dynamic.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+</style>
+
+<script type="text/javascript"
+        src="<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
+
+<script type="text/javascript">
+        (function($) {
+            $(function() {
+                $('.h5p-container').h5p({
+                    frameJs: '<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
+                    frameCss: '<?php echo $MC_URL?>/theme/default/module/h5p/dist/styles/h5p.css',
+                    h5pContent: '<?php echo str_replace('cache/', '', $content)?>'
+                });
+             });
+        })(H5P.jQuery);
+</script>
+
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+    <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
+    <div class="edusharing_rendering_content_wrapper" role="main">
+        <div class="edusharing_rendering_content h5p-container" style="max-height: 100% !important"></div> <!-- style prevents overlapping with metadata - better fix iframe height -->
+    </div>
+</div>
+
+<?php echo $metadata; ?>
+
+

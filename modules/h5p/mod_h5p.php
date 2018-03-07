@@ -40,8 +40,10 @@ extends ESRender_Module_ContentNode_Abstract {
 		if($getDefaultData)
 			$template_data = parent::prepareRenderData($requestData);
 			$template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
-			$template_data['content'] = $this -> _ESOBJECT -> getPath();// . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-			$Template = $this -> getTemplate();
+			$template_data['content'] = $this -> _ESOBJECT -> getPath() . $this -> getContentPathSuffix();// no, causes trouble with internal h5p urls . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+           if(Config::get('showMetadata'))
+                $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+            $Template = $this -> getTemplate();
 			$rendered = $Template -> render($TemplateName, $template_data);
 
 			return $rendered;
@@ -52,6 +54,8 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * @see ESRender_Module_ContentNode_Abstract::createInstance()
 	 */
 	final public function createInstance(array $requestData) {
+
+        $logger = $this -> getLogger();
 			
 		if (!parent::createInstance($requestData)) {
 			return false;
@@ -59,37 +63,24 @@ extends ESRender_Module_ContentNode_Abstract {
 
 		$path = str_replace('\\', '/', $this -> _ESOBJECT -> getFilePath());
 
-		if ( ! rename($path, $path . '.zip') ) {
-			return false;
-		}
-		
-		if ( ! mkdir($path, 0744) ) {
-			return false;
-		}
+        try {
+            if (!copy($path, $path . '.zip')) {
+                throw new Exception('Error copying zip.');
+            }
+            if (!mkdir($path . $this -> getContentPathSuffix(), 0744) ) {
+                throw new Exception('Error creating content folder.');
+            }
 
-        $zip = new ZipArchive;
-        $res = $zip->open($path.'.zip');
-        if ($res === TRUE) {
-            $zip->extractTo($path.DIRECTORY_SEPARATOR);
+            $zip = new ZipArchive;
+            $res = $zip -> open($path . '.zip');
+            if ($res !== true)
+                throw new Exception('Error opening zip');
+            $zip->extractTo($path . $this->getContentPathSuffix() . DIRECTORY_SEPARATOR);
             $zip->close();
-            return true;
+        } catch (Exception $e) {
+            $logger -> error('Error unzipping ' . $path . '.zip ');
+            return false;
         }
-
-		return true;
-	}
-
-	/**
-	 * (non-PHPdoc)
-	 * @see ESRender_Module_ContentNode_Abstract::display()
-	 */
-	final protected function display(array $requestData) {
-		$Logger = $this -> getLogger();
-		
-		
-		//header("Location: " . $this -> _ESOBJECT -> getPath() . '/index.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token']);
-		//exit();
-		
-		echo $this -> renderTemplate($requestData, '/module/h5p/display');
 
 		return true;
 	}
@@ -99,10 +90,7 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * @see ESRender_Module_ContentNode_Abstract::inline()
 	 */
 	protected function inline(array $requestData) {
-		$Logger = $this -> getLogger();
-
 		echo $this -> renderTemplate($requestData, '/module/h5p/inline');
-
 		return true;
 	}
 
@@ -111,26 +99,13 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * @see ESRender_Module_ContentNode_Abstract::dynamic()
 	 */
 	protected function dynamic(array $requestData) {
-		
-		die('no');
-		/*$Logger = $this -> getLogger();
-		$template_data['image_url'] = $this -> _ESOBJECT -> getPath() . '.jpg?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-		 
-		if(Config::get('showMetadata'))
-			$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
-			 
-			$template_data['title'] = $this->_ESOBJECT->getTitle();
-			echo $this -> getTemplate() -> render('/module/picture/dynamic', $template_data);
-			return true;*/
+        echo $this -> renderTemplate($requestData, '/module/h5p/dynamic');
+        return true;
 	}
 
-	/**
-	 * (non-PHPdoc)
-	 * @see ESRender_Module_Base::getTimesOfUsage()
-	 */
-	public function getTimesOfUsage() {
-		return 20;
-	}
+	private function getContentPathSuffix() {
+	    return '_content';
+}
 
 
 }

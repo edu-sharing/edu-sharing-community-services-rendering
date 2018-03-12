@@ -473,6 +473,11 @@ try {
         throw new ESRender_Exception_InfoLms($e);
     }
 
+    // Content license
+    Config::set('hasContentLicense', true);
+    if($renderInfoLMSReturn -> getRenderInfoLMSReturn -> hasContentLicense === false)
+        Config::set('hasContentLicense', false);
+
     // check usage
     if ($req_data['rep_id'] != $req_data['app_id']) {
         // non-repositories MUST supply usage-info
@@ -690,6 +695,8 @@ try {
 
         $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
     }
+
+    $ESObject ->update();
 
     $Logger -> info('Successfully fetched instance.');
 

@@ -9,6 +9,11 @@
 @set_time_limit(0);
 $localDir = '.' . DIRECTORY_SEPARATOR;
 
+if(@file_exists(__DIR__ . '/../conf/system.conf.php')) {
+    error_log('Delete conf/system.conf.php to restart installation process');
+    die();
+}
+
 if ( @file_exists($localDir . 'install' . DIRECTORY_SEPARATOR . 'install.php') )
 {
     header('Location: ./install/install.php');

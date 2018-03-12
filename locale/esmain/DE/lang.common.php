@@ -60,4 +60,5 @@ $Translate
 	->addTranslation('de', 'cannotOpenObjectText', 'Laden Sie das Material herunter, um es zu benutzen.')
 	->addTranslation('de', 'goToOrigin', 'Zur Originalseite springen')
     ->addTranslation('de', 'showDocument', 'Dokument anzeigen')
-    ->addTranslation('de', 'showInLearningAppsOrg', 'In learningapps.org öffnen');
+    ->addTranslation('de', 'showInLearningAppsOrg', 'In learningapps.org öffnen')
+    ->addTranslation('de', 'hasNoContentLicense', 'Sie dürfen den Inhalt aufgrund von Lizenzbeschränkungen nicht verwenden.');

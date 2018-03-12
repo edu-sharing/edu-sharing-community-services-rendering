@@ -255,7 +255,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         try {
             $sql = 'SELECT * FROM `ESOBJECT` ' . 'WHERE `ESOBJECT_REP_ID` = :repid ' . 'AND `ESOBJECT_CONTENT_HASH` = :contenthash ' . 'AND `ESOBJECT_OBJECT_ID` = :objectid ' . 'AND `ESOBJECT_LMS_ID` = :appid ' . 'AND `ESOBJECT_OBJECT_VERSION` = :version ' . 'AND `ESOBJECT_RESOURCE_ID` = :resourceid';
 
-            $stmt = $pdo -> prepare($sql);
+            $stmt = $pdo -> prepare($pdo->formatQuery($sql));
             $stmt -> bindValue(':repid', $requestData['rep_id']);
             $stmt -> bindValue(':contenthash', $contentHash);
             $stmt -> bindValue(':objectid', $ESObject -> getObjectID());
@@ -272,7 +272,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
                 return true;
             }
     
-            $Logger -> debug('Instance does not exists.');
+            $Logger -> debug('Instance does not exist.');
             return false;
         } catch (PDOException $e) {
             throw new Exception($e -> getMessage());

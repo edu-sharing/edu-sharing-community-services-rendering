@@ -22,9 +22,9 @@ extends ESRender_Module_NonContentNode_Abstract {
      */
     protected function display(array $requestData) {
 
+
+
         if (!$this -> validate()) {
-      
-         error_log('URL-property is empty.');
             return false;
         }
 
@@ -45,8 +45,9 @@ extends ESRender_Module_NonContentNode_Abstract {
     
     	global $accessToken;
     	
+         error_log('UrlProperty: -->'.$this->UrlProperty);
+
     	if (!$this -> validate()) {
-    		error_log('URL-property is empty.');
     		return false;
     	}
     
@@ -71,7 +72,6 @@ extends ESRender_Module_NonContentNode_Abstract {
     
     protected function inline(array $requestData) {
         if (!$this -> validate()) {
-            error_log('URL-property is empty.');
             return false;
         }
         
@@ -111,9 +111,8 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     private function validate() {
-    
         if (!$this -> getUrl() && !$this -> isYoutubeRemoteObject())
-            return false;
+              return false;
         return true;
     }
     
@@ -179,10 +178,14 @@ extends ESRender_Module_NonContentNode_Abstract {
             		</div>
             		<p class="caption"><es:title></es:title></p>';
         } else {
+            $type = $this->_ESOBJECT->getMimeType();
+            if(pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'mp4' || pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'webm') {
+                $type = 'video/' . pathinfo($this -> getUrl(), PATHINFO_EXTENSION);
+            }
             return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
                     <div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
                         <video data-tap-disabled="true" controls style="max-width: 100%;" oncontextmenu="return false;">
-                            <source src="' . $this -> getUrl() . '" type="' . $this->_ESOBJECT->getMimeType() . '"></source>
+                            <source src="' . $this -> getUrl() . '" type="' . $type . '"></source>
                         </video>
                     </div>
                 </div>
@@ -193,6 +196,8 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function getUrl() {
         $urlProp = $this -> _ESOBJECT -> AlfrescoNode -> getProperty($this -> getUrlProperty());
+        error_log('getUrl'.$urlProp.' '.$this -> getUrlProperty());
+
         if(!empty($urlProp))
             return $urlProp;
         return false;
@@ -227,8 +232,8 @@ extends ESRender_Module_NonContentNode_Abstract {
      * @var string
      */
     var $UrlProperty = '{http://www.campuscontent.de/model/1.0}wwwurl';
-
-    /**
+                        
+     /**
      * Set the name of the property which should contain the url of interest.
      *
      * @param string $UrlProperty
@@ -247,7 +252,7 @@ extends ESRender_Module_NonContentNode_Abstract {
      * @return string
      */
     protected function getUrlProperty() {
-        return $this -> UrlProperty;
+      return $this -> UrlProperty;
     }
 
 }

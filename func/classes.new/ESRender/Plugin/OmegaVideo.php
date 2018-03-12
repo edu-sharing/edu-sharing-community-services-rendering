@@ -34,17 +34,22 @@ extends ESRender_Plugin_Abstract
         &$resource_id,
         &$username)
 	{
-	
-       if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU') {
+
+    if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU'
+	    /*&& strpos($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format'), 'video') !== false*/)  {
             $prop = new stdClass();
             $prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
 			$prop -> value = $this->getWwwurl($contentNode);
-			$contentNode -> setProperties(array($prop));
-        }
-		
+			$contentNode -> setProperties(array($prop));          
+		}
 	}
 	
 	protected function getWwwurl($contentNode) {
+           if ($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format')== "application/pdf")
+             {
+                 return $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}wwwurl');
+              }
+
 		$preUrl = $this->url . '?id=' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid');
 		$curlhandle = curl_init($preUrl);
 		curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);

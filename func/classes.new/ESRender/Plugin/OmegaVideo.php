@@ -35,12 +35,16 @@ extends ESRender_Plugin_Abstract
         &$username)
 	{
 
-		echo '<span style="font-size: 10px">replicationsource: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') . ', format: ' .
- 				$contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format') .', replicationsourceid: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid') . '</span>';
+
+		$logger = $this->getLogger();
+		$logger->info('replicationsource: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') . ', format: ' .
+		$contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format') .', replicationsourceid: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid'));
 
 	if(Config::get('hasContentLicense') === false)
 		return;
 
+
+	/*Wahrscheinlich ist hier gar keine weitere Bedingung als ...replicationsource == 'DE.FWU' notwendig*/
     if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU'
 		&& (strpos($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format'), 'video') !== false
 		|| strpos($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format'), 'text/html') !== false
@@ -76,7 +80,8 @@ extends ESRender_Plugin_Abstract
 		curl_setopt($curlhandle, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curlhandle, CURLOPT_SSL_VERIFYHOST, false);
 		$url = curl_exec($curlhandle);
-		echo ', <span style="font-size: 10px">called ' .$preUrl . ' got ' . $url.'</span>';
+		$logger = $this->getLogger();
+		$logger->info('called ' .$preUrl . ' got ' . $url);
 		return $url;
 	}
 

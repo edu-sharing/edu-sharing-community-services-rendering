@@ -22,8 +22,6 @@ extends ESRender_Module_NonContentNode_Abstract {
      */
     protected function display(array $requestData) {
 
-
-
         if (!$this -> validate()) {
             return false;
         }
@@ -45,8 +43,6 @@ extends ESRender_Module_NonContentNode_Abstract {
     
     	global $accessToken;
     	
-         error_log('UrlProperty: -->'.$this->UrlProperty);
-
     	if (!$this -> validate()) {
     		return false;
     	}
@@ -196,9 +192,7 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function getUrl() {
         $urlProp = $this -> _ESOBJECT -> AlfrescoNode -> getProperty($this -> getUrlProperty());
-        error_log('getUrl'.$urlProp.' '.$this -> getUrlProperty());
-
-        if(!empty($urlProp))
+       if(!empty($urlProp))
             return $urlProp;
         return false;
     }

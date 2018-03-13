@@ -35,21 +35,37 @@ extends ESRender_Plugin_Abstract
         &$username)
 	{
 
+		echo '<span style="font-size: 10px">replicationsource: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') . ', format: ' .
+ 				$contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format') .', replicationsourceid: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid') . '</span>';
+
+	if(Config::get('hasContentLicense') === false)
+		return;
+
     if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU'
-	    /*&& strpos($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format'), 'video') !== false*/)  {
-            $prop = new stdClass();
-            $prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
-			$prop -> value = $this->getWwwurl($contentNode);
-			$contentNode -> setProperties(array($prop));          
+		&& (strpos($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format'), 'video') !== false
+		|| strpos($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format'), 'text/html') !== false
+		|| strpos($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format'), 'application/zip') !== false
+		|| $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format') == '')
+		)  {
+
+			$ret = $this->getTocenizedUrl($contentNode);
+			if(strpos($ret, 'not found or not licensed') !== false) {
+				Config::set('hasContentLicense', false);
+			} else {
+				$prop = new stdClass();
+				$prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
+				$prop -> value = $ret;
+				$contentNode -> setProperties(array($prop));   
+			}       
 		}
 	}
 	
-	protected function getWwwurl($contentNode) {
-           if ($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format')== "application/pdf")
+	protected function getTocenizedUrl($contentNode) {
+          /* if ($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format')== "application/pdf")
              {
                  return $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}wwwurl');
               }
-
+*/
 		$preUrl = $this->url . '?id=' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid');
 		$curlhandle = curl_init($preUrl);
 		curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);
@@ -60,6 +76,7 @@ extends ESRender_Plugin_Abstract
 		curl_setopt($curlhandle, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curlhandle, CURLOPT_SSL_VERIFYHOST, false);
 		$url = curl_exec($curlhandle);
+		echo ', <span style="font-size: 10px">called ' .$preUrl . ' got ' . $url.'</span>';
 		return $url;
 	}
 

@@ -183,7 +183,7 @@ extends ESRender_Module_NonContentNode_Abstract {
                 $type = 'video/' . pathinfo($this -> getUrl(), PATHINFO_EXTENSION);
             }
             return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-                    <div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+                    <div class="videoWrapperInner" style="position: relative; padding-top: 25px; ">
                         <video data-tap-disabled="true" controls style="max-width: 100%;" oncontextmenu="return false;">
                             <source src="' . $this -> getUrl() . '" type="' . $type . '"></source>
                         </video>

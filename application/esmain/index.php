@@ -466,8 +466,6 @@ try {
             "version" => $req_data['version']
         );
         $renderInfoLMSReturn = $client->getRenderInfoLMS($params);
-//var_dump($renderInfoLMSReturn);
-//die();
 
     } catch (Exception $e) {
         throw new ESRender_Exception_InfoLms($e);

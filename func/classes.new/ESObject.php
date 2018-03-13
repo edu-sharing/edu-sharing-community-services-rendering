@@ -504,6 +504,14 @@ class ESObject {
             throw new Exception('No Alfresco-properties set.');
         }
 
+        if(Config::get('hasContentLicense') === false) {
+            error_log('"hasContentLicense" is false!');
+            $this -> ESModule -> setName('doc');
+            $this -> ESModule -> loadModuleData();
+            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            return true;
+        }
+
         if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'YOUTUBE') {
             error_log('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "YOUTUBE", using module "url".');
             $this -> ESModule -> setName('url');

@@ -66,18 +66,23 @@ extends ESRender_Module_ContentNode_Abstract {
 
         $template_data['previewUrl'] = $previewUrl;
 
-        if($this->getDoctype() == DOCTYPE_PDF) {
-            $template_data['content'] = $this -> _ESOBJECT -> getPath() . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-            $template_data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
-        }
 
-        if($this->getDoctype() == DOCTYPE_HTML) {
-            $template_data['content'] = file_get_contents($this->getCacheFileName() . '_purified.html');
-        }
+        if(Config::get('hasContentLicense') === true) {
 
-        if($this->getDoctype() === DOCTYPE_TEXT) {
-            $template_data['content'] = nl2br(file_get_contents($this->getCacheFileName()));
-        }
+            if($this->getDoctype() == DOCTYPE_PDF) {
+                $template_data['content'] = $this -> _ESOBJECT -> getPath() . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+                $template_data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
+            }
+
+            if($this->getDoctype() == DOCTYPE_HTML) {
+                $template_data['content'] = file_get_contents($this->getCacheFileName() . '_purified.html');
+            }
+
+            if($this->getDoctype() === DOCTYPE_TEXT) {
+                $template_data['content'] = nl2br(file_get_contents($this->getCacheFileName()));
+            }
+
+        }   
 
         if(Config::get('showMetadata'))
         	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
@@ -88,7 +93,9 @@ extends ESRender_Module_ContentNode_Abstract {
     }
     
     public function createInstance(array $requestData) {
-    	
+        if(Config::get('hasContentLicense') === false)
+            return true;
+
     	if (!parent::createInstance($requestData)) {
     		return false;
     	}
@@ -139,6 +146,8 @@ extends ESRender_Module_ContentNode_Abstract {
      * Load theme according to current doctype
      */
     protected function getThemeByDoctype() {
+        if(Config::get('hasContentLicense') === false)
+            return '/module/default/';
         switch($this->getDoctype()) {
         	case DOCTYPE_HTML :
             case DOCTYPE_TEXT :

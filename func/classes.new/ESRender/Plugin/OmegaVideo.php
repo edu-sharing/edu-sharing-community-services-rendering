@@ -1,7 +1,7 @@
 <?php
 
 /**
- *
+ *Handle Omega Materials. Not only Videos as the plugin name suggests.
 *
 *
 */
@@ -37,7 +37,7 @@ extends ESRender_Plugin_Abstract
 
 
 		$logger = $this->getLogger();
-		$logger->info('replicationsource: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') . ', format: ' .
+		$logger->debug('Replicationsource: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') . ', format: ' .
 		$contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format') .', replicationsourceid: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid'));
 
 	if(Config::get('hasContentLicense') === false)
@@ -52,9 +52,17 @@ extends ESRender_Plugin_Abstract
 		|| $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format') == '')
 		)  {
 
+			if($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format') == '')
+				$logger->error('Format is empty!');
+
 			$ret = $this->getTocenizedUrl($contentNode);
+			if(empty($ret))
+				$logger->error('Sodis repsonse is empty');
+
+
 			if(strpos($ret, 'not found or not licensed') !== false) {
 				Config::set('hasContentLicense', false);
+				$logger->info('Sodis repsonse cpntains "not found or not licensed"');
 			} else {
 				$prop = new stdClass();
 				$prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
@@ -70,7 +78,11 @@ extends ESRender_Plugin_Abstract
                  return $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}wwwurl');
               }
 */
-		$preUrl = $this->url . '?id=' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid');
+		$replicationSourceId = $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid');
+		if(empty($replicationSourceId))
+			$logger->error('Replicationsourceid is empty');
+
+		$preUrl = $this->url . '?id=' . $replicationSourceId;
 		$curlhandle = curl_init($preUrl);
 		curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);
 		curl_setopt($curlhandle, CURLOPT_HEADER, 0);
@@ -81,7 +93,7 @@ extends ESRender_Plugin_Abstract
 		curl_setopt($curlhandle, CURLOPT_SSL_VERIFYHOST, false);
 		$url = curl_exec($curlhandle);
 		$logger = $this->getLogger();
-		$logger->info('called ' .$preUrl . ' got ' . $url);
+		$logger->debug('Called ' .$preUrl . ' got ' . $url);
 		return $url;
 	}
 

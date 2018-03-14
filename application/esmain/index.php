@@ -136,7 +136,7 @@ try {
     $Template = new Phools_Template_Script($TemplateDirectory);
     $Template -> setTheme('default') -> setLocale($Locale) -> setTranslate($Translate);
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::setTemplate()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::setTemplate()');
         $Plugin -> setTemplate($Template);
     }
     
@@ -308,7 +308,7 @@ try {
 
     // load repository-config
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::preLoadRepository()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preLoadRepository()');
         $Plugin -> preLoadRepository($req_data['rep_id'], $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
     }
 
@@ -346,14 +346,14 @@ try {
 
 
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::postLoadRepository()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postLoadRepository()');
         $Plugin -> postLoadRepository($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
     }
 
 
     
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::preSslVerification()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preSslVerification()');
         $Plugin -> preSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
     }    
     
@@ -420,7 +420,7 @@ try {
     }
 
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::postSslVerification()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postSslVerification()');
         $Plugin -> postSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
     }
 
@@ -480,7 +480,7 @@ try {
     if ($req_data['rep_id'] != $req_data['app_id']) {
         // non-repositories MUST supply usage-info
         foreach ($Plugins as $name => $Plugin) {
-            $Logger -> debug('Running plugin "' . $name . '"::postCheckPermission()');
+            $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postCheckPermission()');
             $Plugin -> preCheckUsage($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
         }
         if (empty($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage)) {
@@ -499,7 +499,7 @@ try {
         }
 
         foreach ($Plugins as $name => $Plugin) {
-            $Logger -> debug('Running plugin "' . $name . '"::preRetrieveObjectProperties()');
+            $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preRetrieveObjectProperties()');
             $Plugin -> postCheckUsage($remote_rep, $req_data['app_id'], $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage, $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
         }
     } else {
@@ -509,7 +509,7 @@ try {
     }
 
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::preRetrieveObjectProperties()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preRetrieveObjectProperties()');
         $Plugin -> preRetrieveObjectProperties($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
     }
 
@@ -554,7 +554,7 @@ try {
     }
 
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::postRetrieveObjectProperties()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postRetrieveObjectProperties()');
         $Plugin -> postRetrieveObjectProperties($remote_rep, $req_data['app_id'], $contentNode, $req_data['course_id'], $req_data['resource_id'], $user_name);
     }
 
@@ -634,7 +634,7 @@ try {
         $Module -> instanceLock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
         
         foreach ($Plugins as $name => $Plugin) {
-            $Logger -> debug('Running plugin "' . $name . '"::preInstanciateObject()');
+            $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preInstanciateObject()');
             $Plugin -> preInstanciateObject();
         }
 
@@ -687,7 +687,7 @@ try {
         }
 
         foreach ($Plugins as $name => $Plugin) {
-            $Logger -> debug('Running plugin "' . $name . '"::postInstanciateObject()');
+            $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postInstanciateObject()');
             $Plugin -> postInstanciateObject();
         }
 
@@ -745,7 +745,7 @@ try {
     }
 
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::preProcessObject()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preProcessObject()');
         $Plugin -> preProcessObject();
     }
 
@@ -781,7 +781,7 @@ try {
         throw new Exception('Error processing object.');
     }
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::postProcessObject()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postProcessObject()');
         $Plugin -> postProcessObject();
     }
 

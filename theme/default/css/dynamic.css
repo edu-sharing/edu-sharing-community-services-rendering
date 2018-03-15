@@ -127,7 +127,7 @@ img.edusharing_rendering_content_preview {
 	border: 5px solid #555 !important;
 	width: 100%;
 	text-align: left !important;
-	box-sizing: initial;
+	box-sizing: content-box;
 	margin: 0 auto;
 }
 

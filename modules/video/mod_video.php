@@ -184,7 +184,7 @@ extends ESRender_Module_AudioVideo_Abstract
     final public function locked(array $requestData) {
     	    	
         $template = $this->getTemplate();
-        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> _ESOBJECT -> getObjectID() . $this->_ESOBJECT->getObjectVersion() . $this-> getVideoFormatByRequestingDevice(). '.log';
+        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> _ESOBJECT -> getObjectID() . $this->_ESOBJECT->getObjectVersion()  . '_' . $this->_ESOBJECT->getId() . '_' . $this-> getVideoFormatByRequestingDevice(). '.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
         $positionInConversionQueue = $this->_ESOBJECT->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice());
         if(empty($progress) || is_array($progress))

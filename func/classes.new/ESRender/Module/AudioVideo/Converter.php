@@ -63,7 +63,7 @@ class converter {
         switch($type) {
             case 'audio' :
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), $conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
-                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode($conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . ESRender_Module_AudioVideo_Abstract::FORMAT_AUDIO_MP3 . '.log';
+                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode($conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . ESRender_Module_AudioVideo_Abstract::FORMAT_AUDIO_MP3 . '.log';
                 $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid() . '.mp3';
                 exec($this -> timeout  . FFMPEG_BINARY . " -i " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp3 -y " . $tmpName . " 2>>" . $logfile, $whatever, $code);
                 $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
@@ -77,7 +77,7 @@ class converter {
                 break; 
             case 'video' :
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), $conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
-                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode($conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . $conv -> ESOBJECT_CONVERSION_FORMAT . '.log';
+                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode($conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . $conv -> ESOBJECT_CONVERSION_FORMAT . '.log';
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_MP4 :
                         $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.mp4';

@@ -13,7 +13,7 @@ if(!empty($license_author)) {
     $licenceContent .= htmlentities($this->translate('authored_by'), ENT_COMPAT, 'utf-8')
                     . '&nbsp;'
                     . '<span class="author">'
-                    . htmlspecialchars($license_author, ENT_QUOTES, 'utf-8') . '</span>'
+                    . htmlentities($license_author, ENT_QUOTES, 'utf-8') . '</span>'
                     . '&nbsp;';
 }
 $licenceContent .=  htmlentities($this->translate('published under a'), ENT_COMPAT, 'utf-8')

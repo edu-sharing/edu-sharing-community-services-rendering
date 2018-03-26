@@ -69,19 +69,6 @@ extends ESRender_Module_ContentNode_Abstract
         return false;
     }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see ESRender_Module_ContentNode_Abstract::display()
-	 */
-	protected function display(array $requestData)
-	{
-		$Logger = $this->getLogger();
-
-		header('HTTP/1.1 303 See other');
-		header('Location: '.$this->_ESOBJECT->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . $requestData['token']);
-
-		return true;
-	}
 
     protected function dynamic(array $requestData)
     {

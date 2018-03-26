@@ -1,3 +1,14 @@
+v4.1
+- H5P rendering
+- LTI rendering
+- replace mcrypt/blowfish with openssl based encryption
+- fix conversion status bar
+- update title/filename from repository
+- secure installer
+- remove scroll to top button in single view
+- add parameter to force preview
+- check content license
+
 v4.0
 - completely new unified metadata rendering for all display modes
 - use png as standard format in picture module

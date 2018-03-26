@@ -6,15 +6,20 @@ define("OAUTH_CALLBACK", "about:blank");
 define("OAUTH_VERSION", "1.0");
 define("OAUTH_SIGNATURE_METHOD", "HMAC-SHA1");
 
-class ltiProvider {
+class ltiTool {
 
     private $config = array();
     private $template;
     private $esobject;
 
+    private $testUrl = 'http://ltiapps.net/test/tp.php';
+    private $testKey = 'jisc.ac.uk';
+    private $testSecret = 'secret';
+
     public function __construct(ESObject $esobject, Phools_Template_Interface $template) {
         $this->esobject = $esobject;
-        $properties = $esobject->renderInfoLMSReturn->getRenderInfoLMSReturn->propertiesToolInstance->item;
+        //$properties = $esobject->renderInfoLMSReturn->getRenderInfoLMSReturn->propertiesToolInstance->item;
+        $properties = array(array('key' => 'key1', 'value' => 'value1'));
         foreach($properties as $property) {
             $this->config[$property->key] = $property->value;
         }
@@ -39,7 +44,7 @@ class ltiProvider {
 
         # Basic LTI uses OAuth to sign requests
         $launch_data["oauth_callback"] = OAUTH_CALLBACK;
-        $launch_data["oauth_consumer_key"] = $this->config['{http://www.campuscontent.de/model/1.0}tool_instance_key'];
+        $launch_data["oauth_consumer_key"] = $this->testKey;
         $launch_data["oauth_version"] = OAUTH_VERSION;
         $launch_data["oauth_nonce"] = uniqid('', true);
         $now = new \DateTime();
@@ -52,8 +57,8 @@ class ltiProvider {
         foreach ($launch_data_keys as $key) {
             array_push($launch_params, $key . "=" . rawurlencode($launch_data[$key]));
         }
-        $base_string = "POST&" . urlencode($this->config['{http://www.campuscontent.de/model/1.0}tool_instance_provider_url']) . "&" . rawurlencode(implode("&", $launch_params));
-        $secret = urlencode($this->config['{http://www.campuscontent.de/model/1.0}tool_instance_secret']) . "&";
+        $base_string = "POST&" . urlencode($this->testUrl) . "&" . rawurlencode(implode("&", $launch_params));
+        $secret = urlencode($this->testSecret) . '&';//urlencode($this->config['{http://www.campuscontent.de/model/1.0}tool_instance_secret']) . "&";
         $signature = base64_encode(hash_hmac("sha1", $base_string, $secret, true));
 
         $form = '<html>
@@ -61,7 +66,7 @@ class ltiProvider {
             </head>
             <body onload="document.ltiLaunchForm.submit();">
                 <form id="ltiLaunchForm_'.$this->esobject->getObjectID().'" name="ltiLaunchForm_'.$this->esobject->getObjectID().'" id="name="ltiLaunchForm_'.$this->esobject->getObjectID().'"
-                method="POST" action="'.$this->config['{http://www.campuscontent.de/model/1.0}tool_instance_provider_url'].'" target="lti_frame_'.$this->esobject->getObjectID().'">';
+                method="POST" action="'.$this->testUrl.'" target="lti_frame_'.$this->esobject->getObjectID().'">';
             foreach ($launch_data as $k => $v ) {
                 $form .= '<input type="hidden" name="' . $k  . '" value="' . $v . '">';
             }
@@ -71,9 +76,18 @@ class ltiProvider {
         </html>';
         return $form;
     }
-
-
+    
     public function inline(array $requestData) {
+        if(ENABLE_METADATA_INLINE_RENDERING) {
+            $metadata = $this -> esobject -> metadatahandler -> render($this -> template, '/metadata/inline');
+            $template_data['metadata'] = $metadata;
+        }
+
+        $license = $this->esobject->ESOBJECT_LICENSE;
+        if(!empty($license)) {
+            $template_data['license'] = $license -> renderFooter($this -> template);
+        }
+
         $template_data['title'] = $this -> esobject -> getTitle();
         $template_data['launchForm'] = $this->getLaunchForm();
         $template_data['objectId'] = $this->esobject->getObjectID();
@@ -82,7 +96,7 @@ class ltiProvider {
     }
 
     public function dynamic(array $requestData) {
-        if($requestData['dynMetadata'])
+        if(Config::get('showMetadata'))
             $template_data['metadata'] = $this -> esobject -> metadatahandler -> render($this->template, '/metadata/dynamic');
         $template_data['title'] = $this->esobject->getTitle();
         $template_data['launchForm'] = $this->getLaunchForm();
@@ -90,6 +104,4 @@ class ltiProvider {
         echo $this->template -> render('/module/lti/dynamic', $template_data);
         return true;
     }
-
-
 }

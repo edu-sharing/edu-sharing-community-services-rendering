@@ -1,13 +1,14 @@
 <?php
 
 //@todo autoload
-require_once(dirname(__FILE__) . '/providerEtherpad.php');
-require_once(dirname(__FILE__) . '/providerVanilla.php');
+require_once(dirname(__FILE__) . '/edutoolEtherpad.php');
+require_once(dirname(__FILE__) . '/edutoolVanilla.php');
+require_once(dirname(__FILE__) . '/ltiTool.php');
 
 
 class mod_lti extends ESRender_Module_NonContentNode_Abstract {
-    
-    private $providerType = '';
+
+    private $tool;
 
     public function __construct(
         $Name,
@@ -16,34 +17,34 @@ class mod_lti extends ESRender_Module_NonContentNode_Abstract {
         Logger $Logger,
         Phools_Template_Interface $template) {
         parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $template);
-        $this -> instantiateProvider($p_esobject, $template);
+        $this -> instantiateTool($p_esobject, $template);
     }
         
-    private function instantiateProvider($esobject, $template) {
-        
+    private function instantiateTool($esobject, $template) {
+
         //@todo factory pattern
         switch($this->_ESOBJECT->ESOBJECT_RESOURCE_TYPE) {
             case 'edutool-vanilla':
-                $this -> provider = new providerVanilla($esobject, $template);
+                $this -> tool = new edutoolVanilla($esobject, $template);
             break;
             case 'edutool-etherpad':
-                $this -> provider = new providerEtherpad($esobject, $template);
+                $this -> tool = new edutoolEtherpad($esobject, $template);
             break;
             default:
-                throw new Exception('provider could not be determined');
+                $this -> tool = new ltiTool($esobject, $template);
         }
     }
 
     protected function dynamic(array $requestData) {
-        return $this -> provider -> dynamic($requestData);
+        return $this -> tool -> dynamic($requestData);
     }
 
     protected function display(array $requestData) {
-        return $this -> provider -> display($requestData);
+        return $this -> tool -> display($requestData);
     }
     
     protected function inline(array $requestData) {
-        return $this -> provider -> inline($requestData);
+        return $this -> tool -> inline($requestData);
     }
 
 

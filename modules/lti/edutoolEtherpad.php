@@ -1,6 +1,6 @@
 <?php
 
-class providerEtherpad {
+class edutoolEtherpad {
 
     private $token;
     private $esobject;

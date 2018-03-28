@@ -512,6 +512,15 @@ class ESObject {
             return true;
         }
 
+        $toolInstanceRef = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_ref');
+        if(!empty($toolInstanceRef)) {
+            error_log('{http://www.campuscontent.de/model/1.0}tool_instance_ref equals set, using module "lti".');
+            $this -> ESModule -> setName('lti');
+            $this -> ESModule -> loadModuleData();
+            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            return true;
+        }
+
         if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'YOUTUBE') {
             error_log('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "YOUTUBE", using module "url".');
             $this -> ESModule -> setName('url');

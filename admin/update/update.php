@@ -302,6 +302,20 @@ function run($installedVersion) {
 
         if(version_compare ( '4.1.0', $installedVersion ) > 0) {
             file_put_contents(MC_ROOT_PATH . 'modules/video/config.php', 'define(\'OPTION_THREADS\', 1);', FILE_APPEND | LOCK_EX);
+
+            $pdo = RsPDO::getInstance();
+            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modname, :moddesc)' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':modname', 'h5p' );
+            $stmt->bindValue ( ':moddesc', 'h5p' );
+            $stmt->execute ();
+
+            $pdo = RsPDO::getInstance();
+            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modname, :moddesc)' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':modname', 'lti' );
+            $stmt->bindValue ( ':moddesc', 'lti' );
+            $stmt->execute ();
         }
 	} catch ( Exception $e ) {
 		error_log ( print_r ( $e, true ) );

@@ -299,6 +299,10 @@ function run($installedVersion) {
             $stmt->bindValue ( ':moddesc', 'learningapps' );
             $stmt->execute ();
         }
+
+        if(version_compare ( '4.1.0', $installedVersion ) > 0) {
+            file_put_contents(MC_ROOT_PATH . 'modules/video/config.php', 'define(\'OPTION_THREADS\', 1);', FILE_APPEND | LOCK_EX);
+        }
 	} catch ( Exception $e ) {
 		error_log ( print_r ( $e, true ) );
 		return false;

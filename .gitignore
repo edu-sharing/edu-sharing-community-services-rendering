@@ -5,6 +5,8 @@ conf/db.conf.php
 conf/de.metaventis.esrender.log4php.cachecleaner.properties
 conf/esmain
 conf/system.conf.php
+conf/plugins.conf.php
+conf/proxy.conf.php
 install/_tmpl/log.php
 log/conversion/*
 !log/conversion/.gitignore

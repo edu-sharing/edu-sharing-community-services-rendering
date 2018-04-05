@@ -221,11 +221,9 @@ extends ESRender_Module_Base
         	$data['license'] = $license -> renderFooter($this -> getTemplate());
         }
 
-        $snippet = $this->getTemplate()->render('/module/default/inline', $data);
+        echo $this->getTemplate()->render('/module/default/inline', $data);
                 
         $Logger->debug('ESRender_Module_Base::inline');
-
-        echo $snippet;
 
         return true;
     }

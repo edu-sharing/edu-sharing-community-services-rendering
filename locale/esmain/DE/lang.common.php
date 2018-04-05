@@ -61,4 +61,5 @@ $Translate
 	->addTranslation('de', 'goToOrigin', 'Zur Originalseite springen')
     ->addTranslation('de', 'showDocument', 'Dokument anzeigen')
     ->addTranslation('de', 'showInLearningAppsOrg', 'In learningapps.org öffnen')
-    ->addTranslation('de', 'hasNoContentLicense', 'Sie dürfen den Inhalt aufgrund von Lizenzbeschränkungen nicht verwenden.');
+    ->addTranslation('de', 'hasNoContentLicense', 'Sie dürfen den Inhalt aufgrund von Lizenzbeschränkungen nicht verwenden.')
+    ->addTranslation('de', 'startScorm', 'SCORM starten');

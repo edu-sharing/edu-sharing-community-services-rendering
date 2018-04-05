@@ -1,0 +1,23 @@
+<?php 
+global $Locale, $Translate;
+$msg = array();
+$msg['showInformation'] = new Phools_Message_Default('showInformation');
+$msg['hideInformation'] = new Phools_Message_Default('hideInformation');
+$msg['startScorm'] = new Phools_Message_Default('startScorm');
+?>
+
+<style scoped>
+<?php include(dirname(__FILE__) . '/../../css/dynamic.css'); ?>
+<?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+</style>
+
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
+	<div class="edusharing_rendering_content_wrapper" role="main">	
+		<?php echo '<img class="edusharing_rendering_content_preview" src="'.$previewUrl.'">'?>
+        <?php if($url)
+            echo '<a href="'.$url .'" target="_blank" class="edusharing_rendering_content" >'. $msg['startScorm']->localize($Locale, $Translate).'</a>';
+        ?>
+	</div>
+	<?php echo $metadata; ?>
+</div>

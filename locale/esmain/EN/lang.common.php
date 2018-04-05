@@ -56,4 +56,5 @@ $Translate
 	->addTranslation('en', 'goToOrigin', 'Go to link location')
     ->addTranslation('en', 'showDocument', 'Show document')
     ->addTranslation('en', 'showInLearningAppsOrg', 'Open in learningapps.org')
-    ->addTranslation('en', 'hasNoContentLicense', 'You\'re not allowed to use the content because of licence restrictions.');
+    ->addTranslation('en', 'hasNoContentLicense', 'You\'re not allowed to use the content because of licence restrictions.')
+    ->addTranslation('en', 'startScorm', 'Start SCORM');

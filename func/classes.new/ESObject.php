@@ -886,7 +886,11 @@ class ESObject {
     }
 
     public function getPreviewUrl() {
-        return $this -> renderInfoLMSReturn -> getRenderInfoLMSReturn->previewUrl . '&version=' . $this -> getObjectVersion();
+        $previewUrl = $this -> renderInfoLMSReturn -> getRenderInfoLMSReturn->previewUrl . '&version=' . $this -> getObjectVersion();
+        $accessToken = Config::get('accessToken');
+        if(!empty($accessToken))
+            $previewUrl .= '&accessToken=' . $accessToken;
+        return $previewUrl;
     }
 
     public function renderOriginalDeleted($requestData, $display_kind, $template) {

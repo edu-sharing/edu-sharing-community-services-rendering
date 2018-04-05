@@ -154,17 +154,13 @@ extends ESRender_Module_ContentNode_Abstract {
 	}
 	
 	public function dynamic(array $requestData) {
-		global $accessToken;
-				
+
 		$id = $this->getCourseId();
 		if($id === false) {
 			return parent::dynamic($requestData);
 		}
 		$Template = $this -> getTemplate();
-		$previewUrl = $this->_ESOBJECT->getPreviewUrl();
-		if(!empty($accessToken))
-			$previewUrl .= '&accessToken=' . $accessToken;
-		$tempArray = array('url' => $this-> getForwardUrl($requestData), 'previewUrl' => $previewUrl);
+		$tempArray = array('url' => $this-> getForwardUrl($requestData), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
 		
 		if(Config::get('showMetadata'))
 			$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');

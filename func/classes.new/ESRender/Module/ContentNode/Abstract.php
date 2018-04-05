@@ -232,8 +232,6 @@ extends ESRender_Module_Base
     
     
     protected function dynamic(array $requestData) {
-    	global $accessToken;
-    	 
        $Logger = $this->getLogger();
        $Logger->debug('ESRender_Module_Base::dynamic');
 
@@ -242,8 +240,6 @@ extends ESRender_Module_Base
        if(Config::get('showMetadata'))
        		$data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
        $data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
-       if(!empty($accessToken))
-       		$data['previewUrl'] .= '&accessToken=' . $accessToken;
        $data['title'] = $this->_ESOBJECT->getTitle();
        echo $this->getTemplate()->render('/module/default/dynamic', $data);
        

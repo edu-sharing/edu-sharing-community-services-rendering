@@ -40,9 +40,6 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
     
     protected function dynamic(array $requestData) {
-    
-    	global $accessToken;
-    	
     	if (!$this -> validate()) {
     		return false;
     	}
@@ -53,10 +50,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     		$embedding = '';
     	
     	$Template = $this -> getTemplate();
-    	$previewUrl = $this->_ESOBJECT->getPreviewUrl();
-    	if(!empty($accessToken))
-    		$previewUrl .= '&accessToken=' . $accessToken;
-    	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $previewUrl);
+    	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
     	if(Config::get('showMetadata'))
     		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	

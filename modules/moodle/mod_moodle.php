@@ -142,18 +142,24 @@ extends ESRender_Module_ContentNode_Abstract {
 	public function inline(array $requestData) {
 
         if (!file_exists(dirname(__FILE__).'/config.php')) {
-            echo parent::inline($requestData);
-            return true;
+            return parent::inline($requestData);
             $Logger -> error('Error opening ' . dirname(__FILE__).'/config.php');
         }
 
-		$id = $this->getId();
-		
-		if($id === false) {
-			return parent::inline($requestData);
-		}
+        $id = $this->getId();
+
+        if($id === false) {
+            return parent::inline($requestData);
+        }
+
 		$Template = $this -> getTemplate();
-		echo $Template -> render('/module/moodle/inline', array('url' => $this-> getForwardUrl($requestData)));
+		$data = array();
+		$data['url'] = 'asdadada';/*$this-> getForwardUrl($requestData)*/
+        $data['title'] = $this->_ESOBJECT->getTitle();
+        if(ENABLE_METADATA_INLINE_RENDERING) {
+            $data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
+        }
+		echo $Template -> render('/module/moodle/inline', $data);
 		return true;
 	}
 	

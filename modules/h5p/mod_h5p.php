@@ -40,9 +40,14 @@ extends ESRender_Module_ContentNode_Abstract {
 		if($getDefaultData)
 			$template_data = parent::prepareRenderData($requestData);
 			$template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
-			$template_data['content'] = $this -> _ESOBJECT -> getPath() . $this -> getContentPathSuffix();// no, causes trouble with internal h5p urls . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-           if(Config::get('showMetadata'))
+			$template_data['content'] = $this -> _ESOBJECT -> getPath() . $this -> getContentPathSuffix();
+           if($TemplateName == '/module/h5p/dynamic' && Config::get('showMetadata'))
                 $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+
+            if($TemplateName == '/module/h5p/inline' && ENABLE_METADATA_INLINE_RENDERING) {
+                $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
+                $data['metadata'] = $metadata;
+            }
             $Template = $this -> getTemplate();
 			$rendered = $Template -> render($TemplateName, $template_data);
 

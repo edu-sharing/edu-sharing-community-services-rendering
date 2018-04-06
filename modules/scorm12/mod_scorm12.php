@@ -106,8 +106,7 @@ extends ESRender_Module_ContentNode_Abstract
 
         $data['url'] = $this->getScormUrl();
         if(empty($data['url'])) {
-            parent::inline($requestData);
-            return true;
+            return parent::inline($requestData);
         }
 
         if(ENABLE_METADATA_INLINE_RENDERING) {

@@ -15,20 +15,3 @@ $licid = uniqid();
         echo '<span style="display: inline-block">'.$metadata.'</span>)';
     }?>
 </span>
-<script>
-    var obj_<?php echo $licid;?> = document.querySelector("[data-licid='<?php echo $licid;?>']");
-    obj_<?php echo $licid;?>.onload = function() {
-        var wrapper_<?php echo $licid;?> = obj_<?php echo $licid;?>.parentNode;
-        if((' ' + wrapper_<?php echo $licid?>.className + ' ').indexOf(' edu_wrapper ') > -1) {
-            var objWidth_<?php echo $licid;?> = obj_<?php echo $licid;?>.clientWidth + 'px';
-            for (var i = 0; i < wrapper_<?php echo $licid;?>.childNodes.length; i++) {
-                if (wrapper_<?php echo $licid;?>.childNodes[i].className == "license") {
-                    wrapper_<?php echo $licid;?>.childNodes[i].style.width = objWidth_<?php echo $licid;?>;
-                    wrapper_<?php echo $licid;?>.style.height = 'auto';
-                    obj_<?php echo $licid;?>.style.height = 'auto';
-                    break;
-                }
-            }
-        }
-    }
-</script>

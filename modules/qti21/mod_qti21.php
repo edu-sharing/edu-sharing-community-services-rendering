@@ -23,6 +23,7 @@
 include_once ('../../conf.inc.php');
 
 
+
 /**
  * handles
  *
@@ -47,17 +48,13 @@ extends ESRender_Module_ContentNode_Abstract
         global $LanguageCode;
 
 		$Logger = $this->getLogger();
-        
-        try {
-            if (!file_exists(dirname(__FILE__).'/config.php'))
-                throw new Exception();
-            else
-                require_once('config.php' ); 
-        } catch(Exception $e) {
-            $Logger -> error('Error opening QTI config');    
-            echo "Please configure QTI module!";
-            die();
+
+        if (!file_exists(dirname(__FILE__).'/config.php')) {
+            echo parent::display($requestData);
+            return true;
+            $Logger -> error('Error opening ' . dirname(__FILE__).'/config.php');
         }
+
 
 		try {
 			$m_path = $this->_ESOBJECT->getFilePath();
@@ -119,15 +116,10 @@ extends ESRender_Module_ContentNode_Abstract
 
 			$Template = $this->getTemplate();
 			if($this->p_kind == ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC) {
-				
-				$previewUrl = $this->_ESOBJECT->getPreviewUrl();
-				if(!empty($accessToken))
-					$previewUrl .= '&accessToken=' . $accessToken;
-
-				if(Config::get('showMetadata'))
+			    if(Config::get('showMetadata'))
 					$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
 				
-				echo $Template->render('/module/qti21/dynamic', array('oru' => $oru, 'title' => $m_name, 'metadata' => $metadata, 'previewUrl' => $previewUrl));
+				echo $Template->render('/module/qti21/dynamic', array('oru' => $oru, 'title' => $m_name, 'metadata' => $metadata, 'previewUrl' => $this->_ESOBJECT->getPreviewUrl()));
 				
 			}else if ( $_SESSION['esrender']['display_kind']=='inline')
  			{
@@ -150,7 +142,13 @@ extends ESRender_Module_ContentNode_Abstract
 
 	protected function inline(array $requestData)
 	{
-		$Logger = $this->getLogger();
+        $Logger = $this->getLogger();
+
+        if (!file_exists(dirname(__FILE__).'/config.php')) {
+            echo parent::inline($requestData);
+            return true;
+            $Logger -> error('Error opening QTI config');
+        }
 
 		echo $this->renderTemplate(
 			$requestData,

@@ -20,7 +20,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-require_once dirname(__FILE__). '/config.php';
+if (file_exists(dirname(__FILE__).'/config.php')) {
+    require_once dirname(__FILE__). '/config.php';
+}
 
 
 /**
@@ -35,7 +37,13 @@ extends ESRender_Module_ContentNode_Abstract {
 	public function createInstance(array $requestData) {
 		
 		parent::createInstance($requestData);
-		$logger = $this->getLogger();
+
+        if (!file_exists(dirname(__FILE__).'/config.php')) {
+            return true;
+        }
+
+
+        $logger = $this->getLogger();
 		
 		
 		if(empty(MOODLE_BASE_DIR)) {
@@ -86,17 +94,7 @@ extends ESRender_Module_ContentNode_Abstract {
 	public function instanceExists(ESObject $ESObject, array $requestData, $contentHash) {
 		return parent::instanceExists($ESObject, $requestData, $contentHash);
 	}
-	
-	public function display(array $requestData) {	
-		$id = $this->getCourseId();
-		if($id === false) {
-			return parent::display($requestData);
-		}
-		header('Location: ' . $this-> getForwardUrl($requestData));
-		return true;
-	}
-	
-	
+
 	/*
 	 * Call moodle WS local_edusharing_handleuser
 	 * create/fetch user
@@ -143,6 +141,12 @@ extends ESRender_Module_ContentNode_Abstract {
 	
 	public function inline(array $requestData) {
 
+        if (!file_exists(dirname(__FILE__).'/config.php')) {
+            echo parent::inline($requestData);
+            return true;
+            $Logger -> error('Error opening ' . dirname(__FILE__).'/config.php');
+        }
+
 		$id = $this->getId();
 		
 		if($id === false) {
@@ -154,6 +158,12 @@ extends ESRender_Module_ContentNode_Abstract {
 	}
 	
 	public function dynamic(array $requestData) {
+
+        if (!file_exists(dirname(__FILE__).'/config.php')) {
+            echo parent::dynamic($requestData);
+            return true;
+            $Logger -> error('Error opening ' . dirname(__FILE__).'/config.php');
+        }
 
 		$id = $this->getCourseId();
 		if($id === false) {

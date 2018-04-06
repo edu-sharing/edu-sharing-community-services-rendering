@@ -20,15 +20,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-require_once __DIR__ . '/config.php';
+if (file_exists(dirname(__FILE__).'/config.php')) {
+    require_once dirname(__FILE__). '/config.php';
+}
+
 
 class mod_scorm12
 extends ESRender_Module_ContentNode_Abstract
 {
     private $userSession = null;
+    private $homeConfig = null;
+
+    public function __construct($Name, ESRender_Application_Interface $RenderApplication, ESObject $p_esobject, Logger $Logger, Phools_Template_Interface $Template) {
+        parent::__construct($Name, $RenderApplication, $p_esobject, $Logger, $Template);
+        $application = new ESApp();
+        $application -> getApp('esmain');
+        $this -> homeConfig = $application -> getHomeConf();
+    }
 
     private function pushToScormPlayer() {
-        $url_path_str = SCORM_PLAYER_API . '/' . 'asfd';
+        $scormid = hash_hmac('sha256', $this->_ESOBJECT->getObjectIdVersion(), $this -> homeConfig -> prop_array['private_key']);
+        $url_path_str = SCORM_PLAYER_API . '/' . $scormid;
         $file_path_str = $this -> _ESOBJECT -> getFilePath();
         $ch = curl_init($url_path_str);
         $headers = array('Accept: application/json', 'Content-Type: multipart/form-data');
@@ -55,9 +67,10 @@ extends ESRender_Module_ContentNode_Abstract
         $logger->error('Error pushing scorm package HTTP STATUS ' . $httpcode . '. Curl error ' . $error, $httpcode);
     }
 
-    private function getUserSession() {
-        $userId = uniqid();
-        $ch = curl_init(SCORM_PLAYER_API . '/' . 'asfd' . '/sessions/' . $userId);
+    private function getUserSession($requestData) {
+        $userId = hash_hmac('sha256', $requestData['user_name'], $this -> homeConfig -> prop_array['private_key']);
+        $scormid = hash_hmac('sha256', $this->_ESOBJECT->getObjectIdVersion(), $this -> homeConfig -> prop_array['private_key']);
+        $ch = curl_init(SCORM_PLAYER_API . '/' . $scormid . '/sessions/' . $userId);
         $headers = array('Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -88,7 +101,7 @@ extends ESRender_Module_ContentNode_Abstract
     public function inline(array $requestData) {
 
         $this -> pushToScormPlayer();
-        $this -> getUserSession();
+        $this -> getUserSession($requestData);
         $data = array();
 
         $data['url'] = $this->getScormUrl();
@@ -113,7 +126,7 @@ extends ESRender_Module_ContentNode_Abstract
 
     public function dynamic(array $requestData) {
         $this -> pushToScormPlayer();
-        $this -> getUserSession();
+        $this -> getUserSession($requestData);
         $Template = $this -> getTemplate();
         $tempArray = array('url' => $this->getScormUrl(), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
         if(Config::get('showMetadata'))

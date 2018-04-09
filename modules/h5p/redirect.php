@@ -2,6 +2,11 @@
 require_once __DIR__ . '/../../conf/system.conf.php';
 $pathArr = explode('modules/h5p', $_REQUEST['ID']);
 $path = $CC_RENDER_PATH . '/h5p' . $pathArr[1];
+
+//check if requested path is child of h5p cache directory
+if(strpos(realpath($path), realpath($CC_RENDER_PATH . '/h5p') === false))
+    throw new Exception('Access not allowed');
+
 $filesize = filesize($path);
 
 $path_parts = pathinfo($path);

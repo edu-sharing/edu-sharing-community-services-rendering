@@ -14,7 +14,7 @@ $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
 	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
 	<div class="edusharing_rendering_content_wrapper" role="main">
 		<iframe name="lti_frame_<?php echo $objectId?>" src="" style="border: none; width: 80%; min-height: 600px;"></iframe>
-       <br/><a href="#" id="go" class="edusharing_rendering_content">DIREKT ZUM PROVIDER</a>
+       <br/><a href="#" id="edusharing_rendering_content_href" class="edusharing_rendering_content">DIREKT ZUM PROVIDER</a>
 </div>
 	<?php echo $metadata; ?>
 </div>
@@ -25,5 +25,5 @@ $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
    document.getElementById('ltiLaunchForm_<?php echo $objectId?>').submit();
 
    document.getElementById('ltiLaunchForm_<?php echo $objectId?>').target = '_blank';
-   document.getElementById("go").onclick = function() {document.getElementById('ltiLaunchForm_<?php echo $objectId?>').submit(); return false; }
+   document.getElementById("edusharing_rendering_content_href").onclick = function() {document.getElementById('ltiLaunchForm_<?php echo $objectId?>').submit(); return false; }
 </script>

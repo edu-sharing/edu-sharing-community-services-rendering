@@ -16,7 +16,7 @@ $msg['startScorm'] = new Phools_Message_Default('startScorm');
 	<div class="edusharing_rendering_content_wrapper" role="main">	
 		<?php echo '<img class="edusharing_rendering_content_preview" src="'.$previewUrl.'">'?>
         <?php if($url)
-            echo '<a href="'.$url .'" target="_blank" class="edusharing_rendering_content" >'. $msg['startScorm']->localize($Locale, $Translate).'</a>';
+            echo '<a href="'.$url .'" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href">'. $msg['startScorm']->localize($Locale, $Translate).'</a>';
         ?>
 	</div>
 	<?php echo $metadata; ?>

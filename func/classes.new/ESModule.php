@@ -170,6 +170,11 @@ class ESModule {
 	 */
 	final public function setModuleByResource($p_RESOURCE_TYPE, $p_RESOURCE_VERSION) {
 		switch (true) {
+
+            case ($p_RESOURCE_TYPE == 'h5p') :
+                $this->ESMODULE_NAME = 'h5p';
+                break;
+
             case ($p_RESOURCE_TYPE == 'edutool-vanilla') :
                 $this->ESMODULE_NAME = 'lti';
                 break;

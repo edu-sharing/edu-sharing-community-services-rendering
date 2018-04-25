@@ -41,4 +41,9 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 
 <?php echo $metadata; ?>
 
+<?php
+$downloadUrl = Config::get('downloadUrl');
+if(!empty($downloadUrl))
+    echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
+?>
 

@@ -20,3 +20,8 @@ $msg['showDocument'] = new Phools_Message_Default('showDocument');
     </div>
     <?php echo $metadata; ?>
 </div>
+<?php
+$downloadUrl = Config::get('downloadUrl');
+if(!empty($downloadUrl))
+    echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
+?>

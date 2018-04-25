@@ -27,3 +27,9 @@ $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
    document.getElementById('ltiLaunchForm_<?php echo $objectId?>').target = '_blank';
    document.getElementById("edusharing_rendering_content_href").onclick = function() {document.getElementById('ltiLaunchForm_<?php echo $objectId?>').submit(); return false; }
 </script>
+
+<?php
+$downloadUrl = Config::get('downloadUrl');
+if(!empty($downloadUrl))
+    echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
+?>

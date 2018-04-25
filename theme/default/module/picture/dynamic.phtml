@@ -17,3 +17,8 @@ $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
 	</div>
 	<?php echo $metadata; ?>
 </div>
+<?php
+$downloadUrl = Config::get('downloadUrl');
+if(!empty($downloadUrl))
+    echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
+?>

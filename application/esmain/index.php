@@ -471,10 +471,7 @@ try {
         throw new ESRender_Exception_InfoLms($e);
     }
 
-    // Content license
-    Config::set('hasContentLicense', true);
-    if($renderInfoLMSReturn -> getRenderInfoLMSReturn -> hasContentLicense === false)
-        Config::set('hasContentLicense', false);
+    Config::set('renderInfoLMSReturn', $renderInfoLMSReturn -> getRenderInfoLMSReturn);
 
     // check usage
     if ($req_data['rep_id'] != $req_data['app_id']) {

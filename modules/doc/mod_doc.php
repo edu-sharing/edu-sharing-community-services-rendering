@@ -62,7 +62,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
 
 
-        if(Config::get('hasContentLicense') === true) {
+        if(Config::get('renderInfoLMSReturn')->hasContentLicense === true) {
 
             if($this->getDoctype() == DOCTYPE_PDF) {
                 $template_data['content'] = $this -> _ESOBJECT -> getPath() . '?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
@@ -88,7 +88,7 @@ extends ESRender_Module_ContentNode_Abstract {
     }
     
     public function createInstance(array $requestData) {
-        if(Config::get('hasContentLicense') === false)
+        if(Config::get('renderInfoLMSReturn')->hasContentLicense === false)
             return true;
 
     	if (!parent::createInstance($requestData)) {
@@ -141,7 +141,7 @@ extends ESRender_Module_ContentNode_Abstract {
      * Load theme according to current doctype
      */
     protected function getThemeByDoctype() {
-        if(Config::get('hasContentLicense') === false)
+        if(Config::get('renderInfoLMSReturn')->hasContentLicense === false)
             return '/module/default/';
         switch($this->getDoctype()) {
         	case DOCTYPE_HTML :

@@ -504,7 +504,7 @@ class ESObject {
             throw new Exception('No Alfresco-properties set.');
         }
 
-        if(Config::get('hasContentLicense') === false) {
+        if(Config::get('renderInfoLMSReturn')->hasContentLicense === false) {
             error_log('"hasContentLicense" is false!');
             $this -> ESModule -> setName('doc');
             $this -> ESModule -> loadModuleData();

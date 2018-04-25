@@ -11,7 +11,7 @@ $msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
 <span>
 
     <?php
-    if(false === Config::get('hasContentLicense')) {
+    if(false === Config::get('renderInfoLMSReturn')->hasContentLicense) {
         echo '<span class="edusharing_warning">'.htmlentities($msg['hasNoContentLicense']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8').'</span>';
     } else {
         echo '<div style="display:none">' . $launchForm . '</div>'.

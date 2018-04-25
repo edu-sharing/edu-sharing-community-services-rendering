@@ -27,22 +27,28 @@ class ESRender_Plugin_Omega
      */
     public function postRetrieveObjectProperties(EsApplication &$remote_rep, &$app_id,ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
         $logger = $this->getLogger();
-        $logger->debug('Replicationsource: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') . ', format: ' .
+        $logger->info('Replicationsource: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') . ', format: ' .
             $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format') .', replicationsourceid: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid'));
 
-        if(Config::get('hasContentLicense') === false)
+        if(Config::get('renderInfoLMSReturn') -> hasContentLicense === false) {
+            $logger->info('hasContentLicense is false');
             return;
+        }
 
-        $isLocal = false; // repo must provide a property for objects with imported content
-        if($isLocal)
+        if(Config::get('renderInfoLMSReturn') -> contentHash > -1) {
+            $logger->info('contentHash > -1 handle as local object');
             return;
+        }
 
-        $role = 'learner'; // repo must provide a role
+        $role = 'learner';
+        if(Config::get('renderInfoLMSReturn') -> eduSchoolPrimaryAffiliation === 'teacher') {
+            $role = 'teacher';
+        }
 
         if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU')  {
 
             if($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format') == '')
-                $logger->error('Format is empty!');
+                $logger->info('Format is empty!');
 
             $response = $this->callAPI($contentNode, $role);
             $response = $this->evaluateResponse($response, $contentNode);

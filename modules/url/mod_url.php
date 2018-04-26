@@ -46,6 +46,8 @@ extends ESRender_Module_NonContentNode_Abstract {
     
     	if ($this -> detectVideo())
     		$embedding = $this -> getVideoEmbedding();
+        else if($this -> detectAudio())
+            $embedding = $this -> getAudioEmbedding();
     	else
     		$embedding = '';
     	

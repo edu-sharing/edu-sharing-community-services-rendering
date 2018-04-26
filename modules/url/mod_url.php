@@ -48,6 +48,8 @@ extends ESRender_Module_NonContentNode_Abstract {
     		$embedding = $this -> getVideoEmbedding();
         else if($this -> detectAudio())
             $embedding = $this -> getAudioEmbedding();
+        else if($this -> detectImage())
+            $embedding = $this -> getImageEmbedding();
     	else
     		$embedding = '';
     	
@@ -80,7 +82,9 @@ extends ESRender_Module_NonContentNode_Abstract {
         if ($this -> detectVideo()) {
             $embedding = $this -> getVideoEmbedding($requestData['width']) . $license . $metadata;
         } else if($this -> detectAudio()) {
-        	$embedding = $this -> getAudioEmbedding() . $license . $metadata;
+            $embedding = $this->getAudioEmbedding() . $license . $metadata;
+        } else if($this -> detectImage()) {
+            $embedding = $this -> getImageEmbedding() . $license . $metadata;
         } else {
             $embedding = $this -> getLinkEmbedding();
             if(!empty($license) || !empty($metadata)) {
@@ -124,7 +128,12 @@ extends ESRender_Module_NonContentNode_Abstract {
     	return '<audio style="max-width:100%" src="'.$this -> getUrl().'" type="'. $this->_ESOBJECT->getMimeType() .'" controls="controls" oncontextmenu="return false;"></audio>
         		<p class="caption"><es:title></es:title></p>';
     }
-    
+
+    protected function getImageEmbedding() {
+        return '<img title="'.$this->_ESOBJECT->getTitle().'" alt="'.$this->_ESOBJECT->getTitle().'" src="'.$this -> getUrl().'" style="max-width: 100%">
+        		<p class="caption"><es:title></es:title></p>';
+    }
+
     protected function getVideoEmbedding($width = NULL) {
 
         if(empty($width)) {
@@ -214,6 +223,14 @@ extends ESRender_Module_NonContentNode_Abstract {
     protected function detectAudio() {
     	if(strpos($this->_ESOBJECT->getMimeType(), 'audio') !== false)
     		return true;
+    }
+
+    protected function detectImage() {
+        if(strpos($this->_ESOBJECT->getMimeType(), '/png') !== false ||
+            strpos($this->_ESOBJECT->getMimeType(), '/jpg') !== false ||
+            strpos($this->_ESOBJECT->getMimeType(), '/jpeg') !== false ||
+            strpos($this->_ESOBJECT->getMimeType(), '/gif') !== false)
+            return true;
     }
 
     /**

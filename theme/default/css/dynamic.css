@@ -1,11 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600');
-
-*, body {
-	font-family: 'Open Sans', sans-serif;
-	-webkit-font-smoothing: antialiased;
-	text-rendering: optimizeLegibility;
-}
-
 body {
 	padding: 0;
 	margin: 0;

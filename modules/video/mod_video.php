@@ -61,6 +61,7 @@ extends ESRender_Module_AudioVideo_Abstract
         $template_data['videoObjectIdentifier'] = uniqid('v_');
         $template_data['logger'] = $MC_URL . '/log/scr/clientlog.php';
         $template_data['cachePath'] = urlencode($this -> getOutputFilename($ext));
+        $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
         return $template_data;
     }
 

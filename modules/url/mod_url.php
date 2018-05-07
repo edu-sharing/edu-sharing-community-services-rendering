@@ -52,7 +52,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             $embedding = $this -> getImageEmbedding();
     	else
     		$embedding = '';
-    	
+
     	$Template = $this -> getTemplate();
     	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
     	if(Config::get('showMetadata'))

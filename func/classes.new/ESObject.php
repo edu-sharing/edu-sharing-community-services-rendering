@@ -877,6 +877,8 @@ class ESObject {
     }
 
     public function getPreviewUrl() {
+        if(!empty(Config::get('base64Preview')))
+            return Config::get('base64Preview');
         $previewUrl = $this -> renderInfoLMSReturn -> getRenderInfoLMSReturn->previewUrl . '&version=' . $this -> getObjectVersion();
         $accessToken = Config::get('accessToken');
         if(!empty($accessToken))

@@ -29,17 +29,14 @@ class ESRender_Plugin_DDB
      */
     public function postRetrieveObjectProperties(EsApplication &$remote_rep, &$app_id,ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
         $logger = $this->getLogger();
-        $logger->info('DEV --------------------------------------------------------------------------- DDB');
-
         if($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') === 'DDB') {
+            $logger->info('remoterepositorytype = DDB, start using plugin');
             $id = $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remotenodeid');
             $view = $this->callApi($contentNode, '/items/'.$id.'/view');
-            //$response = $this->evaluateResponse($response, $contentNode);
             $prop = new stdClass();
             $prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
             $prop -> value = $view -> item -> origin;
             $contentNode -> setProperties(array($prop));
-
             $binaries = $this->callApi($contentNode, '/items/'.$id.'/binaries');
             $binary = $this->url . $binaries -> binary[0] -> {'@path'};
             $b64image = base64_encode(file_get_contents($binary . '?oauth_consumer_key=' . $this->apiKey));
@@ -47,31 +44,27 @@ class ESRender_Plugin_DDB
         }
     }
 
-    protected function evaluateResponse($response = null, $contentNode) {
-        $logger = $this->getLogger();
-
-       // var_dump($response);
-
-
-        //if($response -> get -> downloadURL) {
-         //   Config::set('downladUrl', $response -> get -> downloadURL);
-       // }
-
-        return $response;
-    }
-
     protected function callApi($contentNode, $path) {
         $logger = $this->getLogger();
-        $url = $this->url . $path . '?oauth_consumer_key=' . $this->apiKey;
-        $curlhandle = curl_init($url);
-        curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($curlhandle, CURLOPT_HEADER, 0);
-        curl_setopt($curlhandle, CURLOPT_PROXY, $this->proxy);
-        curl_setopt($curlhandle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curlhandle, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-        curl_setopt($curlhandle, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curlhandle, CURLOPT_SSL_VERIFYHOST, false);
-        $resp = curl_exec($curlhandle);
+        try {
+            $url = $this->url . $path . '?oauth_consumer_key=' . $this->apiKey;
+            $curlhandle = curl_init($url);
+            curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($curlhandle, CURLOPT_HEADER, 0);
+            curl_setopt($curlhandle, CURLOPT_PROXY, $this->proxy);
+            curl_setopt($curlhandle, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curlhandle, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+            curl_setopt($curlhandle, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curlhandle, CURLOPT_SSL_VERIFYHOST, false);
+            $resp = curl_exec($curlhandle);
+            $httpcode = curl_getinfo($curlhandle, CURLINFO_HTTP_CODE);
+            if($resp === false || $httpcode > 200) {
+                $logger -> error(serialize($resp));
+                throw new \Exception('API request error');
+            }
+        } catch(\Exception $e) {
+            throw new Exception($e -> getMessage());
+        }
         return json_decode($resp);
     }
 }

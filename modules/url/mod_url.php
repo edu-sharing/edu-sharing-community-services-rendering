@@ -14,28 +14,12 @@ class mod_url
 extends ESRender_Module_NonContentNode_Abstract {
 
     /**
-     * "Display" the url by presentung a intermediate page announcing the
-     * redirect.
+     * Deprecated
      *
      * (non-PHPdoc)
      * @see ESRender_Module_Base::display()
      */
     protected function display(array $requestData) {
-
-        if (!$this -> validate()) {
-            return false;
-        }
-
-        if ($this -> detectVideo())
-            $embedding = $this -> getVideoEmbedding();
-        else if($this -> detectAudio())
-        	$embedding = $this -> getAudioEmbedding();
-        else
-            $embedding = $this -> getLinkEmbedding();
-
-        $Template = $this -> getTemplate();
-        echo $Template -> render('/module/url/display', array('embedding' => $embedding, 'title' => $this->_ESOBJECT->getTitle()));
-
         return true;
     }
     
@@ -226,11 +210,13 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function detectImage() {
-        if(strpos($this->_ESOBJECT->getMimeType(), '/png') !== false ||
+        if((strpos($this->_ESOBJECT->getMimeType(), '/png') !== false ||
             strpos($this->_ESOBJECT->getMimeType(), '/jpg') !== false ||
             strpos($this->_ESOBJECT->getMimeType(), '/jpeg') !== false ||
-            strpos($this->_ESOBJECT->getMimeType(), '/gif') !== false)
+            strpos($this->_ESOBJECT->getMimeType(), '/gif') !== false) &&
+            $this->_ESOBJECT->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') !== 'DDB')
             return true;
+        return false;
     }
 
     /**

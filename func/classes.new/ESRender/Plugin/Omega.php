@@ -73,7 +73,7 @@ class ESRender_Plugin_Omega
         }
 
         if($response -> get -> downloadURL) {
-            Config::set('downladUrl', $response -> get -> downloadURL);
+            Config::set('downloadUrl', $response -> get -> downloadURL);
         }
 
         return $response;

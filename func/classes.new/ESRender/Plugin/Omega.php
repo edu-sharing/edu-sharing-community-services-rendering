@@ -112,8 +112,9 @@ class ESRender_Plugin_Omega
         if(empty($replicationSourceId)) {
             throw new ESRender_Exception_Omega('Property replicationsourceid is empty');
         }
-        $url = $this->url . '?token_id=' . $replicationSourceId . '&role=' . $role . '&user=dabiplus';        $curlhandle = curl_init($url);
+        $url = $this->url . '?token_id=' . $replicationSourceId . '&role=' . $role . '&user=dabiplus';
 
+		$curlhandle = curl_init($url);
         curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($curlhandle, CURLOPT_HEADER, 0);
         curl_setopt($curlhandle, CURLOPT_PROXY, $this->proxy);
@@ -121,8 +122,11 @@ class ESRender_Plugin_Omega
         curl_setopt($curlhandle, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
         curl_setopt($curlhandle, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curlhandle, CURLOPT_SSL_VERIFYHOST, false);
+		$preExec = microtime(true);
         $resp = curl_exec($curlhandle);
-        $logger = $this->getLogger();
+		$postExec = microtime(true);
+		$diff = $postExec - $preExec;
+		$logger->debug('API request took '. $diff .' seconds');
         $logger->debug('Called ' . $url . ' got ' . $resp);
         return $resp;
     }

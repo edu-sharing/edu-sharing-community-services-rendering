@@ -862,6 +862,16 @@ try {
     echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
 
     
+} catch(ESRender_Exception_Omega $exception) {
+    $Logger -> error($exception -> getMessage());
+    $Logger -> debug($exception);
+
+    $MessageDefault = new Phools_Message_Default('Omega plugin error');
+    $Message = new Phools_Message_Default($exception -> getMessage());
+
+    echo $Template -> render('/error/default', array('error' => $MessageDefault -> localize($Locale, $Translate) . ' - ' . $Message -> localize($Locale, $Translate)));
+
+
 } catch(ESRender_Exception_CorruptVersion $exception) {
 
 	$Logger -> error($exception -> getMessage());

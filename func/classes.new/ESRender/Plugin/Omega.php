@@ -60,16 +60,21 @@ class ESRender_Plugin_Omega
     }
 
     protected function evaluateResponse($response = null, $contentNode) {
-        $logger = $this->getLogger();
+
         if(empty($response))
-            $logger->error('Sodis repsonse is empty');
+            throw new ESRender_Exception_Omega('API respsonse is empty');
+
         $response = json_decode($response);
 
         if($response->get->identifier !== $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid'))
-            $logger->error('Wrong identifier');
+            throw new ESRender_Exception_Omega('Wrong identifier');
 
         if(!empty($response->get->error)) {
-            $logger->error($response->get->error);
+            throw new ESRender_Exception_Omega($response->get->error);
+        }
+
+        if(empty($response->get->streamURL)) {
+            throw new ESRender_Exception_Omega('streamURL is empty');
         }
 
         if($response -> get -> downloadURL) {
@@ -83,7 +88,7 @@ class ESRender_Plugin_Omega
         $logger = $this->getLogger();
         $replicationSourceId = $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid');
         if(empty($replicationSourceId)) {
-            $logger->error('Replicationsourceid is empty');
+            throw new ESRender_Exception_Omega('Property replicationsourceid is empty');
         }
         $url = $this->url . '?token_id=' . $replicationSourceId . '&role=' . $role . '&user=dabiplus';        $curlhandle = curl_init($url);
 

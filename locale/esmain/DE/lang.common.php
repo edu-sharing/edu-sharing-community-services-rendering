@@ -62,4 +62,9 @@ $Translate
     ->addTranslation('de', 'showDocument', 'Dokument anzeigen')
     ->addTranslation('de', 'showInLearningAppsOrg', 'In learningapps.org öffnen')
     ->addTranslation('de', 'hasNoContentLicense', 'Sie dürfen den Inhalt aufgrund von Lizenzbeschränkungen nicht verwenden.')
-    ->addTranslation('de', 'startScorm', 'SCORM starten');
+    ->addTranslation('de', 'startScorm', 'SCORM starten')
+    ->addTranslation('de', 'Omega plugin error', 'Fehler im Omega Plugin')
+    ->addTranslation('de', 'API respsonse is empty', 'Antwort der API ist leer')
+    ->addTranslation('de', 'Wrong identifier', 'Antwort der API enthält falschen Identifier')
+    ->addTranslation('de', 'streamURL is empty', 'Antwort der API enthält leere streamURL')
+    ->addTranslation('de', 'Property replicationsourceid is empty', 'Die Eigenschaft replicationsourceid des Objekts ist leer');

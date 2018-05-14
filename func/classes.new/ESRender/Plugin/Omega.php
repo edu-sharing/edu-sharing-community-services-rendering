@@ -59,6 +59,21 @@ class ESRender_Plugin_Omega
         }
     }
 
+    protected function checkStatus($streamUrl) {
+        $curlhandle = curl_init();
+        curl_setopt($curlhandle, CURLOPT_URL, $streamUrl);
+        curl_setopt($curlhandle, CURLOPT_HEADER, true);
+        curl_setopt($curlhandle, CURLOPT_NOBODY, true);
+        curl_setopt($curlhandle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($curlhandle, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curlhandle, CURLOPT_SSL_VERIFYHOST, false);
+        curl_exec($curlhandle);
+        $response = curl_getinfo($curlhandle, CURLINFO_HTTP_CODE);
+        curl_close($curlhandle);
+        return $response;
+    }
+
     protected function evaluateResponse($response = null, $contentNode) {
 
         if(empty($response))
@@ -76,6 +91,10 @@ class ESRender_Plugin_Omega
         if(empty($response->get->streamURL)) {
             throw new ESRender_Exception_Omega('streamURL is empty');
         }
+
+        $status = $this->checkStatus($response->get->streamURL;
+        if($status > 299)
+            throw new ESRender_Exception_Omega('given streamURL is invalid', $status);
 
         if($response -> get -> downloadURL) {
             Config::set('downloadUrl', $response -> get -> downloadURL);

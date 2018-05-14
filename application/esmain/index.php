@@ -869,7 +869,7 @@ try {
     $MessageDefault = new Phools_Message_Default('Omega plugin error');
     $Message = new Phools_Message_Default($exception -> getMessage());
 
-    echo $Template -> render('/error/default', array('error' => $MessageDefault -> localize($Locale, $Translate) . ' - ' . $Message -> localize($Locale, $Translate)));
+    echo $Template -> render('/error/default', array('error' => $MessageDefault -> localize($Locale, $Translate) . ' - ' . $Message -> localize($Locale, $Translate) . ' ' .  $exception -> getCode()));
 
 
 } catch(ESRender_Exception_CorruptVersion $exception) {

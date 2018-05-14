@@ -92,7 +92,7 @@ class ESRender_Plugin_Omega
             throw new ESRender_Exception_Omega('streamURL is empty');
         }
 
-        $status = $this->checkStatus($response->get->streamURL;
+        $status = $this->checkStatus($response->get->streamURL);
         if($status > 299)
             throw new ESRender_Exception_Omega('given streamURL is invalid', $status);
 

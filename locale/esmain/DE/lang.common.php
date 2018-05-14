@@ -66,6 +66,6 @@ $Translate
     ->addTranslation('de', 'Omega plugin error', 'Fehler im Omega Plugin')
     ->addTranslation('de', 'API respsonse is empty', 'Antwort der API ist leer')
     ->addTranslation('de', 'Wrong identifier', 'Antwort der API enthält falschen Identifier')
-    ->addTranslation('de', 'streamURL is empty', 'Antwort der API enthält leere streamURL')
+    ->addTranslation('de', 'urls empty', 'Antwort der API enthält leere streamURL und leere downloadURL')
     ->addTranslation('de', 'Property replicationsourceid is empty', 'Die Eigenschaft replicationsourceid des Objekts ist leer')
     ->addTranslation('de', 'given streamURL is invalid', 'streamURL ist ungültig - HTTP Status');

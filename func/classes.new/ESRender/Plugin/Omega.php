@@ -88,9 +88,12 @@ class ESRender_Plugin_Omega
             throw new ESRender_Exception_Omega($response->get->error);
         }
 
-        if(empty($response->get->streamURL)) {
-            throw new ESRender_Exception_Omega('streamURL is empty');
+        if(empty($response->get->streamURL) && empty($response -> get -> downloadURL)) {
+            throw new ESRender_Exception_Omega('urls empty');
         }
+
+        if(empty($response->get->streamURL) && !empty($response -> get -> downloadURL))
+            $response->get->streamURL = $response->get->downloadURL;
 
         $status = $this->checkStatus($response->get->streamURL);
         if($status > 299)

@@ -119,6 +119,8 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getVideoEmbedding($width = NULL) {
+		
+		global $MC_URL;
 
         if(empty($width)) {
             $width = 800;
@@ -178,7 +180,7 @@ extends ESRender_Module_NonContentNode_Abstract {
                 </div>
                 <p class="caption"><es:title></es:title></p>
                 <style>.playButton{
-        background: transparent url(\'http://localhost/rendering-service/theme/default/img/play.svg\') 50% 50% / cover no-repeat;
+        background: transparent url(\''.$MC_URL.'/theme/default/img/play.svg\') 50% 50% / cover no-repeat;
         height: 100px;
         position: absolute;
         width: 100px;

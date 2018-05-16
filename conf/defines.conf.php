@@ -62,7 +62,7 @@ define("MC_ROOT_URI",  $ROOT_URI);
 define("INTERNAL_URL", $INTERNAL_URL);
 
 // declaring include paths
-$MC_INCLUDE_PATH[] = MC_ROOT_PATH."func/extern/pear1.7.2/";
+
 $MC_INCLUDE_PATH[] = MC_ROOT_PATH."func/extern/";
 array_unshift($MC_INCLUDE_PATH, '.');
 ini_set("include_path", implode(';', array_unique($MC_INCLUDE_PATH)));

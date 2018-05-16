@@ -5,6 +5,7 @@ conf/db.conf.php
 conf/de.metaventis.esrender.log4php.cachecleaner.properties
 conf/esmain
 conf/system.conf.php
+conf/plugins.conf.php
 install/_tmpl/log.php
 log/conversion/*
 !log/conversion/.gitignore
@@ -15,4 +16,5 @@ log/esrender.log
 log/redirect.log
 modules/moodle3/config.php
 modules/video/config.php
+modules/scorm12/config.php
 .idea

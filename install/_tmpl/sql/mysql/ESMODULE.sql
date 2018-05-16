@@ -14,4 +14,6 @@ INSERT INTO `ESMODULE` (`ESMODULE_ID`, `ESMODULE_NAME`, `ESMODULE_DESC`) VALUES
 (13, 'html', NULL),
 (14, 'applet', 'applet 1.n'),
 (15, 'url', 'URL'),
-(16, 'learningapps', 'learningapps');
+(16, 'learningapps', 'learningapps'),
+(17, 'h5p', 'h5p'),
+(18, 'lti', 'lti');

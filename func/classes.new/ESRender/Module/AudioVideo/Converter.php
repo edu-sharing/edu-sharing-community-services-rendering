@@ -14,14 +14,23 @@ require_once (dirname(__FILE__) . '/../../../../../modules/video/mod_video.php')
 class converter {
 
     private $timeout = '';
+    private $threads = '';
 
     public function __construct() {
         $this -> setTimeout();
+        $this -> setThreads();
+    }
+
+    private function setThreads() {
+        if(defined('OPTION_THREADS'))
+            $this -> threads = "-threads " . OPTION_THREADS;
+        else
+            $this -> threads = "-threads 1";
     }
     
     private function setTimeout() {
         if(defined('EXEC_TIMEOUT') && strpos(strtolower(PHP_OS), 'win') === false)
-            $this -> timeout = "timeout " . EXEC_TIMEOUT . " ";     
+            $this -> timeout = "timeout " . EXEC_TIMEOUT . " ";
     }
 
     /*
@@ -63,9 +72,9 @@ class converter {
         switch($type) {
             case 'audio' :
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), $conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
-                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode($conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . ESRender_Module_AudioVideo_Abstract::FORMAT_AUDIO_MP3 . '.log';
+                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode($conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . ESRender_Module_AudioVideo_Abstract::FORMAT_AUDIO_MP3 . '.log';
                 $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid() . '.mp3';
-                exec($this -> timeout  . FFMPEG_BINARY . " -i " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp3 -y " . $tmpName . " 2>>" . $logfile, $whatever, $code);
+                exec($this -> timeout  . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-f mp3 -y" . " " . $tmpName . " " ."2>>" . $logfile, $whatever, $code);
                 $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
                 if($code > 0) {
                     unlink($tmpName);
@@ -77,11 +86,11 @@ class converter {
                 break; 
             case 'video' :
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), $conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
-                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode($conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . $conv -> ESOBJECT_CONVERSION_FORMAT . '.log';
+                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode($conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . $conv -> ESOBJECT_CONVERSION_FORMAT . '.log';
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_MP4 :
                         $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.mp4';
-                        exec($this -> timeout . FFMPEG_BINARY . " -i " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264 -acodec aac -movflags faststart -strict -2 -y " . $tmpName . " 2>>" . $logfile, $whatever, $code);                     
+                        exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-f mp4 -vcodec libx264" . " " . $this->threads . " " . "-acodec aac -movflags faststart -strict -2 -y" . " " . $tmpName . " " ."2>>" . $logfile, $whatever, $code);
                         $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
                         if($code > 0) {
                             unlink($tmpName);
@@ -93,7 +102,7 @@ class converter {
                         break;                       
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_WEBM :
                         $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.webm';                        
-                        exec($this -> timeout  . FFMPEG_BINARY  . " -i " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -vcodec libvpx -acodec libvorbis -y -b:v 1M -crf 10 " . $tmpName . " 2>>" . $logfile, $whatever, $code);
+                        exec($this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " ."-vcodec libvpx" . " " . $this->threads ." " . "-acodec libvorbis -y -b:v 1M -crf 10" . " " . $tmpName . " " . "2>>" . $logfile, $whatever, $code);
                         $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
                         if($code > 0) {
                             unlink($tmpName);

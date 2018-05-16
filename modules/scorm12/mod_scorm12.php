@@ -20,169 +20,119 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-require_once(dirname(__FILE__).'/config.php');
-require_once (MOODLE_BASE_DIR.'/config.php');
+if (file_exists(dirname(__FILE__).'/config.php')) {
+    require_once dirname(__FILE__). '/config.php';
+}
 
-global $CFG;
 
-require_once (MC_LIB_PATH . '/MCMoodleCourse.class.php');
-require_once ($CFG->dirroot.'/mod/scorm/lib.php');
-
-require_once (dirname(__FILE__) . '/../../conf.inc.php');
-
-/**
- * handles
- *
- * @author steffen gross / matthias hupfer
- * @version 1.0
- * @package core
- * @subpackage classes.new
- */
 class mod_scorm12
-extends ESRender_Module_Moodle1Base
+extends ESRender_Module_ContentNode_Abstract
 {
+    private $userSession = null;
+    private $homeConfig = null;
 
-	protected function _createCourse(
-		stdClass $CourseCategory)
-	{
-		global $CFG;
+    public function __construct($Name, ESRender_Application_Interface $RenderApplication, ESObject $p_esobject, Logger $Logger, Phools_Template_Interface $Template) {
+        parent::__construct($Name, $RenderApplication, $p_esobject, $Logger, $Template);
+        $application = new ESApp();
+        $application -> getApp('esmain');
+        $this -> homeConfig = $application -> getHomeConf();
+    }
 
-		$Logger = $this->getLogger();
+    private function pushToScormPlayer() {
+        $scormid = hash_hmac('sha256', $this->_ESOBJECT->getObjectIdVersion(), $this -> homeConfig -> prop_array['private_key']);
+        $url_path_str = SCORM_PLAYER_API . '/' . $scormid;
+        $file_path_str = $this -> _ESOBJECT -> getFilePath();
+        $ch = curl_init($url_path_str);
+        $headers = array('Accept: application/json', 'Content-Type: multipart/form-data');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        $cfile = curl_file_create($file_path_str, 'application/zip', 'file');
+        $fields = array('file' => $cfile);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_SAFE_UPLOAD, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if ($httpcode >= 200 && $httpcode < 308) {
+            curl_close($ch);
+            return true;
+        }
+        $error = curl_error($ch);
+        curl_close($ch);
+        $logger = $this->getLogger();
+        $logger->error('Error pushing scorm package HTTP STATUS ' . $httpcode . '. Curl error ' . $error, $httpcode);
+    }
 
-		$courseName = 'CC_scorm_' . rand(100000, 999999);
+    private function getUserSession($requestData) {
+        $userId = hash_hmac('sha256', $requestData['user_name'], $this -> homeConfig -> prop_array['private_key']);
+        $scormid = hash_hmac('sha256', $this->_ESOBJECT->getObjectIdVersion(), $this -> homeConfig -> prop_array['private_key']);
+        $ch = curl_init(SCORM_PLAYER_API . '/' . $scormid . '/sessions/' . $userId);
+        $headers = array('Accept: application/json');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_SAFE_UPLOAD, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $res = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if ($httpcode >= 200 && $httpcode < 308) {
+            curl_close($ch);
+            $this->userSession = json_decode($res);
+            return true;
+        }
+        $error = curl_error($ch);
+        curl_close($ch);
+        $logger = $this->getLogger();
+        $logger->error('Error creating content node HTTP STATUS ' . $httpcode . '. Curl error ' . $error, $httpcode);
+    }
 
-		$newcourse = new stdClass();
-		$newcourse->fullname = $courseName;
-		$newcourse->shortname = $courseName;
-		$newcourse->category = $CourseCategory->id;
-		$newcourse->format = "scorm";
+    private function getScormUrl() {
+        if($this->userSession->body->sessions[0]->url)
+            return $this->userSession->body->sessions[0]->url;
+        return null;
+    }
 
-		// allow guest if course is not requested by an user of an LMS
-		
-		//does not work properly
-		//always allow guest access
-		
-		//if ( 'LMS' != strtoupper($RemoteApplication->getType() ) )
-		//{
-			$newcourse->guest = 1;
-		//}
-		//else {
-		//	$newcourse->guest = 0;
-	//	}
+    public function inline(array $requestData) {
 
-		// create course we will add our object to
-		$Logger->info('Creating course "'.$newcourse->fullname.'".');
+        $this -> pushToScormPlayer();
+        $this -> getUserSession($requestData);
+        $data = array();
 
-		$MoodleCourse = new MCMoodleCourse();
-		$newcourse2 = $MoodleCourse->createCourse($newcourse);
-		if ( ! $newcourse2 )
-		{
-			$Logger->error('Error creating course.');
-			return false;
-		}
+        $data['url'] = $this->getScormUrl();
+        if(empty($data['url'])) {
+            return parent::inline($requestData);
+        }
 
-		// copy course-data into moodle-course-data-dir
-		$moodleDataDirForCourse = $CFG->dataroot . DIRECTORY_SEPARATOR . $newcourse2->id;
-		if ( ! mkdir( $moodleDataDirForCourse) )
-		{
-			$Logger->error('Failed to create folder "'.$moodleDataDirForCourse.'".');
-			return false;
-		}
+        if(ENABLE_METADATA_INLINE_RENDERING) {
+            $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
+            $data['metadata'] = $metadata;
+        }
+        $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
+        if(!empty($license)) {
+            $data['license'] = $license -> renderFooter($this -> getTemplate());
+        }
+        $data['title'] = $this->_ESOBJECT->getTitle();
+        $Template = $this -> getTemplate();
+        echo $Template -> render('/module/scorm12/inline', $data);
+        return true;
+    }
 
-		$Logger->debug('Created folder "'.$moodleDataDirForCourse.'".');
-
-		$absSourceFilename = $this->render_path . DIRECTORY_SEPARATOR . $this->filename;
-
-		$targetFilename = $this->filename . '.zip';
-		$absTargetFilename = $moodleDataDirForCourse . DIRECTORY_SEPARATOR . $targetFilename;
-
-		if ( ! copy($absSourceFilename, $absTargetFilename))
-		{
-			$Logger->error('Failed to copy course-data from "'.$absSourceFilename.'" to "'.$absTargetFilename.'".');
-			return false;
-		}
-
-		$Logger->debug('Copied course-data "'.$absSourceFilename.'" to "'.$absTargetFilename.'".');
-
-		unset($scorm);
-		$scorm->modulname = 'scorm';
-		$scorm->name = 'scorm';
-		$scorm->summary = 'no summary given';
-		$scorm->reference = $targetFilename;
-		$scorm->grademethod = '0';
-		$scorm->maxgrade = '0';
-		$scorm->maxattempt = '3';
-		$scorm->whatgrade = '0';
-		$scorm->mform_showadvanced_last = '';
-		$scorm->width = '100';
-		$scorm->height = '500';
-		$scorm->popup = '0';
-		$scorm->skipview = '1';
-		$scorm->hidebrowse = '0';
-		$scorm->hidetoc = '0';
-		$scorm->hidenav = '0';
-		$scorm->auto = '0';
-		$scorm->updatefreq = '0';
-		$scorm->datadir = '';
-		$scorm->pkgtype = '';
-		$scorm->launch = '';
-		$scorm->redirect = 'yes';
-		$scorm->redirecturl = '../course/view.php?id='.$newcourse2->id;
-		$scorm->visible = '1';
-		$scorm->cmidnumber = '';
-		$scorm->gradecat = ''; // 40..41...42... grades...hmmmm... .. .
- 		$scorm->course = $newcourse2->id;
-		$scorm->coursemodule = '';
-		$scorm->section = '0';
-		$scorm->module = MOODLE_MODULE_SCORM_ID;
-		$scorm->modulename = 'scorm';
-		$scorm->instance = '';
-		$scorm->add = 'scorm';
-		$scorm->update = '0';
-		$scorm->return = '0';
-		$scorm->groupingid = '0';
-		$scorm->groupmembersonly = '0';
-		$scorm->groupmode = '0';
-
-		$instance = scorm_add_instance($scorm);
-
-		if ( ! $instance ) {
-			$Logger->error('Could not add a new instance of "'.$scorm->modulename.'" as "view.php?id='.$newcourse2->id.'"');
-			return false;
-		}
-
-		$scorm->instance = $instance;
-
-		// course_modules and course_sections each contain a reference
-		// to each other, so we have to update one of them twice.
-
-		if (! $scorm->coursemodule = add_course_module($scorm) ) {
-			$Logger->error("Could not add a new course module");
-			return false;
-		}
-
-		if (! $sectionid = add_mod_to_section($scorm) ) {
-			$Logger->error("Could not add the new course module to that section");
-			return false;
-		}
-
-		if (! set_field("course_modules", "section", $sectionid, "id", $scorm->coursemodule)) {
-			$Logger->error("Could not update the course module with the correct section");
-			return false;
-		}
-
-		if (!isset($scorm->visible)) {   // We get the section's visible field status
-			$scorm->visible = get_field("course_sections","visible","id",$sectionid);
-		}
-
-		// make sure visibility is set correctly (in particular in calendar)
-		set_coursemodule_visible($scorm->coursemodule, $scorm->visible);
-
-		$DataArray['ESOBJECT_PATH'] = $this->_buildEsObjectPath($newcourse2->id);
-		$this->_ESOBJECT->setData($DataArray);
-
-		return $newcourse2;
-	}
-
+    public function dynamic(array $requestData) {
+        $this -> pushToScormPlayer();
+        $this -> getUserSession($requestData);
+        $Template = $this -> getTemplate();
+        $tempArray = array('url' => $this->getScormUrl(), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
+        if(Config::get('showMetadata'))
+            $tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+        $tempArray['title'] = $this->_ESOBJECT->getTitle();
+        echo $Template -> render('/module/scorm12/dynamic', $tempArray);
+        return true;
+    }
 }
 

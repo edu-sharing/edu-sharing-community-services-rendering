@@ -4,6 +4,7 @@ $msg = array();
 $msg['showInformation'] = new Phools_Message_Default('showInformation');
 $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
 $msg['toDownload'] = new Phools_Message_Default('toDownload');
+$msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
 $msg['cannotOpenObject'] = new Phools_Message_Default('cannotOpenObject');
 $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText');
 
@@ -16,21 +17,25 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
 	<div class="edusharing_rendering_content_wrapper" role="main">
-        <?php if(Config::get('showDownloadAdvice'))
+        <?php
+        if(Config::get('renderInfoLMSReturn')->hasContentLicense === false) {
+            echo '<h3>' . $msg['hasNoContentLicense']->localize($Locale, $Translate) . '</h3>';
+        } else if(Config::get('showDownloadAdvice')) {
             echo '<h3>' . $msg['cannotOpenObject']->localize($Locale, $Translate) . '</h3>' .
-		         '<h4>' . $msg['cannotOpenObjectText']->localize($Locale, $Translate) . '</h4>';
+                '<h4>' . $msg['cannotOpenObjectText']->localize($Locale, $Translate) . '</h4>';
+        }
         ?>
 		<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
 		<img class="edusharing_rendering_content_preview" src="<?php echo $previewUrl?>">
         <?php if(Config::get('showDownloadButton'))
-		    echo '<a href="' .  $url . '" target="_blank" class="edusharing_rendering_content" >' .  $msg['toDownload']->localize($Locale, $Translate) . '</a>';
+		    echo '<a href="' .  $url . '" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href">' .  $msg['toDownload']->localize($Locale, $Translate) . '</a>';
         ?>
 	</div>
 	<?php echo $metadata; ?>
 </div>
 
-<script>
-	<?php include(dirname(__FILE__) . '/../../js/dynamic.js'); ?>
-</script>
-
-
+<?php
+$downloadUrl = Config::get('downloadUrl');
+if(!empty($downloadUrl))
+    echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
+?>

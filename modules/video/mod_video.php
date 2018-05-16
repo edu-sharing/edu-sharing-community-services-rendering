@@ -61,6 +61,7 @@ extends ESRender_Module_AudioVideo_Abstract
         $template_data['videoObjectIdentifier'] = uniqid('v_');
         $template_data['logger'] = $MC_URL . '/log/scr/clientlog.php';
         $template_data['cachePath'] = urlencode($this -> getOutputFilename($ext));
+        $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
         return $template_data;
     }
 
@@ -103,30 +104,6 @@ extends ESRender_Module_AudioVideo_Abstract
 
         $Template = $this->getTemplate();
         return $Template->render($inline_template, $template_data);
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see ESRender_Module_Base::display()
-     */
-    final public function display(
-        array $requestData)
-    {
-        global $Locale, $ROOT_URI;
-        $template_data = $this->prepareRenderData($requestData);
-
-        //load resource asynchr. with display mode inline!
-        $template_data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
-            .$requestData['app_id']
-            .'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
-            .$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
-            .'&display=inline&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-            $template_data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
-        //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-        $Template = $this->getTemplate();
-        echo $Template->render('/module/video/display', $template_data);
-
-        return true;
     }
     
     
@@ -184,7 +161,7 @@ extends ESRender_Module_AudioVideo_Abstract
     final public function locked(array $requestData) {
     	    	
         $template = $this->getTemplate();
-        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> _ESOBJECT -> getObjectID() . $this->_ESOBJECT->getObjectVersion() . $this-> getVideoFormatByRequestingDevice(). '.log';
+        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> _ESOBJECT -> getObjectID() . $this->_ESOBJECT->getObjectVersion()  . '_' . $this->_ESOBJECT->getId() . '_' . $this-> getVideoFormatByRequestingDevice(). '.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
         $positionInConversionQueue = $this->_ESOBJECT->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice());
         if(empty($progress) || is_array($progress))

@@ -2,7 +2,7 @@
 
 require_once ("ims-blti/blti_util.php");
 
-class providerVanilla {
+class edutoolVanilla {
     
     public function __construct($esobject, $template) {
         $this -> getConfig();

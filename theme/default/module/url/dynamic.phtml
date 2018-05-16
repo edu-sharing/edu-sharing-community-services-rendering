@@ -19,11 +19,14 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 		} else {
 			echo $embedding;
 		}?>
-		<a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" ><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
+		<a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
 	</div>
 	<?php echo $metadata; ?>
 </div>
 
-<script>
-	<?php include(dirname(__FILE__) . '/../../js/dynamic.js'); ?>
-</script>
+<?php
+$downloadUrl = Config::get('downloadUrl');
+if(!empty($downloadUrl))
+    echo '<script>setTimeout(function() {try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){console.log(err)}}, 1000);</script>';
+?>
+

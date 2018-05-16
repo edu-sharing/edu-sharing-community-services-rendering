@@ -20,7 +20,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-require_once dirname(__FILE__). '/config.php';
+if (file_exists(dirname(__FILE__).'/config.php')) {
+    require_once dirname(__FILE__). '/config.php';
+}
 
 
 /**
@@ -35,7 +37,13 @@ extends ESRender_Module_ContentNode_Abstract {
 	public function createInstance(array $requestData) {
 		
 		parent::createInstance($requestData);
-		$logger = $this->getLogger();
+
+        if (!file_exists(dirname(__FILE__).'/config.php')) {
+            return true;
+        }
+
+
+        $logger = $this->getLogger();
 		
 		
 		if(empty(MOODLE_BASE_DIR)) {
@@ -86,17 +94,7 @@ extends ESRender_Module_ContentNode_Abstract {
 	public function instanceExists(ESObject $ESObject, array $requestData, $contentHash) {
 		return parent::instanceExists($ESObject, $requestData, $contentHash);
 	}
-	
-	public function display(array $requestData) {	
-		$id = $this->getCourseId();
-		if($id === false) {
-			return parent::display($requestData);
-		}
-		header('Location: ' . $this-> getForwardUrl($requestData));
-		return true;
-	}
-	
-	
+
 	/*
 	 * Call moodle WS local_edusharing_handleuser
 	 * create/fetch user
@@ -143,28 +141,42 @@ extends ESRender_Module_ContentNode_Abstract {
 	
 	public function inline(array $requestData) {
 
-		$id = $this->getId();
-		
-		if($id === false) {
-			return parent::inline($requestData);
-		}
+        if (!file_exists(dirname(__FILE__).'/config.php')) {
+            return parent::inline($requestData);
+            $Logger -> error('Error opening ' . dirname(__FILE__).'/config.php');
+        }
+
+        $id = $this->getId();
+
+        if($id === false) {
+            return parent::inline($requestData);
+        }
+
 		$Template = $this -> getTemplate();
-		echo $Template -> render('/module/moodle/inline', array('url' => $this-> getForwardUrl($requestData)));
+		$data = array();
+		$data['url'] = 'asdadada';/*$this-> getForwardUrl($requestData)*/
+        $data['title'] = $this->_ESOBJECT->getTitle();
+        if(ENABLE_METADATA_INLINE_RENDERING) {
+            $data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
+        }
+		echo $Template -> render('/module/moodle/inline', $data);
 		return true;
 	}
 	
 	public function dynamic(array $requestData) {
-		global $accessToken;
-				
+
+        if (!file_exists(dirname(__FILE__).'/config.php')) {
+            echo parent::dynamic($requestData);
+            return true;
+            $Logger -> error('Error opening ' . dirname(__FILE__).'/config.php');
+        }
+
 		$id = $this->getCourseId();
 		if($id === false) {
 			return parent::dynamic($requestData);
 		}
 		$Template = $this -> getTemplate();
-		$previewUrl = $this->_ESOBJECT->getPreviewUrl();
-		if(!empty($accessToken))
-			$previewUrl .= '&accessToken=' . $accessToken;
-		$tempArray = array('url' => $this-> getForwardUrl($requestData), 'previewUrl' => $previewUrl);
+		$tempArray = array('url' => $this-> getForwardUrl($requestData), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
 		
 		if(Config::get('showMetadata'))
 			$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');

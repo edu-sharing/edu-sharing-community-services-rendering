@@ -55,3 +55,12 @@
 .mdsGroup:first-child {
     margin-top: -30px;
 }
+
+
+.edusharing_warning {
+    display: inline-block;
+    background-color: #c6c6c6;
+    color: #383838;
+    padding: 5px;
+    border-radius: 3px;
+}

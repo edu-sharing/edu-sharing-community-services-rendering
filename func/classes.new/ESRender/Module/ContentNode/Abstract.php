@@ -221,19 +221,15 @@ extends ESRender_Module_Base
         	$data['license'] = $license -> renderFooter($this -> getTemplate());
         }
 
-        $snippet = $this->getTemplate()->render('/module/default/inline', $data);
+        echo $this->getTemplate()->render('/module/default/inline', $data);
                 
         $Logger->debug('ESRender_Module_Base::inline');
-
-        echo $snippet;
 
         return true;
     }
     
     
     protected function dynamic(array $requestData) {
-    	global $accessToken;
-    	 
        $Logger = $this->getLogger();
        $Logger->debug('ESRender_Module_Base::dynamic');
 
@@ -242,8 +238,6 @@ extends ESRender_Module_Base
        if(Config::get('showMetadata'))
        		$data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
        $data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
-       if(!empty($accessToken))
-       		$data['previewUrl'] .= '&accessToken=' . $accessToken;
        $data['title'] = $this->_ESOBJECT->getTitle();
        echo $this->getTemplate()->render('/module/default/dynamic', $data);
        

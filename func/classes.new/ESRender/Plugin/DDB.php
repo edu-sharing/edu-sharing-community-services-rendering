@@ -23,6 +23,7 @@ class ESRender_Plugin_DDB
         $this->url = $url;
         $this->proxy = $proxy;
         $this->apiKey = $apiKey;
+        $this->repoUrl = '';
     }
 
     /**
@@ -30,6 +31,7 @@ class ESRender_Plugin_DDB
      * @see ESRender_Plugin_Abstract::postRetrieveObjectProperties()
      */
     public function postRetrieveObjectProperties(EsApplication &$remote_rep, &$app_id,ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
+        $this -> repoUrl = str_replace('services/usage2?wsdl', '', $remote_rep->prop_array['usagewebservice_wsdl']);
         $logger = $this->getLogger();
         if($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') === 'DDB') {
             $logger->info('remoterepositorytype = DDB, start using plugin');
@@ -49,13 +51,17 @@ class ESRender_Plugin_DDB
 
     public function getEmbedding($contentNode) {
 
+        global $Locale, $Translate;
+
         $wwwUrl = $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
+
+        $Message = new Phools_Message_Default('jumpToDataProvider :dataProvider', array(new Phools_Message_Param_String(':dataProvider', $this->responseView ->item->institution->name)));
 
         if(strpos($wwwUrl, 'av.getinfo.de') !== false) {
             if($_REQUEST['display'] === 'inline')
                 return '<div style="display: inline-block"><iframe width="800" height="450" scrolling="no" src="//av.tib.eu/player/'.array_pop(explode('/', $wwwUrl)).'" frameborder="0" allowfullscreen></iframe>
-                    <br/><span class="ddb_title">'.utf8_encode($this->responseView ->item->title).'</span>
-                    <br/><a target="_blank" href="'.$wwwUrl.'"> ' . utf8_encode('Objekt beim Datengeber ('.$this->responseView ->item->institution->name.') anzeigen').'</a></div>';
+                    <br/><img src="'.$this->repoUrl.'assets/images/sources/ddb.png"><span class="ddb_title">'.utf8_encode($this->responseView ->item->title).'</span>
+                    <br/><a target="_blank" href="'.$wwwUrl.'"> ' . utf8_encode($Message -> localize($Locale, $Translate)) .'</a></div>';
             else
                 return '<iframe style="display: block; margin: auto;" width="800" height="450" scrolling="no" src="//av.tib.eu/player/'.array_pop(explode('/', $wwwUrl)).'" frameborder="0" allowfullscreen></iframe>';
 
@@ -64,8 +70,8 @@ class ESRender_Plugin_DDB
 
         if($_REQUEST['display'] === 'inline')
             return '<div style="display: inline-block"><img src="'.Config::get('base64Preview').'">
-                    <br/><span class="ddb_title">'.utf8_encode($this->responseView ->item->title).'</span>
-                    <br/><a target="_blank" href="'.$wwwUrl.'"> ' . utf8_encode('Objekt beim Datengeber ('.$this->responseView ->item->institution->name.') anzeigen').'</a></div>';
+                    <br/><img src="'.$this->repoUrl.'assets/images/sources/ddb.png"><span class="ddb_title">'.utf8_encode($this->responseView ->item->title).'</span>
+                    <br/><a target="_blank" href="'.$wwwUrl.'"> ' . utf8_encode($Message -> localize($Locale, $Translate)).'</a></div>';
 
         return '';
     }

@@ -27,8 +27,10 @@ extends ESRender_Module_NonContentNode_Abstract {
     	if (!$this -> validate()) {
     		return false;
     	}
-    
-    	if ($this -> detectVideo())
+
+    	if(Config::get('urlEmbedding'))
+            $embedding = Config::get('urlEmbedding');
+    	else if ($this -> detectVideo())
     		$embedding = $this -> getVideoEmbedding();
         else if($this -> detectAudio())
             $embedding = $this -> getAudioEmbedding();
@@ -63,7 +65,9 @@ extends ESRender_Module_NonContentNode_Abstract {
             $license = $license -> renderFooter($this -> getTemplate());
         }
 
-        if ($this -> detectVideo()) {
+        if(Config::get('urlEmbedding')) {
+            $embedding = Config::get('urlEmbedding') . $license . $metadata;;
+        } else if ($this -> detectVideo()) {
             $embedding = $this -> getVideoEmbedding($requestData['width']) . $license . $metadata;
         } else if($this -> detectAudio()) {
             $embedding = $this->getAudioEmbedding() . $license . $metadata;
@@ -119,6 +123,8 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getVideoEmbedding($width = NULL) {
+		
+		global $MC_URL;
 
         if(empty($width)) {
             $width = 800;
@@ -170,60 +176,20 @@ extends ESRender_Module_NonContentNode_Abstract {
             $identifier = uniqid();
             return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
                     <div class="videoWrapperInner" style="position: relative; padding-top: 25px; ">
-                        <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;" oncontextmenu="return false;">
+                        <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;" oncontextmenu="return false;" controlsList="nodownload">
                             <source src="' . $this -> getUrl() . '" type="' . $type . '"></source>
                         </video>
                         <div class="playButton" id="b_'.$identifier.'"></div>
                     </div>
                 </div>
                 <p class="caption"><es:title></es:title></p>
-                <style>.playButton{
-        background: transparent url(\'http://localhost/rendering-service/theme/default/img/play.svg\') 50% 50% / cover no-repeat;
-        height: 100px;
-        position: absolute;
-        width: 100px;
-        margin: auto;
-        top:0;
-        bottom:0;
-        right:0;
-        left:0;
-    }</style>
-                <script>
-    var video_'.$identifier.' = document.getElementById(\''.$identifier.'\');
-    video_'.$identifier.'.addEventListener(
-        \'play\',
-        function() {
-            video_'.$identifier.'.play();
-            document.getElementById(\'b_'.$identifier.'\').style.display = \'none\';
-        },
-        false);
-
-    video_'.$identifier.'.addEventListener(
-        \'ended\',
-        function() {
-            document.getElementById(\'b_'.$identifier.'\').style.display = \'block\';
-        },
-        false);
-
-    video_'.$identifier.'.addEventListener(
-        \'pause\',
-        function() {
-            document.getElementById(\'b_'.$identifier.'\').style.display = \'block\';
-        },
-        false);
-
-    b_'.$identifier.'.onclick = function() {
-        video_'.$identifier.'.click();
-    };
-    video_'.$identifier.'.onclick = function() {
-        if (video_'.$identifier.'.paused) {
-            video_'.$identifier.'.play();
-        } else {
-            video_'.$identifier.'.pause();
-        }
-        return false;
-    };
-</script>';
+                <style>.playButton{background: transparent url(\''.$MC_URL.'/theme/default/img/play.svg\') 50% 50% / cover no-repeat;height: 100px;position: absolute;width: 100px;margin: auto;top:0;bottom:0;right:0;left:0;}</style>
+                <script>var video_'.$identifier.' = document.getElementById(\''.$identifier.'\');
+                video_'.$identifier.'.addEventListener(\'play\',function(){video_'.$identifier.'.play();document.getElementById(\'b_'.$identifier.'\').style.display = \'none\';},false);
+                video_'.$identifier.'.addEventListener(\'ended\',function(){document.getElementById(\'b_'.$identifier.'\').style.display = \'block\';},false);
+                video_'.$identifier.'.addEventListener(\'pause\',function(){document.getElementById(\'b_'.$identifier.'\').style.display = \'block\';},false);
+                b_'.$identifier.'.onclick = function(){video_'.$identifier.'.click();};
+                video_'.$identifier.'.onclick = function(){if (video_'.$identifier.'.paused){video_'.$identifier.'.play();}else{video_'.$identifier.'.pause();}return false;};</script>';
         }
     }
 

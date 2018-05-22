@@ -12,6 +12,8 @@ class ESRender_Plugin_DDB
     private $url = '';
     private $proxy = '';
     private $apiKey = '';
+    private $responseView;
+    private $responseBinaries;
 
     /**
      *
@@ -21,6 +23,7 @@ class ESRender_Plugin_DDB
         $this->url = $url;
         $this->proxy = $proxy;
         $this->apiKey = $apiKey;
+        $this->iconUrl = '';
     }
 
     /**
@@ -28,20 +31,49 @@ class ESRender_Plugin_DDB
      * @see ESRender_Plugin_Abstract::postRetrieveObjectProperties()
      */
     public function postRetrieveObjectProperties(EsApplication &$remote_rep, &$app_id,ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
+        $this -> iconUrl = $remote_rep->prop_array['clientprotocol'] .'://' . $remote_rep->prop_array['domain'] . ':' . $remote_rep->prop_array['clientport'] . '/edu-sharing/assets/images/sources/ddb.png';
         $logger = $this->getLogger();
         if($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') === 'DDB') {
             $logger->info('remoterepositorytype = DDB, start using plugin');
             $id = $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remotenodeid');
-            $view = $this->callApi($contentNode, '/items/'.$id.'/view');
+            $this->responseView = $this->callApi($contentNode, '/items/'.$id.'/view');
             $prop = new stdClass();
             $prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
-            $prop -> value = $view -> item -> origin;
+            $prop -> value = $this->responseView  -> item -> origin;
             $contentNode -> setProperties(array($prop));
-            $binaries = $this->callApi($contentNode, '/items/'.$id.'/binaries');
-            $binary = $this->url . $binaries -> binary[0] -> {'@path'};
+            $this->responseBinaries = $this->callApi($contentNode, '/items/'.$id.'/binaries');
+            $binary = $this->url . $this->responseBinaries -> binary[0] -> {'@path'};
             $b64image = base64_encode(file_get_contents($binary . '?oauth_consumer_key=' . $this->apiKey));
             Config::set('base64Preview', 'data:image/jpg;base64,'.$b64image);
+            Config::set('urlEmbedding', $this->getEmbedding($contentNode));
         }
+    }
+
+    public function getEmbedding($contentNode) {
+
+        global $Locale, $Translate;
+
+        $wwwUrl = $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
+
+        $Message = new Phools_Message_Default('jumpToDataProvider :dataProvider', array(new Phools_Message_Param_String(':dataProvider', $this->responseView ->item->institution->name)));
+
+        if(strpos($wwwUrl, 'av.getinfo.de') !== false) {
+            if($_REQUEST['display'] === 'inline')
+                return '<div style="display: inline-block"><iframe width="800" height="450" scrolling="no" src="//av.tib.eu/player/'.array_pop(explode('/', $wwwUrl)).'" frameborder="0" allowfullscreen></iframe>
+                    <br/><img src="'.$this->iconUrl.'"><span class="ddb_title">'.utf8_encode($this->responseView ->item->title).'</span>
+                    <br/><a target="_blank" href="'.$wwwUrl.'"> ' . utf8_encode($Message -> localize($Locale, $Translate)) .'</a></div>';
+            else
+                return '<iframe style="display: block; margin: auto;" width="800" height="450" scrolling="no" src="//av.tib.eu/player/'.array_pop(explode('/', $wwwUrl)).'" frameborder="0" allowfullscreen></iframe>';
+
+        }
+
+
+        if($_REQUEST['display'] === 'inline')
+            return '<div style="display: inline-block"><img src="'.Config::get('base64Preview').'">
+                    <br/><img src="'.$this->iconUrl.'"><span class="ddb_title">'.utf8_encode($this->responseView ->item->title).'</span>
+                    <br/><a target="_blank" href="'.$wwwUrl.'"> ' . utf8_encode($Message -> localize($Locale, $Translate)).'</a></div>';
+
+        return '';
     }
 
     protected function callApi($contentNode, $path) {

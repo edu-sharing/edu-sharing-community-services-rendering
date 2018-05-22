@@ -68,4 +68,5 @@ $Translate
     ->addTranslation('de', 'Wrong identifier', 'Antwort der API enthält falschen Identifier')
     ->addTranslation('de', 'urls empty', 'Antwort der API enthält leere streamURL und leere downloadURL')
     ->addTranslation('de', 'Property replicationsourceid is empty', 'Die Eigenschaft replicationsourceid des Objekts ist leer')
-    ->addTranslation('de', 'given streamURL is invalid', 'streamURL ist ungültig - HTTP Status');
+    ->addTranslation('de', 'given streamURL is invalid', 'streamURL ist ungültig - HTTP Status')
+    ->addTranslation('de', 'jumpToDataProvider :dataProvider', 'Objekt beim Datengeber (:dataProvider) anzeigen');

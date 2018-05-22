@@ -63,4 +63,5 @@ $Translate
     ->addTranslation('en', 'Wrong identifier', 'API response contains wrong identifier')
     ->addTranslation('en', 'urls empty', 'API response contains empty streamURL and empty downloadURL')
     ->addTranslation('en', 'Property replicationsourceid is empty', 'Object property replicationsourceid is not set')
-    ->addTranslation('en', 'given streamURL is invalid', 'streamURL is invalid - HTTP status');
+    ->addTranslation('en', 'given streamURL is invalid', 'streamURL is invalid - HTTP status')
+    ->addTranslation('en', 'jumpToDataProvider :dataProvider', 'Jump to data provider (:dataProvider)');

@@ -92,7 +92,7 @@ a.edusharing_rendering_content {
 	font-weight: 600;
 }
 
-.edusharing_rendering_content, video, audio, #edusharing_htmlobject {
+.edusharing_rendering_content, video, audio, #edusharing_htmlobject, .edusharing_rendering_content_preview {
 	-webkit-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 	-moz-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 	box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
@@ -109,7 +109,7 @@ a.edusharing_rendering_content {
 img.edusharing_rendering_content_preview {
 	display: block;
 	margin: 20px auto;
-	max-width: 100%;
+	max-width: 400px;
 	max-height: 400px;
 }
 

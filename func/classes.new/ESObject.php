@@ -181,6 +181,12 @@ class ESObject {
 
     /**
      *
+     * @var string
+     */
+    public $sequenceHandler = null;
+
+    /**
+     *
      * @param string $ObjectId The initial object-id (from SpacesStore)
      */
     public function __construct($ObjectId, $ObjectVersion = null) {
@@ -667,6 +673,8 @@ class ESObject {
         	$this -> ESOBJECT_LICENSE = new ESRender_License($this);
         
         $this -> metadatahandler = new ESRender_Metadata_Handler($this);
+
+        $this -> sequenceHandler = new ESRender_Sequence_Handler($this);
 
         return true;
     }

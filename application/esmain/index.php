@@ -357,51 +357,66 @@ try {
         $Plugin -> preSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
     }    
 
+    $skipSslVerification = false;
+
+    if(!empty($req_data['token'])) {
+    	if($req_data['token'] == $_SESSION['esrender']['token'] || empty($_SESSION['esrender']['token'])) {
+        	$skipSslVerification = true;
+    	} else {
+    		$Logger->error('Token not valid!');
+    	}
+    }
+
     try {
     	$token = md5(uniqid());
     } catch (Exception $e) {
     	throw new Exception('Cannot generate token.');
     }
 
-    $req_data['timestamp'] = mc_Request::fetch('ts', 'CHAR');
-    if (empty($req_data['timestamp'])) {
-        $Logger -> error('Missing request-param "timestamp".');
-        throw new ESRender_Exception_MissingRequestParam('timestamp');
-    }
 
-    if(empty($_GET['sig'])) {
-        $Logger -> error('Missing request-param "sig".');
-        throw new ESRender_Exception_MissingRequestParam('sig');
-    }
+    if(!$skipSslVerification) {
 
-    try {
-        $pubkeyid = openssl_get_publickey($remote_rep -> prop_array['public_key']);
-        $signature = rawurldecode($_GET['sig']);
-        $dataSsl = urldecode($req_data['rep_id']);
-        $signature = base64_decode($signature);
-        $ok = openssl_verify(urldecode($req_data['rep_id']) . $req_data['obj_id']  . $req_data['timestamp'], $signature, $pubkeyid);
-    } catch (Exception $e) {
-        throw new ESRender_Exception_SslVerification('SSL signature check failed');
-    }
+        $req_data['timestamp'] = mc_Request::fetch('ts', 'CHAR');
+        if (empty($req_data['timestamp'])) {
+            $Logger -> error('Missing request-param "timestamp".');
+            throw new ESRender_Exception_MissingRequestParam('timestamp');
+        }
 
-    if ($ok != 1) {
-        throw new ESRender_Exception_SslVerification('SSL signature check failed');
-    }
+        if(empty($_GET['sig'])) {
+            $Logger -> error('Missing request-param "sig".');
+            throw new ESRender_Exception_MissingRequestParam('sig');
+        }
 
-    $now = microtime(true) * 1000;
+        try {
+            $pubkeyid = openssl_get_publickey($remote_rep -> prop_array['public_key']);
+            $signature = rawurldecode($_GET['sig']);
+            $dataSsl = urldecode($req_data['rep_id']);
+            $signature = base64_decode($signature);
+            $ok = openssl_verify(urldecode($req_data['rep_id']) . $req_data['obj_id']  . $req_data['timestamp'], $signature, $pubkeyid);
+        } catch (Exception $e) {
+            throw new ESRender_Exception_SslVerification('SSL signature check failed');
+        }
 
-    $message_send_offset_ms = 10000;
-    if(isset($remote_rep -> prop_array['message_send_offset_ms']))
-        $message_send_offset_ms = $remote_rep -> prop_array['message_send_offset_ms'];
-    if($now + $message_send_offset_ms < $req_data['timestamp']) {
-        throw new ESRender_Exception_SslVerification('Timestamp sent bigger than current timestamp');
-    }
+        if ($ok != 1) {
+            throw new ESRender_Exception_SslVerification('SSL signature check failed');
+        }
 
-    $message_offset_ms = 10000;
-    if(isset($remote_rep -> prop_array['message_offset_ms']))
-        $message_offset_ms = $remote_rep -> prop_array['message_offset_ms'];
-    if($now - $req_data['timestamp'] > $message_offset_ms) {
-        throw new ESRender_Exception_SslVerification('Token expired');
+        $now = microtime(true) * 1000;
+
+        $message_send_offset_ms = 10000;
+        if(isset($remote_rep -> prop_array['message_send_offset_ms']))
+            $message_send_offset_ms = $remote_rep -> prop_array['message_send_offset_ms'];
+        if($now + $message_send_offset_ms < $req_data['timestamp']) {
+            throw new ESRender_Exception_SslVerification('Timestamp sent bigger than current timestamp');
+        }
+
+        $message_offset_ms = 10000;
+        if(isset($remote_rep -> prop_array['message_offset_ms']))
+            $message_offset_ms = $remote_rep -> prop_array['message_offset_ms'];
+        if($now - $req_data['timestamp'] > $message_offset_ms) {
+            throw new ESRender_Exception_SslVerification('Token expired');
+        }
+
     }
 
     foreach ($Plugins as $name => $Plugin) {
@@ -420,7 +435,8 @@ try {
         $remote_rep->prop_array['renderinfowebservice_wsdl'],
         $SoapClientParams); 
 
-    try {
+    try
+    {
         $timestamp = round(microtime(true) * 1000);
         $signData = $hc->prop_array['appid'] . $timestamp . $req_data['obj_id'];
         $priv_key = $hc -> prop_array['private_key'];

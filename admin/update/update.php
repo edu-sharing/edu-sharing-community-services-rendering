@@ -316,9 +316,7 @@ function run($installedVersion) {
             $stmt->bindValue ( ':modname', 'lti' );
             $stmt->bindValue ( ':moddesc', 'lti' );
             $stmt->execute ();
-        }
 
-        if(version_compare ( '4.2.0', $installedVersion ) > 0) {
             @rrmdir ( MC_ROOT_PATH . 'func/extern/pclZip' );
 
             $fileContents = file_get_contents ( MC_ROOT_PATH . 'conf/defines.conf.php' );

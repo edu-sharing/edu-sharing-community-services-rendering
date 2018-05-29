@@ -154,7 +154,7 @@ extends ESRender_Module_ContentNode_Abstract {
 
 		$Template = $this -> getTemplate();
 		$data = array();
-		$data['url'] = 'asdadada';/*$this-> getForwardUrl($requestData)*/
+		$data['url'] = $this-> getForwardUrl($requestData);
         $data['title'] = $this->_ESOBJECT->getTitle();
         if(ENABLE_METADATA_INLINE_RENDERING) {
             $data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');

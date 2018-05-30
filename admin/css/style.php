@@ -1,14 +1,37 @@
-/* http://meyerweb.com/eric/tools/css/reset/
- v2.0 | 20110126
- License: none (public domain)
- */
+<?php
+header("Content-type: text/css");
+global $MC_URL?>
 
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
 	font-size: 100%;
 }
 
-@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 400;
+	src: url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-regular.eot'); /* IE9 Compat Modes */
+	src: local('Open Sans Regular'), local('OpenSans-Regular'),
+	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-regular.woff') format('woff'), /* Modern Browsers */
+	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-regular.svg#OpenSans') format('svg'); /* Legacy iOS */
+}
+/* open-sans-600 - latin */
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 600;
+	src: url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-600.eot'); /* IE9 Compat Modes */
+	src: local('Open Sans SemiBold'), local('OpenSans-SemiBold'),
+	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-600.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-600.woff2') format('woff2'), /* Super Modern Browsers */
+	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-600.woff') format('woff'), /* Modern Browsers */
+	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-600.ttf') format('truetype'), /* Safari, Android, iOS */
+	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-600.svg#OpenSans') format('svg'); /* Legacy iOS */
+}
 body {
 	padding: 40px;
 	font-family: 'Open Sans', sans-serif;

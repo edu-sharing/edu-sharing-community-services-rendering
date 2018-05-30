@@ -81,25 +81,27 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      * @return array
      */
     protected function prepareRenderData(array $requestData) {
-        $license = '';
-        if ($this -> _ESOBJECT -> getLicense()) {
-            $license = $this -> _ESOBJECT -> getLicense() -> renderFooter($this -> getTemplate());
-        }
-
         $data = array('title' => $this -> _ESOBJECT -> getTitle(),
-                    'license' => $license,
                     'width' => $requestData['width'],
                     'height' => $requestData['height'],
                     'backLink' => $requestData['backLink']);
 
-        if(1 || isset(Config::get('renderInfoLMSReturn') -> childs)) {
-            $data['sequence'] = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline');
+
+        $license = '';
+        if($this -> _ESOBJECT -> getLicense()) {
+            $license = $this -> _ESOBJECT -> getLicense() -> renderFooter($this -> getTemplate());
         }
 
+        $sequence = '';
+        if($this -> _ESOBJECT -> sequenceHandler -> isSequence())
+            $sequence = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->renderUrl($requestData));
+
+        $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING) {
 	       	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
-			$data['metadata'] = $metadata;
         }
+
+        $data['footer'] = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));
         
         return $data;
     }
@@ -447,5 +449,63 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
     public function getRequestingDevice() {
         return $this -> requestingDevice;
     }
+
+    protected function renderUrl(array $requestData)
+    {
+
+        $url = MC_URL . '/application/esmain?';
+
+        if ( ! $requestData['object_id'] )
+        {
+            throw new ESRender_Exception_MissingRequestParam('obj_id');
+        }
+
+        $url .= 'obj_id=' . urlencode($requestData['object_id']);
+
+        if ( ! $requestData['app_id'] )
+        {
+            throw new ESRender_Exception_MissingRequestParam('app_id');
+        }
+
+        $url .= '&app_id=' . urlencode($requestData['app_id']);
+
+        if ( ! $requestData['rep_id'] )
+        {
+            throw new ESRender_Exception_MissingRequestParam('rep_id');
+        }
+
+        $url .= '&rep_id=' . urlencode($requestData['rep_id']);
+
+        if ( ! $requestData['session'] )
+        {
+            // throw new ESRender_Exception_MissingRequestParam('session');
+        }
+
+        $url .= '&session=' . urlencode($requestData['session']);
+
+        if ( $requestData['course_id'] )
+        {
+            $url .= '&course_id=' . urlencode($requestData['course_id']);
+        }
+
+        if ( $requestData['resource_id'] )
+        {
+            $url .= '&resource_id=' . urlencode($requestData['resource_id']);
+        }
+
+        if ( $requestData['usernameEncrypted'] )
+        {
+            $url .= '&u=' . urlencode($requestData['usernameEncrypted']);
+        }
+
+        $url .= '&token=' . $requestData['token'];
+
+        $redirector = '{{{LMS_INLINE_HELPER_SCRIPT}}}&';
+
+        $url = $redirector . 'url=' . urlencode($url);
+
+        return $url;
+    }
+
 
 }

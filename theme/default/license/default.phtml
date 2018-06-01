@@ -5,12 +5,12 @@ global $Locale, $Translate;
 $msg = array();
 $msg['customLicense'] = new Phools_Message_Default('custom license');
 
-$licenceContent = '<a class="license_permalink" href="'.$license_permalink.'?closeOnBack=true" target="_blank" title="'.htmlentities($license_filename).'">'
+$licenceContent = '<a class="license_permalink" href="'.$license_permalink.'?closeOnBack=true" target="_blank" title="'.htmlentities($license_filename).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
                     . htmlentities($license_filename)
-                    . '</a>'
+                    . '</es:title></a>'
                     . '&nbsp;';
 if(!empty($license_author)) {
-    $licenceContent .= htmlentities($this->translate('authored_by'), ENT_COMPAT, 'utf-8')
+    $licenceContent .= '<br/>' . htmlentities($this->translate('authored_by'), ENT_COMPAT, 'utf-8')
                     . '&nbsp;'
                     . '<span class="author">'
                     . htmlentities($license_author, ENT_QUOTES, 'utf-8') . '</span>'

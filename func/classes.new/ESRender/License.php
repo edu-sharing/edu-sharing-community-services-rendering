@@ -15,12 +15,12 @@ class ESRender_License {
 		$this -> filename = $esobject -> getTitle();
 	}
 
-	public function renderFooter(Phools_Template_Interface $Template) {
+	public function renderFooter(Phools_Template_Interface $Template, $url) {
 		return $Template->render('/license/default', array(
 				'license_author' => $this->author,
 				'license_icon_url' => $this->icon,
 				'license_url' => $this->url,
-				'license_permalink' => $this -> permalink,
+				'license_permalink' => $url,
 				'license_filename' => $this -> filename
 		));
 	}

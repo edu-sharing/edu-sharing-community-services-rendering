@@ -150,25 +150,10 @@ extends ESRender_Module_Base
     protected function inline(array $requestData)
     {
         $Logger = $this->getLogger();
-        
-        $data = array(
-        		'title' => $this->_ESOBJECT->getTitle(),
-            	'url' => $this->renderUrl($requestData));
-
-        if(ENABLE_METADATA_INLINE_RENDERING) {
-        	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
-        	$data['metadata'] = $metadata;
-        }
-        
-        $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
-        if(!empty($license)) {
-        	$data['license'] = $license -> renderFooter($this -> getTemplate());
-        }
-
+        $data = parent::prepareRenderData($requestData);
+        $data['url'] = $this->renderUrl($requestData);
         echo $this->getTemplate()->render('/module/default/inline', $data);
-                
         $Logger->debug('ESRender_Module_Base::inline');
-
         return true;
     }
     

@@ -14,6 +14,10 @@ global $MC_URL;?>
     url('<?php echo $MC_URL?>/vendor/fonts/materialicons/MaterialIcons-Regular.ttf') format('truetype');
 }
 
+.edusharing_rendering_content_wrapper {
+    line-height: 1.2;
+}
+
 .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;
@@ -52,7 +56,7 @@ global $MC_URL;?>
     border-left: 1px solid #cdcdcd;
     padding-left: 7px;
     cursor:pointer;
-    padding-top: 2px;
+    padding-top: 3px;
     color: #4D799A;
 
 }
@@ -117,7 +121,7 @@ global $MC_URL;?>
 }
 
 .edusharing_rendering_content_footer {
-    display:table;
+    //display:table;
     width: 100%;
     background: #f6f6f6;
     padding: 12px;
@@ -128,11 +132,11 @@ global $MC_URL;?>
 }
 
 .edusharing_rendering_content_footer_top {
-    display: table-row;
+   // display: table-row;
 }
 
 .edusharing_rendering_content_footer_bot {
-    display: table-row;
+  //  display: table-row;
 }
 
 .edusharing_rendering_content_footer_metadata {
@@ -160,6 +164,7 @@ global $MC_URL;?>
     background: #f6f6f6;
     width: calc(100% + 24px);
     margin-left: -12px;
+    border-bottom: 1px solid #4D799A;
 }
 
 .edusharing_rendering_content_footer_sequence ul li{
@@ -195,4 +200,12 @@ global $MC_URL;?>
     display: inline-block;
     width: 100%;
     margin-top: 8px;
+}
+
+.edusharing_rendering_content_footer_top .license_permalink, .edusharing_rendering_content_footer_top .license {
+    margin-right: 40px;
+}
+
+video, audio {
+    margin-bottom: -6px;
 }

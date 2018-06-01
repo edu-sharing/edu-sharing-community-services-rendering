@@ -81,15 +81,25 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      * @return array
      */
     protected function prepareRenderData(array $requestData) {
+        global $Locale, $Translate;
+        $msg = array();
+        $msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
+
         $data = array('title' => $this -> _ESOBJECT -> getTitle(),
                     'width' => $requestData['width'],
                     'height' => $requestData['height'],
                     'backLink' => $requestData['backLink']);
 
-
-        $license = '';
-        if($this -> _ESOBJECT -> getLicense()) {
-            $license = $this -> _ESOBJECT -> getLicense() -> renderFooter($this -> getTemplate());
+        if(false === Config::get('renderInfoLMSReturn')->hasContentLicense) {
+            $license = '<span class="edusharing_warning">' . htmlentities($msg['hasNoContentLicense']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8') . '</span>';
+        } else {
+            if($this -> _ESOBJECT -> getLicense()) {
+                $license = $this -> _ESOBJECT -> getLicense() -> renderFooter($this -> getTemplate(), $this->renderUrl($requestData));
+            } else {
+                $license = '<a class="license_permalink" href="'.$this->renderUrl($requestData).'?closeOnBack=true" target="_blank" title="'.htmlentities($this->_ESOBJECT->getTitle()).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
+                    . htmlentities($this->_ESOBJECT->getTitle())
+                    . '</es:title></a>';
+            }
         }
 
         $sequence = '';
@@ -102,7 +112,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         }
 
         $data['footer'] = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));
-        
+
         return $data;
     }
     

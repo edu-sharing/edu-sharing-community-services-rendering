@@ -69,4 +69,6 @@ $Translate
     ->addTranslation('de', 'urls empty', 'Antwort der API enthält leere streamURL und leere downloadURL')
     ->addTranslation('de', 'Property replicationsourceid is empty', 'Die Eigenschaft replicationsourceid des Objekts ist leer')
     ->addTranslation('de', 'given streamURL is invalid', 'streamURL ist ungültig - HTTP Status')
-    ->addTranslation('de', 'jumpToDataProvider :dataProvider', 'Objekt beim Datengeber (:dataProvider) anzeigen');
+    ->addTranslation('de', 'jumpToDataProvider :dataProvider', 'Objekt beim Datengeber (:dataProvider) anzeigen')
+    ->addTranslation('de', 'seqenceChildren :count', ':count weitere Materialien gehören dazu')
+    ->addTranslation('de', 'seqenceViewChildren', 'Alle ansehen und herunterladen');

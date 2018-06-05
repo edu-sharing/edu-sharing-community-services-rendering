@@ -64,4 +64,6 @@ $Translate
     ->addTranslation('en', 'urls empty', 'API response contains empty streamURL and empty downloadURL')
     ->addTranslation('en', 'Property replicationsourceid is empty', 'Object property replicationsourceid is not set')
     ->addTranslation('en', 'given streamURL is invalid', 'streamURL is invalid - HTTP status')
-    ->addTranslation('en', 'jumpToDataProvider :dataProvider', 'Jump to data provider (:dataProvider)');
+    ->addTranslation('en', 'jumpToDataProvider :dataProvider', 'Jump to data provider (:dataProvider)')
+    ->addTranslation('en', 'seqenceChildren :count', ':count more materials belong to this')
+    ->addTranslation('en', 'seqenceViewChildren', 'View and download all');

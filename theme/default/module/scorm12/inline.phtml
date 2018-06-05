@@ -6,12 +6,7 @@ $licid = uniqid();
     <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
     <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
 </style>
-<span>
-<a href="<?php echo htmlspecialchars($url, ENT_COMPAT, 'utf-8') ?>" target="_blank"><?php echo htmlspecialchars($title, ENT_COMPAT, 'utf-8') ?></a>
-    <?php if(!empty($metadata) || !empty($license)) {
-        echo '&nbsp;(<span style="display: inline-block">'.$license.'</span>';
-        if(!empty($metadata) && !empty($license))
-            echo '&nbsp|&nbsp';
-        echo '<span style="display: inline-block">'.$metadata.'</span>)';
-    }?>
-</span>
+<div>
+    <a href="<?php echo htmlspecialchars($url, ENT_COMPAT, 'utf-8') ?>" target="_blank"><?php echo htmlspecialchars($title, ENT_COMPAT, 'utf-8') ?></a>
+    <?php echo $footer?>
+</div>

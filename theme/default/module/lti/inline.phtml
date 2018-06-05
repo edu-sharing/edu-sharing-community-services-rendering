@@ -8,7 +8,7 @@ $msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
     <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
     <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
 </style>
-<span>
+<div>
 
     <?php
     if(false === Config::get('renderInfoLMSReturn')->hasContentLicense) {
@@ -18,10 +18,5 @@ $msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
             '<a href="#" onclick="document.getElementById(\'ltiLaunchForm_'.$objectId.'\').target=\'_blank\';document.getElementById(\'ltiLaunchForm_'.$objectId.'\').submit(); return false;" target="_blank">TEST ABSPRUNG<es:title xmlns:es="http://edu-sharing.net/object">'.$title.'</es:title></a>';
     }
     ?>
-    <?php if(!empty($metadata) || !empty($license)) {
-        echo '&nbsp;(<span style="display: inline-block">'.$license.'</span>';
-        if(!empty($metadata) && !empty($license))
-            echo '&nbsp|&nbsp';
-        echo '<span style="display: inline-block">'.$metadata.'</span>)';
-    }?>
-</span>
+    <?php $footer?>
+</div>

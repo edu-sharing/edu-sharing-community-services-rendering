@@ -1,5 +1,5 @@
 <?php 
-global $Locale, $Translate, $MC_URL;
+global $Locale, $Translate;
 $msg = array();
 $msg['showInformation'] = new Phools_Message_Default('showInformation');
 $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
@@ -18,7 +18,7 @@ $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
 	<?php echo $metadata; ?>
 </div>
 
-<script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
 <script>
 	get_resource = function(authstring) {

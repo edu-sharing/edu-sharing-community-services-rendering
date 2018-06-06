@@ -47,6 +47,10 @@ global $MC_URL;?>
     vertical-align: middle !important;
 }
 
+.edusharing_metadata_wrapper {
+    margin-left: 10px;
+}
+
 .edusharing_metadata_toggle_button {
     width: 30px; height: 30px; display: inline-block;
     border-left: 1px solid #cdcdcd;
@@ -60,7 +64,8 @@ global $MC_URL;?>
 .edusharing_metadata {
     position: absolute;
     margin-top: 4px;
-    margin-left: -33px;
+    margin-left: -295px;
+    width: 350px;
     padding: 11px 0px;
     z-index: 50;
 }
@@ -73,7 +78,19 @@ global $MC_URL;?>
     -moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
     box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
     max-height:500px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    font-size: .9em;
+    line-height: 1;
+}
+
+.edusharing_metadata_inner img {
+    height: 16px;
+}
+
+.edusharing_metadata_inner .mdsGroup .mdsCaption {
+    font-size: 1.5em;
+    height: auto;
+    padding-bottom: 10px;
 }
 
 .edusharing_metadata:before {
@@ -83,7 +100,7 @@ global $MC_URL;?>
     top: -4px;
     content: "";
     position: absolute;
-    left: 10%;
+    right: 23px;
     width: 0;
     height: 0;
 }
@@ -95,10 +112,12 @@ global $MC_URL;?>
     top: -3px;
     content: "";
     position: absolute;
-    left: 10%;
+    right: 23px;
     width: 0;
     height: 0;
 }
+
+
 
 .mdsGroup {
     padding: 0;
@@ -207,4 +226,7 @@ global $MC_URL;?>
 video, audio {
     margin-bottom: -6px;
     border: 0;
+}
+
+.edu_sharing_filename {
 }

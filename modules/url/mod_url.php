@@ -54,38 +54,41 @@ extends ESRender_Module_NonContentNode_Abstract {
         if (!$this -> validate()) {
             return false;
         }
-        
-        if(ENABLE_METADATA_INLINE_RENDERING) {
-	        $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
-	        $data['metadata'] = $metadata;
-        }
 
         $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
         if(!empty($license)) {
-            $license = $license -> renderFooter($this -> getTemplate());
+            $license = $license -> renderFooter($this -> getTemplate(), $this->renderUrl($requestData));
         }
 
-        if(Config::get('urlEmbedding')) {
-            $embedding = Config::get('urlEmbedding') . $license . $metadata;;
-        } else if ($this -> detectVideo()) {
-            $embedding = $this -> getVideoEmbedding($requestData['width']) . $license . $metadata;
-        } else if($this -> detectAudio()) {
-            $embedding = $this->getAudioEmbedding() . $license . $metadata;
-        } else if($this -> detectImage()) {
-            $embedding = $this -> getImageEmbedding() . $license . $metadata;
-        } else {
-            $embedding = $this -> getLinkEmbedding();
-            if(!empty($license) || !empty($metadata)) {
-            	$embedding .= ' (';
-            	$embedding .= '<span style="display: inline-block">' . utf8_encode($license) . '</span>';
-            	if(!empty($license) && !empty($metadata))
-            		$embedding .= '&nbsp|&nbsp';
-            	$embedding .= '<span style="display: inline-block">' . $metadata . '</span>';
-            	$embedding .= ')';
-        
-            }
+        $sequence = '';
+        if($this -> _ESOBJECT -> sequenceHandler -> isSequence())
+            $sequence = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->renderUrl($requestData));
+
+        $metadata = '';
+        if(ENABLE_METADATA_INLINE_RENDERING) {
+            $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
         }
-        
+
+        $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));
+
+        if(Config::get('urlEmbedding') || Config::get('urlEmbeddingLicense')) {
+            $embedding = $this->getTemplate()->render('/footer/inline', array('license' => Config::get('urlEmbeddingLicense'), 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle(), 'url' => $this->getUrl()));
+            if(Config::get('urlEmbedding'))
+                $embedding = '<div style="display:inline-block">' . Config::get('urlEmbedding') . $embedding . '</div>';
+        } else if ($this -> detectVideo()) {
+            $embedding = $this -> getVideoEmbedding($requestData['width'], $footer);
+        } else if($this -> detectAudio()) {
+            $embedding = $this->getAudioEmbedding($footer);
+        } else if($this -> detectImage()) {
+            $embedding = $this -> getImageEmbedding($footer);
+        } else {
+            $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
+            if(!empty($license)) {
+                $license = $license -> renderFooter($this -> getTemplate(), $this->getUrl());
+            }
+            $embedding = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle(), 'url' => $this->getUrl()));
+        }
+
         $data = array('embedding' => $embedding);
                 
         $Template = $this -> getTemplate();
@@ -112,17 +115,17 @@ extends ESRender_Module_NonContentNode_Abstract {
         return $htm;         
     }
     
-    protected function getAudioEmbedding() {
-    	return '<audio style="max-width:100%" src="'.$this -> getUrl().'" type="'. $this->_ESOBJECT->getMimeType() .'" controls="controls" oncontextmenu="return false;"></audio>
-        		<p class="caption"><es:title></es:title></p>';
+    protected function getAudioEmbedding($footer = '') {
+    	return '<div><audio style="max-width:100%" src="'.$this -> getUrl().'" type="'. $this->_ESOBJECT->getMimeType() .'" controls="controls" oncontextmenu="return false;"></audio>
+        		'.$footer.'</div>';
     }
 
-    protected function getImageEmbedding() {
-        return '<img title="'.$this->_ESOBJECT->getTitle().'" alt="'.$this->_ESOBJECT->getTitle().'" src="'.$this -> getUrl().'" style="max-width: 100%">
-        		<p class="caption"><es:title></es:title></p>';
+    protected function getImageEmbedding($footer) {
+        return '<div><img title="'.$this->_ESOBJECT->getTitle().'" alt="'.$this->_ESOBJECT->getTitle().'" src="'.$this -> getUrl().'" style="max-width: 100%">
+        		'.$footer.'</div>';
     }
 
-    protected function getVideoEmbedding($width = NULL) {
+    protected function getVideoEmbedding($width = NULL, $footer = NULL) {
 		
 		global $MC_URL;
 
@@ -141,8 +144,8 @@ extends ESRender_Module_NonContentNode_Abstract {
             			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
             				<iframe id="' . $objId . '" width="' . $width . '" height="' . $height . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
             			</div>
-            		</div>
-            		<p class="caption"><es:title></es:title></p>';
+            			'.$footer.'
+            		</div>';
          }
         else if (strpos($this -> getUrl(), VIDEO_TOKEN_YOUTUBE) !== false) {
                     $parsedUrl = parse_url($this -> getUrl());
@@ -156,8 +159,8 @@ extends ESRender_Module_NonContentNode_Abstract {
                     			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
                     				<iframe id="' . $objId . '" width="' . $width . '" height="'.$height.'" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
                     			</div>
-                    		</div>
-                    		<p class="caption"><es:title></es:title></p>';
+                    			'.$footer.'
+                    		</div>';
                 }
         else if (strpos($this -> getUrl(), VIDEO_TOKEN_VIMEO) !== false) {
             $urlArr = explode('/', $this -> getUrl());
@@ -166,8 +169,8 @@ extends ESRender_Module_NonContentNode_Abstract {
             			<div class="videoWrapperInner" style="position: relative; padding-top: 25px;">
             				<iframe id="' . $objId . '" width="'.$width.'" height="'.$height.'" src="//player.vimeo.com/video/' . $vidId . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
             			</div>
-            		</div>
-            		<p class="caption"><es:title></es:title></p>';
+            			'.$footer.'
+            		</div>';
         } else {
             $type = $this->_ESOBJECT->getMimeType();
             if(pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'mp4' || pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'webm') {
@@ -181,8 +184,8 @@ extends ESRender_Module_NonContentNode_Abstract {
                         </video>
                         <div class="playButton" id="b_'.$identifier.'"></div>
                     </div>
+                    '.$footer.'
                 </div>
-                <p class="caption"><es:title></es:title></p>
                 <style>.playButton{background: transparent url(\''.$MC_URL.'/theme/default/img/play.svg\') 50% 50% / cover no-repeat;height: 100px;position: absolute;width: 100px;margin: auto;top:0;bottom:0;right:0;left:0;}</style>
                 <script>var video_'.$identifier.' = document.getElementById(\''.$identifier.'\');
                 video_'.$identifier.'.addEventListener(\'play\',function(){video_'.$identifier.'.play();document.getElementById(\'b_'.$identifier.'\').style.display = \'none\';},false);

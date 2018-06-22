@@ -76,7 +76,7 @@ extends ESRender_Module_ContentNode_Abstract {
         }
 
         if($this->getDoctype() === DOCTYPE_TEXT) {
-            $template_data['content'] = nl2br(file_get_contents($this->getCacheFileName()));
+            $template_data['content'] = nl2br(htmlentities(file_get_contents($this->getCacheFileName())));
         }
 
         if(Config::get('showMetadata'))

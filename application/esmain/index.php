@@ -605,7 +605,7 @@ try {
     $Logger -> info('Loaded module "' . $moduleName . '".');
 
     /*For moodle/scorm*/
-    $user_email = $user_givenname = $user_surname = $user_name;
+    $user_email = $user_givenname = $user_surname = $user_id = $user_name;
 
     $instanceParams = array(
         'rep_id' => $req_data['rep_id'],

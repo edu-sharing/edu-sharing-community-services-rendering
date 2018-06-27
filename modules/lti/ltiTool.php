@@ -17,13 +17,14 @@ class ltiTool {
     }
 
     private function getLaunchForm($requestData) {
+
         $launch_data = array();
         $launch_data["roles"] = $this -> esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_roles');
         $launch_data["params"] = $this -> esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_params');
         $launch_data["lis_person_name_given"] = $requestData['user_givenname'];
         $launch_data["lis_person_name_family"] = $requestData['user_surname'];
         $launch_data["lis_person_contact_email_primary"] = $requestData['user_email'];
-        $launch_data["user_id"] = $requestData['admin'];
+        $launch_data["user_id"] = $requestData['user_id'];
         $launch_data["lti_version"] = LTI_VERSION;
         $launch_data["lti_message_type"] = LTI_MESSAGE_TYPE;
         $launch_data["oauth_callback"] = OAUTH_CALLBACK;
@@ -41,7 +42,7 @@ class ltiTool {
             array_push($launch_params, $key . "=" . rawurlencode($launch_data[$key]));
         }
 
-        $base_string = "POST&" . urlencode($this -> esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl')) . "&" . rawurlencode(implode("&", $launch_params));
+        $base_string = "POST&" . urlencode('https://aptum.net/release_5-3/lti.php?client_id=inno') . "&" . rawurlencode(implode("&", $launch_params));
         $secret = urlencode($this -> esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_secret')) . '&';
         $signature = base64_encode(hash_hmac("sha1", $base_string, $secret, true));
 
@@ -50,7 +51,7 @@ class ltiTool {
             </head>
             <body onload="document.ltiLaunchForm.submit();">
                 <form id="ltiLaunchForm_'.$this->esobject->getObjectID().'" name="ltiLaunchForm_'.$this->esobject->getObjectID().'" id="name="ltiLaunchForm_'.$this->esobject->getObjectID().'"
-                method="POST" action="' . $this -> esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl') . '" target="lti_frame_'.$this->esobject->getObjectID().'">';
+                method="POST" action="https://aptum.net/release_5-3/lti.php?client_id=inno" target="lti_frame_'.$this->esobject->getObjectID().'">';
             foreach ($launch_data as $key => $value ) {
                 $form .= '<input type="hidden" name="' . $key  . '" value="' . $value . '">';
             }

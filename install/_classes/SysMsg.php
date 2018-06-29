@@ -236,7 +236,7 @@ class SysMsg
 <HEAD>
 <TITLE></TITLE>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset={$charset}">
-<link href="../../admin/css/style.css" rel="stylesheet" type="text/css">
+<link href="../../admin/css/style.php" rel="stylesheet" type="text/css">
 </head>
 <BODY>
 MSGHEADER;

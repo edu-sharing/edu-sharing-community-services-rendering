@@ -179,7 +179,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             $identifier = uniqid();
             return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
                     <div class="videoWrapperInner" style="position: relative; padding-top: 25px; ">
-                        <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;" oncontextmenu="return false;" controlsList="nodownload">
+                        <video poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;background: transparent url(\''.$this->_ESOBJECT->getPreviewUrl().'\') 50% 50% / cover no-repeat;" oncontextmenu="return false;" controlsList="nodownload">
                             <source src="' . $this -> getUrl() . '" type="' . $type . '"></source>
                         </video>
                         <div class="playButton" id="b_'.$identifier.'"></div>

@@ -17,13 +17,14 @@ class ltiTool {
     }
 
     private function getLaunchForm($requestData) {
+
         $launch_data = array();
         $launch_data["roles"] = $this -> esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_roles');
         $launch_data["params"] = $this -> esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_params');
         $launch_data["lis_person_name_given"] = $requestData['user_givenname'];
         $launch_data["lis_person_name_family"] = $requestData['user_surname'];
         $launch_data["lis_person_contact_email_primary"] = $requestData['user_email'];
-        $launch_data["user_id"] = $requestData['admin'];
+        $launch_data["user_id"] = $requestData['user_id'];
         $launch_data["lti_version"] = LTI_VERSION;
         $launch_data["lti_message_type"] = LTI_MESSAGE_TYPE;
         $launch_data["oauth_callback"] = OAUTH_CALLBACK;

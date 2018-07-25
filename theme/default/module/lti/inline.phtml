@@ -14,8 +14,8 @@ $msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
     if(false === Config::get('renderInfoLMSReturn')->hasContentLicense) {
         echo '<span class="edusharing_warning">'.htmlentities($msg['hasNoContentLicense']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8').'</span>';
     } else {
-        echo '<div style="display:none">' . $launchForm . '</div>'.
-            '<a href="#" onclick="document.getElementById(\'ltiLaunchForm_'.$objectId.'\').target=\'_blank\';document.getElementById(\'ltiLaunchForm_'.$objectId.'\').submit(); return false;" target="_blank">LTI: <es:title xmlns:es="http://edu-sharing.net/object">'.$title.'</es:title></a>';
+        echo '<div style="display:none">' . $launchForm . '</div>'. utf8_encode($applyDataProtectionRegulationsDialog) .
+        '<a href="#" onclick="document.getElementById(\'dataProtectionRegulations_'.$objectId.'\').style.display=\'block\';return false;" target="_blank">LTI: <es:title xmlns:es="http://edu-sharing.net/object">'.$title.'</es:title></a>';
     }
     ?>
     <?php if(!empty($metadata) || !empty($license)) {

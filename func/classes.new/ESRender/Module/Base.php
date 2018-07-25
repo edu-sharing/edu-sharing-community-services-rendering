@@ -443,5 +443,4 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
     public function getRequestingDevice() {
         return $this -> requestingDevice;
     }
-
 }

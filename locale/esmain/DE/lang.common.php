@@ -69,4 +69,16 @@ $Translate
     ->addTranslation('de', 'urls empty', 'Antwort der API enthält leere streamURL und leere downloadURL')
     ->addTranslation('de', 'Property replicationsourceid is empty', 'Die Eigenschaft replicationsourceid des Objekts ist leer')
     ->addTranslation('de', 'given streamURL is invalid', 'streamURL ist ungültig - HTTP Status')
-    ->addTranslation('de', 'jumpToDataProvider :dataProvider', 'Objekt beim Datengeber (:dataProvider) anzeigen');
+    ->addTranslation('de', 'jumpToDataProvider :dataProvider', 'Objekt beim Datengeber (:dataProvider) anzeigen')
+    ->addTranslation('de', 'ltiGotoProvider', 'Direkt zum Provider gehen')
+    ->addTranslation('de', 'dataProtectionRegulations1 :providerName', 'Ja, Inhalte von :providerName anzeigen')
+    ->addTranslation('de', 'dataProtectionRegulations2 :providerName', 'Sie sind dabei Inhalte von :providerName zu laden und anzuzeigen. Dabei werden unter Umständen persönliche Daten an :providerName übermittelt und dort verarbeitet.')
+    ->addTranslation('de', 'dataProtectionRegulations1default', 'Ja, Inhalte von externer Quelle anzeigen')
+    ->addTranslation('de', 'dataProtectionRegulations2default', 'Sie sind dabei Inhalte von einer externen Quelle zu laden und anzuzeigen. Dabei werden unter Umständen persönliche Daten übermittelt und dort verarbeitet.')
+    ->addTranslation('de', 'dataProtectionRegulationsHintDefault', 'Weitere Informationen finden Sie in den Datenschutzhinweisen des Anbieters.')
+    ->addTranslation('de', 'dataProtectionRegulations3', 'Weitere Informationen finden Sie hier:')
+    ->addTranslation('de', 'dataProtectionRegulations4', 'Zustimmen und fortfahren')
+    ->addTranslation('de', 'dataProtectionRegulations', 'Datenschutzbestimmungen')
+    ->addTranslation('de', 'abort', 'Abbrechen')
+    ->addTranslation('de', 'of', 'von');
+

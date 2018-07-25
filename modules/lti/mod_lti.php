@@ -46,6 +46,4 @@ class mod_lti extends ESRender_Module_NonContentNode_Abstract {
     protected function inline(array $requestData) {
         return $this -> tool -> inline($requestData);
     }
-
-
 }

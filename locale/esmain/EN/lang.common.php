@@ -65,5 +65,14 @@ $Translate
     ->addTranslation('en', 'Property replicationsourceid is empty', 'Object property replicationsourceid is not set')
     ->addTranslation('en', 'given streamURL is invalid', 'streamURL is invalid - HTTP status')
     ->addTranslation('en', 'jumpToDataProvider :dataProvider', 'Jump to data provider (:dataProvider)')
-    ->addTranslation('en', 'seqenceChildren :count', ':count more materials belong to this')
-    ->addTranslation('en', 'seqenceViewChildren', 'View and download all');
+    ->addTranslation('en', 'ltiGotoProvider', 'Jump to provider')
+    ->addTranslation('en', 'dataProtectionRegulations1 :providerName', 'Yes, show contents of :providerName.')
+    ->addTranslation('en', 'dataProtectionRegulations2 :providerName', 'You\'re about to load and show content of :providerName. Personal data could be exchanged with :providerName and processed there.')
+    ->addTranslation('de', 'dataProtectionRegulations1default', 'Yes, show content from external source')
+    ->addTranslation('de', 'dataProtectionRegulations2default', 'You\'re about to load and show content of an external source. Personal data could be exchanged with :providerName and processed there.')
+    ->addTranslation('de', 'dataProtectionRegulationsHintDefault', 'Further information can be found in the privacy policy of the provider.')
+    ->addTranslation('en', 'dataProtectionRegulations3', 'Find further information here:')
+    ->addTranslation('de', 'dataProtectionRegulations4', 'Agree and continue')
+    ->addTranslation('en', 'dataProtectionRegulations', 'Privacy policy')
+    ->addTranslation('en', 'abort', 'Abort')
+    ->addTranslation('en', 'of', 'of');

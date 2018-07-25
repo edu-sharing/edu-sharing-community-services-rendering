@@ -335,7 +335,6 @@ try {
 
     $Logger -> debug('Successfully loaded home repository by id "' . $homeRepId . '".');
 
-
     $user_name = '';
     $privateKey = openssl_pkey_get_private($hc -> prop_array['private_key']);
     $decryptStatus = openssl_private_decrypt ( base64_decode($req_data['username']), $user_name, $privateKey);

@@ -124,14 +124,14 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function getVideoEmbedding($width = NULL) {
 		
-		global $MC_URL;
+		global $MC_URL, $Locale;
 
         if(empty($width)) {
             $width = 800;
         }
         //16:9
         $height = $width * 0.5625;
-        
+        $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
 
         $objId = $this -> _ESOBJECT -> getObjectID();
         //wrappers needed to handle max width
@@ -139,32 +139,35 @@ extends ESRender_Module_NonContentNode_Abstract {
             $vidId = $this->_ESOBJECT->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/1.0}remotenodeid');
             return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
             			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
-            				<iframe id="' . $objId . '" width="' . $width . '" height="' . $height . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+			                '.$dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'YOUTUBE').'
+            				<iframe style="none" id="' . $objId . '" width="' . $width . '" height="' . $height . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
             			</div>
             		</div>
             		<p class="caption"><es:title></es:title></p>';
          }
         else if (strpos($this -> getUrl(), VIDEO_TOKEN_YOUTUBE) !== false) {
-                    $parsedUrl = parse_url($this -> getUrl());
-                    $paramsArr = explode('&', $parsedUrl['query']);
-                    foreach ($paramsArr as $param) {
-                        $item = explode('=', $param);
-                        $params[$item[0]] = $item[1];
-                    }
-                    $vidId = $params['v'];
-                    return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
-                    			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
-                    				<iframe id="' . $objId . '" width="' . $width . '" height="'.$height.'" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
-                    			</div>
-                    		</div>
-                    		<p class="caption"><es:title></es:title></p>';
-                }
+            $parsedUrl = parse_url($this -> getUrl());
+            $paramsArr = explode('&', $parsedUrl['query']);
+            foreach ($paramsArr as $param) {
+                $item = explode('=', $param);
+                $params[$item[0]] = $item[1];
+            }
+            $vidId = $params['v'];
+            return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
+                        <div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+                           '.$dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'YOUTUBE').'
+                            <iframe style="display:none" id="' . $objId . '" width="' . $width . '" height="'.$height.'" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+                        </div>
+                    </div>
+                    <p class="caption"><es:title></es:title></p>';
+        }
         else if (strpos($this -> getUrl(), VIDEO_TOKEN_VIMEO) !== false) {
             $urlArr = explode('/', $this -> getUrl());
             $vidId = end($urlArr);
             return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-            			<div class="videoWrapperInner" style="position: relative; padding-top: 25px;">
-            				<iframe id="' . $objId . '" width="'.$width.'" height="'.$height.'" src="//player.vimeo.com/video/' . $vidId . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+            			    '.$dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Vimeo', 'https://help.vimeo.com/hc/de/sections/203915088-Datenschutz', 'VIMEO').'
+            				<iframe style="display:none" id="' . $objId . '" width="'.$width.'" height="'.$height.'" data-src="//player.vimeo.com/video/' . $vidId . '" src="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
             			</div>
             		</div>
             		<p class="caption"><es:title></es:title></p>';
@@ -175,21 +178,14 @@ extends ESRender_Module_NonContentNode_Abstract {
             }
             $identifier = uniqid();
             return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-                    <div class="videoWrapperInner" style="position: relative; padding-top: 25px; ">
-                        <video poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;background: transparent url(\''.$this->_ESOBJECT->getPreviewUrl().'\') 50% 50% / cover no-repeat;" oncontextmenu="return false;" controlsList="nodownload">
+                        '.$dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, '', '', 'VIDEO_DEFAULT').'
+                    <div id="videoWrapperInner_'.$objId.'" class="videoWrapperInner" style="display: none;position: relative; padding-top: 25px; ">
+                        <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;background: transparent url(\''.$this->_ESOBJECT->getPreviewUrl().'\') 50% 50% / cover no-repeat;" oncontextmenu="return false;" controlsList="nodownload">
                             <source src="' . $this -> getUrl() . '" type="' . $type . '"></source>
                         </video>
-                        <div class="playButton" id="b_'.$identifier.'"></div>
                     </div>
                 </div>
-                <p class="caption"><es:title></es:title></p>
-                <style>.playButton{background: transparent url(\''.$MC_URL.'/theme/default/img/play.svg\') 50% 50% / cover no-repeat;height: 100px;position: absolute;width: 100px;margin: auto;top:0;bottom:0;right:0;left:0;}</style>
-                <script>var video_'.$identifier.' = document.getElementById(\''.$identifier.'\');
-                video_'.$identifier.'.addEventListener(\'play\',function(){video_'.$identifier.'.play();document.getElementById(\'b_'.$identifier.'\').style.display = \'none\';},false);
-                video_'.$identifier.'.addEventListener(\'ended\',function(){document.getElementById(\'b_'.$identifier.'\').style.display = \'block\';},false);
-                video_'.$identifier.'.addEventListener(\'pause\',function(){document.getElementById(\'b_'.$identifier.'\').style.display = \'block\';},false);
-                b_'.$identifier.'.onclick = function(){video_'.$identifier.'.click();};
-                video_'.$identifier.'.onclick = function(){if (video_'.$identifier.'.paused){video_'.$identifier.'.play();}else{video_'.$identifier.'.pause();}return false;};</script>';
+                <p class="caption"><es:title></es:title></p>';
         }
     }
 

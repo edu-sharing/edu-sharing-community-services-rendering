@@ -99,4 +99,27 @@ padding: 0;
 
 .mdsGroup:first-child {
 margin-top: -30px;
-}}
+}
+
+.dataProtectionRegulations, .dataProtectionRegulationsDialog {
+background: #fff;
+padding: 20px;
+border-radius: 5px;
+-webkit-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
+-moz-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
+box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
+text-align: center;
+background: #f6f6f6;
+margin: auto;
+border: 0;
+}
+
+.dataProtectionRegulationsHeading {
+font-size: 1.8em;
+}
+
+a.edusharing_rendering_content {
+    margin-top: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+}

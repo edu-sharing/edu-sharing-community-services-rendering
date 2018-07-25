@@ -180,7 +180,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
                         '.$dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, '', '', 'VIDEO_DEFAULT').'
                     <div id="videoWrapperInner_'.$objId.'" class="videoWrapperInner" style="display: none;position: relative; padding-top: 25px; ">
-                        <video poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;background: transparent url(\''.$this->_ESOBJECT->getPreviewUrl().'\') 50% 50% / cover no-repeat;" oncontextmenu="return false;" controlsList="nodownload">
+                        <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;background: transparent url(\''.$this->_ESOBJECT->getPreviewUrl().'\') 50% 50% / cover no-repeat;" oncontextmenu="return false;" controlsList="nodownload">
                             <source src="' . $this -> getUrl() . '" type="' . $type . '"></source>
                         </video>
                     </div>

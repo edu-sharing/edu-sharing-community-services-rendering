@@ -17,13 +17,14 @@ class ltiTool {
     }
 
     private function getLaunchForm($requestData) {
+
         $launch_data = array();
         $launch_data["roles"] = $this -> esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_roles');
         $launch_data["params"] = $this -> esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_params');
         $launch_data["lis_person_name_given"] = $requestData['user_givenname'];
         $launch_data["lis_person_name_family"] = $requestData['user_surname'];
         $launch_data["lis_person_contact_email_primary"] = $requestData['user_email'];
-        $launch_data["user_id"] = $requestData['admin'];
+        $launch_data["user_id"] = $requestData['user_id'];
         $launch_data["lti_version"] = LTI_VERSION;
         $launch_data["lti_message_type"] = LTI_MESSAGE_TYPE;
         $launch_data["oauth_callback"] = OAUTH_CALLBACK;
@@ -66,15 +67,15 @@ class ltiTool {
             $metadata = $this -> esobject -> metadatahandler -> render($this -> template, '/metadata/inline');
             $template_data['metadata'] = $metadata;
         }
-
         $license = $this->esobject->ESOBJECT_LICENSE;
         if(!empty($license)) {
             $template_data['license'] = $license -> renderFooter($this -> template);
         }
-
         $template_data['title'] = $this -> esobject -> getTitle();
         $template_data['launchForm'] = $this->getLaunchForm($requestData);
         $template_data['objectId'] = $this->esobject->getObjectID();
+        $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
+        $template_data['applyDataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($template_data['objectId'], '', '', 'LTI_INLINE');
         echo $this -> template -> render('/module/lti/inline', $template_data);
         return true;
     }
@@ -85,6 +86,8 @@ class ltiTool {
         $template_data['title'] = $this->esobject->getTitle();
         $template_data['launchForm'] = $this->getLaunchForm($requestData);
         $template_data['objectId'] = $this->esobject->getObjectID();
+        $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
+        $template_data['applyDataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler -> getApplyDataProtectionRegulationsDialog($template_data['objectId'], '', '', 'LTI_DYNAMIC');
         echo $this -> template -> render('/module/lti/dynamic', $template_data);
         return true;
     }

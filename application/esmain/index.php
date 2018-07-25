@@ -335,7 +335,6 @@ try {
 
     $Logger -> debug('Successfully loaded home repository by id "' . $homeRepId . '".');
 
-
     $user_name = '';
     $privateKey = openssl_pkey_get_private($hc -> prop_array['private_key']);
     $decryptStatus = openssl_private_decrypt ( base64_decode($req_data['username']), $user_name, $privateKey);
@@ -605,7 +604,7 @@ try {
     $Logger -> info('Loaded module "' . $moduleName . '".');
 
     /*For moodle/scorm*/
-    $user_email = $user_givenname = $user_surname = $user_name;
+    $user_email = $user_givenname = $user_surname = $user_id = $user_name;
 
     $instanceParams = array(
         'rep_id' => $req_data['rep_id'],

@@ -19,7 +19,11 @@ extends ESRender_Module_NonContentNode_Abstract {
     	if(Config::get('showMetadata'))
     		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	$tempArray['title'] = $this->_ESOBJECT->getTitle();
-    	echo $Template -> render('/module/learningapps/dynamic', $tempArray);
+    	$uniqueId = uniqid('la_');
+        $data['uniqueId'] = $uniqueId;
+        $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
+        $data['dataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($uniqueId, 'LearningApps.org', 'https://learningapps.org/rechtliches.php');
+        echo $Template -> render('/module/learningapps/dynamic', $tempArray);
     	return true;
     }
     
@@ -35,6 +39,10 @@ extends ESRender_Module_NonContentNode_Abstract {
         }
         $data['url'] = $this->getUrl();
         $data['originUrl'] = $this->getOriginUrl();
+        $uniqueId = uniqid('la_');
+        $data['uniqueId'] = $uniqueId;
+        $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
+        $data['dataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($uniqueId, 'LearningApps.org', 'https://learningapps.org/rechtliches.php');
         $Template = $this -> getTemplate();
         echo $Template -> render('/module/learningapps/inline', $data);
         return true;

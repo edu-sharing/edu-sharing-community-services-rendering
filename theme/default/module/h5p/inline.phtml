@@ -1,23 +1,32 @@
-<?php ?>
+<?php
+global $MC_URL;
+$uniqid = uniqid('h5p_');
+?>
 
 <link type="text/css" rel="stylesheet" media="all"
-	href="http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/styles/h5p.css" />
+	href="<?php echo $MC_URL?>/theme/default/css/h5p.css" />
 
-<!-- js modified!!!!!!!! -->
   <script type="text/javascript"
-	src="http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
+	src="<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
 
 
-<script> 
-	    (function($) {
-	      $(function() {
-	        $('.h5p-container').h5p({
-	          frameJs: 'http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
-	          frameCss: 'http://127.0.0.1/rendering-service/theme/default/module/h5p/dist/styles/h5p.css',
-	          h5pContent: '<?php echo $content?>'
-	        });
-	      });
-	    })(H5P.jQuery);
-	  </script>
+<script type="text/javascript">
+    function waitForH5P(){
+        if(typeof H5P !== "undefined"){
+            (function($) {
+                $('#<?php echo $uniqid?>').h5p({
+                    frameJs: '<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
+                    frameCss: '<?php echo $MC_URL?>/theme/default/css/h5p.css',
+                    h5pContent: '<?php echo str_replace('cache/', '', $content)?>'
+                });
+            })(H5P.jQuery);}
+        else{
+            setTimeout(waitForH5P, 50);
+        }
+    }
+    waitForH5P();
+</script>
 
-    <div class="h5p-container"></div>
+<div id="<?php echo $uniqid?>" class="h5p-container"></div>
+<?php echo (!empty($license)? $license : '<p class="edu_sharing_filename">' . htmlentities($title, ENT_QUOTES, 'UTF-8') . '</p>')?>
+<?php echo $metadata?>

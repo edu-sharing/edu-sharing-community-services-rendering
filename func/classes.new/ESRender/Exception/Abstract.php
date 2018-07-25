@@ -14,7 +14,6 @@ extends Exception
             $this -> message = $Message;
         if(!empty($Code))
             $this -> code = $Code;
-        //var_dump($Message.$Code);
 	}
 
 }

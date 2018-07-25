@@ -81,21 +81,27 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      * @return array
      */
     protected function prepareRenderData(array $requestData) {
-        $license = '';
-        if ($this -> _ESOBJECT -> getLicense()) {
-            $license = $this -> _ESOBJECT -> getLicense() -> renderFooter($this -> getTemplate());
-        }
-
         $data = array('title' => $this -> _ESOBJECT -> getTitle(),
-                    'license' => $license,
                     'width' => $requestData['width'],
                     'height' => $requestData['height'],
                     'backLink' => $requestData['backLink']);
 
+
+        $license = '';
+        if($this -> _ESOBJECT -> getLicense()) {
+            $license = $this -> _ESOBJECT -> getLicense() -> renderFooter($this -> getTemplate());
+        }
+
+        $sequence = '';
+        if($this -> _ESOBJECT -> sequenceHandler -> isSequence())
+            $sequence = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->renderUrl($requestData));
+
+        $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING) {
 	       	$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
-			$data['metadata'] = $metadata;
         }
+
+        $data['footer'] = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));
         
         return $data;
     }
@@ -443,5 +449,4 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
     public function getRequestingDevice() {
         return $this -> requestingDevice;
     }
-
 }

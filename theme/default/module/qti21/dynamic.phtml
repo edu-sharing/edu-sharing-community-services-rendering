@@ -19,7 +19,8 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 	</div>
 	<?php echo $metadata; ?>
 </div>
-
-<script>
-	<?php include(dirname(__FILE__) . '/../../js/dynamic.js'); ?>
-</script>
+<?php
+$downloadUrl = Config::get('downloadUrl');
+if(!empty($downloadUrl))
+    echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
+?>

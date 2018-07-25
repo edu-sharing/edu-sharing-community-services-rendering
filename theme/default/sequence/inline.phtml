@@ -1,0 +1,21 @@
+<?php
+
+global $Locale, $Translate;
+
+$text = utf8_encode(count($children) . ' weitere materialien gehören dazu');
+?>
+<div class="edusharing_rendering_content_footer_sequence" >
+<span onclick="var x = this.nextSibling; console.log(x); if (x.style.display === 'none') {x.style.display = 'block'; this.innerHTML='<i class=\'material-icons\'>keyboard_arrow_down</i><?php echo $text?>';} else {x.style.display = 'none';this.innerHTML='<i class=\'material-icons\'>keyboard_arrow_right</i><?php echo $text?>';}" class="edusharing_rendering_content_footer_sequence_toggle">
+        <i class="material-icons">keyboard_arrow_right</i><?php echo $text?>
+</span><ul style="display:none">
+    <?php
+foreach($children as $child) {
+    echo '<li><a target="_blank" href="'.$parentUrl.'&childobject_order='.$child['{http://www.campuscontent.de/model/1.0}childobject_order'].'">
+            <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.$child['{http://www.alfresco.org/model/content/1.0}name'].
+         '</a></li>';
+}
+echo '<a class="edusharing_rendering_content_footer_sequence_showall" target="_blank" href="'.$parentUrl.'">Alle ansehen und herunterladen<i class="material-icons">arrow_forward</i></a>';
+echo '</ul>';
+echo '</div>';
+
+

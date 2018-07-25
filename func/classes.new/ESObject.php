@@ -504,6 +504,23 @@ class ESObject {
             throw new Exception('No Alfresco-properties set.');
         }
 
+        if(Config::get('renderInfoLMSReturn')->hasContentLicense === false) {
+            error_log('"hasContentLicense" is false!');
+            $this -> ESModule -> setName('doc');
+            $this -> ESModule -> loadModuleData();
+            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            return true;
+        }
+
+        $toolInstanceKey = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_key');
+        if(!empty($toolInstanceKey)) {
+            error_log('{http://www.campuscontent.de/model/1.0}tool_instance_ref equals set, using module "lti".');
+            $this -> ESModule -> setName('lti');
+            $this -> ESModule -> loadModuleData();
+            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            return true;
+        }
+
         if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'YOUTUBE') {
             error_log('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "YOUTUBE", using module "url".');
             $this -> ESModule -> setName('url');
@@ -860,7 +877,13 @@ class ESObject {
     }
 
     public function getPreviewUrl() {
-        return $this -> renderInfoLMSReturn -> getRenderInfoLMSReturn->previewUrl . '&version=' . $this -> getObjectVersion();
+        if(!empty(Config::get('base64Preview')))
+            return Config::get('base64Preview');
+        $previewUrl = $this -> renderInfoLMSReturn -> getRenderInfoLMSReturn->previewUrl . '&version=' . $this -> getObjectVersion();
+        $accessToken = Config::get('accessToken');
+        if(!empty($accessToken))
+            $previewUrl .= '&accessToken=' . $accessToken;
+        return $previewUrl;
     }
 
     public function renderOriginalDeleted($requestData, $display_kind, $template) {

@@ -136,7 +136,7 @@ try {
     $Template = new Phools_Template_Script($TemplateDirectory);
     $Template -> setTheme('default') -> setLocale($Locale) -> setTranslate($Translate);
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::setTemplate()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::setTemplate()');
         $Plugin -> setTemplate($Template);
     }
     
@@ -222,21 +222,7 @@ try {
     //BACKLINK
     $req_data['backLink'] = mc_Request::fetch('backLink', 'CHAR'); 
 
-    try {
-        $handler = mcrypt_module_open('blowfish', '', 'cbc', '');
-        $secretKey = ES_KEY;
-        $iv = ES_IV;
-        mcrypt_generic_init($handler, $secretKey, $iv);
-        $decrypted = mdecrypt_generic($handler, base64_decode($req_data['username']));
-        mcrypt_generic_deinit($handler);
-        $user_name = trim($decrypted);
-        mcrypt_module_close($handler);
-    } catch(Exception $e) {
-        echo 'Decryption error';
-        exit();
-    }
 
-    
     // VERSION (optional)
     $req_data['version'] = mc_Request::fetch('version', 'CHAR');
     if ($req_data['version']) {
@@ -322,7 +308,7 @@ try {
 
     // load repository-config
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::preLoadRepository()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preLoadRepository()');
         $Plugin -> preLoadRepository($req_data['rep_id'], $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
     }
 
@@ -349,21 +335,29 @@ try {
 
     $Logger -> debug('Successfully loaded home repository by id "' . $homeRepId . '".');
 
+    $user_name = '';
+    $privateKey = openssl_pkey_get_private($hc -> prop_array['private_key']);
+    $decryptStatus = openssl_private_decrypt ( base64_decode($req_data['username']), $user_name, $privateKey);
+    if(!$decryptStatus)
+        throw new Exception('Could not decrypt user');
+    $user_name = trim($user_name);
+    openssl_free_key($privateKey);
+
 
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::postLoadRepository()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postLoadRepository()');
         $Plugin -> postLoadRepository($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
     }
 
 
     
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::preSslVerification()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preSslVerification()');
         $Plugin -> preSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
     }    
-    
+
     $skipSslVerification = false;
-    
+
     if(!empty($req_data['token'])) {
     	if($req_data['token'] == $_SESSION['esrender']['token'] || empty($_SESSION['esrender']['token'])) {
         	$skipSslVerification = true;
@@ -371,28 +365,28 @@ try {
     		$Logger->error('Token not valid!');
     	}
     }
-    
+
     try {
     	$token = md5(uniqid());
     } catch (Exception $e) {
     	throw new Exception('Cannot generate token.');
     }
 
-    
+
     if(!$skipSslVerification) {
-    
-        $req_data['timestamp'] = mc_Request::fetch('ts', 'CHAR');   
+
+        $req_data['timestamp'] = mc_Request::fetch('ts', 'CHAR');
         if (empty($req_data['timestamp'])) {
             $Logger -> error('Missing request-param "timestamp".');
             throw new ESRender_Exception_MissingRequestParam('timestamp');
         }
-    
+
         if(empty($_GET['sig'])) {
             $Logger -> error('Missing request-param "sig".');
             throw new ESRender_Exception_MissingRequestParam('sig');
         }
 
-        try {   
+        try {
             $pubkeyid = openssl_get_publickey($remote_rep -> prop_array['public_key']);
             $signature = rawurldecode($_GET['sig']);
             $dataSsl = urldecode($req_data['rep_id']);
@@ -401,20 +395,20 @@ try {
         } catch (Exception $e) {
             throw new ESRender_Exception_SslVerification('SSL signature check failed');
         }
-        
+
         if ($ok != 1) {
             throw new ESRender_Exception_SslVerification('SSL signature check failed');
         }
-        
+
         $now = microtime(true) * 1000;
-        
+
         $message_send_offset_ms = 10000;
         if(isset($remote_rep -> prop_array['message_send_offset_ms']))
             $message_send_offset_ms = $remote_rep -> prop_array['message_send_offset_ms'];
         if($now + $message_send_offset_ms < $req_data['timestamp']) {
             throw new ESRender_Exception_SslVerification('Timestamp sent bigger than current timestamp');
         }
-        
+
         $message_offset_ms = 10000;
         if(isset($remote_rep -> prop_array['message_offset_ms']))
             $message_offset_ms = $remote_rep -> prop_array['message_offset_ms'];
@@ -425,7 +419,7 @@ try {
     }
 
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::postSslVerification()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postSslVerification()');
         $Plugin -> postSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
     }
 
@@ -476,11 +470,13 @@ try {
         throw new ESRender_Exception_InfoLms($e);
     }
 
+    Config::set('renderInfoLMSReturn', $renderInfoLMSReturn -> getRenderInfoLMSReturn);
+
     // check usage
     if ($req_data['rep_id'] != $req_data['app_id']) {
         // non-repositories MUST supply usage-info
         foreach ($Plugins as $name => $Plugin) {
-            $Logger -> debug('Running plugin "' . $name . '"::postCheckPermission()');
+            $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postCheckPermission()');
             $Plugin -> preCheckUsage($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
         }
         if (empty($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage)) {
@@ -499,7 +495,7 @@ try {
         }
 
         foreach ($Plugins as $name => $Plugin) {
-            $Logger -> debug('Running plugin "' . $name . '"::preRetrieveObjectProperties()');
+            $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preRetrieveObjectProperties()');
             $Plugin -> postCheckUsage($remote_rep, $req_data['app_id'], $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage, $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
         }
     } else {
@@ -509,7 +505,7 @@ try {
     }
 
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::preRetrieveObjectProperties()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preRetrieveObjectProperties()');
         $Plugin -> preRetrieveObjectProperties($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
     }
 
@@ -554,7 +550,7 @@ try {
     }
 
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::postRetrieveObjectProperties()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postRetrieveObjectProperties()');
         $Plugin -> postRetrieveObjectProperties($remote_rep, $req_data['app_id'], $contentNode, $req_data['course_id'], $req_data['resource_id'], $user_name);
     }
 
@@ -579,7 +575,6 @@ try {
     $sessionSavePath = session_save_path();
     // find appropriate module
     $ESObject -> setModule();
-
     $moduleName = $ESObject -> ESModule -> getName();
     if (empty($moduleName)) {
         //.oO no display modul for this file
@@ -609,7 +604,7 @@ try {
     $Logger -> info('Loaded module "' . $moduleName . '".');
 
     /*For moodle/scorm*/
-    $user_email = $user_givenname = $user_surname = $user_name;
+    $user_email = $user_givenname = $user_surname = $user_id = $user_name;
 
     $instanceParams = array(
         'rep_id' => $req_data['rep_id'],
@@ -635,7 +630,7 @@ try {
         $Module -> instanceLock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
         
         foreach ($Plugins as $name => $Plugin) {
-            $Logger -> debug('Running plugin "' . $name . '"::preInstanciateObject()');
+            $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preInstanciateObject()');
             $Plugin -> preInstanciateObject();
         }
 
@@ -688,7 +683,7 @@ try {
         }
 
         foreach ($Plugins as $name => $Plugin) {
-            $Logger -> debug('Running plugin "' . $name . '"::postInstanciateObject()');
+            $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postInstanciateObject()');
             $Plugin -> postInstanciateObject();
         }
 
@@ -746,7 +741,7 @@ try {
     }
 
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::preProcessObject()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preProcessObject()');
         $Plugin -> preProcessObject();
     }
 
@@ -782,7 +777,7 @@ try {
         throw new Exception('Error processing object.');
     }
     foreach ($Plugins as $name => $Plugin) {
-        $Logger -> debug('Running plugin "' . $name . '"::postProcessObject()');
+        $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postProcessObject()');
         $Plugin -> postProcessObject();
     }
 
@@ -866,6 +861,20 @@ try {
     echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
 
     
+} catch(ESRender_Exception_Omega $exception) {
+    $Logger -> error($exception -> getMessage());
+    $Logger -> debug($exception);
+
+    $MessageDefault = new Phools_Message_Default('Omega plugin error');
+    $Message = new Phools_Message_Default($exception -> getMessage());
+
+    $code = '';
+    if($exception -> getCode() != 0)
+        $code = $exception -> getCode();
+
+    echo $Template -> render('/error/default', array('error' => $MessageDefault -> localize($Locale, $Translate) . ' - ' . $Message -> localize($Locale, $Translate) . ' ' .  $code));
+
+
 } catch(ESRender_Exception_CorruptVersion $exception) {
 
 	$Logger -> error($exception -> getMessage());

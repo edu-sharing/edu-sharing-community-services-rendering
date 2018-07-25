@@ -69,31 +69,14 @@ extends ESRender_Module_ContentNode_Abstract
         return false;
     }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see ESRender_Module_ContentNode_Abstract::display()
-	 */
-	protected function display(array $requestData)
-	{
-		$Logger = $this->getLogger();
-
-		header('HTTP/1.1 303 See other');
-		header('Location: '.$this->_ESOBJECT->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . $requestData['token']);
-
-		return true;
-	}
 
     protected function dynamic(array $requestData)
     {
-        global $accessToken;
         $template_data['url'] = $this->_ESOBJECT->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
         if(Config::get('showMetadata'))
             $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
         $template_data['title'] = $this->_ESOBJECT->getTitle();
-        $previewUrl = $this->_ESOBJECT->getPreviewUrl();
-        if(!empty($accessToken))
-            $previewUrl .= '&accessToken=' . $accessToken;
-        $template_data['previewUrl'] = $previewUrl;
+        $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
         echo $this -> getTemplate() -> render('/module/html/dynamic', $template_data);
         return true;
     }

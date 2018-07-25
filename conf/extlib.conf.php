@@ -12,13 +12,7 @@
 // set include paths
 $strIncludePath = implode(PATH_SEPARATOR, array(
 
-	MC_BASE_DIR . 'func/extern/',
-
-	// setting pear directory as include directory
-	MC_BASE_DIR . "func/extern/pear1.7.2/",
-
-	// setting smarty directory as include directory
-	MC_BASE_DIR . "func/extern/Smarty-2.6.25/libs/",
+	MC_BASE_DIR . 'func/extern/'
 
 ));
 $strIncludePath = str_replace('/', DIRECTORY_SEPARATOR, $strIncludePath);

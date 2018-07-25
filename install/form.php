@@ -38,7 +38,7 @@ class form
 
         if ( !$this->checkPhpExtensions(
             // required extensions (space separated)
-            'session dom soap sockets iconv gd mbstring fileinfo mcrypt openssl zip curl',
+            'session dom soap sockets iconv gd mbstring fileinfo openssl zip curl',
             // optional extensions (space separated)
             'mysql pgsql zlib wddx'
         ) )

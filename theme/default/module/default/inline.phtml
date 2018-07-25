@@ -1,9 +1,23 @@
+<?php
+global $Locale, $Translate;
+$msg = array();
+$msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
+?>
+
 <style scoped>
     <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
-    <?php include(dirname(__FILE__) . '/../../css/inline.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
 </style>
 <span>
-<a href="<?php echo htmlentities($url, ENT_COMPAT, 'utf-8') ?>" target="_blank"  ><es:title xmlns:es="http://edu-sharing.net/object" ><?php echo $title;?></es:title></a>
+
+
+    <?php
+    if(false === Config::get('renderInfoLMSReturn')->hasContentLicense) {
+        echo '<span class="edusharing_warning">'.htmlentities($msg['hasNoContentLicense']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8').'</span>';
+    } else {
+        echo '<a href="'. htmlentities($url, ENT_COMPAT, 'utf-8').'" target="_blank"  ><es:title xmlns:es="http://edu-sharing.net/object" >'.$title.'</es:title></a>';
+    }
+    ?>
 <?php if(!empty($metadata) || !empty($license)) {
 	echo '&nbsp;(<span style="display: inline-block">'.$license.'</span>';
 	if(!empty($metadata) && !empty($license))

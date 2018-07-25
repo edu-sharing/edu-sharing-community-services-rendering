@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '4.0.6' );
+define ( 'UPDATEVERSION', '4.2.0' );
 set_time_limit(1800);
 ini_set('memory_limit', '2048M');
 
@@ -235,17 +235,13 @@ function run($installedVersion) {
 				
 			if(file_exists(MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php"))
 				unlink ( MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php");
-
-			try {
-                $pdo = RsPDO::getInstance();
-                $sql = $pdo->formatQuery('INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)');
-                $stmt = $pdo->prepare($sql);
-                $stmt->bindValue(':modid', '8');
-                $stmt->bindValue(':mime', 'audio/mp3');
-                $stmt->execute();
-            } catch(PDOException $e) {
-                //catch postgresql uniue error
-            }
+			
+			$pdo = RsPDO::getInstance();
+			$sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+			$stmt = $pdo->prepare ( $sql );
+			$stmt->bindValue ( ':modid', '8' );
+			$stmt->bindValue ( ':mime', 'audio/mp3' );
+			$stmt->execute ();
 		}
 
 		if(version_compare ( '3.3', $installedVersion ) > 0) {
@@ -304,12 +300,31 @@ function run($installedVersion) {
             $stmt->execute ();
         }
 
-        if (version_compare ( '4.0.6', $installedVersion ) > 0) {
-            if(file_exists (MC_ROOT_PATH . '/modules/doc/redirect_header.inc.php')) {
-                unlink(MC_ROOT_PATH . '/modules/doc/redirect_header.inc.php');
-            }
-        }
+        if(version_compare ( '4.1.0', $installedVersion ) > 0) {
+            file_put_contents(MC_ROOT_PATH . 'modules/video/config.php', 'define(\'OPTION_THREADS\', 1);', FILE_APPEND | LOCK_EX);
 
+            $pdo = RsPDO::getInstance();
+            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modname, :moddesc)' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':modname', 'h5p' );
+            $stmt->bindValue ( ':moddesc', 'h5p' );
+            $stmt->execute ();
+
+            $pdo = RsPDO::getInstance();
+            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modname, :moddesc)' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':modname', 'lti' );
+            $stmt->bindValue ( ':moddesc', 'lti' );
+            $stmt->execute ();
+
+            @rrmdir ( MC_ROOT_PATH . 'func/extern/pclZip' );
+
+            $fileContents = file_get_contents ( MC_ROOT_PATH . 'conf/defines.conf.php' );
+            $fileContents = str_replace ( '$MC_INCLUDE_PATH[] = MC_ROOT_PATH."func/extern/pear1.7.2/";', '', $fileContents );
+            file_put_contents ( MC_ROOT_PATH . 'conf/defines.conf.php' , $fileContents );
+
+            @rrmdir ( MC_ROOT_PATH . 'func/extern/pear1.7.2' );
+        }
 	} catch ( Exception $e ) {
 		error_log ( print_r ( $e, true ) );
 		return false;

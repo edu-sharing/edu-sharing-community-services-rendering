@@ -1,14 +1,13 @@
 <?php
-	global $Locale, $Translate, $accessToken;
+	global $Locale, $Translate;
 ?>
 
 <div id="edusharing_rendering_metadata" role="contentinfo">
     <div class="edusharing_rendering_metadata_header">
-        <img tabindex="0" class="edusharing_rendering_metadata_header_icon" onclick="showContent()" onkeypress="(event.keyCode==13)?showContent():0" src="<?php echo $previewUrl . '&accessToken=' . Config::get('accessToken') ?>&crop=true&width=68&height=51">
+        <img tabindex="0" class="edusharing_rendering_metadata_header_icon" onclick="showContent()" onkeypress="(event.keyCode==13)?showContent():0" src="<?php echo $previewUrl; empty(Config::get('base64Preview'))? '&crop=true&width=68&height=51':''?>">
         <h1 property="name" title="<?php echo $title ?>" class="edusharing_rendering_metadata_header_title"><?php echo $title ?></h1>
     </div>
     <div class="edusharing_rendering_metadata_body">
         <?php echo $metadataHtml; ?>
     </div>
-    <div tabindex="0" id="edusharing_scrolltotop" onClick="showContent()" onkeypress="(event.keyCode==13)?showContent():0"></div>
 </div>

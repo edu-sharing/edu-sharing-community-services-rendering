@@ -1,6 +1,7 @@
 <?php
-global $MC_URL;
+global $Locale, $Translate, $MC_URL;
 $uniqid = uniqid('h5p_');
+$msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
 ?>
 
 <link type="text/css" rel="stylesheet" media="all"
@@ -28,5 +29,7 @@ $uniqid = uniqid('h5p_');
 </script>
 <div>
     <div id="<?php echo $uniqid?>" class="h5p-container"></div>
+    <span class="edusharing_rendering_content_ie_hint"><?php echo $msg['h5p_ie_hint']->localize($Locale, $Translate) ?></span>
     <?php echo $footer?>
 </div>
+

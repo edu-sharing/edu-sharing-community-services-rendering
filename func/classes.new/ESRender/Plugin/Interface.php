@@ -339,6 +339,13 @@ interface ESRender_Plugin_Interface
      * Called before letting a module render an object.
      *
      */
+
+    /**
+     * Called before tracking an object.
+     *
+     */
+    public function preTrackObject($params);
+
     public function preProcessObject();
 
     /**

@@ -112,6 +112,62 @@ extends ESRender_Module_Base
         return $result;
     }
 
+    protected function renderUrl(array $requestData)
+    {
+        $url = MC_URL . '/application/esmain?';
+
+        if ( ! $requestData['object_id'] )
+        {
+            throw new ESRender_Exception_MissingRequestParam('obj_id');
+        }
+
+        $url .= 'obj_id=' . urlencode($requestData['object_id']);
+
+        if ( ! $requestData['app_id'] )
+        {
+            throw new ESRender_Exception_MissingRequestParam('app_id');
+        }
+
+        $url .= '&app_id=' . urlencode($requestData['app_id']);
+
+        if ( ! $requestData['rep_id'] )
+        {
+            throw new ESRender_Exception_MissingRequestParam('rep_id');
+        }
+
+        $url .= '&rep_id=' . urlencode($requestData['rep_id']);
+
+        if ( ! $requestData['session'] )
+        {
+           // throw new ESRender_Exception_MissingRequestParam('session');
+        }
+
+        $url .= '&session=' . urlencode($requestData['session']);
+
+        if ( $requestData['course_id'] )
+        {
+            $url .= '&course_id=' . urlencode($requestData['course_id']);
+        }
+
+        if ( $requestData['resource_id'] )
+        {
+            $url .= '&resource_id=' . urlencode($requestData['resource_id']);
+        }
+        
+        if ( $requestData['usernameEncrypted'] )
+        {
+            $url .= '&u=' . urlencode($requestData['usernameEncrypted']);
+        }
+
+        $url .= '&token=' . $requestData['token'];
+
+        $redirector = '{{{LMS_INLINE_HELPER_SCRIPT}}}&';
+        
+        $url = $redirector . 'url=' . urlencode($url);     
+        
+        return $url;
+    }
+
     /**
      * @param array $requestData
      */

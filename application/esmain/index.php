@@ -471,7 +471,6 @@ try {
     }
 
     Config::set('renderInfoLMSReturn', $renderInfoLMSReturn -> getRenderInfoLMSReturn);
-
     // check usage
     if ($req_data['rep_id'] != $req_data['app_id']) {
         // non-repositories MUST supply usage-info
@@ -736,10 +735,6 @@ try {
     session_id($moduleSessionId);
     session_start();
 
-    if (ENABLE_TRACK_OBJECT) {
-        $RenderApplication -> trackObject($remote_rep -> prop_array['appid'], $req_data['app_id'], $ESObject -> getId(), $req_data['obj_id'], $ESObject -> getFilename(), $req_data['version'], $ESObject -> ESModule -> getModuleId(), $ESObject -> ESModule -> getName(), $user_id, $user_name, $req_data['course_id']);
-    }
-
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preProcessObject()');
         $Plugin -> preProcessObject();
@@ -779,6 +774,17 @@ try {
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postProcessObject()');
         $Plugin -> postProcessObject();
+    }
+
+    if (ENABLE_TRACK_OBJECT) {
+        //filter locked Objects and inline requests that result from dynamic view
+        if(!Config::get('locked') && !(($remote_rep -> prop_array['appid'] == $req_data['app_id']) && $display_kind == 'inline')) {
+            foreach ($Plugins as $name => $Plugin) {
+                $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postInstanciateObject()');
+                $Plugin -> preTrackObject(array('user_id'=>$user_id, 'view_type' => $display_kind, 'object_id' => $req_data['obj_id']));
+            }
+            $RenderApplication -> trackObject($remote_rep -> prop_array['appid'], $req_data['app_id'], $ESObject -> getId(), $req_data['obj_id'], $ESObject -> getFilename(), $req_data['version'], $ESObject -> ESModule -> getModuleId(), $ESObject -> ESModule -> getName(), $user_id, $user_name, $req_data['course_id']);
+        }
     }
 
     $Logger -> info('Shutting down.');

@@ -320,6 +320,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
 
             case ESRender_Application_Interface::DISPLAY_MODE_LOCKED :
                 //this method is only implemented in video and audio module
+                Config::set('locked', true);
                 $Logger -> debug('Calling Module::locked()');
                 return $this -> locked($requestData);
                 break;

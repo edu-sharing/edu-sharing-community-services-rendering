@@ -137,32 +137,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$logger->error('Error retrieving user token - ' . $httpcode . ' ' . json_decode($resp)->exception);
 		return false;
 	}
-	
-	
-	public function inline(array $requestData) {
 
-        if (!file_exists(dirname(__FILE__).'/config.php')) {
-            return parent::inline($requestData);
-            $Logger -> error('Error opening ' . dirname(__FILE__).'/config.php');
-        }
-
-        $id = $this->getId();
-
-        if($id === false) {
-            return parent::inline($requestData);
-        }
-
-		$Template = $this -> getTemplate();
-		$data = array();
-		$data['url'] = 'asdadada';/*$this-> getForwardUrl($requestData)*/
-        $data['title'] = $this->_ESOBJECT->getTitle();
-        if(ENABLE_METADATA_INLINE_RENDERING) {
-            $data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
-        }
-		echo $Template -> render('/module/moodle/inline', $data);
-		return true;
-	}
-	
 	public function dynamic(array $requestData) {
 
         if (!file_exists(dirname(__FILE__).'/config.php')) {

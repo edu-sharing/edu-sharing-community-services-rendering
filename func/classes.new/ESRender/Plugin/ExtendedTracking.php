@@ -6,10 +6,10 @@ class ESRender_Plugin_ExtendedTracking extends ESRender_Plugin_Abstract {
 
     public function __construct() {
         $pdo = RsPDO::getInstance();
-        $query = $pdo->query("SHOW COLUMNS FROM `estrack` LIKE 'ESTRACK_AFFILIATION'");
+        $query = $pdo->query("SHOW COLUMNS FROM `ESTRACK` LIKE 'ESTRACK_AFFILIATION'");
         $result_array = $query->fetchAll(PDO::FETCH_ASSOC);
         if(empty($result_array)) {
-            $query = "ALTER TABLE `estrack`
+            $query = "ALTER TABLE `ESTRACK`
                 ADD COLUMN `ESTRACK_PERSISTENTID` VARCHAR(200), 
                 ADD COLUMN `ESTRACK_AFFILIATION` VARCHAR(200), 
                 ADD COLUMN `ESTRACK_INSTITUTION` VARCHAR(200), 
@@ -34,7 +34,7 @@ class ESRender_Plugin_ExtendedTracking extends ESRender_Plugin_Abstract {
             $extendedTrackingParams['ESTRACK_INSTITUTION'] = substr($params['user_id'], strpos($params['user_id'], INSTITUTION_SEAPARTOR) + 1);
             $extendedTrackingParams['ESTRACK_LEARNINGMODULE'] = $learningmodule;
             $extendedTrackingParams['ESTRACK_ELEMENT'] = $params['object_id'];
-            $extendedTrackingParams['ESTRACK_VIEWTYPE'] = $params['view_type'];//($params['view_type'] == 'download') ? 'DOWNLOAD' : 'SHOW';
+            $extendedTrackingParams['ESTRACK_VIEWTYPE'] = ($params['view_type'] == 'download') ? 'DOWNLOAD' : 'SHOW';
             Config::set('extendedTracking', $extendedTrackingParams);
         }
     }

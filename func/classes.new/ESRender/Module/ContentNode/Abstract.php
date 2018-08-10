@@ -124,7 +124,7 @@ extends ESRender_Module_Base
         header('HTTP/1.1 303 See other');
         header('Location: ' . $url);
 
-        exit(0);
+        return true;
     }
 
     /**

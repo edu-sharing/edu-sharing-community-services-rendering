@@ -183,8 +183,8 @@ class ESModule {
                 $this->ESMODULE_NAME = 'lti';
                 break;
             
-			case ($p_RESOURCE_TYPE == 'ADL SCORM' && $p_RESOURCE_VERSION == '1.2') :
-				$this->ESMODULE_NAME = 'scorm12';
+			case ($p_RESOURCE_TYPE == 'ADL SCORM') :
+				$this->ESMODULE_NAME = 'scorm';
 				break;
 
 			case ($p_RESOURCE_TYPE == 'imsqti' && $p_RESOURCE_VERSION == 'xmlv2p1') :

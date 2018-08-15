@@ -1,4 +1,0 @@
-<?php
-
-define('MOODLE_BASE_DIR', '/srv/www/htdocs/esrender_moodle');
-define('MOODLE_MODULE_SCORM_ID', '15');

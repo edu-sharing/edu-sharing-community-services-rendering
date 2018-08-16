@@ -63,6 +63,11 @@
     width: auto;
 }
 
+.mds_license .licenseDescription {
+    color: #6f6f6f;
+    font-size: 90%;
+}
+
 @media (max-width: 800px) {
     .edusharing_rendering_metadata_body {
         display: block;

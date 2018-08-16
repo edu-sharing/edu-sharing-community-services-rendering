@@ -58,6 +58,11 @@
     color: #000;
 }
 
+.mds_license img {
+    height: 30px;
+    width: auto;
+}
+
 @media (max-width: 800px) {
     .edusharing_rendering_metadata_body {
         display: block;

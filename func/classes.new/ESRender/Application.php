@@ -63,7 +63,13 @@ extends ESRender_Application_Abstract {
                 'ESTRACK_USER_NAME' => $p_obj['estrack_user_name'],
                 'ESTRACK_USER_ID' => $p_obj['estrack_user_id'],
                 'STATE' => 'Y');
-    
+
+            $extendedTrackingParams = Config::get('extendedTracking');
+            if(!empty($extendedTrackingParams)) {
+                foreach ($extendedTrackingParams as $k => $v) {
+                    $arr[$k] = $v;
+                }
+            }
             $sql = 'INSERT INTO `ESTRACK` (`';
             $sql .= implode('`,`', array_keys($arr));
             $sql .= '`) VALUES (:';

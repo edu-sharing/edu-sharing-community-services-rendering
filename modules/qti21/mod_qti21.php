@@ -146,13 +146,14 @@ extends ESRender_Module_ContentNode_Abstract
 
         if (!file_exists(dirname(__FILE__).'/config.php')) {
             echo parent::inline($requestData);
-            $Logger -> error('Error opening QTI config');
             return true;
+            $Logger -> error('Error opening QTI config');
         }
 
 		echo $this->renderTemplate(
 			$requestData,
 			'/module/qti21/inline');
+
 		return true;
 	}
 

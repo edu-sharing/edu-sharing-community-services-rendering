@@ -1,4 +1,4 @@
-<?php
+    <?php
 /**
  * This product Copyright 2010 metaVentis GmbH.  For detailed notice,
  * see the "NOTICE" file with this distribution.

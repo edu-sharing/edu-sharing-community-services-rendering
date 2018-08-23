@@ -151,7 +151,7 @@ extends ESRender_Module_Base
     {
         $Logger = $this->getLogger();
         $data = parent::prepareRenderData($requestData);
-        $data['url'] = $this->renderUrl($requestData);
+        $data['url'] = $this->lmsInlineHelper($requestData);
         echo $this->getTemplate()->render('/module/default/inline', $data);
         $Logger->debug('ESRender_Module_Base::inline');
         return true;

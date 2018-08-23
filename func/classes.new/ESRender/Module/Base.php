@@ -94,9 +94,9 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
             $license = '<span class="edusharing_warning">' . htmlentities($msg['hasNoContentLicense']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8') . '</span>';
         } else {
             if($this -> _ESOBJECT -> getLicense()) {
-                $license = $this -> _ESOBJECT -> getLicense() -> renderFooter($this -> getTemplate(), $this->renderUrl($requestData));
+                $license = $this -> _ESOBJECT -> getLicense() -> renderFooter($this -> getTemplate(), $this->lmsInlineHelper($requestData));
             } else {
-                $license = '<a class="license_permalink" href="'.$this->renderUrl($requestData).'?closeOnBack=true" target="_blank" title="'.htmlentities($this->_ESOBJECT->getTitle()).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
+                $license = '<a class="license_permalink" href="'.$this->lmsInlineHelper($requestData).'?closeOnBack=true" target="_blank" title="'.htmlentities($this->_ESOBJECT->getTitle()).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
                     . htmlentities($this->_ESOBJECT->getTitle())
                     . '</es:title></a>';
             }
@@ -104,7 +104,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
 
         $sequence = '';
         if($this -> _ESOBJECT -> sequenceHandler -> isSequence())
-            $sequence = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->renderUrl($requestData));
+            $sequence = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper($requestData));
 
         $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING) {
@@ -461,61 +461,9 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         return $this -> requestingDevice;
     }
 
-    protected function renderUrl(array $requestData)
+    protected function lmsInlineHelper(array $requestData)
     {
-
-        $url = MC_URL . '/application/esmain?';
-
-        if ( ! $requestData['object_id'] )
-        {
-            throw new ESRender_Exception_MissingRequestParam('obj_id');
-        }
-
-        $url .= 'obj_id=' . urlencode($requestData['object_id']);
-
-        if ( ! $requestData['app_id'] )
-        {
-            throw new ESRender_Exception_MissingRequestParam('app_id');
-        }
-
-        $url .= '&app_id=' . urlencode($requestData['app_id']);
-
-        if ( ! $requestData['rep_id'] )
-        {
-            throw new ESRender_Exception_MissingRequestParam('rep_id');
-        }
-
-        $url .= '&rep_id=' . urlencode($requestData['rep_id']);
-
-        if ( ! $requestData['session'] )
-        {
-            // throw new ESRender_Exception_MissingRequestParam('session');
-        }
-
-        $url .= '&session=' . urlencode($requestData['session']);
-
-        if ( $requestData['course_id'] )
-        {
-            $url .= '&course_id=' . urlencode($requestData['course_id']);
-        }
-
-        if ( $requestData['resource_id'] )
-        {
-            $url .= '&resource_id=' . urlencode($requestData['resource_id']);
-        }
-
-        if ( $requestData['usernameEncrypted'] )
-        {
-            $url .= '&u=' . urlencode($requestData['usernameEncrypted']);
-        }
-
-        $url .= '&token=' . $requestData['token'];
-
-        $redirector = '{{{LMS_INLINE_HELPER_SCRIPT}}}&';
-
-        $url = $redirector . 'url=' . urlencode($url);
-
-        return $url;
+        return '{{{LMS_INLINE_HELPER_SCRIPT}}}';
     }
 
 

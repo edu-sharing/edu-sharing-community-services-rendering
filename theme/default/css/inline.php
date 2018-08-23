@@ -43,10 +43,6 @@ global $MC_URL;?>
     font-feature-settings: 'liga';
 }
 
-.material-icons {
-    vertical-align: middle !important;
-}
-
 .edusharing_metadata_wrapper {
     margin-left: 10px;
 }

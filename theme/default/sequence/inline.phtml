@@ -16,7 +16,7 @@ foreach($children as $child) {
             <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.$child['{http://www.alfresco.org/model/content/1.0}name'].
          '</a></li>';
 }
-echo '<a class="edusharing_rendering_content_footer_sequence_showall" target="_blank" href="'.$parentUrl.'">'.htmlentities($msg['seqenceViewChildren']->localize($Locale, $Translate)).'<i class="material-icons">arrow_forward</i></a>';
+echo '<a class="edusharing_rendering_content_footer_sequence_showall" target="_blank" href="'.$parentUrl.'">'.htmlentities($msg['seqenceViewChildren']->localize($Locale, $Translate)).'<i style="margin-left: 10px;" class="material-icons">open_in_new</i></a>';
 echo '</ul>';
 echo '</div>';
 

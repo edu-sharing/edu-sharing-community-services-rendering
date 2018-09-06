@@ -1,0 +1,57 @@
+<?php
+global $Locale, $Translate, $MC_URL;
+$msg = array();
+$msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
+$msg['directoryOpen'] = new Phools_Message_Default('directoryOpen');
+$msg['createdBy'] = new Phools_Message_Default('createdBy');
+$unid = uniqid();
+?>
+
+<style scoped>
+    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
+</style>
+<div>
+    <script>
+        function toggleChildren_<?php echo $unid?>(y) {
+            x = y.parentNode.parentNode.getElementsByTagName('ul')[0];
+            if (x.style.display === 'none') {
+                x.style.display = 'block';
+                y.getElementsByClassName('toggler')[0].innerHTML = 'keyboard_arrow_down';
+            } else {
+                x.style.display = 'none';
+                y.getElementsByClassName('toggler')[0].innerHTML = 'keyboard_arrow_right';
+            }
+        }
+    </script>
+    <?php
+    if(false === Config::get('renderInfoLMSReturn')->hasContentLicense) {
+        echo '<span class="edusharing_warning">'.htmlentities($msg['hasNoContentLicense']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8').'</span>';
+    } else {
+        echo '<div class="edusharing_rendering_content_footer_directory">
+            <div class="edusharing_rendering_content_footer_directory_header">
+                <div onclick="toggleChildren_'.$unid.'(this)" class="edusharing_rendering_content_footer_directory_toggle">
+                    <i class="material-icons toggler">keyboard_arrow_right</i>
+                    <img height="100%" src="'.$MC_URL.'/theme/default/img/edufolder.svg">
+                    <div style="display: inline-block">' . $title .
+                        '<span class="edusharing_rendering_content_footer_directory_creator">';
+                        if(!empty($creator))
+                            echo htmlentities($msg['createdBy']->localize($Locale, $Translate)) . ' ' . $creator;
+                        echo '</span>
+                    </div>
+                </div>
+            <a href="'.$folderUrl.'" target="_blank">'.htmlentities($msg['directoryOpen']->localize($Locale, $Translate)). '<i style="margin-left: 10px;" class="material-icons">open_in_new</i></a>  
+            </div>';
+
+
+            echo '<ul style="display:none">';
+                foreach($children as $child) {
+                    echo '<li><a target="_blank" href="'.$parentUrl.'&childobject_id='.$child['NodeID'].'">
+                    <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.$child['{http://www.alfresco.org/model/content/1.0}name'].
+                        '</a></li>';
+                }
+            echo '</ul>';
+        echo '</div>';
+    }
+    ?>
+</div>

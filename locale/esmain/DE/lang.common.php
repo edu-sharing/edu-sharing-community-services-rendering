@@ -81,5 +81,9 @@ $Translate
     ->addTranslation('de', 'dataProtectionRegulations', 'Datenschutzbestimmungen')
     ->addTranslation('de', 'abort', 'Abbrechen')
     ->addTranslation('de', 'of', 'von')
-    ->addTranslation('de', 'h5p_ie_hint', 'Bei Darstellungsproblemen nutzen Sie bitte einen aktuellen Browser.');
+    ->addTranslation('de', 'h5p_ie_hint', 'Bei Darstellungsproblemen nutzen Sie bitte einen aktuellen Browser.')
+    ->addTranslation('de', 'seqenceChildren :count', ':count weitere Materialien gehören dazu')
+    ->addTranslation('de', 'seqenceViewChildren', 'Alle ansehen und herunterladen')
+    ->addTranslation('de', 'directoryOpen', 'Ordner öffnen und herunterladen')
+    ->addTranslation('de', 'createdBy', 'Erstellt von');
 

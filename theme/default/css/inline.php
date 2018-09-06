@@ -159,15 +159,60 @@ global $MC_URL;?>
 
 .edusharing_rendering_content_footer_sequence {
     position: relative;
+
 }
 
-.edusharing_rendering_content_footer_sequence_toggle {
+.edusharing_rendering_content_footer_directory {
+    width: 100%;
+    background: #f6f6f6;
+    padding: 12px;
+    border-bottom: 1px solid #4D799A;
+}
+
+.edusharing_rendering_content_footer_directory_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.edusharing_rendering_content_footer_directory_header a {
+    color: #4D799A;
+}
+
+.edusharing_rendering_content_footer_directory_header a:hover {
+    text-decoration: none;
+}
+
+.edusharing_rendering_content_footer_directory_toggle > * {
+    margin-right: 20px;
+}
+
+.edusharing_rendering_content_footer_directory_creator {
+    display:block;
+    color: #999;
+    font-size: 90%;
+}
+
+.edusharing_rendering_content_footer_sequence .material-icons {
+    vertical-align: middle !important;
+}
+
+.edusharing_rendering_content_footer_directory .material-icons {
+    vertical-align: middle !important;
+}
+
+.edusharing_rendering_content_footer_sequence_toggle, .edusharing_rendering_content_footer_directory_toggle {
     color: #4D799A;
     cursor:pointer;
 }
 
-.edusharing_rendering_content_footer_sequence_toggle:hover {
-    text-decoration: underline;
+.edusharing_rendering_content_footer_directory_toggle {
+    display: flex;
+    align-items: center;
+}
+
+.edusharing_rendering_content_footer_sequence_toggle:hover, .edusharing_rendering_content_footer_directory_toggle:hover {
+   // text-decoration: underline;
 }
 
 .edusharing_rendering_content_footer_sequence ul {
@@ -180,7 +225,14 @@ global $MC_URL;?>
     border-bottom: 1px solid #4D799A;
 }
 
-.edusharing_rendering_content_footer_sequence ul li{
+.edusharing_rendering_content_footer_directory ul {
+    margin: 10px 0 0 0;
+    background: #f6f6f6;
+    width: 100%;
+    padding: 0;
+}
+
+.edusharing_rendering_content_footer_sequence ul li, .edusharing_rendering_content_footer_directory ul li {
     list-style: none;
     height: 60px;
     background: #fff;
@@ -192,18 +244,18 @@ global $MC_URL;?>
     border-radius: 3px;
 }
 
-.edusharing_rendering_content_footer_sequence ul li a {
+.edusharing_rendering_content_footer_sequence ul li a, .edusharing_rendering_content_footer_directory ul li a {
     color: #383838;
     text-decoration: none;
     width: 100%;
 }
 
-.edusharing_rendering_content_footer_sequence ul li a:hover {
+.edusharing_rendering_content_footer_sequence ul li a:hover, .edusharing_rendering_content_footer_directory ul li a:hover {
     color: #383838;
     text-decoration: none;
 }
 
-.edusharing_rendering_content_footer_sequence ul li img {
+.edusharing_rendering_content_footer_sequence ul li img, .edusharing_rendering_content_footer_directory ul li img {
     margin: 10px;
 }
 

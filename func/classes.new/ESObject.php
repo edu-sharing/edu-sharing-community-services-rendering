@@ -518,6 +518,14 @@ class ESObject {
             return true;
         }
 
+        if(Config::get('renderInfoLMSReturn')->directory) {
+            error_log('Property "directory" is true, using module "directory".');
+            $this -> ESModule -> setName('directory');
+            $this -> ESModule -> loadModuleData();
+            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            return true;
+        }
+
         $toolInstanceKey = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_key');
         if(!empty($toolInstanceKey)) {
             error_log('{http://www.campuscontent.de/model/1.0}tool_instance_ref equals set, using module "lti".');

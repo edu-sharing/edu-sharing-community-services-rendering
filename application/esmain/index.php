@@ -333,6 +333,9 @@ try {
         }
     }
 
+    $homeRep->url = str_replace('/services/authbyapp', '', $homeRep->prop_array['authenticationwebservice']);
+    Config::set('homeRepository', $homeRep);
+
     $Logger -> debug('Successfully loaded home repository by id "' . $homeRepId . '".');
 
     $user_name = '';
@@ -519,24 +522,27 @@ try {
     		$CC_RENDER_PATH = $CC_RENDER_PATH_SAFE;
     }
 
-    //if not set by usage set it with property value
-    if($req_data['version'] < 1) {
-        //set alf version
-        $req_data['version'] = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}version');
-        //in case that there is no initial version set es version
-        if(empty($req_data['version']))
-            $req_data['version'] = $contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}versionLabel');
-    }
+    //directories have no version
+    if(!Config::get('renderInfoLMSReturn')->directory) {
+        //if not set by usage set it with property value
+        if ($req_data['version'] < 1) {
+            //set alf version
+            $req_data['version'] = $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}version');
+            //in case that there is no initial version set es version
+            if (empty($req_data['version']))
+                $req_data['version'] = $contentNode->getProperty('{http://www.alfresco.org/model/content/1.0}versionLabel');
+        }
 
-    //set version to 1 for remote objects
-    if($contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype'))
-        $req_data['version'] = '';
+        //set version to 1 for remote objects
+        if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype'))
+            $req_data['version'] = '';
 
-    if($req_data['version'] === false) {
-    	$displayTitle = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
-    	if(empty($displayTitle))
-    		$displayTitle = $contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name');
-    	throw new ESRender_Exception_CorruptVersion($displayTitle);
+        if ($req_data['version'] === false) {
+            $displayTitle = $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
+            if (empty($displayTitle))
+                $displayTitle = $contentNode->getProperty('{http://www.alfresco.org/model/content/1.0}name');
+            throw new ESRender_Exception_CorruptVersion($displayTitle);
+        }
     }
 
     $ESObject = new ESObject($req_data['obj_id'], $req_data['version']);

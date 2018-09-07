@@ -48,10 +48,9 @@ extends ESRender_Module_AudioVideo_Abstract
 
     	
     	$template_data = array();
-    	
     	if($getDefaultData)
-        	$template_data = parent::prepareRenderData($requestData);
-        
+            $template_data = parent::prepareRenderData($requestData);
+    	
         $ext = $this -> getExtensionByFormat($this->getVideoFormatByRequestingDevice());
         $object_url = dirname($this -> _ESOBJECT->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?' . session_name() . '=' . session_id().'&token='.$requestData['token'];
         $template_data['ext'] = $ext;

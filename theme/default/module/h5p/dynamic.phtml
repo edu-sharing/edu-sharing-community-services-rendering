@@ -3,6 +3,7 @@ global $Locale, $Translate, $MC_URL;
 $msg = array();
 $msg['showInformation'] = new Phools_Message_Default('showInformation');
 $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
+$msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
 $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 ?>
 
@@ -35,6 +36,7 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
     <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
     <div class="edusharing_rendering_content_wrapper" role="main">
+        <h3 class="edusharing_rendering_content_ie_hint" style="display:none"><?php echo $msg['h5p_ie_hint']->localize($Locale, $Translate) ?></h3>
         <div class="edusharing_rendering_content h5p-container" style="max-height: 100% !important"></div> <!-- style prevents overlapping with metadata - better fix iframe height -->
     </div>
 </div>
@@ -46,4 +48,13 @@ $downloadUrl = Config::get('downloadUrl');
 if(!empty($downloadUrl))
     echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
 ?>
+<script>
+    //for ie <= 11 show hint
+    if(window.navigator.userAgent.indexOf('MSIE ') > 0 || window.navigator.userAgent.indexOf('Trident/')) {
+        var hints = document.getElementsByClassName('edusharing_rendering_content_ie_hint');
+        for (var i = 0; i < hints.length; i++) {
+            hints[i].style.display = 'block'
+        }
+    }
+</script>
 

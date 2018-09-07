@@ -276,6 +276,14 @@ implements ESRender_Plugin_Interface
     public function postProcessObject()
     {
     }
+
+    /**
+     * (non-PHPdoc)
+     * @see ESRender_Plugin_Interface::preTrackObject()
+     */
+    public function preTrackObject($params = array()) {
+
+    }
     
     /**
      * (non-PHPdoc)

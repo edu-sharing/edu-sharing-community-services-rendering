@@ -127,18 +127,10 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
     protected function renderTemplate(array $requestData, $TemplateName, $getDefaultData = true) {
-        $Logger = $this -> getLogger();
-
-        $m_mimeType = $this -> _ESOBJECT -> getMimeType();
         $m_path = $this -> _ESOBJECT -> getPath();
-        $m_name = $this -> _ESOBJECT -> getTitle();
-        $f_path = $this -> _ESOBJECT -> getFilePath();
-
         $imageUrl = $m_path . '.png?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-
         if($getDefaultData)
         	$template_data = parent::prepareRenderData($requestData);
-        
         $template_data['title'] = $this -> _ESOBJECT -> getTitle();
         $template_data['image_url'] = $imageUrl;
         $Template = $this -> getTemplate();

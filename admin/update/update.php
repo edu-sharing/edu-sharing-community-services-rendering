@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '4.2.0' );
+define ( 'UPDATEVERSION', '4.1.0.1' );
 set_time_limit(1800);
 ini_set('memory_limit', '2048M');
 
@@ -316,15 +316,29 @@ function run($installedVersion) {
             $stmt->bindValue ( ':modname', 'lti' );
             $stmt->bindValue ( ':moddesc', 'lti' );
             $stmt->execute ();
-
-            @rrmdir ( MC_ROOT_PATH . 'func/extern/pclZip' );
-
-            $fileContents = file_get_contents ( MC_ROOT_PATH . 'conf/defines.conf.php' );
-            $fileContents = str_replace ( '$MC_INCLUDE_PATH[] = MC_ROOT_PATH."func/extern/pear1.7.2/";', '', $fileContents );
-            file_put_contents ( MC_ROOT_PATH . 'conf/defines.conf.php' , $fileContents );
-
-            @rrmdir ( MC_ROOT_PATH . 'func/extern/pear1.7.2' );
         }
+
+        if(version_compare ( '4.1.0.1', $installedVersion ) > 0) {
+
+            $pdo = RsPDO::getInstance();
+
+            $sql = $pdo->formatQuery ( 'DELETE FROM `ESMODULE` WHERE `ESMODULE_NAME` = :name' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':name', 'scorm12' );
+            $stmt->execute ();
+
+            $sql = $pdo->formatQuery ( 'DELETE FROM `ESMODULE` WHERE `ESMODULE_NAME` = :name' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':name', 'scorm2004' );
+            $stmt->execute ();
+
+            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modname, :moddesc)' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':modname', 'scorm' );
+            $stmt->bindValue ( ':moddesc', 'SCORM' );
+            $stmt->execute ();
+        }
+
 	} catch ( Exception $e ) {
 		error_log ( print_r ( $e, true ) );
 		return false;

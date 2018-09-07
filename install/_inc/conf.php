@@ -17,14 +17,11 @@ $supported_lang[2] = 'EN';
 
 $default_lang = 1;
 
-$ini = parse_ini_file(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'version.ini');
-
 require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'defines.php');
 
 // try to set include paths
 require_once(MC_BASE_DIR . 'conf' . DIRECTORY_SEPARATOR . 'extlib.conf.php');
 
-$version_number = $version_info = $ini['number'];
 require_once(INST_PATH_LANG . "lang.txt.php");
 
 // list of file extensions searched for token replacement

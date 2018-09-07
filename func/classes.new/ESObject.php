@@ -181,6 +181,12 @@ class ESObject {
 
     /**
      *
+     * @var string
+     */
+    public $sequenceHandler = null;
+
+    /**
+     *
      * @param string $ObjectId The initial object-id (from SpacesStore)
      */
     public function __construct($ObjectId, $ObjectVersion = null) {
@@ -512,6 +518,14 @@ class ESObject {
             return true;
         }
 
+        if(Config::get('renderInfoLMSReturn')->directory) {
+            error_log('Property "directory" is true, using module "directory".');
+            $this -> ESModule -> setName('directory');
+            $this -> ESModule -> loadModuleData();
+            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            return true;
+        }
+
         $toolInstanceKey = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_key');
         if(!empty($toolInstanceKey)) {
             error_log('{http://www.campuscontent.de/model/1.0}tool_instance_ref equals set, using module "lti".');
@@ -667,6 +681,8 @@ class ESObject {
         	$this -> ESOBJECT_LICENSE = new ESRender_License($this);
         
         $this -> metadatahandler = new ESRender_Metadata_Handler($this);
+
+        $this -> sequenceHandler = new ESRender_Sequence_Handler($this);
 
         return true;
     }

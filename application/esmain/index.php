@@ -333,6 +333,9 @@ try {
         }
     }
 
+    $homeRep->url = str_replace('/services/authbyapp', '', $homeRep->prop_array['authenticationwebservice']);
+    Config::set('homeRepository', $homeRep);
+
     $Logger -> debug('Successfully loaded home repository by id "' . $homeRepId . '".');
 
     $user_name = '';
@@ -471,7 +474,6 @@ try {
     }
 
     Config::set('renderInfoLMSReturn', $renderInfoLMSReturn -> getRenderInfoLMSReturn);
-
     // check usage
     if ($req_data['rep_id'] != $req_data['app_id']) {
         // non-repositories MUST supply usage-info
@@ -520,24 +522,27 @@ try {
     		$CC_RENDER_PATH = $CC_RENDER_PATH_SAFE;
     }
 
-    //if not set by usage set it with property value
-    if($req_data['version'] < 1) {
-        //set alf version
-        $req_data['version'] = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}version');
-        //in case that there is no initial version set es version
-        if(empty($req_data['version']))
-            $req_data['version'] = $contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}versionLabel');
-    }
+    //directories have no version
+    if(!Config::get('renderInfoLMSReturn')->directory) {
+        //if not set by usage set it with property value
+        if ($req_data['version'] < 1) {
+            //set alf version
+            $req_data['version'] = $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}version');
+            //in case that there is no initial version set es version
+            if (empty($req_data['version']))
+                $req_data['version'] = $contentNode->getProperty('{http://www.alfresco.org/model/content/1.0}versionLabel');
+        }
 
-    //set version to 1 for remote objects
-    if($contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype'))
-        $req_data['version'] = '';
+        //set version to 1 for remote objects
+        if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype'))
+            $req_data['version'] = '';
 
-    if($req_data['version'] === false) {
-    	$displayTitle = $contentNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
-    	if(empty($displayTitle))
-    		$displayTitle = $contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name');
-    	throw new ESRender_Exception_CorruptVersion($displayTitle);
+        if ($req_data['version'] === false) {
+            $displayTitle = $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
+            if (empty($displayTitle))
+                $displayTitle = $contentNode->getProperty('{http://www.alfresco.org/model/content/1.0}name');
+            throw new ESRender_Exception_CorruptVersion($displayTitle);
+        }
     }
 
     $ESObject = new ESObject($req_data['obj_id'], $req_data['version']);
@@ -736,10 +741,6 @@ try {
     session_id($moduleSessionId);
     session_start();
 
-    if (ENABLE_TRACK_OBJECT) {
-        $RenderApplication -> trackObject($remote_rep -> prop_array['appid'], $req_data['app_id'], $ESObject -> getId(), $req_data['obj_id'], $ESObject -> getFilename(), $req_data['version'], $ESObject -> ESModule -> getModuleId(), $ESObject -> ESModule -> getName(), $user_id, $user_name, $req_data['course_id']);
-    }
-
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preProcessObject()');
         $Plugin -> preProcessObject();
@@ -779,6 +780,17 @@ try {
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postProcessObject()');
         $Plugin -> postProcessObject();
+    }
+
+    if (ENABLE_TRACK_OBJECT) {
+        //filter locked Objects and inline requests that result from dynamic view
+        if(!Config::get('locked') && !(($remote_rep -> prop_array['appid'] == $req_data['app_id']) && $display_kind == 'inline')) {
+            foreach ($Plugins as $name => $Plugin) {
+                $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postInstanciateObject()');
+                $Plugin -> preTrackObject(array('user_id'=>$user_id, 'view_type' => $display_kind, 'object_id' => $req_data['obj_id']));
+            }
+            $RenderApplication -> trackObject($remote_rep -> prop_array['appid'], $req_data['app_id'], $ESObject -> getId(), $req_data['obj_id'], $ESObject -> getFilename(), $req_data['version'], $ESObject -> ESModule -> getModuleId(), $ESObject -> ESModule -> getName(), $user_id, $user_name, $req_data['course_id']);
+        }
     }
 
     $Logger -> info('Shutting down.');

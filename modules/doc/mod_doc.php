@@ -78,7 +78,6 @@ extends ESRender_Module_ContentNode_Abstract {
             }
         }
 
-
         if(Config::get('showMetadata'))
         	$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
 

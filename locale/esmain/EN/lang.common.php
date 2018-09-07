@@ -75,4 +75,10 @@ $Translate
     ->addTranslation('de', 'dataProtectionRegulations4', 'Agree and continue')
     ->addTranslation('en', 'dataProtectionRegulations', 'Privacy policy')
     ->addTranslation('en', 'abort', 'Abort')
-    ->addTranslation('en', 'of', 'of');
+    ->addTranslation('en', 'of', 'of')
+    ->addTranslation('en', 'h5p_ie_hint', 'For display problems, please use a current browser.')
+    ->addTranslation('en', 'seqenceChildren :count', ':count more materials belong to this')
+    ->addTranslation('en', 'seqenceViewChildren', 'View all and download')
+    ->addTranslation('en', 'directoryOpen', 'Open directory and download')
+    ->addTranslation('en', 'createdBy', 'Created by');
+

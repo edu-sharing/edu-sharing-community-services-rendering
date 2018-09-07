@@ -31,7 +31,7 @@ if (file_exists(dirname(__FILE__).'/config.php')) {
  * @package core
  * @subpackage classes.new
  */
-class mod_moodle
+class mod_scorm
 extends ESRender_Module_ContentNode_Abstract {
 
 	public function createInstance(array $requestData) {
@@ -56,7 +56,7 @@ extends ESRender_Module_ContentNode_Abstract {
 			return false;
 		}
 		
-		$url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_edusharing_restore&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
+		$url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_edusharing_scorm&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );

@@ -6,7 +6,10 @@ class mod_directory extends ESRender_Module_NonContentNode_Abstract {
     public function inline(array $requestData) {
         $children = array();
         $i = 0;
-        foreach($this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->children->item as $child) {
+        $childrenItems = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->children->item;
+        if(!is_array($childrenItems))
+            $childrenItems = array($childrenItems);
+        foreach($childrenItems as $child) {
             $children[$i]['iconUrl'] = $child->iconUrl;
             foreach($child->properties->item as $property) {
                 $children[$i][$property->key]=$property->value;

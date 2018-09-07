@@ -4,3 +4,7 @@
 ul.h5p-actions {
     display: none;
 }
+
+html.h5p-iframe {
+    overflow: hidden;
+}

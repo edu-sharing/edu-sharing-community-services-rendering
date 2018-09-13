@@ -61,7 +61,7 @@ extends ESRender_Module_NonContentNode_Abstract {
 
         $sequence = '';
         if($this -> _ESOBJECT -> sequenceHandler -> isSequence())
-            $sequence = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->renderUrl($requestData));
+            $sequence = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper($requestData));
 
         $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING) {
@@ -81,12 +81,11 @@ extends ESRender_Module_NonContentNode_Abstract {
             $embedding = $this -> getImageEmbedding($footer);
         } else {
             $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
-            if (!empty($license)) {
+            if (!empty($license))
                 $license = $license->renderFooter($this->getTemplate(), $this->getUrl());
-                $embedding = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this->_ESOBJECT->getTitle(), 'url' => $this->getUrl()));
-            }
+            $embedding = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this->_ESOBJECT->getTitle(), 'url' => $this->getUrl()));
         }
-        
+
         $data = array('embedding' => $embedding);
                 
         $Template = $this -> getTemplate();

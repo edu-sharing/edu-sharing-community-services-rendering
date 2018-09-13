@@ -18,3 +18,5 @@ modules/moodle3/config.php
 modules/video/config.php
 modules/scorm12/config.php
 .idea
+modules/scorm/config.php
+modules/moodle/config.php

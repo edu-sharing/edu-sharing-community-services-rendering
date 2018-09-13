@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '4.0.6' );
+define ( 'UPDATEVERSION', '4.0.10' );
 set_time_limit(1800);
 ini_set('memory_limit', '2048M');
 
@@ -307,6 +307,19 @@ function run($installedVersion) {
         if (version_compare ( '4.0.6', $installedVersion ) > 0) {
             if(file_exists (MC_ROOT_PATH . '/modules/doc/redirect_header.inc.php')) {
                 unlink(MC_ROOT_PATH . '/modules/doc/redirect_header.inc.php');
+            }
+        }
+
+        if (version_compare ( '4.0.10', $installedVersion ) > 0) {
+            $pdo = RsPDO::getInstance();
+            if($pdo -> getDriver() == 'pgsql') {
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` ALTER COLUMN `ESTRACK_NAME` TYPE varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+            } else if ($pdo -> getDriver() == 'mysql') {
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` MODIFY `ESTRACK_NAME` varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
             }
         }
 

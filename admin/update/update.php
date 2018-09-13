@@ -300,6 +300,19 @@ function run($installedVersion) {
             $stmt->execute ();
         }
 
+        if (version_compare ( '4.0.10', $installedVersion ) > 0) {
+            $pdo = RsPDO::getInstance();
+            if($pdo -> getDriver() == 'pgsql') {
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` ALTER COLUMN `ESTRACK_NAME` TYPE varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+            } else if ($pdo -> getDriver() == 'mysql') {
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` MODIFY `ESTRACK_NAME` varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+            }
+        }
+
         if(version_compare ( '4.1.0', $installedVersion ) > 0) {
             file_put_contents(MC_ROOT_PATH . 'modules/video/config.php', 'define(\'OPTION_THREADS\', 1);', FILE_APPEND | LOCK_EX);
 

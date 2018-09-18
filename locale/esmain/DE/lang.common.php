@@ -53,8 +53,6 @@ $Translate
     ->addTranslation('de', 'custom license', 'eigenen Lizenz')
     ->addTranslation('de', 'Token expired', 'Sicherheitstoken abgelaufen')
 	->addTranslation('de', 'title', 'Titel')
-	->addTranslation('de', 'showInformation', 'Informationen einblenden')
-	->addTranslation('de', 'hideInformation', 'Informationen ausblenden')
 	->addTranslation('de', 'toDownload', 'Herunterladen')
 	->addTranslation('de', 'cannotOpenObject', 'Öffnen dieses Materials im Browser nicht möglich.')
 	->addTranslation('de', 'cannotOpenObjectText', 'Laden Sie das Material herunter, um es zu benutzen.')

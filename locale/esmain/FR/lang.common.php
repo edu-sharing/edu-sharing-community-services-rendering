@@ -53,8 +53,6 @@ $Translate
     ->addTranslation('fr', 'custom license', 'licence personnalisée')
     ->addTranslation('fr', 'Token expired', 'Security Token expiré')
     ->addTranslation('fr', 'title', 'Titre')
-    ->addTranslation('fr', 'showInformation', 'Montrer information')
-    ->addTranslation('fr', 'hideInformation', 'Cacher information')
 	->addTranslation('fr', 'toDownload', 'Télécharger')
 	->addTranslation('fr', 'cannotOpenObject', 'Ce matériel ne peut pas être affiché dans le navigateur.')
 	->addTranslation('fr', 'cannotOpenObjectText', 'Pour utiliser le matériel, veuillez le télécharger.')

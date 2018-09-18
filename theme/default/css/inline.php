@@ -229,7 +229,7 @@ global $MC_URL;?>
     margin: 10px 0 0 0;
     background: #f6f6f6;
     width: 100%;
-    padding: 0;
+    padding: 0 !important;
 }
 
 .edusharing_rendering_content_footer_sequence ul li, .edusharing_rendering_content_footer_directory ul li {

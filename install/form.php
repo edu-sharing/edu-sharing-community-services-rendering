@@ -28,7 +28,7 @@ class form
 
         if ( ! $this->checkApacheModules(
             // required extensions (space separated)
-            'mod_rewrite',
+            'mod_rewrite mod_headers',
             // optional extensions (space separated)
             ''
         ) )

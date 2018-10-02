@@ -245,6 +245,8 @@ global $MC_URL;?>
 }
 
 .edusharing_rendering_content_footer_sequence ul li a, .edusharing_rendering_content_footer_directory ul li a {
+    display: flex;
+    align-items: center;
     color: #383838;
     text-decoration: none;
     width: 100%;

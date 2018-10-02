@@ -12,7 +12,7 @@ $msg['seqenceViewChildren'] = new Phools_Message_Default('seqenceViewChildren');
 </span><ul style="display:none">
     <?php
 foreach($children as $child) {
-    echo '<li><a target="_blank" href="'.$parentUrl.'&childobject_order='.$child['{http://www.campuscontent.de/model/1.0}childobject_order'].'">
+    echo '<li><a target="_blank" href="'.$parentUrl.'&childobject='.$child['{http://www.campuscontent.de/model/1.0}node-uuid'].'&childobject_order='.$child['{http://www.campuscontent.de/model/1.0}childobject_order'].'">
             <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.$child['{http://www.alfresco.org/model/content/1.0}name'].
          '</a></li>';
 }

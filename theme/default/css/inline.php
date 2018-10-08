@@ -309,3 +309,8 @@ a.edusharing_rendering_content {
 .edusharing_rendering_metadata_body .mdsGroup{
     padding: 0;
 }
+
+.edusharing_rendering_metadata_body .mds_license a {
+    display: block;
+    margin-bottom: 8px;
+}

@@ -221,8 +221,8 @@ global $MC_URL;?>
     position: absolute;
     z-index: 49;
     background: #f6f6f6;
-    width: calc(100% + 18px);
-    margin-left: -12px;
+    width: calc(100% + 12px);
+    margin-left: -6px;
     border-bottom: 1px solid #4D799A;
 }
 

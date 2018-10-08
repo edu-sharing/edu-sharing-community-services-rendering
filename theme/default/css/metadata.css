@@ -25,28 +25,23 @@
     white-space: pre-line;
 }
 
-.mdsWidgetContent > div{
+.mdsWidgetContent .mdsValue{
     display: inline-block;
     margin: 7px 0 0 15px;
 }
-.mdsWidgetMultivalue > div{
+.mdsWidgetMultivalue .mdsValue{
     background-color: #DDDDDD;
     border-radius: 999px;
     padding: 3px 10px;
     margin-left: 10px;
 }
 
-/*not good*/
-.mds_ccm_lifecyclecontributer_author > div {
-    display: inline-block;
+
+.mds_ccm_lifecyclecontributer_author .mdsValue {
     font-style: italic;
-    background-color: #DDDDDD;
-    border-radius: 999px;
-    padding: 3px 10px;
-    margin-right: -10px;
 }
 
-.mdsWidgetContent > div > i {
+.mdsWidgetContent .mdsValue > i {
     vertical-align: middle;
 }
 

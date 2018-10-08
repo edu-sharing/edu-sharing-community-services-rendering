@@ -9,7 +9,7 @@ $msg['showInLearningAppsOrg'] = new Phools_Message_Default('showInLearningAppsOr
         <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
         <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
     </style>
-    <?php echo $dataProtectionRegulationsDialog ?>
+    <?php echo utf8_encode($dataProtectionRegulationsDialog) ?>
     <iframe id="<?php echo $uniqueId?>" src="<?php echo $url?>" data-licid="<?php echo $licid;?>" width="100%" height="500px" style="border: none; display:none;" ></iframe>
     <br/><a href="<?php echo $originUrl?>" target="_blank" title="<?php echo htmlentities($msg['showInLearningAppsOrg']->localize($Locale, $Translate)) ?>"><?php echo htmlentities($msg['showInLearningAppsOrg']->localize($Locale, $Translate)) ?></a>
     <?php echo $footer?>

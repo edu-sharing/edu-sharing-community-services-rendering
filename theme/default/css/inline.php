@@ -221,8 +221,8 @@ global $MC_URL;?>
     position: absolute;
     z-index: 49;
     background: #f6f6f6;
-    width: calc(100% + 18px);
-    margin-left: -12px;
+    width: calc(100% + 12px);
+    margin-left: -6px;
     border-bottom: 1px solid #4D799A;
 }
 
@@ -304,4 +304,13 @@ a.edusharing_rendering_content {
     margin-top: 20px;
     margin-left: 10px;
     margin-right: 10px;
+}
+
+.edusharing_rendering_metadata_body .mdsGroup{
+    padding: 0;
+}
+
+.edusharing_rendering_metadata_body .mds_license a {
+    display: block;
+    margin-bottom: 8px;
 }

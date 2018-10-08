@@ -305,3 +305,7 @@ a.edusharing_rendering_content {
     margin-left: 10px;
     margin-right: 10px;
 }
+
+.edusharing_rendering_metadata_body .mdsGroup{
+    padding: 0;
+}

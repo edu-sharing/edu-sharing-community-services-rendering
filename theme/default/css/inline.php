@@ -310,7 +310,6 @@ a.edusharing_rendering_content {
     padding: 0;
 }
 
-.edusharing_rendering_metadata_body .mds_license a {
-    display: block;
-    margin-bottom: 8px;
+.edusharing_rendering_metadata_body .licenseName {
+    margin-top: 8px;
 }

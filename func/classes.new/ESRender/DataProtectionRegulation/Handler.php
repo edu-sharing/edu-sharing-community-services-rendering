@@ -2,7 +2,7 @@
 
 class ESRender_DataProtectionRegulation_Handler {
 
-    public function getApplyDataProtectionRegulationsDialog($objId, $providerName, $providerUrlTermsOfUse, $type = null) {
+    public function getApplyDataProtectionRegulationsDialog($uniqueId, $providerName, $providerUrlTermsOfUse, $type = null) {
         global $Locale, $Translate;
 
         $msg = array();
@@ -21,9 +21,9 @@ class ESRender_DataProtectionRegulation_Handler {
 
         switch($type) {
             case 'LTI_INLINE':
-                $button = '<a href="#" onclick="document.getElementById(\'dataProtectionRegulations_'.$objId.'\').style.display=\'none\';document.getElementById(\'ltiLaunchForm_'.$objId.'\').submit();document.getElementById(\'ltiLaunchForm_'.$objId.'\').target = \'_blank\';document.getElementById(\'lti_frame_'.$objId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
+                $button = '<a href="#" onclick="document.getElementById(\'dataProtectionRegulations_'.$uniqueId.'\').style.display=\'none\';document.getElementById(\'ltiLaunchForm_'.$uniqueId.'\').submit();document.getElementById(\'ltiLaunchForm_'.$uniqueId.'\').target = \'_blank\';document.getElementById(\'lti_frame_'.$uniqueId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
                 $return = '
-                    <div id="dataProtectionRegulations_'.$objId.'" class="dataProtectionRegulationsDialog" style="position:absolute; display:none;max-width:500px;">
+                    <div id="dataProtectionRegulations_'.$uniqueId.'" class="dataProtectionRegulationsDialog" style="position:absolute; display:none;max-width:500px;">
                         <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
                         <p>'.$msg['dataProtectionRegulations2']->localize($Locale, $Translate).'</p>
                         <p>';
@@ -33,13 +33,13 @@ class ESRender_DataProtectionRegulation_Handler {
                             $return .= '<b>'.$msg['dataProtectionRegulations3']->localize($Locale, $Translate).'</b><br/>
                             <a href="'.$providerUrlTermsOfUse.'" target="_blank">'.$msg['dataProtectionRegulations']->localize($Locale, $Translate).'</a> '.$msg['of']->localize($Locale, $Translate).' '.$providerName.'<br/>';
                         }
-                $return .= '<a href="#" class="edusharing_rendering_content btn btn-secondary" onclick="document.getElementById(\'dataProtectionRegulations_'.$objId.'\').style.display=\'none\';return false;">'.$msg['abort']->localize($Locale, $Translate).'</a>'.$button;
+                $return .= '<a href="#" class="edusharing_rendering_content btn btn-secondary" onclick="document.getElementById(\'dataProtectionRegulations_'.$uniqueId.'\').style.display=\'none\';return false;">'.$msg['abort']->localize($Locale, $Translate).'</a>'.$button;
                 $return .= '</p>
                     </div>
                 ';
                 break;
             case 'LTI_DYNAMIC':
-                $button = '<a href="#" onclick="event.preventDefault();event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\'ltiLaunchForm_'.$objId.'\').submit();document.getElementById(\'ltiLaunchForm_'.$objId.'\').target = \'_blank\';document.getElementById(\'lti_frame_'.$objId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
+                $button = '<a href="#" onclick="event.preventDefault();event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\'ltiLaunchForm_'.$uniqueId.'\').submit();document.getElementById(\'ltiLaunchForm_'.$uniqueId.'\').target = \'_blank\';document.getElementById(\'lti_frame_'.$uniqueId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
                 $return = '
                     <div class="dataProtectionRegulations">
                         <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
@@ -59,7 +59,7 @@ class ESRender_DataProtectionRegulation_Handler {
                 ';
                 break;
             case 'VIDEO_DEFAULT':
-                $button = '<a href="#" onclick="event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\'videoWrapperInner_'.$objId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
+                $button = '<a href="#" onclick="event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\'videoWrapperInner_'.$uniqueId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
                 $return = '
                     <div class="dataProtectionRegulations">
                         <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
@@ -80,7 +80,7 @@ class ESRender_DataProtectionRegulation_Handler {
                 break;
             case 'YOUTUBE':
             case 'VIMEO':
-                $button = '<a href="#" onclick="event.preventDefault();var frame=document.getElementById(\''.$objId.'\');this.parentElement.parentElement.style.display=\'none\';frame.src=frame.getAttribute(\'data-src\');frame.style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
+                $button = '<a href="#" onclick="event.preventDefault();var frame=document.getElementById(\''.$uniqueId.'\');this.parentElement.parentElement.style.display=\'none\';frame.src=frame.getAttribute(\'data-src\');frame.style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
                 $return = '
                     <div class="dataProtectionRegulations">
                         <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
@@ -100,7 +100,7 @@ class ESRender_DataProtectionRegulation_Handler {
                 ';
                 break;
             default:
-                $button = '<a href="#" onclick="event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\'wrapperInner_'.$objId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
+                $button = '<a href="#" onclick="event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\''.$uniqueId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
                 $return = '
                     <div class="dataProtectionRegulations">
                         <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>

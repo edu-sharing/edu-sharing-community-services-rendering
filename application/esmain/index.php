@@ -537,7 +537,8 @@ try {
         if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype'))
             $req_data['version'] = '';
 
-        if ($req_data['version'] === false) {
+        // No version and is not a directory (directories won't have a version)
+        if ($req_data['version'] === false && $contentNode->getProperty('NodeType')!= '{http://www.campuscontent.de/model/1.0}map') {
             $displayTitle = $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
             if (empty($displayTitle))
                 $displayTitle = $contentNode->getProperty('{http://www.alfresco.org/model/content/1.0}name');

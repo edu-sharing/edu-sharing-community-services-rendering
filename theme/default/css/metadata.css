@@ -1,10 +1,10 @@
 
-.mdsGroup{
+.edusharing_rendering_metadata_body .mdsGroup{
     flex: 1;
     padding: 0 20px;
     min-width: 33.3%;
 }
-.mdsCaption{
+.edusharing_rendering_metadata_body .mdsCaption{
     background-color: #fff;
     border-bottom: 1px solid #000;
     padding: 15px 15px;
@@ -14,56 +14,51 @@
     font-weight: 600;
     text-transform: uppercase;
 }
-.mdsWidgetCaption{
+.edusharing_rendering_metadata_body .mdsWidgetCaption{
     display: block;
     font-style: italic;
     color: #6f6f6f;
     margin: 25px 0 0 15px;
 }
 
-.mdsWidgetContent{
+.edusharing_rendering_metadata_body .mdsWidgetContent{
     white-space: pre-line;
 }
 
-.mdsWidgetContent > div{
+.edusharing_rendering_metadata_body .mdsWidgetContent > div{
     display: inline-block;
     margin: 7px 0 0 15px;
 }
-.mdsWidgetMultivalue > div{
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue > div{
     background-color: #DDDDDD;
     border-radius: 999px;
     padding: 3px 10px;
     margin-left: 10px;
 }
 
-/*not good*/
-.mds_ccm_lifecyclecontributer_author > div {
+.edusharing_rendering_metadata_body .mds_ccm_lifecyclecontributer_author > div {
     display: inline-block;
     font-style: italic;
-    background-color: #DDDDDD;
-    border-radius: 999px;
-    padding: 3px 10px;
-    margin-right: -10px;
 }
 
-.mdsWidgetContent > div > i {
+.edusharing_rendering_metadata_body .mdsWidgetContent > div > i {
     vertical-align: middle;
 }
 
 
-.mdsContributorTitle {
+.edusharing_rendering_metadata_body .mdsContributorTitle {
     font-weight: 600;
     font-style: italic;
     margin: 25px 0 -15px 16px;
     color: #000;
 }
 
-.mds_license img {
+.edusharing_rendering_metadata_body .mds_license img {
     height: 30px;
     width: auto;
 }
 
-.mds_license .licenseDescription {
+.edusharing_rendering_metadata_body .mds_license .licenseDescription {
     color: #6f6f6f;
     font-size: 90%;
 }
@@ -73,7 +68,7 @@
         display: block;
     }
 
-    .mdsGroup {
+    .edusharing_rendering_metadata_body .mdsGroup {
         display: block;
         padding: 0;
     }

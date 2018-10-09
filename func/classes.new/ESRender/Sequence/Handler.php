@@ -20,8 +20,11 @@ class ESRender_Sequence_Handler {
 
     private function getChildren() {
         $children = array();
+        $item = $this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->children->item;
+        if(!is_array($item))
+            $item = array($item);
         $i = 0;
-        foreach($this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->children->item as $child) {
+        foreach($item as $child) {
             $children[$i]['iconUrl'] = $child->iconUrl;
             foreach($child->properties->item as $property) {
                 $children[$i][$property->key]=$property->value;

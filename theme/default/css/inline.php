@@ -147,6 +147,7 @@ global $MC_URL;?>
     display: flex;
     align-items: center;
     justify-content: space-between;
+    min-height: 2rem;
 }
 
 .edusharing_rendering_content_footer_bot {
@@ -220,8 +221,8 @@ global $MC_URL;?>
     position: absolute;
     z-index: 49;
     background: #f6f6f6;
-    width: calc(100% + 18px);
-    margin-left: -12px;
+    width: calc(100% + 12px);
+    margin-left: -6px;
     border-bottom: 1px solid #4D799A;
 }
 
@@ -245,6 +246,8 @@ global $MC_URL;?>
 }
 
 .edusharing_rendering_content_footer_sequence ul li a, .edusharing_rendering_content_footer_directory ul li a {
+    display: flex;
+    align-items: center;
     color: #383838;
     text-decoration: none;
     width: 100%;
@@ -301,4 +304,12 @@ a.edusharing_rendering_content {
     margin-top: 20px;
     margin-left: 10px;
     margin-right: 10px;
+}
+
+.edusharing_rendering_metadata_body .mdsGroup{
+    padding: 0;
+}
+
+.edusharing_rendering_metadata_body .licenseName {
+    margin-top: 8px;
 }

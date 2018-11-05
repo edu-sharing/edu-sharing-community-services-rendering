@@ -8,9 +8,18 @@ class ESRender_License {
 	private $filename = '';
 
 	public function __construct($esobject) {
-		$this -> author = ($esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN')) ? $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN') : $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN');
-        if($esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}author_freetext'))
-		    $this -> author .= ' & ' . $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}author_freetext');
+        $author = $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN');
+        $authorFreeText = $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}author_freetext');
+        if($author && $authorFreeText) {
+            $this -> author = $author . ' & ' . $authorFreeText;
+        } else if($author) {
+            $this -> author = $author;
+        } else if($authorFreeText) {
+            $this -> author = $authorFreeText;
+        } else {
+            $this -> author = $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}metadatacontributer_creatorFN');
+        }
+
 		$this -> icon = $esobject -> AlfrescoNode -> getProperty('{virtualproperty}licenseicon');
 		$this -> url = $esobject -> AlfrescoNode -> getProperty('{virtualproperty}licenseurl');
 		$this -> permalink = $esobject -> AlfrescoNode -> getProperty('{virtualproperty}permalink');

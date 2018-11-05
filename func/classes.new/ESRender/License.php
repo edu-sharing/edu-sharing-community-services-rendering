@@ -8,8 +8,8 @@ class ESRender_License {
 	private $filename = '';
 
 	public function __construct($esobject) {
-        $author = $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN');
-        $authorFreeText = $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}author_freetext');
+        $author = str_replace('[#]', ', ', $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}lifecyclecontributer_authorFN'));
+        $authorFreeText = str_replace('[#]', ', ', $esobject -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}author_freetext'));
         if($author && $authorFreeText) {
             $this -> author = $author . ' & ' . $authorFreeText;
         } else if($author) {

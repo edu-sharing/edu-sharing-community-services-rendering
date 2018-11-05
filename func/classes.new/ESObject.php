@@ -544,21 +544,22 @@ class ESObject {
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
             return true;
         }
-        
-        if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU') {
-        	error_log('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "DE.FWU", using module "url".');
+
+	$wwwurl = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
+
+        if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU' && !empty($wwwurl)) {
+        	error_log('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "DE.FWU" and {http://www.campuscontent.de/model/1.0}wwwurl set, using module "url".');
         	$this -> ESModule -> setName('url');
         	$this -> ESModule -> loadModuleData();
         	$this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
         	return true;
         }
 
-        // load appropriate module
-        $wwwurl = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
+        // load appropriate module        
         if (!empty($wwwurl)) {
             error_log('Property {http://www.campuscontent.de/model/1.0}wwwurl found, using module "url".');
             $this -> ESModule -> setName('url');
-        } else if ($this -> ESOBJECT_MIMETYPE == 'application/zip') {
+        } else if ($this -> ESOBJECT_MIMETYPE == 'application/zip' || $this -> ESOBJECT_MIMETYPE == 'application/vnd.moodle.backup') {
             if (!$this -> ESModule -> setModuleByResource($this -> ESOBJECT_RESOURCE_TYPE, $this -> ESOBJECT_RESOURCE_VERSION)) {
                 error_log('Could not set module by resource-type/-version, using default ("doc") module.');
                 $this -> ESModule -> setName('doc');

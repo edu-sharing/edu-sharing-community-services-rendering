@@ -1,6 +1,6 @@
 <?php
-define ( 'UPDATEVERSION', '4.1.0.1' );
-set_time_limit(1800);
+define ( 'UPDATEVERSION', '4.1' );
+set_time_limit(18000);
 ini_set('memory_limit', '2048M');
 
 function run($installedVersion) {
@@ -298,6 +298,19 @@ function run($installedVersion) {
             $stmt->bindValue ( ':modname', 'learningapps' );
             $stmt->bindValue ( ':moddesc', 'learningapps' );
             $stmt->execute ();
+        }
+
+        if (version_compare ( '4.0.10', $installedVersion ) > 0) {
+            $pdo = RsPDO::getInstance();
+            if($pdo -> getDriver() == 'pgsql') {
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` ALTER COLUMN `ESTRACK_NAME` TYPE varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+            } else if ($pdo -> getDriver() == 'mysql') {
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` MODIFY `ESTRACK_NAME` varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+            }
         }
 
         if(version_compare ( '4.1.0', $installedVersion ) > 0) {

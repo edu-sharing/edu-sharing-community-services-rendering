@@ -5,7 +5,7 @@ CREATE TABLE `ESTRACK` (
   `ESTRACK_REP_ID` varchar(40) default NULL,
   `ESTRACK_LMS_COURSE_ID` varchar(40) default NULL,
   `ESTRACK_OBJECT_ID` varchar(40) default NULL,
-  `ESTRACK_NAME` varchar(40) default NULL,
+  `ESTRACK_NAME` varchar(512) default NULL,
   `ESTRACK_MODUL_ID` varchar(40) default NULL,
   `ESTRACK_MODUL_NAME` varchar(20) default NULL,
   `ESTRACK_VERSION` varchar(20) default NULL,

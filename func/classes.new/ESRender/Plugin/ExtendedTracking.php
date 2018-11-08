@@ -36,7 +36,7 @@ class ESRender_Plugin_ExtendedTracking extends ESRender_Plugin_Abstract {
             $extendedTrackingParams['ESTRACK_INSTITUTION'] = substr($params['user_id'], strpos($params['user_id'], INSTITUTION_SEAPARTOR) + 1);
             $extendedTrackingParams['ESTRACK_LEARNINGMODULE'] = $learningmodule;
             $extendedTrackingParams['ESTRACK_ELEMENT'] = $element;
-            $extendedTrackingParams['ESTRACK_VIEWTYPE'] = ($params['view_type'] == 'download') ? 'DOWNLOAD' : 'SHOW';
+            $extendedTrackingParams['ESTRACK_VIEWTYPE'] = $params['view_type'];//($params['view_type'] == 'download') ? 'DOWNLOAD' : 'SHOW';
             Config::set('extendedTracking', $extendedTrackingParams);
         }
     }

@@ -32,11 +32,13 @@ class ESRender_Plugin_ExtendedTracking extends ESRender_Plugin_Abstract {
             }
             $extendedTrackingParams = array();
             $extendedTrackingParams['ESTRACK_PERSISTENTID'] = $params['user_id'];
-            $extendedTrackingParams['ESTRACK_AFFILIATION'] = implode(Config::get('renderInfoLMSReturn') -> remoteRoles -> item,',');
+
+	    $affiliation = (is_array(Config::get('renderInfoLMSReturn') -> remoteRoles -> item))?implode(Config::get('renderInfoLMSReturn') -> remoteRoles -> item, ',') : Config::get('renderInfoLMSReturn') -> remoteRoles -> item;
+            $extendedTrackingParams['ESTRACK_AFFILIATION'] = $affiliation;
             $extendedTrackingParams['ESTRACK_INSTITUTION'] = substr($params['user_id'], strpos($params['user_id'], INSTITUTION_SEAPARTOR) + 1);
             $extendedTrackingParams['ESTRACK_LEARNINGMODULE'] = $learningmodule;
             $extendedTrackingParams['ESTRACK_ELEMENT'] = $element;
-            $extendedTrackingParams['ESTRACK_VIEWTYPE'] = $params['view_type'];//($params['view_type'] == 'download') ? 'DOWNLOAD' : 'SHOW';
+            $extendedTrackingParams['ESTRACK_VIEWTYPE'] = $params['view_type'];
             Config::set('extendedTracking', $extendedTrackingParams);
         }
     }

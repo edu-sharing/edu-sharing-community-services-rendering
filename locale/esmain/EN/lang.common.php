@@ -79,4 +79,4 @@ $Translate
     ->addTranslation('en', 'seqenceViewChildren', 'View all and download')
     ->addTranslation('en', 'directoryOpen', 'Open directory and download')
     ->addTranslation('en', 'createdBy', 'Created by')
-    ->addTranslation('de', 'goToCourse', 'Go to course');
+    ->addTranslation('en', 'goToCourse', 'Go to course');

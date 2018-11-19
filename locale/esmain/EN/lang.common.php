@@ -76,4 +76,5 @@ $Translate
     ->addTranslation('en', 'dataProtectionRegulations', 'Privacy policy')
     ->addTranslation('en', 'abort', 'Abort')
     ->addTranslation('en', 'of', 'of')
-    ->addTranslation('en', 'h5p_ie_hint', 'For display problems, please use a current browser.');
+    ->addTranslation('en', 'h5p_ie_hint', 'For display problems, please use a current browser.')
+    ->addTranslation('de', 'goToCourse', 'Go to course');

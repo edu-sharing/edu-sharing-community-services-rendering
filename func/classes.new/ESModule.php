@@ -204,7 +204,7 @@ class ESModule {
 				$this->ESMODULE_NAME = 'scenario';
 				break;
 
-			case ($p_RESOURCE_TYPE == 'eduhtml' && substr($p_RESOURCE_VERSION,0,1) == '1') :
+			case ($p_RESOURCE_TYPE == 'eduhtml') :
 				$this->ESMODULE_NAME = 'html';
 				break;
 

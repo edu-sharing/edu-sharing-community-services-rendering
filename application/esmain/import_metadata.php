@@ -102,7 +102,7 @@ if (!$_SESSION['loggedin']) {
 <head>
 <title>edu-sharing metadata import</title>
 <meta charset="utf-8">
-<link rel="stylesheet" type="text/css" href="../../admin/css/style.css">
+<link rel="stylesheet" type="text/css" href="../../admin/css/style.php">
 </head>
 <body>
 <?php

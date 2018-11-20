@@ -83,5 +83,6 @@ $Translate
     ->addTranslation('de', 'seqenceChildren :count', ':count weitere Materialien gehören dazu')
     ->addTranslation('de', 'seqenceViewChildren', 'Alle ansehen und herunterladen')
     ->addTranslation('de', 'directoryOpen', 'Ordner öffnen und herunterladen')
-    ->addTranslation('de', 'createdBy', 'Erstellt von');
+    ->addTranslation('de', 'createdBy', 'Erstellt von')
+    ->addTranslation('de', 'goToCourse', 'Zum Kurs springen');
 

@@ -25,23 +25,23 @@
     white-space: pre-line;
 }
 
-.edusharing_rendering_metadata_body .mdsWidgetContent > div{
+.edusharing_rendering_metadata_body .mdsWidgetContent .mdsValue{
     display: inline-block;
     margin: 7px 0 0 15px;
 }
-.edusharing_rendering_metadata_body .mdsWidgetMultivalue > div{
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue{
     background-color: #DDDDDD;
     border-radius: 999px;
     padding: 3px 10px;
     margin-left: 10px;
 }
 
-.edusharing_rendering_metadata_body .mds_ccm_lifecyclecontributer_author > div {
+.edusharing_rendering_metadata_body .mds_ccm_lifecyclecontributer_author .mdsValue {
     display: inline-block;
     font-style: italic;
 }
 
-.edusharing_rendering_metadata_body .mdsWidgetContent > div > i {
+.edusharing_rendering_metadata_body .mdsWidgetContent .mdsValue > i {
     vertical-align: middle;
 }
 

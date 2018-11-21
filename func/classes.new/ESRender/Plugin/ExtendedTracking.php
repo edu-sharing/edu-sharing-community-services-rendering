@@ -6,12 +6,16 @@ class ESRender_Plugin_ExtendedTracking extends ESRender_Plugin_Abstract {
 
     public function __construct() {
         $pdo = RsPDO::getInstance();
-        $query = $pdo->query("SHOW COLUMNS FROM `ESTRACK` LIKE 'ESTRACK_AFFILIATION'");
+        $query = $pdo->query("SHOW COLUMNS FROM `ESTRACK` LIKE '%ESTRACK_AFFILIATION%'");
         $result_array = $query->fetchAll(PDO::FETCH_ASSOC);
         if(empty($result_array)) {
             $query = "ALTER TABLE `ESTRACK`
                 ADD COLUMN `ESTRACK_PERSISTENTID` VARCHAR(200), 
-                ADD COLUMN `ESTRACK_AFFILIATION` VARCHAR(200), 
+                ADD COLUMN `ESTRACK_AFFILIATION_0` VARCHAR(200),
+		ADD COLUMN `ESTRACK_AFFILIATION_1` VARCHAR(200), 
+		ADD COLUMN `ESTRACK_AFFILIATION_2` VARCHAR(200),
+		ADD COLUMN `ESTRACK_AFFILIATION_3` VARCHAR(200),
+		ADD COLUMN `ESTRACK_AFFILIATION_4` VARCHAR(200),
                 ADD COLUMN `ESTRACK_INSTITUTION` VARCHAR(200), 
                 ADD COLUMN `ESTRACK_LEARNINGMODULE` VARCHAR(200), 
                 ADD COLUMN `ESTRACK_ELEMENT` VARCHAR(200), 
@@ -33,9 +37,12 @@ class ESRender_Plugin_ExtendedTracking extends ESRender_Plugin_Abstract {
             $extendedTrackingParams = array();
             $extendedTrackingParams['ESTRACK_PERSISTENTID'] = $params['user_id'];
 
-	    $affiliation = (is_array(Config::get('renderInfoLMSReturn') -> remoteRoles -> item))?implode(Config::get('renderInfoLMSReturn') -> remoteRoles -> item, ',') : Config::get('renderInfoLMSReturn') -> remoteRoles -> item;
-            $extendedTrackingParams['ESTRACK_AFFILIATION'] = $affiliation;
-            $extendedTrackingParams['ESTRACK_INSTITUTION'] = substr($params['user_id'], strpos($params['user_id'], INSTITUTION_SEAPARTOR) + 1);
+	    $affiliation = (is_array(Config::get('renderInfoLMSReturn') -> remoteRoles -> item)) ? Config::get('renderInfoLMSReturn') -> remoteRoles -> item : array(Config::get('renderInfoLMSReturn') -> remoteRoles -> item);
+	    foreach($affiliation as $k => $v) {
+		if($k < 5)
+		    $extendedTrackingParams['ESTRACK_AFFILIATION_'.$k] = $a;
+	    }
+            $extendedTrackingParams['ESTRACK_INSTITUTION'] = (strpos($params['user_id'], INSTITUTION_SEAPARTOR) > -1) ? substr($params['user_id'], strpos($params['user_id'], INSTITUTION_SEAPARTOR) + 1) : '';
             $extendedTrackingParams['ESTRACK_LEARNINGMODULE'] = $learningmodule;
             $extendedTrackingParams['ESTRACK_ELEMENT'] = $element;
             $extendedTrackingParams['ESTRACK_VIEWTYPE'] = $params['view_type'];

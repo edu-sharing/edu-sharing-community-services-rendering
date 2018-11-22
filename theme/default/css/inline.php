@@ -142,7 +142,7 @@ global $MC_URL;?>
 }
 
 .edusharing_rendering_content_footer_top {
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
     display: flex;
     align-items: center;

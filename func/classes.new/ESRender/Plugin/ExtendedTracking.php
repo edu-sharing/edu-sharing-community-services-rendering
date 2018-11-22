@@ -38,12 +38,15 @@ class ESRender_Plugin_ExtendedTracking extends ESRender_Plugin_Abstract {
             $extendedTrackingParams['ESTRACK_PERSISTENTID'] = $params['user_id'];
 
 	    $affiliation = (is_array(Config::get('renderInfoLMSReturn') -> remoteRoles -> item)) ? Config::get('renderInfoLMSReturn') -> remoteRoles -> item : array(Config::get('renderInfoLMSReturn') -> remoteRoles -> item);
+	    
 	    foreach($affiliation as $k => $v) {
 		if($k < 5)
-		    $extendedTrackingParams['ESTRACK_AFFILIATION_'.$k] = $a;
+		    $extendedTrackingParams['ESTRACK_AFFILIATION_'.$k] = $v;
 	    }
-            $extendedTrackingParams['ESTRACK_INSTITUTION'] = (strpos($params['user_id'], INSTITUTION_SEAPARTOR) > -1) ? substr($params['user_id'], strpos($params['user_id'], INSTITUTION_SEAPARTOR) + 1) : '';
-            $extendedTrackingParams['ESTRACK_LEARNINGMODULE'] = $learningmodule;
+	    $extendedTrackingParams['ESTRACK_INSTITUTION'] = (strpos($params['user_id'], INSTITUTION_SEAPARTOR) > -1) ? substr($params['user_id'], strpos($params['user_id'], INSTITUTION_SEAPARTOR) + 1) : '';
+            if(empty($extendedTrackingParams['ESTRACK_INSTITUTION']))
+		$extendedTrackingParams['ESTRACK_INSTITUTION'] = 'local';
+	    $extendedTrackingParams['ESTRACK_LEARNINGMODULE'] = $learningmodule;
             $extendedTrackingParams['ESTRACK_ELEMENT'] = $element;
             $extendedTrackingParams['ESTRACK_VIEWTYPE'] = $params['view_type'];
             Config::set('extendedTracking', $extendedTrackingParams);

@@ -15,6 +15,7 @@ global $MC_URL;?>
 }
 
 .edusharing_rendering_content_wrapper {
+    min-width: 300px;
     line-height: 1.2;
 }
 

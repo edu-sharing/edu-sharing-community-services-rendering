@@ -453,7 +453,8 @@ try {
         $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'appId', $hc->prop_array['appid']);
         $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'timestamp', $timestamp); 
         $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signature', $signature); 
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signed', $signData);       
+        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signed', $signData);
+        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'baseUrl', $req_data['baseUrl']);
         $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'locale', $Locale->getLanguageTwoLetters() . '_' . $Locale->getCountryTwoLetters());
 
         $client->__setSoapHeaders($headers); 
@@ -467,8 +468,7 @@ try {
             "lmsId" => $req_data['app_id'],
             "courseId" => $req_data['course_id'],
             "resourceId" => $req_data['resource_id'],
-            "version" => $req_data['version'],
-            "baseUrl" => $req_data['baseUrl']
+            "version" => $req_data['version']
         );
         $renderInfoLMSReturn = $client->getRenderInfoLMS($params);
 

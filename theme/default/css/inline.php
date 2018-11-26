@@ -279,10 +279,6 @@ video, audio {
     border: 0;
 }
 
-.edu_sharing_filename {
-margin-top: -30px;
-}
-
 .dataProtectionRegulations, .dataProtectionRegulationsDialog {
 background: #fff;
 padding: 20px;

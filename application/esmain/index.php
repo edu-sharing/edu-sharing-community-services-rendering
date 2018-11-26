@@ -220,8 +220,10 @@ try {
     }
     
     //BACKLINK
-    $req_data['backLink'] = mc_Request::fetch('backLink', 'CHAR'); 
+    $req_data['backLink'] = mc_Request::fetch('backLink', 'CHAR');
 
+    //BASEURL FROM REPOSITORY
+    $req_data['baseUrl'] = mc_Request::fetch('baseUrl', 'CHAR');
 
     // VERSION (optional)
     $req_data['version'] = mc_Request::fetch('version', 'CHAR');
@@ -465,7 +467,8 @@ try {
             "lmsId" => $req_data['app_id'],
             "courseId" => $req_data['course_id'],
             "resourceId" => $req_data['resource_id'],
-            "version" => $req_data['version']
+            "version" => $req_data['version'],
+            "baseUrl" => $req_data['baseUrl']
         );
         $renderInfoLMSReturn = $client->getRenderInfoLMS($params);
 

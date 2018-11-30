@@ -26,8 +26,6 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: *");
 
-
-
 try {
     include_once ('../../conf.inc.php');
 
@@ -732,14 +730,9 @@ try {
         'moduleRoot' => realpath(dirname(__FILE__) . '/../../modules/' . $moduleName),
     	'token' => $token
     );
-    
-    $cookie_path = '/';
-    $cookie_expire = 0;
-    $cookie_domain = MC_HOST;
 
     // re-start module-session to finish processing    
     session_write_close();
-
     session_save_path($moduleSessionSavePath);
     session_name($moduleSessionName);
     session_id($moduleSessionId);

@@ -1,3 +1,7 @@
+<?php
+header("Content-type: text/css");
+global $MC_URL;?>
+
 body {
 	padding: 0;
 	margin: 0;
@@ -90,6 +94,10 @@ a.edusharing_rendering_content {
 	margin-top: 20px;
 	text-transform: uppercase;
 	font-weight: 600;
+}
+
+img.edusharing_rendering_content {
+	background-image: url('<?php echo $MC_URL?>/theme/default/img/background-transparent.png');
 }
 
 .edusharing_rendering_content, video, audio, #edusharing_htmlobject, .edusharing_rendering_content_preview {

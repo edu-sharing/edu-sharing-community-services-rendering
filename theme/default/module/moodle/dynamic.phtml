@@ -1,11 +1,13 @@
 <?php 
 global $Locale, $Translate;
 $msg = array();
-$msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
+$msg['showInformation'] = new Phools_Message_Default('showInformation');
+$msg['hideInformation'] = new Phools_Message_Default('hideInformation');
+$msg['goToCourse'] = new Phools_Message_Default('goToCourse');
 ?>
 
 <style>
-<?php include(dirname(__FILE__) . '/../../css/dynamic.css'); ?>
+<?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
 <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
 </style>
 
@@ -13,7 +15,7 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
 	<div class="edusharing_rendering_content_wrapper" role="main">	
 		<?php echo '<img class="edusharing_rendering_content_preview" src="'.$previewUrl.'">'?>
-		<a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
+		<a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['goToCourse']->localize($Locale, $Translate);?></a>
 	</div>
 	<?php echo $metadata; ?>
 </div>

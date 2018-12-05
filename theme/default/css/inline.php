@@ -15,6 +15,7 @@ global $MC_URL;?>
 }
 
 .edusharing_rendering_content_wrapper {
+    min-width: 300px;
     line-height: 1.2;
 }
 
@@ -142,7 +143,7 @@ global $MC_URL;?>
 }
 
 .edusharing_rendering_content_footer_top {
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
     display: flex;
     align-items: center;
@@ -205,15 +206,14 @@ global $MC_URL;?>
 .edusharing_rendering_content_footer_sequence_toggle, .edusharing_rendering_content_footer_directory_toggle {
     color: #4D799A;
     cursor:pointer;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
 }
 
 .edusharing_rendering_content_footer_directory_toggle {
     display: flex;
     align-items: center;
-}
-
-.edusharing_rendering_content_footer_sequence_toggle:hover, .edusharing_rendering_content_footer_directory_toggle:hover {
-   // text-decoration: underline;
 }
 
 .edusharing_rendering_content_footer_sequence ul {
@@ -277,10 +277,6 @@ global $MC_URL;?>
 video, audio {
     margin-bottom: -6px;
     border: 0;
-}
-
-.edu_sharing_filename {
-margin-top: -30px;
 }
 
 .dataProtectionRegulations, .dataProtectionRegulationsDialog {

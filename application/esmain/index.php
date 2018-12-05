@@ -26,8 +26,6 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: *");
 
-
-
 try {
     include_once ('../../conf.inc.php');
 
@@ -220,8 +218,10 @@ try {
     }
     
     //BACKLINK
-    $req_data['backLink'] = mc_Request::fetch('backLink', 'CHAR'); 
+    $req_data['backLink'] = mc_Request::fetch('backLink', 'CHAR');
 
+    //BASEURL FROM REPOSITORY
+    $req_data['baseUrl'] = mc_Request::fetch('baseUrl', 'CHAR');
 
     // VERSION (optional)
     $req_data['version'] = mc_Request::fetch('version', 'CHAR');
@@ -451,7 +451,8 @@ try {
         $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'appId', $hc->prop_array['appid']);
         $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'timestamp', $timestamp); 
         $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signature', $signature); 
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signed', $signData);       
+        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signed', $signData);
+        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'baseUrl', $req_data['baseUrl']);
         $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'locale', $Locale->getLanguageTwoLetters() . '_' . $Locale->getCountryTwoLetters());
 
         $client->__setSoapHeaders($headers); 
@@ -729,14 +730,9 @@ try {
         'moduleRoot' => realpath(dirname(__FILE__) . '/../../modules/' . $moduleName),
     	'token' => $token
     );
-    
-    $cookie_path = '/';
-    $cookie_expire = 0;
-    $cookie_domain = MC_HOST;
 
     // re-start module-session to finish processing    
     session_write_close();
-
     session_save_path($moduleSessionSavePath);
     session_name($moduleSessionName);
     session_id($moduleSessionId);

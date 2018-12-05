@@ -12,8 +12,7 @@ class ESRender_Plugin_DDB
     private $url = '';
     private $proxy = '';
     private $apiKey = '';
-    private $responseView;
-    private $responseBinaries;
+    private $node;
 
     /**
      *
@@ -36,13 +35,12 @@ class ESRender_Plugin_DDB
         if($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') === 'DDB') {
             $logger->info('remoterepositorytype = DDB, start using plugin');
             $id = $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remotenodeid');
-            $this->responseView = $this->callApi($contentNode, '/items/'.$id.'/view');
+            $this->node = $this->callApi($contentNode, '/items/' . $id);
             $prop = new stdClass();
             $prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
-            $prop -> value = $this->responseView  -> item -> origin;
+            $prop -> value = $this -> node -> view -> item -> origin;
             $contentNode -> setProperties(array($prop));
-            $this->responseBinaries = $this->callApi($contentNode, '/items/'.$id.'/binaries');
-            $binary = $this->url . $this->responseBinaries -> binary[0] -> {'@path'};
+            $binary = $this -> url . '/binary/' . $this -> node -> preview -> thumbnail -> {'@href'};
             $b64image = base64_encode(file_get_contents($binary . '?oauth_consumer_key=' . $this->apiKey));
             Config::set('base64Preview', 'data:image/jpg;base64,'.$b64image);
             $this->getEmbedding($contentNode);
@@ -53,14 +51,14 @@ class ESRender_Plugin_DDB
 
         global $Locale, $Translate;
 
-        $wwwUrl = $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
+        $wwwUrl = $contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
 
-        $Message = new Phools_Message_Default('jumpToDataProvider :dataProvider', array(new Phools_Message_Param_String(':dataProvider', $this->responseView ->item->institution->name)));
+        $Message = new Phools_Message_Default('jumpToDataProvider :dataProvider', array(new Phools_Message_Param_String(':dataProvider', utf8_decode($this -> node -> view -> item -> institution -> name))));
 
         if(strpos($wwwUrl, 'av.getinfo.de') !== false) {
             if($_REQUEST['display'] === 'inline') {
                 Config::set('urlEmbedding', '<iframe width="800" height="450" style="margin-bottom:-6px" scrolling="no" src="//av.tib.eu/player/' . array_pop(explode('/', $wwwUrl)) . '" frameborder="0" allowfullscreen></iframe>');
-                Config::set('urlEmbeddingLicense', '<div><img src="' . $this->iconUrl . '"><span class="ddb_title">' . utf8_encode($this->responseView->item->title) . '</span>
+                Config::set('urlEmbeddingLicense', '<div><img src="' . $this->iconUrl . '"><span class="ddb_title">' . utf8_encode($this -> node -> view -> item -> title) . '</span>
                     <br/><a target="_blank" href="' . $wwwUrl . '"> ' . utf8_encode($Message->localize($Locale, $Translate)) . '</a></div>');
             } else {
                 Config::set('urlEmbedding', '<iframe style="display: block; margin: auto;" width="800" height="450" scrolling="no" src="//av.tib.eu/player/' . array_pop(explode('/', $wwwUrl)) . '" frameborder="0" allowfullscreen></iframe>');
@@ -69,8 +67,8 @@ class ESRender_Plugin_DDB
         }
 
         if($_REQUEST['display'] === 'inline')
-            Config::set('urlEmbeddingLicense', '<div style="display: inline-block; max-width: 400px;"><img style="float:left; margin-right: 10px; margin-bottom: 5px;" src="'.Config::get('base64Preview').'">
-                    <img src="'.$this->iconUrl.'"><span class="ddb_title">'.utf8_encode($this->responseView ->item->title).'</span>
+            Config::set('urlEmbedding', '<div style="display: inline-block; max-width: 400px;"><img style="float:left; margin-right: 10px; margin-bottom: 5px;" src="'.Config::get('base64Preview').'">
+                    <img src="'.$this->iconUrl.'"><span class="ddb_title">'.utf8_encode($this -> node -> view -> item -> title).'</span>
                     <br/><a target="_blank" href="'.$wwwUrl.'"> ' . utf8_encode($Message -> localize($Locale, $Translate)).'</a></div>');
     }
 

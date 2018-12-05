@@ -78,5 +78,5 @@ $Translate
     ->addTranslation('en', 'seqenceChildren :count', ':count more materials belong to this')
     ->addTranslation('en', 'seqenceViewChildren', 'View all and download')
     ->addTranslation('en', 'directoryOpen', 'Open directory and download')
-    ->addTranslation('en', 'createdBy', 'Created by');
-
+    ->addTranslation('en', 'createdBy', 'Created by')
+    ->addTranslation('en', 'goToCourse', 'Go to course');

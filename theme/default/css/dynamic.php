@@ -179,7 +179,7 @@ a.dataProtectionRegulationsButton {
 	line-height: initial;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
 
 	.edusharing_rendering_content_wrapper h3 {
 		font-size: 90%;

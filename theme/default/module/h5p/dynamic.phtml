@@ -48,7 +48,7 @@ if(!empty($downloadUrl))
 ?>
 <script>
     //for ie <= 11 show hint
-    if(window.navigator.userAgent.indexOf('MSIE ') > 0 || window.navigator.userAgent.indexOf('Trident/')) {
+    if(window.navigator.userAgent.indexOf('MSIE ') > 0) {
         var hints = document.getElementsByClassName('edusharing_rendering_content_ie_hint');
         for (var i = 0; i < hints.length; i++) {
             hints[i].style.display = 'block'

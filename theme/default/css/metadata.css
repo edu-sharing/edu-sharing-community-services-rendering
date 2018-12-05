@@ -63,7 +63,7 @@
     font-size: 90%;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
     .edusharing_rendering_metadata_body {
         display: block;
     }

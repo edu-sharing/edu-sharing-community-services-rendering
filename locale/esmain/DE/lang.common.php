@@ -81,5 +81,6 @@ $Translate
     ->addTranslation('de', 'dataProtectionRegulations', 'Datenschutzbestimmungen')
     ->addTranslation('de', 'abort', 'Abbrechen')
     ->addTranslation('de', 'of', 'von')
-    ->addTranslation('de', 'h5p_ie_hint', 'Bei Darstellungsproblemen nutzen Sie bitte einen aktuellen Browser.');
+    ->addTranslation('de', 'h5p_ie_hint', 'Bei Darstellungsproblemen nutzen Sie bitte einen aktuellen Browser.')
+    ->addTranslation('de', 'goToCourse', 'Zum Kurs springen');
 

@@ -86,7 +86,7 @@ if (!$_SESSION['loggedin']) {
         $err = '<span id="message"><div class="user_message user_error">' . $langArr['timeout'] . '</div></span>';
     }
     echo '
-     <html><head><title>' . $langArr['importHeading'] . '</title><meta charset="utf-8"><link rel="stylesheet" type="text/css" href="../../admin/css/style.css"></head><body>
+     <html><head><title>' . $langArr['importHeading'] . '</title><meta charset="utf-8"><link rel="stylesheet" type="text/css" href="../../admin/css/style.php"></head><body>
        <h2>' . $langArr['importHeading'] . '</h2>
        ' . $err . '
         <form class="login" action="?login=1" method="post">

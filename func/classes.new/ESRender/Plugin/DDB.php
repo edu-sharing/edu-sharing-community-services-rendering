@@ -1,5 +1,8 @@
 <?php
 
+define('API_URL_1', 'https://api.deutsche-digitale-bibliothek.de');
+define('API_URL_2', 'https://iiif.deutsche-digitale-bibliothek.de/image/2');
+
 /**
  *Handle DDB Materials
  *
@@ -9,8 +12,6 @@ class ESRender_Plugin_DDB
     extends ESRender_Plugin_Abstract
 {
 
-    private $url = '';
-    private $proxy = '';
     private $apiKey = '';
     private $node;
 
@@ -18,11 +19,8 @@ class ESRender_Plugin_DDB
      *
      * @param string $Url
      */
-    public function __construct($url, $proxy = '', $apiKey) {
-        $this->url = $url;
-        $this->proxy = $proxy;
-        $this->apiKey = $apiKey;
-        $this->iconUrl = '';
+    public function __construct($apiKey) {
+        $this -> apiKey = $apiKey;
     }
 
     /**
@@ -35,13 +33,27 @@ class ESRender_Plugin_DDB
         if($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') === 'DDB') {
             $logger->info('remoterepositorytype = DDB, start using plugin');
             $id = $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remotenodeid');
-            $this->node = $this->callApi($contentNode, '/items/' . $id);
+            
+            $this -> node = $this->callApi(API_URL_1 . '/items/' . $id);
             $prop = new stdClass();
             $prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
             $prop -> value = $this -> node -> view -> item -> origin;
             $contentNode -> setProperties(array($prop));
-            $binary = $this -> url . '/binary/' . $this -> node -> preview -> thumbnail -> {'@href'};
-            $b64image = base64_encode(file_get_contents($binary . '?oauth_consumer_key=' . $this->apiKey));
+            $ref = $this -> node -> binaries -> binary -> {'@ref'};
+            $info = $this->callApi(API_URL_2 . '/' . $ref . '/info.json');
+            $sizes = $info -> sizes;
+
+            $width = $sizes[0] -> width;
+            $height = $sizes[0] -> height;
+            foreach($sizes as $size) {
+                if($size -> width < 500 && $size -> width > 300) {
+                    $width = $size -> width;
+                    $height = $size -> height;
+                }
+            }
+
+            $imgSrc = API_URL_2 . '/' .  $ref . '/full/!' . $width . ',' . $height . '/0/default.jpg';
+            $b64image = base64_encode(file_get_contents($imgSrc));
             Config::set('base64Preview', 'data:image/jpg;base64,'.$b64image);
             $this->getEmbedding($contentNode);
         }
@@ -72,10 +84,10 @@ class ESRender_Plugin_DDB
                     <br/><a target="_blank" href="'.$wwwUrl.'"> ' . utf8_encode($Message -> localize($Locale, $Translate)).'</a></div>');
     }
 
-    protected function callApi($contentNode, $path) {
+    protected function callApi($path) {
         $logger = $this->getLogger();
         try {
-            $url = $this->url . $path . '?oauth_consumer_key=' . $this->apiKey;
+            $url = $path . '?oauth_consumer_key=' . $this->apiKey;
             $curlhandle = curl_init($url);
             curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);
             curl_setopt($curlhandle, CURLOPT_HEADER, 0);

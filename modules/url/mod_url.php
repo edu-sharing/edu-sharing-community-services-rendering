@@ -72,7 +72,7 @@ extends ESRender_Module_NonContentNode_Abstract {
 
 
         if(Config::get('urlEmbedding')) {
-            $embedding = Config::get('urlEmbedding');
+            $embedding = Config::get('urlEmbedding') . $footer;
         } else if ($this -> detectVideo()) {
             $embedding = $this -> getVideoEmbedding($requestData['width'], $footer);
         } else if($this -> detectAudio()) {

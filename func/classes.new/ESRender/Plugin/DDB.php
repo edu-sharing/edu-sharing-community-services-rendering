@@ -53,13 +53,11 @@ class ESRender_Plugin_DDB
             }
 
             $imgSrc = API_URL_2 . '/' .  $ref . '/full/!' . $width . ',' . $height . '/0/default.jpg';
-            $b64image = base64_encode(file_get_contents($imgSrc));
-            Config::set('base64Preview', 'data:image/jpg;base64,'.$b64image);
-            $this->getEmbedding($contentNode);
+            $this->getEmbedding($contentNode, $imgSrc);
         }
     }
 
-    public function getEmbedding($contentNode) {
+    public function getEmbedding($contentNode, $imgSrc) {
 
         global $Locale, $Translate;
 
@@ -67,6 +65,7 @@ class ESRender_Plugin_DDB
 
         $Message = new Phools_Message_Default('jumpToDataProvider :dataProvider', array(new Phools_Message_Param_String(':dataProvider', utf8_decode($this -> node -> view -> item -> institution -> name))));
 
+        /* @todo check this with current api state
         if(strpos($wwwUrl, 'av.getinfo.de') !== false) {
             if($_REQUEST['display'] === 'inline') {
                 Config::set('urlEmbedding', '<iframe width="800" height="450" style="margin-bottom:-6px" scrolling="no" src="//av.tib.eu/player/' . array_pop(explode('/', $wwwUrl)) . '" frameborder="0" allowfullscreen></iframe>');
@@ -76,12 +75,13 @@ class ESRender_Plugin_DDB
                 Config::set('urlEmbedding', '<iframe style="display: block; margin: auto;" width="800" height="450" scrolling="no" src="//av.tib.eu/player/' . array_pop(explode('/', $wwwUrl)) . '" frameborder="0" allowfullscreen></iframe>');
             }
             return;
-        }
+        }*/
 
-        if($_REQUEST['display'] === 'inline')
-            Config::set('urlEmbedding', '<div style="display: inline-block; max-width: 400px;"><img style="float:left; margin-right: 10px; margin-bottom: 5px;" src="'.Config::get('base64Preview').'">
-                    <img src="'.$this->iconUrl.'"><span class="ddb_title">'.utf8_encode($this -> node -> view -> item -> title).'</span>
-                    <br/><a target="_blank" href="'.$wwwUrl.'"> ' . utf8_encode($Message -> localize($Locale, $Translate)).'</a></div>');
+        if($_REQUEST['display'] === 'inline') {
+            Config::set('urlEmbedding', '<div style="display: inline-block; max-width: 400px;"><img style="float:left; margin-right: 10px; margin-bottom: 5px;" src="'.$imgSrc.'"></div>');
+            Config::set('licensePre', '<img src="'.$this->iconUrl.'">');
+            Config::set('licensePost', '<br/><a target="_blank" href="'.$wwwUrl.'"> ' . utf8_encode($Message -> localize($Locale, $Translate)).'</a>');
+        }
     }
 
     protected function callApi($path) {

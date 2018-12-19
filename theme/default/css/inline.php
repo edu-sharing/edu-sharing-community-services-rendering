@@ -309,3 +309,7 @@ a.edusharing_rendering_content {
 .edusharing_rendering_metadata_body .licenseName {
     margin-top: 8px;
 }
+
+.edu_wrapper {
+    background-color: #f6f6f6;
+}

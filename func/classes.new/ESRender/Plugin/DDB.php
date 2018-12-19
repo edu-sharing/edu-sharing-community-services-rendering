@@ -79,7 +79,7 @@ class ESRender_Plugin_DDB
 
         if($_REQUEST['display'] === 'inline') {
             Config::set('urlEmbedding', '<div style="display: inline-block; max-width: 400px;"><img style="float:left; margin-right: 10px; margin-bottom: 5px;" src="'.$imgSrc.'"></div>');
-            Config::set('licensePre', '<img src="'.$this->iconUrl.'">');
+            Config::set('licensePre', '<img style="display:inline-style;margin-right:10px;" src="'.$this->iconUrl.'">');
             Config::set('licensePost', '<br/><a target="_blank" href="'.$wwwUrl.'"> ' . utf8_encode($Message -> localize($Locale, $Translate)).'</a>');
         }
     }

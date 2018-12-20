@@ -1,3 +1,13 @@
+v4.2
+- IMS Common Cartridge packages rendering
+- Plugin for "Deutsche Digitale Bibliothek"
+- Plugin for "NetMath"
+- Plugin for "Serlo"
+- edu-sharing folder rendering
+- edu-sharing series rendering
+- add DSGVO conformity
+- redesign inline (LMS) rendering
+
 v4.1
 - H5P rendering
 - LTI rendering

@@ -54,7 +54,7 @@ class ESRender_Plugin_Omega
             $response = $this->evaluateResponse($response, $contentNode);
             $prop = new stdClass();
             $prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
-            $prop -> value = $response -> get -> streamURL;
+            $prop -> value = urldecode($response -> get -> streamURL);
             $contentNode -> setProperties(array($prop));
         }
     }

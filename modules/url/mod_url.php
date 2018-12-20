@@ -66,13 +66,13 @@ extends ESRender_Module_NonContentNode_Abstract {
         }
 
         if(Config::get('urlEmbedding')) {
-            $embedding = Config::get('urlEmbedding') . $license . $metadata;;
+            $embedding = Config::get('urlEmbedding') . $license . utf8_decode($metadata);
         } else if ($this -> detectVideo()) {
-            $embedding = $this -> getVideoEmbedding($requestData['width']) . $license . $metadata;
+            $embedding = $this -> getVideoEmbedding($requestData['width']) . $license . utf8_decode($metadata);
         } else if($this -> detectAudio()) {
-            $embedding = $this->getAudioEmbedding() . $license . $metadata;
+            $embedding = $this->getAudioEmbedding() . $license . utf8_decode($metadata);
         } else if($this -> detectImage()) {
-            $embedding = $this -> getImageEmbedding() . $license . $metadata;
+            $embedding = $this -> getImageEmbedding() . $license . utf8_decode($metadata);
         } else {
             $embedding = $this -> getLinkEmbedding();
             if(!empty($license) || !empty($metadata)) {
@@ -80,7 +80,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             	$embedding .= '<span style="display: inline-block">' . utf8_encode($license) . '</span>';
             	if(!empty($license) && !empty($metadata))
             		$embedding .= '&nbsp|&nbsp';
-            	$embedding .= '<span style="display: inline-block">' . $metadata . '</span>';
+            	$embedding .= '<span style="display: inline-block">' . utf8_decode($metadata) . '</span>';
             	$embedding .= ')';
         
             }

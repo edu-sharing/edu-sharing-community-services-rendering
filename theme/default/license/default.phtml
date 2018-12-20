@@ -7,22 +7,22 @@ $msg['customLicense'] = new Phools_Message_Default('custom license');
 
 $licenceContent =  Config::get('licensePre', '');
 
-$licenceContent .= '<a class="license_permalink" href="'.$license_permalink.'" target="_blank" title="'.$license_filename.'"><es:title xmlns:es="http://edu-sharing.net/object" >'
+$licenceContent .= '<a class="license_permalink" href="'.$license_permalink.'" target="_blank" title="'.htmlentities($license_filename).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
                     . htmlentities($license_filename)
                     . '</es:title></a>'
                     . '&nbsp;';
 if(!empty($license_author)) {
-    $licenceContent .= '<br/>' . $this->translate('authored_by')
+    $licenceContent .= '<br/>' . htmlentities($this->translate('authored_by'), ENT_COMPAT, 'utf-8')
                     . '&nbsp;'
                     . '<span class="author">'
-                    . $license_author. '</span>'
+                    . htmlentities($license_author, ENT_QUOTES, 'utf-8') . '</span>'
                     . '&nbsp;';
 }
 $licenceContent .=  htmlentities($this->translate('published under a'), ENT_COMPAT, 'utf-8')
                     . '&nbsp;';
                     if(!empty($license_icon_url)) {
-                        $licenceContent .= '<a target="_blank" class="license_link" href="' . $license_url . '">';
-                        $licenceContent .= '<img class="license_icon" style="height: 16px" src="' . $license_icon_url . '" />';
+                        $licenceContent .= '<a target="_blank" class="license_link" href="' . htmlspecialchars($license_url, ENT_QUOTES, 'utf-8') . '">';
+                        $licenceContent .= '<img class="license_icon" style="height: 16px" src="' . htmlspecialchars($license_icon_url, ENT_QUOTES, 'utf-8') . '" />';
                         $licenceContent .= '</a>';    
                     } else { 
                         $licenceContent .= $msg['customLicense']->localize($Locale, $Translate);
@@ -30,6 +30,6 @@ $licenceContent .=  htmlentities($this->translate('published under a'), ENT_COMP
 
 $licenceContent .= Config::get('licensePost', '');
 
-echo utf8_encode($licenceContent);
+echo $licenceContent;
 ?>
 </div>

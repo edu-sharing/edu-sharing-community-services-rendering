@@ -57,6 +57,7 @@ extends ESRender_Module_ContentNode_Abstract
 
 
 		try {
+            include_once __DIR__ . '/config.php';
 			$m_path = $this->_ESOBJECT->getFilePath();
 			$m_name = $this->_ESOBJECT->getTitle();
 

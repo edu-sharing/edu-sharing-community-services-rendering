@@ -335,6 +335,9 @@ try {
 
     $Logger -> debug('Successfully loaded home repository by id "' . $homeRepId . '".');
 
+    $homeRep->url = str_replace('/services/authbyapp', '', $homeRep->prop_array['authenticationwebservice']);
+    Config::set('homeRepository', $homeRep);
+
     $user_name = '';
     $privateKey = openssl_pkey_get_private($hc -> prop_array['private_key']);
     $decryptStatus = openssl_private_decrypt ( base64_decode($req_data['username']), $user_name, $privateKey);
@@ -426,7 +429,7 @@ try {
     $SoapClientParams = array();
     if ( defined('USE_HTTP_PROXY') && USE_HTTP_PROXY ) {
         require_once(dirname(__FILE__) . '/../../func/classes.new/Helper/ProxyHelper.php');
-        $proxyHelper = new ProxyHelper($remote_rep->prop_array['renderinfowebservice_wsdl']);
+        $proxyHelper = new ProxyHelper(Config::get('homeRepository')->prop_array['renderinfoservice_wsdl']);
         $SoapClientParams = $proxyHelper -> getSoapClientParams();
     }
 

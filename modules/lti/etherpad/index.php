@@ -75,7 +75,7 @@ $protocol = PROTOCOL;
 $path = PADPATH;
 $apiKey = APIKEY;
 
-$padUrl = $protocol . '://' . $server . '/' . $path;
+$padUrl = rtrim($protocol . '://' . $server . '/' . $path, '/\\');
 
 $fname = $_POST['fname'];
 $user_id = $_POST['user_id'];

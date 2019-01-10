@@ -168,7 +168,6 @@ global $MC_URL;?>
     width: 100%;
     background: #f6f6f6;
     padding: 12px;
-    border-bottom: 1px solid #4D799A;
 }
 
 .edusharing_rendering_content_footer_directory_header {
@@ -206,14 +205,18 @@ global $MC_URL;?>
 .edusharing_rendering_content_footer_sequence_toggle, .edusharing_rendering_content_footer_directory_toggle {
     color: #4D799A;
     cursor:pointer;
-    margin-top: 6px;
     display: flex;
     align-items: center;
+}
+
+.edusharing_rendering_content_footer_sequence_toggle {
+    margin-top: 6px;
 }
 
 .edusharing_rendering_content_footer_directory_toggle {
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .edusharing_rendering_content_footer_sequence ul {
@@ -223,7 +226,6 @@ global $MC_URL;?>
     background: #f6f6f6;
     width: calc(100% + 12px);
     margin-left: -6px;
-    border-bottom: 1px solid #4D799A;
 }
 
 .edusharing_rendering_content_footer_directory ul {

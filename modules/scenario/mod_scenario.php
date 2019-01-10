@@ -70,7 +70,7 @@ class mod_scenario
 			if ( defined('USE_HTTP_PROXY') && USE_HTTP_PROXY )
 			{
                 require_once(dirname(__FILE__) . '../../func/classes.new/Helper/ProxyHelper.php');
-                $proxyHelper = new ProxyHelper($remote_rep->prop_array['renderinfoservice_wsdl']);
+                $proxyHelper = new ProxyHelper(Config::get('homeRepository')->prop_array['renderinfoservice_wsdl']);
                 $SoapClientParams = $proxyHelper -> getSoapClientParams();
 			}
 
@@ -155,7 +155,7 @@ class mod_scenario
 			if ( defined('USE_HTTP_PROXY') && USE_HTTP_PROXY )
 			{
                 require_once(dirname(__FILE__) . '../../func/classes.new/Helper/ProxyHelper.php');
-                $proxyHelper = new ProxyHelper($remote_rep->prop_array['renderinfoservice_wsdl']);
+                $proxyHelper = new ProxyHelper(Config::get('homeRepository')->prop_array['renderinfoservice_wsdl']);
                 $SoapClientParams = $proxyHelper -> getSoapClientParams();
 			}
 
@@ -197,7 +197,7 @@ class mod_scenario
 			if ( defined('USE_HTTP_PROXY') && USE_HTTP_PROXY )
 			{
                 require_once(dirname(__FILE__) . '../../func/classes.new/Helper/ProxyHelper.php');
-                $proxyHelper = new ProxyHelper($remote_rep->prop_array['renderinfoservice_wsdl']);
+                $proxyHelper = new ProxyHelper(Config::get('homeRepository')->prop_array['renderinfoservice_wsdl']);
                 $SoapClientParams = $proxyHelper -> getSoapClientParams();
 			}
 

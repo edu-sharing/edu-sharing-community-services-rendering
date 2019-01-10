@@ -5,7 +5,9 @@ global $Locale, $Translate;
 $msg = array();
 $msg['customLicense'] = new Phools_Message_Default('custom license');
 
-$licenceContent = '<a class="license_permalink" href="'.$license_permalink.'" target="_blank" title="'.htmlentities($license_filename).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
+$licenceContent =  Config::get('licensePre', '');
+
+$licenceContent .= '<a class="license_permalink" href="'.$license_permalink.'" target="_blank" title="'.htmlentities($license_filename).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
                     . htmlentities($license_filename)
                     . '</es:title></a>'
                     . '&nbsp;';
@@ -25,8 +27,9 @@ $licenceContent .=  htmlentities($this->translate('published under a'), ENT_COMP
                     } else { 
                         $licenceContent .= $msg['customLicense']->localize($Locale, $Translate);
                     }
-                    
-                    
+
+$licenceContent .= Config::get('licensePost', '');
+
 echo $licenceContent;
 ?>
 </div>

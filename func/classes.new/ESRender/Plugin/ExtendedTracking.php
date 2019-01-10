@@ -22,8 +22,8 @@ class ESRender_Plugin_ExtendedTracking extends ESRender_Plugin_Abstract {
     }
 
     public function preTrackObject($params = array()) {
-        if(ENABLE_TRACK_OBJECT && DISABLE_TRACK_ANONYMIZATION) {
-            $learningmodule = '';
+        if(ENABLE_TRACK_OBJECT) {
+            $learningmodule = $element = '';
             foreach (Config::get('renderInfoLMSReturn')->properties->item as $property) {
                 if($property->key == '{http://www.campuscontent.de/model/1.0}learnunit_id')
                     $learningmodule = $property->value;
@@ -31,9 +31,11 @@ class ESRender_Plugin_ExtendedTracking extends ESRender_Plugin_Abstract {
                     $element  = $property->value;
             }
             $extendedTrackingParams = array();
-            $extendedTrackingParams['ESTRACK_PERSISTENTID'] = $params['user_id'];
-            $extendedTrackingParams['ESTRACK_AFFILIATION'] = strtoupper(Config::get('renderInfoLMSReturn') -> eduSchoolPrimaryAffiliation);
-            $extendedTrackingParams['ESTRACK_INSTITUTION'] = substr($params['user_id'], strpos($params['user_id'], INSTITUTION_SEAPARTOR) + 1);
+            if(DISABLE_TRACK_ANONYMIZATION) {
+                $extendedTrackingParams['ESTRACK_PERSISTENTID'] = $params['user_id'];
+                $extendedTrackingParams['ESTRACK_AFFILIATION'] = strtoupper(Config::get('renderInfoLMSReturn')->eduSchoolPrimaryAffiliation);
+                $extendedTrackingParams['ESTRACK_INSTITUTION'] = substr($params['user_id'], strpos($params['user_id'], INSTITUTION_SEAPARTOR) + 1);
+            }
             $extendedTrackingParams['ESTRACK_LEARNINGMODULE'] = $learningmodule;
             $extendedTrackingParams['ESTRACK_ELEMENT'] = $element;
             $extendedTrackingParams['ESTRACK_VIEWTYPE'] = ($params['view_type'] == 'download') ? 'DOWNLOAD' : 'SHOW';

@@ -183,7 +183,7 @@ class ESModule {
                 $this->ESMODULE_NAME = 'lti';
                 break;
             
-			case ($p_RESOURCE_TYPE == 'ADL SCORM') :
+			case ($p_RESOURCE_TYPE == 'ADL SCORM' || $p_RESOURCE_TYPE == 'IMS Common Cartridge') :
 				$this->ESMODULE_NAME = 'scorm';
 				break;
 

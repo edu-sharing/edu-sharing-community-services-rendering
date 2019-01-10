@@ -68,11 +68,11 @@ extends ESRender_Module_NonContentNode_Abstract {
             $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
         }
 
-        $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));
+        $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));
 
 
         if(Config::get('urlEmbedding')) {
-            $embedding = Config::get('urlEmbedding');
+            $embedding = Config::get('urlEmbedding') . $footer;
         } else if ($this -> detectVideo()) {
             $embedding = $this -> getVideoEmbedding($requestData['width'], $footer);
         } else if($this -> detectAudio()) {
@@ -83,7 +83,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
             if (!empty($license))
                 $license = $license->renderFooter($this->getTemplate(), $this->getUrl());
-            $embedding = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this->_ESOBJECT->getTitle(), 'url' => $this->getUrl()));
+            $embedding = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this->_ESOBJECT->getTitle(), 'url' => $this->getUrl()));
         }
 
         $data = array('embedding' => $embedding);

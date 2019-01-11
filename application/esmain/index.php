@@ -213,13 +213,56 @@ try {
     	throw new Exception('Cannot generate token.');
     }
 
+
+    if(!$skipSslVerification) {
+
+        $req_data['timestamp'] = mc_Request::fetch('ts', 'CHAR');
+        if (empty($req_data['timestamp'])) {
+            $Logger -> error('Missing request-param "timestamp".');
+            throw new ESRender_Exception_MissingRequestParam('timestamp');
+        }
+
+        if(empty($_GET['sig'])) {
+            $Logger -> error('Missing request-param "sig".');
+            throw new ESRender_Exception_MissingRequestParam('sig');
+        }
+
+        try {
+            $pubkeyid = openssl_get_publickey($homeRep -> prop_array['public_key']);
+            $signature = rawurldecode($_GET['sig']);
+            $dataSsl = urldecode($homeRepId);
+            $signature = base64_decode($signature);
+            $ok = openssl_verify(urldecode($homeRepId) . $data->node->ref->id  . $req_data['timestamp'], $signature, $pubkeyid);
+        } catch (Exception $e) {
+            throw new ESRender_Exception_SslVerification('SSL signature check failed');
+        }
+
+        if ($ok != 1) {
+            throw new ESRender_Exception_SslVerification('SSL signature check failed');
+        }
+
+        $now = microtime(true) * 1000;
+
+        $message_send_offset_ms = 10000;
+        if(isset($remote_rep -> prop_array['message_send_offset_ms']))
+            $message_send_offset_ms = $remote_rep -> prop_array['message_send_offset_ms'];
+        if($now + $message_send_offset_ms < $req_data['timestamp']) {
+            throw new ESRender_Exception_SslVerification('Timestamp sent bigger than current timestamp');
+        }
+
+        $message_offset_ms = 10000;
+        if(isset($remote_rep -> prop_array['message_offset_ms']))
+            $message_offset_ms = $remote_rep -> prop_array['message_offset_ms'];
+        if($now - $req_data['timestamp'] > $message_offset_ms) {
+            throw new ESRender_Exception_SslVerification('Token expired');
+        }
+
+    }
+
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postSslVerification()');
         $Plugin -> postSslVerification($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName, $homeRep);
     }
-
-  //  Config::set('renderInfoLMSReturn', $renderInfoLMSReturn -> getRenderInfoLMSReturn);
-
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preRetrieveObjectProperties()');
@@ -280,14 +323,11 @@ try {
     $ESObject -> setModule();
     $moduleName = $ESObject -> ESModule -> getName();
     if (empty($moduleName)) {
-        //.oO no display modul for this file
         $Logger -> error('No module found');
         $Logger -> debug('Object mime-type: "' . $ESObject -> getMimeType() . '", resource-type: "' . $ESObject -> getResourceType() . '", resource-version: "' . $ESObject -> getResourceVersion() . '".');
-
         throw new Exception('Could not load module to render object.');
     }
 
-    //.oO include the appropriate display module
     $Logger -> debug('Attempting to use module "' . $moduleName . '".');
 
     $moduleFile = realpath(dirname(__FILE__) . '/../../modules/' . $moduleName . '/mod_' . $moduleName . '.php');

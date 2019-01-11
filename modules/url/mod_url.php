@@ -101,7 +101,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
     
     protected function isYoutubeRemoteObject() {
-        if($this -> _ESOBJECT -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'YOUTUBE')
+        if($this -> _ESOBJECT -> ContentNode -> getProperty('ccm:remoterepositorytype') == 'YOUTUBE')
             return true;
         return false;
     }
@@ -137,7 +137,7 @@ extends ESRender_Module_NonContentNode_Abstract {
         $objId = $this -> _ESOBJECT -> getObjectID();
         //wrappers needed to handle max width
         if($this -> isYoutubeRemoteObject()){
-            $vidId = $this->_ESOBJECT->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/1.0}remotenodeid');
+            $vidId = $this->_ESOBJECT->ContentNode->getProperty('ccm:remotenodeid');
             return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
             			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
 			                '.$dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'YOUTUBE').'
@@ -191,7 +191,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getUrl() {
-        $urlProp = $this -> _ESOBJECT -> AlfrescoNode -> getProperty($this -> getUrlProperty());
+        $urlProp = $this -> _ESOBJECT -> ContentNode -> getProperty($this -> getUrlProperty());
        if(!empty($urlProp))
             return $urlProp;
         return false;
@@ -228,7 +228,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             strpos($this->_ESOBJECT->getMimeType(), '/jpg') !== false ||
             strpos($this->_ESOBJECT->getMimeType(), '/jpeg') !== false ||
             strpos($this->_ESOBJECT->getMimeType(), '/gif') !== false) &&
-            $this->_ESOBJECT->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') !== 'DDB')
+            $this->_ESOBJECT->ContentNode->getProperty('ccm:remoterepositorytype') !== 'DDB')
             return true;
         return false;
     }
@@ -238,7 +238,7 @@ extends ESRender_Module_NonContentNode_Abstract {
      *
      * @var string
      */
-    var $UrlProperty = '{http://www.campuscontent.de/model/1.0}wwwurl';
+    var $UrlProperty = 'ccm:wwwurl';
                         
      /**
      * Set the name of the property which should contain the url of interest.

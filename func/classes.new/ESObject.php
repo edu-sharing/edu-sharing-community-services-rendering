@@ -158,7 +158,7 @@ class ESObject {
      *
      * @var Node
      */
-    public $AlfrescoNode = null;
+    public $ContentNode = null;
     
     /**
      *
@@ -218,7 +218,7 @@ class ESObject {
      *
      */
     public function __destruct() {
-        $this -> AlfrescoNode = null;
+        $this -> ContentNode = null;
         $this -> ESModule = null;
         $this -> Logger = null;
     }
@@ -335,9 +335,14 @@ class ESObject {
     /**
      * @param Node $p_node
      */
-    final public function setAlfrescoNode(ESContentNode $p_node) {
-        $this -> AlfrescoNode = $p_node;
+    final public function setContentNode(ESContentNode $p_node) {
+        $this -> ContentNode = $p_node;
     }
+
+    final public function getContentNode() {
+        return $this -> ContentNode;
+    }
+
 
     /**
      * Get object's mime-type.
@@ -370,11 +375,11 @@ class ESObject {
      *
      */
     final public function getTitle() {
-    	$title = $this->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
+    	$title = $this -> ContentNode -> getNode() -> title;
     	if(!empty($title))
     		return $title;
     	else
-    		return $this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name');
+    		return $this -> ContentNode -> getNode() -> name;
     }
 
     /**
@@ -506,7 +511,7 @@ class ESObject {
      */
     public function setModule() {
         // runtime sanity
-        if (empty($this -> AlfrescoNode)) {
+        if (empty($this -> ContentNode)) {
             throw new Exception('No Alfresco-properties set.');
         }
 
@@ -526,43 +531,43 @@ class ESObject {
             return true;
         }
 
-        $toolInstanceKey = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_key');
+        $toolInstanceKey = $this -> ContentNode -> getProperty('ccm:tool_instance_key');
         if(!empty($toolInstanceKey)) {
-            error_log('{http://www.campuscontent.de/model/1.0}tool_instance_ref equals set, using module "lti".');
+            error_log('ccm:tool_instance_ref equals set, using module "lti".');
             $this -> ESModule -> setName('lti');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
             return true;
         }
 
-        if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'YOUTUBE') {
-            error_log('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "YOUTUBE", using module "url".');
+        if ($this -> ContentNode -> getProperty('ccm:remoterepositorytype') == 'YOUTUBE') {
+            error_log('Property ccm:remoterepositorytype equals "YOUTUBE", using module "url".');
             $this -> ESModule -> setName('url');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
             return true;
         }
 
-        if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'LEARNINGAPPS') {
-            error_log('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
+        if ($this -> ContentNode -> getProperty('ccm:remoterepositorytype') == 'LEARNINGAPPS') {
+            error_log('Property ccm:remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
             $this -> ESModule -> setName('learningapps');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
             return true;
         }
 
-        if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'oai:dmglib.org') {
-            error_log('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "oai:dmglib.org", using module "url".');
+        if ($this -> ContentNode -> getProperty('ccm:replicationsource') == 'oai:dmglib.org') {
+            error_log('Property ccm:replicationsource equals "oai:dmglib.org", using module "url".');
             $this -> ESModule -> setName('url');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
             return true;
         }
 
-        $wwwurl = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
+        $wwwurl = $this -> ContentNode -> getProperty('ccm:wwwurl');
 
-        if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU' && !empty($wwwurl)) {
-            error_log('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "DE.FWU" and {http://www.campuscontent.de/model/1.0}wwwurl set, using module "url".');
+        if ($this -> ContentNode -> getProperty('ccm:replicationsource') == 'DE.FWU' && !empty($wwwurl)) {
+            error_log('Property ccm:replicationsource equals "DE.FWU" and ccm:wwwurl set, using module "url".');
             $this -> ESModule -> setName('url');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
@@ -571,7 +576,7 @@ class ESObject {
 
         // load appropriate module
         if (!empty($wwwurl)) {
-            error_log('Property {http://www.campuscontent.de/model/1.0}wwwurl found, using module "url".');
+            error_log('Property ccm:wwwurl found, using module "url".');
             $this -> ESModule -> setName('url');
         } else if ($this -> ESOBJECT_MIMETYPE == 'application/zip' || $this -> ESOBJECT_MIMETYPE == 'application/vnd.moodle.backup') {
             if (!$this -> ESModule -> setModuleByResource($this -> ESOBJECT_RESOURCE_TYPE, $this -> ESOBJECT_RESOURCE_VERSION)) {
@@ -647,24 +652,19 @@ class ESObject {
         $this -> ESOBJECT_RESOURCE_TYPE = '';
         $this -> ESOBJECT_RESOURCE_VERSION = '';
 
-        $title = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
+        $title = $this -> ContentNode -> getNode() -> title;
         if(empty($title))
-        	$title = $this -> AlfrescoNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name');
+        	$title = $this -> ContentNode -> getNode() -> name;
         $this -> ESOBJECT_TITLE = $title;
 
-        $mimetype = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/lom/1.0}format');
+        $mimetype = $this -> ContentNode -> getNode() -> mimetype;
         if(!empty($mimetype))
             $this -> ESOBJECT_MIMETYPE = $mimetype;
-            
-        $ts = $this -> AlfrescoNode -> getProperty('{http://www.alfresco.org/model/content/1.0}modified');
-        if(empty($ts))
-            throw new Exception('No timestamp found in properties.');
 
-        $name = $this -> AlfrescoNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name');
-        if(!empty($name))
-            $this -> ESOBJECT_ALF_FILENAME = $name;
+        $this -> ESOBJECT_ALF_FILENAME = $this -> ContentNode -> getNode() -> name;
 
-        $ressourcetype = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}ccressourcetype');
+        $ressourcetype = $this -> ContentNode -> getProperty('ccm:ccressourcetype');
+
         if (!empty($ressourcetype)) {
             $this -> ESOBJECT_RESOURCE_TYPE = $ressourcetype;
 
@@ -673,11 +673,11 @@ class ESObject {
             }
         }
 
-        $ressourceversion = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}ccressourceversion');
+        $ressourceversion = $this -> ContentNode -> getProperty('ccm:ccressourceversion');
         if (!empty($ressourceversion))
             $this -> ESOBJECT_RESOURCE_VERSION = $ressourceversion;
         
-        $commonlicense_key = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}commonlicense_key');
+        $commonlicense_key = $this -> ContentNode -> getProperty('ccm:commonlicense_key');
         if(!empty($commonlicense_key))
         	$this -> ESOBJECT_LICENSE = new ESRender_License($this);
         
@@ -850,12 +850,6 @@ class ESObject {
     }
 
     final public function getPathfile() {
-        if(Config::get('internal_request')){
-            $internalUrl = INTERNAL_URL;
-            if(empty($internalUrl))
-                throw new Exception('Config value "$INTERNAL_URL" is empty.');
-            return INTERNAL_URL . '/' . $this -> ESModule -> getTmpFilepath() . '/' . $this -> getSubUri_file() . '/' . $this -> getObjectIdVersion();
-        }
         return MC_ROOT_URI . $this -> ESModule -> getTmpFilepath() . '/' . $this -> getSubUri_file() . '/' . $this -> getObjectIdVersion();
     }
 
@@ -896,7 +890,7 @@ class ESObject {
     public function getPreviewUrl() {
         if(!empty(Config::get('base64Preview')))
             return Config::get('base64Preview');
-        $previewUrl = $this -> renderInfoLMSReturn -> getRenderInfoLMSReturn->previewUrl;
+        $previewUrl = $this -> getContentNode() -> getNode() -> preview -> url ;
         if(!empty($this -> getObjectVersion()))
             $previewUrl .= '&version=' . $this -> getObjectVersion();
         $accessToken = Config::get('accessToken');
@@ -940,17 +934,17 @@ class ESObject {
             }
         }
 
-        if($this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name') !== $this->ESOBJECT_ALF_FILENAME) {
+        if($this->ContentNode->getProperty('cm:name') !== $this->ESOBJECT_ALF_FILENAME) {
             try {
                 $pdo = RsPDO::getInstance();
                 $sql = 'UPDATE `ESOBJECT` SET `ESOBJECT_ALF_FILENAME` = :name WHERE `ESOBJECT_ID` = :id';
                 $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
-                $stmt -> bindValue(':name', $this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name'));
+                $stmt -> bindValue(':name', $this->ContentNode->getProperty('cm:name'));
                 $stmt -> bindValue(':id', $this->ESOBJECT_ID, PDO::PARAM_INT);
                 $result = $stmt -> execute();
                 if(!$result)
                     throw new Exception('Error updating name ' . print_r($pdo -> errorInfo(), true));
-                $this->ESOBJECT_ALF_FILENAME = $this->AlfrescoNode->getProperty('{http://www.alfresco.org/model/content/1.0}name');
+                $this->ESOBJECT_ALF_FILENAME = $this->ContentNode->getProperty('cm:name');
             } catch(PDOException $e) {
                 throw new Exception($e -> getMessage());
             }

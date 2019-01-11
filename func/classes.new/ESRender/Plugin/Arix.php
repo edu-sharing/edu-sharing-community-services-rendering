@@ -30,9 +30,9 @@ extends ESRender_Plugin_Abstract
 		&$resource_id,
 		&$username)
 	{
-		if ( $contentNode->properties['{http://www.campuscontent.de/model/1.0}replicationsource'] == 'DE.EDMOND' )
+		if ( $contentNode->properties['ccm:replicationsource'] == 'DE.EDMOND' )
 		{
-    		$RemoteNodeId = $contentNode->properties['{http://www.campuscontent.de/model/1.0}replicationsourceid'];
+    		$RemoteNodeId = $contentNode->properties['ccm:replicationsourceid'];
 
 			$this->handleRemoteObject($RemoteNodeId);
 		}

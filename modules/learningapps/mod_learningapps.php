@@ -49,14 +49,14 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getOriginUrl() {
-        $urlProp = $this -> _ESOBJECT -> AlfrescoNode -> getProperty($this -> getUrlProperty());
+        $urlProp = $this -> _ESOBJECT -> ContentNode -> getProperty($this -> getUrlProperty());
         if(!empty($urlProp))
             return $urlProp;
         return false;
     }
 
     protected function getUrl() {
-        $urlProp = $this -> _ESOBJECT -> AlfrescoNode -> getProperty($this -> getUrlProperty());
+        $urlProp = $this -> _ESOBJECT -> ContentNode -> getProperty($this -> getUrlProperty());
         if(!empty($urlProp))
             return str_replace('https://learningapps.org/', 'https://learningapps.org/view', $urlProp);
         return false;
@@ -67,7 +67,7 @@ extends ESRender_Module_NonContentNode_Abstract {
      *
      * @var string
      */
-    var $UrlProperty = '{http://www.campuscontent.de/model/1.0}wwwurl';
+    var $UrlProperty = 'ccm:wwwurl';
 
     /**
      * Set the name of the property which should contain the url of interest.

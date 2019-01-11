@@ -19,7 +19,7 @@ class mod_directory extends ESRender_Module_NonContentNode_Abstract {
     	    }
 	}
 
-        $creator = $this->_ESOBJECT->AlfrescoNode->getProperty('NodeCreator_FirstName') . ' ' . $this->_ESOBJECT->AlfrescoNode->getProperty('NodeCreator_LastName');
+        $creator = $this->_ESOBJECT->ContentNode->getProperty('NodeCreator_FirstName') . ' ' . $this->_ESOBJECT->ContentNode->getProperty('NodeCreator_LastName');
         if(strpos(strtolower($creator), 'administrator') !== false || strpos(strtolower($creator), 'unknown') !== false)
             $creator = '';
         $data = array('title' => htmlentities($this->_ESOBJECT->getTitle()), 'children' => $children, 'parentUrl'=> $this->lmsInlineHelper($requestData), 'folderUrl' => Config::get('homeRepository')->url . '/components/workspace?' . $requestData['object_id'], 'creator' => $creator);

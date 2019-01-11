@@ -30,13 +30,13 @@ class ESRender_Plugin_DDB
     public function postRetrieveObjectProperties(EsApplication &$remote_rep, &$app_id,ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
         $this -> iconUrl = $remote_rep->prop_array['clientprotocol'] .'://' . $remote_rep->prop_array['domain'] . ':' . $remote_rep->prop_array['clientport'] . '/edu-sharing/assets/images/sources/ddb.png';
         $logger = $this->getLogger();
-        if($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') === 'DDB') {
+        if($contentNode->getProperty('ccm:remoterepositorytype') === 'DDB') {
             $logger->info('remoterepositorytype = DDB, start using plugin');
-            $id = $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remotenodeid');
+            $id = $contentNode->getProperty('ccm:remotenodeid');
             
             $this -> node = $this->callApi(API_URL_1 . '/items/' . $id);
             $prop = new stdClass();
-            $prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
+            $prop -> key = 'ccm:wwwurl';
             $prop -> value = $this -> node -> view -> item -> origin;
             $contentNode -> setProperties(array($prop));
             $ref = $this -> node -> binaries -> binary -> {'@ref'};
@@ -61,7 +61,7 @@ class ESRender_Plugin_DDB
 
         global $Locale, $Translate;
 
-        $wwwUrl = $contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
+        $wwwUrl = $contentNode -> getProperty('ccm:wwwurl');
 
         $Message = new Phools_Message_Default('jumpToDataProvider :dataProvider', array(new Phools_Message_Param_String(':dataProvider', utf8_decode($this -> node -> view -> item -> institution -> name))));
 

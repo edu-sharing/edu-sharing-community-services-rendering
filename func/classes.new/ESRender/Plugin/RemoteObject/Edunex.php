@@ -405,12 +405,12 @@ extends ESRender_Plugin_Abstract {
      */
     public function postRetrieveObjectProperties(EsApplication &$remote_rep, &$app_id, ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
         $Logger = $this -> getLogger();
-        $remoterepositorytype = $contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype');
+        $remoterepositorytype = $contentNode -> getProperty('ccm:remoterepositorytype');
         if (empty($remoterepositorytype)) {
             return false;
         }
 
-        $remoterepositorytype = $contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype');
+        $remoterepositorytype = $contentNode -> getProperty('ccm:remoterepositorytype');
         if ('EDUNEX' != $contentNode) {
             return false;
         }
@@ -419,7 +419,7 @@ extends ESRender_Plugin_Abstract {
             $Logger -> debug('Handling EDMOND object postRetrieveObjectProperties().');
         }
 
-        $object_id = $contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}remotenodeid');
+        $object_id = $contentNode -> getProperty('ccm:remotenodeid');
 
         $this -> doTheEdmondStuff($object_id, $username);
     }

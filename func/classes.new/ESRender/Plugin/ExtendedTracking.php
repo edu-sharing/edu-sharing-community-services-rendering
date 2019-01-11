@@ -25,9 +25,9 @@ class ESRender_Plugin_ExtendedTracking extends ESRender_Plugin_Abstract {
         if(ENABLE_TRACK_OBJECT) {
             $learningmodule = $element = '';
             foreach (Config::get('renderInfoLMSReturn')->properties->item as $property) {
-                if($property->key == '{http://www.campuscontent.de/model/1.0}learnunit_id')
+                if($property->key == 'ccm:learnunit_id')
                     $learningmodule = $property->value;
-                if($property->key == '{http://www.campuscontent.de/model/1.0}original')
+                if($property->key == 'ccm:original')
                     $element  = $property->value;
             }
             $extendedTrackingParams = array();

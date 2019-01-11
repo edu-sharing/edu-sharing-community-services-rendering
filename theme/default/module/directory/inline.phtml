@@ -47,7 +47,7 @@ $unid = uniqid();
             echo '<ul style="display:none">';
                 foreach($children as $child) {
                     echo '<li><a target="_blank" href="'.$parentUrl.'&childobject_id='.$child['NodeID'].'">
-                    <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.htmlentities($child['{http://www.alfresco.org/model/content/1.0}name']).
+                    <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.htmlentities($child['cm:name']).
                         '</a></li>';
                 }
             echo '</ul>';

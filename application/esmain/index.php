@@ -21,7 +21,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: *");
@@ -89,46 +88,19 @@ try {
         $Plugin -> setDefaultLogger($Logger);
     }
 
+
+    include 'data.php';
+
+
     // init translate
     global $Translate, $LanguageCode;
     $Translate = new Phools_Translate_Array();
 
-    //get language from config if none requested
-    switch($DEFAULT_LANG) {
-        case 1 :
-            $defaultLangConf = 'de';
-            break;
-        case 2 :
-            $defaultLangConf = 'zh';
-            break;
-        case 4 :
-            $defaultLangConf = 'fr';
-            break;
-        case 3 :
-        default :
-            $defaultLangConf = 'en';
-    }
-
     // LANGUAGE
-    $LanguageCode = mc_Request::fetch('language', 'CHAR', $defaultLangConf);
-    switch( strtolower($LanguageCode) ) {
-        case 'de' :
-            $Locale = new Phools_Locale_Default('de', 'DE', ',', '.');
-            require_once (dirname(__FILE__) . '/../../locale/esmain/DE/lang.common.php');
-            break;
-        case 'zh' :
-            $Locale = new Phools_Locale_Default('zh', 'ZH', ',', '.');
-            require_once (dirname(__FILE__) . '/../../locale/esmain/ZH/lang.common.php');
-            break;
-        case 'fr' :
-            $Locale = new Phools_Locale_Default('fr', 'FR', ',', '.');
-            require_once (dirname(__FILE__) . '/../../locale/esmain/FR/lang.common.php');
-            break;
-        case 'en' :
-        default :
-            $Locale = new Phools_Locale_Default('en', 'EN', '.', '`');
-            require_once (dirname(__FILE__) . '/../../locale/esmain/EN/lang.common.php');
-    }
+    $LanguageCode = mc_Request::fetch('language', 'CHAR', 'en');
+    $Locale = new Phools_Locale_Default(strtolower($LanguageCode), strtoupper($LanguageCode), ',', '.');
+    require_once (dirname(__FILE__) . '/../../locale/esmain/'.strtoupper($LanguageCode).'/lang.common.php');
+
     // init templating
     $TemplateDirectory = dirname(__FILE__) . '/../../theme';
     $Template = new Phools_Template_Script($TemplateDirectory);
@@ -145,151 +117,26 @@ try {
     $RenderApplication = new ESRender_Application($pdo);
     $RenderApplication -> setLogger($Logger);
 
-    // REPOSITORY-ID
-    $req_data['rep_id'] = mc_Request::fetch('rep_id', 'CHAR');
-    if (!$req_data['rep_id']) {
-        $Logger -> error('Missing request-param "rep_id".');
-        throw new ESRender_Exception_MissingRequestParam('rep_id');
-    }
-
-    $Validator = new ESRender_Validator_ApplicationId();
-    if (!$Validator -> validate($req_data['rep_id'])) {
-        $Logger -> error('Invalid request-param "rep_id".');
-        throw new ESRender_Exception_InvalidRequestParam('rep_id');
-    }
-
-    // APPLICATION-ID
-    $req_data['app_id'] = mc_Request::fetch('app_id', 'CHAR');
-    if (!$req_data['app_id']) {
-        $Logger -> info('Using repository-id as requested application-id, because request parameter "app-id" was empty.');
-        $req_data['app_id'] = $req_data['rep_id'];
-    }
-
-    $Validator = new ESRender_Validator_ApplicationId();
-    if (!$Validator -> validate($req_data['app_id'])) {
-        $Logger -> error('Invalid request-param "app_id".');
-        throw new ESRender_Exception_InvalidRequestParam('app_id');
-    }
-
-    // OBJECT-ID
-    $req_data['obj_id'] = mc_Request::fetch('obj_id', 'CHAR');
-    if (!$req_data['obj_id']) {
-        $Logger -> error('Missing request-param "obj_id".');
-        throw new ESRender_Exception_MissingRequestParam('obj_id');
-    }
-
-    $Validator = new ESRender_Validator_ObjectId();
-    if (!$Validator -> validate($req_data['obj_id'])) {
-        $Logger -> error('Invalid request-param "obj_id".');
-        throw new ESRender_Exception_InvalidRequestParam('obj_id');
-    }
-
-    // RESOURCE-ID (optional)
-    $req_data['resource_id'] = mc_Request::fetch('resource_id', 'CHAR');
-    if (!empty($req_data['resource_id'])) {
-        $Validator = new ESRender_Validator_ResourceId();
-        if (!$Validator -> validate($req_data['resource_id'])) {
-            $Logger -> error('Invalid request-param "resource_id".');
-            throw new ESRender_Exception_InvalidRequestParam('resource_id');
-        }
-    }
-
-    // COURSE-ID (optional)
-    $req_data['course_id'] = mc_Request::fetch('course_id', 'CHAR');
-    if (!empty($req_data['course_id'])) {
-        $Validator = new ESRender_Validator_CourseId('/^[a-z0-9-]+$/ui');
-        if (!$Validator -> validate($req_data['course_id'])) {
-            $Logger -> error('Invalid request-param "course_id".');
-            throw new ESRender_Exception_InvalidRequestParam('course_id');
-        }
-    }
-
-    // USERNAME
-    $req_data['username'] = $req_data['usernameEncrypted'] = mc_Request::fetch('u', 'CHAR');    
-    if (empty($req_data['username'])) {
-        throw new ESRender_Exception_MissingRequestParam('username');
-    } else {
-        $Validator = new ESRender_Validator_Username();
-        if (!$Validator -> validate($req_data['username'])) {
-            $Logger -> error('Invalid request-param "u".');
-            $Logger -> debug('Given username "' . $req_data['username'] . '"');
-            throw new ESRender_Exception_InvalidRequestParam('u');
-        }
-    }
-    
-    //BACKLINK
-    $req_data['backLink'] = mc_Request::fetch('backLink', 'CHAR');
-
-    //BASEURL FROM REPOSITORY
-    $req_data['baseUrl'] = mc_Request::fetch('baseUrl', 'CHAR');
-
-    // VERSION (optional)
-    $req_data['version'] = mc_Request::fetch('version', 'CHAR');
-    if ($req_data['version']) {
-        $Validator = new ESRender_Validator_Version();
-        if (!$Validator -> validate($req_data['version'])) {
-            $Logger -> error('Invalid request-param "version".');
-            $Logger -> debug('Given version "' . $req_data['version'] . '"');
-
-            throw new ESRender_Exception_InvalidRequestParam('version');
-        }
-    }
-
-    // THEME
-    $Theme = mc_Request::fetch('theme', 'CHAR');
-    if ($Theme) {
-        $Validator = new ESRender_Validator_Theme();
-        if (!$Validator -> validate($Theme)) {
-            throw new ESRender_Exception_InvalidRequestParam('theme');
-        }
-        $Template -> setTheme($Theme);
-    }
-
-    // DISPLAY MODE
-    $display_kind = mc_Request::fetch('display', 'CHAR', 'window');
-    if ($display_kind) {
-        $Validator = new ESRender_Validator_DisplayMode();
-        if (!$Validator -> validate($display_kind)) {
-            throw new ESRender_Exception_InvalidRequestParam('display');
-        }
-    }
 
     // Display parameters
     Config::set('showMetadata', true);
-    if(mc_Request::fetch('showMetadata', 'CHAR') === 'false')
+    if($data->dummy['showMetadata'] === 'false')
         Config::set('showMetadata', false);
 
-    Config::set('showDownloadButton', true); 
-    if(mc_Request::fetch('showDownloadButton', 'CHAR') === 'false')
+    Config::set('showDownloadButton', true);
+    if($data->dummy['showDownloadButton'] === 'false')
         Config::set('showDownloadButton', false);
 
     Config::set('showDownloadAdvice', true);
-    if(mc_Request::fetch('showDownloadAdvice', 'CHAR') === 'false')
+    if($data->dummy['showDownloadAdvice'] === 'false')
         Config::set('showDownloadAdvice', false);
 
     Config::set('forcePreview', false);
-    if(mc_Request::fetch('forcePreview', 'CHAR') === 'true')
+    if($data->dummy['forcePreview'] === 'true')
         Config::set('forcePreview', true);
 
-
-
     // ACCESS TOKEN
-    $accessToken = mc_Request::fetch('accessToken', 'CHAR', '');
-    Config::set('accessToken', $accessToken);
-
-    // Internal
-    $req_data['token'] = mc_Request::fetch('token', 'CHAR', '');
-    
-    // WIDTH
-    $req_data['width'] = mc_Request::fetch('width', 'INT', 0);
-
-    // HEIGHT
-    $req_data['height'] = mc_Request::fetch('height', 'INT', 0);
-
-    // Internal communication
-    Config::set('internal_request', false);
-    if(mc_Request::fetch('com', 'CHAR') === 'internal')
-        Config::set('internal_request', true);
+    Config::set('accessToken', mc_Request::fetch('accessToken', 'CHAR', ''));
 
     $CurrentDirectoryName = basename(dirname(__FILE__));
     $application = new ESApp();
@@ -309,21 +156,21 @@ try {
     // load repository-config
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preLoadRepository()');
-        $Plugin -> preLoadRepository($req_data['rep_id'], $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
+        $Plugin -> preLoadRepository($data->node->ref->repo, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
-    $remote_rep = $application -> getAppByID($req_data['rep_id']);
+    $remote_rep = $application -> getAppByID($data->node->ref->repo);
     if (!$remote_rep) {
-        $Logger -> error('Error loading application by requested repository-id "' . $req_data['rep_id'] . '".');
+        $Logger -> error('Error loading application by requested repository-id "' . $data->node->ref->repo . '".');
 
-        throw new ESRender_Exception_AppConfigNotLoaded($req_data['rep_id']);
+        throw new ESRender_Exception_AppConfigNotLoaded($data->node->ref->repo);
     }
 
-    $Logger -> debug('Successfully loaded repository by id "' . $req_data['rep_id'] . '".');
+    $Logger -> debug('Successfully loaded repository by id "' . $data->node->ref->repo . '".');
     
     
     $homeRepId = $hc -> prop_array['homerepid'];
-    if($homeRepId === $req_data['rep_id'] || empty($homeRepId)) {
+    if($homeRepId === $data->node->ref->repo || empty($homeRepId)) {
         $homeRep = $remote_rep;
     } else {
         $homeRep = $application -> getAppByID($homeRepId);
@@ -338,31 +185,22 @@ try {
 
     $Logger -> debug('Successfully loaded home repository by id "' . $homeRepId . '".');
 
-    $user_name = '';
-    $privateKey = openssl_pkey_get_private($hc -> prop_array['private_key']);
-    $decryptStatus = openssl_private_decrypt ( base64_decode($req_data['username']), $user_name, $privateKey);
-    if(!$decryptStatus)
-        throw new Exception('Could not decrypt user');
-    $user_name = trim($user_name);
-    openssl_free_key($privateKey);
-
-
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postLoadRepository()');
-        $Plugin -> postLoadRepository($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
+        $Plugin -> postLoadRepository($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
 
     
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preSslVerification()');
-        $Plugin -> preSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
+        $Plugin -> preSslVerification($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName, $homeRep);
     }    
 
-    $skipSslVerification = false;
-
-    if(!empty($req_data['token'])) {
-    	if($req_data['token'] == $_SESSION['esrender']['token'] || empty($_SESSION['esrender']['token'])) {
+    $skipSslVerification = false; /////check
+//check
+    if(!empty(mc_Request::fetch('token', 'CHAR', ''))) {
+    	if(mc_Request::fetch('token', 'CHAR', '') == $_SESSION['esrender']['token'] || empty($_SESSION['esrender']['token'])) {
         	$skipSslVerification = true;
     	} else {
     		$Logger->error('Token not valid!');
@@ -375,180 +213,38 @@ try {
     	throw new Exception('Cannot generate token.');
     }
 
-
-    if(!$skipSslVerification) {
-
-        $req_data['timestamp'] = mc_Request::fetch('ts', 'CHAR');
-        if (empty($req_data['timestamp'])) {
-            $Logger -> error('Missing request-param "timestamp".');
-            throw new ESRender_Exception_MissingRequestParam('timestamp');
-        }
-
-        if(empty($_GET['sig'])) {
-            $Logger -> error('Missing request-param "sig".');
-            throw new ESRender_Exception_MissingRequestParam('sig');
-        }
-
-        try {
-            $pubkeyid = openssl_get_publickey($remote_rep -> prop_array['public_key']);
-            $signature = rawurldecode($_GET['sig']);
-            $dataSsl = urldecode($req_data['rep_id']);
-            $signature = base64_decode($signature);
-            $ok = openssl_verify(urldecode($req_data['rep_id']) . $req_data['obj_id']  . $req_data['timestamp'], $signature, $pubkeyid);
-        } catch (Exception $e) {
-            throw new ESRender_Exception_SslVerification('SSL signature check failed');
-        }
-
-        if ($ok != 1) {
-            throw new ESRender_Exception_SslVerification('SSL signature check failed');
-        }
-
-        $now = microtime(true) * 1000;
-
-        $message_send_offset_ms = 10000;
-        if(isset($remote_rep -> prop_array['message_send_offset_ms']))
-            $message_send_offset_ms = $remote_rep -> prop_array['message_send_offset_ms'];
-        if($now + $message_send_offset_ms < $req_data['timestamp']) {
-            throw new ESRender_Exception_SslVerification('Timestamp sent bigger than current timestamp');
-        }
-
-        $message_offset_ms = 10000;
-        if(isset($remote_rep -> prop_array['message_offset_ms']))
-            $message_offset_ms = $remote_rep -> prop_array['message_offset_ms'];
-        if($now - $req_data['timestamp'] > $message_offset_ms) {
-            throw new ESRender_Exception_SslVerification('Token expired');
-        }
-
-    }
-
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postSslVerification()');
-        $Plugin -> postSslVerification($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name, $homeRep);
+        $Plugin -> postSslVerification($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName, $homeRep);
     }
 
-    $SoapClientParams = array();
-    if ( defined('USE_HTTP_PROXY') && USE_HTTP_PROXY ) {
-        require_once(dirname(__FILE__) . '/../../func/classes.new/Helper/ProxyHelper.php');
-        $proxyHelper = new ProxyHelper($remote_rep->prop_array['renderinfowebservice_wsdl']);
-        $SoapClientParams = $proxyHelper -> getSoapClientParams();
-    }
+  //  Config::set('renderInfoLMSReturn', $renderInfoLMSReturn -> getRenderInfoLMSReturn);
 
-    $client = new SoapClient(
-        $remote_rep->prop_array['renderinfowebservice_wsdl'],
-        $SoapClientParams); 
-
-    try
-    {
-        $timestamp = round(microtime(true) * 1000);
-        $signData = $hc->prop_array['appid'] . $timestamp . $req_data['obj_id'];
-        $priv_key = $hc -> prop_array['private_key'];
-        $pkeyid = openssl_get_privatekey($priv_key);      
-        openssl_sign($signData, $signature, $pkeyid);
-        $signature = base64_encode($signature);
-        openssl_free_key($pkeyid);    
-
-        $headers = array();    
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'appId', $hc->prop_array['appid']);
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'timestamp', $timestamp); 
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signature', $signature); 
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signed', $signData);
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'baseUrl', $req_data['baseUrl']);
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'locale', $Locale->getLanguageTwoLetters() . '_' . $Locale->getCountryTwoLetters());
-
-        $client->__setSoapHeaders($headers); 
-        
-        if(empty($req_data['version']))
-            $req_data['version'] = '-1';
-
-         $params = array(
-            "userName" => $user_name,
-            "nodeId" => $req_data['obj_id'],
-            "lmsId" => $req_data['app_id'],
-            "courseId" => $req_data['course_id'],
-            "resourceId" => $req_data['resource_id'],
-            "version" => $req_data['version']
-        );
-        $renderInfoLMSReturn = $client->getRenderInfoLMS($params);
-
-    } catch (Exception $e) {
-        throw new ESRender_Exception_InfoLms($e);
-    }
-
-    Config::set('renderInfoLMSReturn', $renderInfoLMSReturn -> getRenderInfoLMSReturn);
-    // check usage
-    if ($req_data['rep_id'] != $req_data['app_id']) {
-        // non-repositories MUST supply usage-info
-        foreach ($Plugins as $name => $Plugin) {
-            $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postCheckPermission()');
-            $Plugin -> preCheckUsage($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
-        }
-        if (empty($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage)) {
-            throw new ESRender_Exception_UsageError('No usage-information retrieved.');
-        }
-
-        $dummy_courseId = $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> courseId;
-        $dummy_lmsId = $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> lmsId;
-        $dummy_resourceId = $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> resourceId;
-
-        if(!empty($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> usageXmlParams)) {
-            $xmlParams = simplexml_load_string($renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage -> usageXmlParams);
-            if (!$xmlParams) {
-                throw new Exception('Error loading usageXmlParams.');
-            }
-        }
-
-        foreach ($Plugins as $name => $Plugin) {
-            $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preRetrieveObjectProperties()');
-            $Plugin -> postCheckUsage($remote_rep, $req_data['app_id'], $renderInfoLMSReturn -> getRenderInfoLMSReturn -> usage, $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
-        }
-    } else {
-        $Logger -> info('No usage-informations retrieved.');
-        $dummy_courseId = 0;
-        $dummy_lmsId = 0;
-    }
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preRetrieveObjectProperties()');
-        $Plugin -> preRetrieveObjectProperties($remote_rep, $req_data['app_id'], $req_data['obj_id'], $req_data['course_id'], $req_data['resource_id'], $user_name);
+        $Plugin -> preRetrieveObjectProperties($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
     require_once(dirname(__FILE__) . '/../../func/classes.new/ESContentNode.php');
-    $contentNode = new ESContentNode();
-    $contentNode -> setProperties($renderInfoLMSReturn->getRenderInfoLMSReturn->properties->item);
+    $contentNode = new ESContentNode($data);
 
-    
-    $eduscopename = $contentNode -> getProperty('{http://www.campuscontent.de/model/1.0}eduscopename');
+    $eduscopename = $contentNode -> getProperty('ccm:eduscopename');
     if($eduscopename === 'safe') {
     	if(!empty($CC_RENDER_PATH_SAFE))
     		$CC_RENDER_PATH = $CC_RENDER_PATH_SAFE;
     }
 
-    //directories have no version
-    if(!Config::get('renderInfoLMSReturn')->directory) {
-        //if not set by usage set it with property value
-        if ($req_data['version'] < 1) {
-            //set alf version
-            $req_data['version'] = $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}version');
-            //in case that there is no initial version set es version
-            if (empty($req_data['version']))
-                $req_data['version'] = $contentNode->getProperty('{http://www.alfresco.org/model/content/1.0}versionLabel');
-        }
+    //version
+    if ($contentNode->getProperty('ccm:remoterepositorytype'))
+        $version = '';
+    if($data->node->isDirectory || $contentNode->getProperty('ccm:remoterepositorytype'))
+        $version = '';
+    else
+        $version = mc_Request::fetch('version', 'CHAR');
 
-        //set version to 1 for remote objects
-        if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype'))
-            $req_data['version'] = '';
-
-        // No version and is not a directory (directories won't have a version)
-        if ($req_data['version'] === false && $contentNode->getProperty('NodeType')!= '{http://www.campuscontent.de/model/1.0}map') {
-            $displayTitle = $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}title');
-            if (empty($displayTitle))
-                $displayTitle = $contentNode->getProperty('{http://www.alfresco.org/model/content/1.0}name');
-            throw new ESRender_Exception_CorruptVersion($displayTitle);
-        }
-    }
-
-    $ESObject = new ESObject($req_data['obj_id'], $req_data['version']);
-    $ESObject -> setAlfrescoNode($contentNode);
+    $ESObject = new ESObject($data->node->ref->id, $version);
+    $ESObject -> setContentNode($contentNode);
     $ESObject -> setInfoLmsData($renderInfoLMSReturn);
 
     if (!$ESObject -> setDataByNode()) {
@@ -558,11 +254,11 @@ try {
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postRetrieveObjectProperties()');
-        $Plugin -> postRetrieveObjectProperties($remote_rep, $req_data['app_id'], $contentNode, $req_data['course_id'], $req_data['resource_id'], $user_name);
+        $Plugin -> postRetrieveObjectProperties($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $contentNode, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
     // set partial object data
-    $ObjectData = array('ESOBJECT_REP_ID' => $req_data['rep_id'], 'ESOBJECT_LMS_ID' => $req_data['app_id'], 'ESOBJECT_COURSE_ID' => $req_data['course_id'], 'ESOBJECT_RESOURCE_ID' => $req_data['resource_id'], 'ESOBJECT_VERSION' => $req_data['version'], 'ESOBJECT_CONTENT_HASH' => $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
+    $ObjectData = array('ESOBJECT_REP_ID' => $data->node->ref->repo, 'ESOBJECT_LMS_ID' => mc_Request::fetch('app_id', 'CHAR'), 'ESOBJECT_COURSE_ID' => mc_Request::fetch('course_id', 'CHAR'), 'ESOBJECT_RESOURCE_ID' => mc_Request::fetch('resource_id', 'CHAR'), 'ESOBJECT_VERSION' => $version, 'ESOBJECT_CONTENT_HASH' => $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
 
     if (!$ESObject -> setData($ObjectData)) {
         $Logger -> error('Error setting instance-data.');
@@ -572,9 +268,9 @@ try {
 
     $Logger -> info('Successfully initialized instance.');
 
-    $originalDeleted = $ESObject -> AlfrescoNode -> getProperty('{virtualproperty}originaldeleted');
+    $originalDeleted = $ESObject -> ContentNode -> getProperty('{virtualproperty}originaldeleted');
     if(!empty($originalDeleted)) {
-        $ESObject -> renderOriginalDeleted($req_data, $display_kind, $Template);
+        $ESObject -> renderOriginalDeleted($data->dummy, $data->dummy['displayKind'], $Template);
     }
 
     // stop session to allow flawless module-operation
@@ -610,23 +306,20 @@ try {
 
     $Logger -> info('Loaded module "' . $moduleName . '".');
 
-    /*For moodle/scorm*/
-    $user_email = $user_givenname = $user_surname = $user_id = $user_name;
-
     $instanceParams = array(
-        'rep_id' => $req_data['rep_id'],
-        'app_id' => $req_data['app_id'],
-        'course_id' => $req_data['course_id'],
-        'object_id' => $req_data['obj_id'],
-        'resource_id' => $req_data['resource_id'],
-        'user_id' => $user_id,
-        'user_name' => $user_name,
-        'user_email' => $user_email,
-        'user_givenname' => $user_givenname,
-        'user_surname' => $user_surname,
-        'version' => $req_data['version'],
-        'width' => $req_data['width'],
-        'height' => $req_data['height']
+        'rep_id' => $data->node->ref->repo,
+        'app_id' => mc_Request::fetch('app_id', 'CHAR'),
+        'course_id' => mc_Request::fetch('course_id', 'CHAR'),
+        'object_id' => $data->node->ref->id,
+        'resource_id' => mc_Request::fetch('resource_id', 'CHAR'),
+        'user_id' => $data->user->authorityName,
+        'user_name' => $data->user->authorityName,
+        'user_email' => $data->user->profile->email,
+        'user_givenname' => $data->user->profile->Administrator,
+        'user_surname' => $data->user->profile->lastName,
+        'version' => $version,
+        'width' => mc_Request::fetch('width', 'INT', 0),
+        'height' => mc_Request::fetch('height', 'INT', 0)
      );
 
     // create new object instance if not existent
@@ -646,20 +339,20 @@ try {
             $parsedRepoAuthUrl = parse_url($remote_rep->prop_array['authenticationwebservice_wsdl']);
             
             $paramsCreate = array(
-                'rep_id' => $req_data['rep_id'],
-                'app_id' => $req_data['app_id'],
-                'course_id' => $req_data['course_id'],
-                'object_id' => $req_data['obj_id'],
-                'resource_id' => $req_data['resource_id'],
+                'rep_id' => $data->node->ref->repo,
+                'app_id' => mc_Request::fetch('app_id', 'CHAR'),
+                'course_id' => mc_Request::fetch('course_id', 'CHAR'),
+                'object_id' => $data->node->ref->id,
+                'resource_id' => mc_Request::fetch('resource_id', 'CHAR'),
                 'user_id' => $user_id,
-                'user_name' => $user_name,
+                'user_name' => $data->user->authorityName,
                 'user_email' => $user_email,
                 'user_givenname' => $user_givenname,
                 'user_surname' => $user_surname,
-                'version' => $req_data['version'],
-                'session' => $req_data['session'],
-                'width' => $req_data['width'],
-                'height' => $req_data['height'],
+                'version' => $version,
+                'session' => $data->dummy['session'],
+                'width' => mc_Request::fetch('width', 'INT', 0),
+                'height' => mc_Request::fetch('height', 'INT', 0),
                 'remoteRepConf' => $remote_rep->prop_array,
                 'private_key' => $hc->prop_array['private_key'],
                 'homerepoConf' => $homeRep -> prop_array,
@@ -725,7 +418,7 @@ try {
         'src_root' => $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR,
         'TOU' => $Module -> getTimesOfUsage(), // times of usage (0:forbidden, -1:unlimited)
         'check' => parse_url($ESObject -> getPathfile(), PHP_URL_PATH),
-        'display_kind' => $display_kind, 
+        'display_kind' => $data->dummy['displayKind'], 
         // real module path, independent from cache
         'moduleRoot' => realpath(dirname(__FILE__) . '/../../modules/' . $moduleName),
     	'token' => $token
@@ -745,33 +438,33 @@ try {
 
     $Logger -> info('Processing render-object.');
     if (!$Module -> process(
-        $display_kind,
+        $data->dummy['displayKind'],
         array(
-            'rep_id' => $req_data['rep_id'],
-            'app_id' => $req_data['app_id'],
-            'course_id' => $req_data['course_id'],
-            'object_id' => $req_data['obj_id'],
-            'resource_id' => $req_data['resource_id'],
+            'rep_id' => $data->node->ref->repo,
+            'app_id' => mc_Request::fetch('app_id', 'CHAR'),
+            'course_id' => mc_Request::fetch('course_id', 'CHAR'),
+            'object_id' => $data->node->ref->id,
+            'resource_id' => mc_Request::fetch('resource_id', 'CHAR'),
             'user_id' => $user_id,
-            'user_name' => $user_name,
+            'user_name' => $data->user->authorityName,
             'user_email' => $user_email,
             'user_givenname' => $user_givenname,
             'user_surname' => $user_surname,
             'tracking_id' => $TrackingId,
-            'session' => $req_data['session'],
-            'width' => $req_data['width'],
-            'height' => $req_data['height'],
+            'session' => $data->dummy['session'],
+            'width' => mc_Request::fetch('width', 'INT', 0),
+            'height' => mc_Request::fetch('height', 'INT', 0),
             'callback' => mc_Request::fetch('callback', 'CHAR'),
-            'user_name_encr' => $req_data['username'],
+            'user_name_encr' => $data->dummy['username'],
             'sessionName' => $ESRENDER_SESSION_NAME,
             'sessionId' => $esrenderSessionId,
-            'usernameEncrypted' => $req_data['usernameEncrypted'],
-            'version' => $req_data['version'],
-            'backLink' => $req_data['backLink'],
+            'usernameEncrypted' => $data->dummy['usernameEncrypted'],
+            'version' => $version,
+            'backLink' => $data->dummy['backLink'],
         	'token' => $token
         ),
         $Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash))) {
-        $Logger -> error('Error processing object "' . $req_data['obj_id'] . '".');
+        $Logger -> error('Error processing object "' . $data->node->ref->id . '".');
         throw new Exception('Error processing object.');
     }
     foreach ($Plugins as $name => $Plugin) {
@@ -781,12 +474,12 @@ try {
 
     if (ENABLE_TRACK_OBJECT) {
         //filter locked Objects and inline requests that result from dynamic view
-        if(!Config::get('locked') && !(($remote_rep -> prop_array['appid'] == $req_data['app_id']) && $display_kind == 'inline')) {
+        if(!Config::get('locked') && !(($remote_rep -> prop_array['appid'] == mc_Request::fetch('app_id', 'CHAR')) && $data->dummy['displayKind'] == 'inline')) {
             foreach ($Plugins as $name => $Plugin) {
                 $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postInstanciateObject()');
-                $Plugin -> preTrackObject(array('user_id'=>$user_id, 'view_type' => $display_kind, 'object_id' => $req_data['obj_id']));
+                $Plugin -> preTrackObject(array('user_id'=>$user_id, 'view_type' => $data->dummy['displayKind'], 'object_id' => $data->node->ref->id));
             }
-            $RenderApplication -> trackObject($remote_rep -> prop_array['appid'], $req_data['app_id'], $ESObject -> getId(), $req_data['obj_id'], $ESObject -> getFilename(), $req_data['version'], $ESObject -> ESModule -> getModuleId(), $ESObject -> ESModule -> getName(), $user_id, $user_name, $req_data['course_id']);
+            $RenderApplication -> trackObject($remote_rep -> prop_array['appid'], mc_Request::fetch('app_id', 'CHAR'), $ESObject -> getId(), $data->node->ref->id, $ESObject -> getFilename(), $version, $ESObject -> ESModule -> getModuleId(), $ESObject -> ESModule -> getName(), $user_id, $data->user->authorityName, mc_Request::fetch('course_id', 'CHAR'));
         }
     }
 

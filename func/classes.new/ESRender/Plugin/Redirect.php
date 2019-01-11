@@ -84,7 +84,7 @@ extends ESRender_Plugin_Abstract
 	 * @var string
 	 */
 	protected $PropertyLocation =
-		'{http://www.campuscontent.de/model/lom/1.0}location';
+		'cclom:location';
 
 	/**
 	 * Set the property to holding the location for redirecting.

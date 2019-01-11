@@ -135,7 +135,7 @@ class ESModule {
 	 */
 	final public function setModuleByMimetype($p_mimetype)
 	{
-		// use only MIME's "type/subtype" specification, skip optional parameters
+	    // use only MIME's "type/subtype" specification, skip optional parameters
 		$MimeTypeParts = explode(';', $p_mimetype);
 		$MimeType = $MimeTypeParts[0];
 

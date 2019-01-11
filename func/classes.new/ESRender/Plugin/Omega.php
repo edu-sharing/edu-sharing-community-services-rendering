@@ -27,8 +27,8 @@ class ESRender_Plugin_Omega
      */
     public function postRetrieveObjectProperties(EsApplication &$remote_rep, &$app_id,ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
         $logger = $this->getLogger();
-        $logger->info('Replicationsource: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') . ', format: ' .
-            $contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format') .', replicationsourceid: ' . $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid'));
+        $logger->info('Replicationsource: ' . $contentNode->getProperty('ccm:replicationsource') . ', format: ' .
+            $contentNode->getProperty('cclom:format') .', replicationsourceid: ' . $contentNode->getProperty('ccm:replicationsourceid'));
 
         if(Config::get('renderInfoLMSReturn') -> hasContentLicense === false) {
             $logger->info('hasContentLicense is false');
@@ -45,15 +45,15 @@ class ESRender_Plugin_Omega
             $role = 'teacher';
         }
 
-        if ($contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU')  {
+        if ($contentNode->getProperty('ccm:replicationsource') == 'DE.FWU')  {
 
-            if($contentNode->getProperty('{http://www.campuscontent.de/model/lom/1.0}format') == '')
+            if($contentNode->getProperty('cclom:format') == '')
                 $logger->info('Format is empty!');
 
             $response = $this->callAPI($contentNode, $role);
             $response = $this->evaluateResponse($response, $contentNode);
             $prop = new stdClass();
-            $prop -> key = '{http://www.campuscontent.de/model/1.0}wwwurl';
+            $prop -> key = 'ccm:wwwurl';
             $prop -> value = urldecode($response -> get -> streamURL);
             $contentNode -> setProperties(array($prop));
         }
@@ -81,7 +81,7 @@ class ESRender_Plugin_Omega
 
         $response = json_decode($response);
 
-        if($response->get->identifier !== $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid'))
+        if($response->get->identifier !== $contentNode->getProperty('ccm:replicationsourceid'))
             throw new ESRender_Exception_Omega('Wrong identifier');
 
         if(!empty($response->get->error)) {
@@ -108,7 +108,7 @@ class ESRender_Plugin_Omega
 
     protected function callAPI($contentNode, $role) {
         $logger = $this->getLogger();
-        $replicationSourceId = $contentNode->getProperty('{http://www.campuscontent.de/model/1.0}replicationsourceid');
+        $replicationSourceId = $contentNode->getProperty('ccm:replicationsourceid');
         if(empty($replicationSourceId)) {
             throw new ESRender_Exception_Omega('Property replicationsourceid is empty');
         }

@@ -89,7 +89,7 @@ try {
     }
 
 
-    include 'data.php';
+    $data = json_decode(file_get_contents('php://input'));
 
 
     // init translate
@@ -120,19 +120,19 @@ try {
 
     // Display parameters
     Config::set('showMetadata', true);
-    if($data->dummy['showMetadata'] === 'false')
+    if(mc_Request::fetch('showMetadata', 'CHAR') === 'false')
         Config::set('showMetadata', false);
 
     Config::set('showDownloadButton', true);
-    if($data->dummy['showDownloadButton'] === 'false')
+    if(mc_Request::fetch('showDownloadButton', 'CHAR') === 'false')
         Config::set('showDownloadButton', false);
 
     Config::set('showDownloadAdvice', true);
-    if($data->dummy['showDownloadAdvice'] === 'false')
+    if(mc_Request::fetch('showDownloadAdvice', 'CHAR') === 'false')
         Config::set('showDownloadAdvice', false);
 
     Config::set('forcePreview', false);
-    if($data->dummy['forcePreview'] === 'true')
+    if(mc_Request::fetch('forcePreview', 'CHAR') === 'true')
         Config::set('forcePreview', true);
 
     // ACCESS TOKEN
@@ -216,8 +216,8 @@ try {
 
     if(!$skipSslVerification) {
 
-        $req_data['timestamp'] = mc_Request::fetch('ts', 'CHAR');
-        if (empty($req_data['timestamp'])) {
+        $ts = mc_Request::fetch('ts', 'CHAR');
+        if (empty($ts)) {
             $Logger -> error('Missing request-param "timestamp".');
             throw new ESRender_Exception_MissingRequestParam('timestamp');
         }
@@ -232,7 +232,7 @@ try {
             $signature = rawurldecode($_GET['sig']);
             $dataSsl = urldecode($homeRepId);
             $signature = base64_decode($signature);
-            $ok = openssl_verify(urldecode($homeRepId) . $data->node->ref->id  . $req_data['timestamp'], $signature, $pubkeyid);
+            $ok = openssl_verify(urldecode($homeRepId) . $data->node->ref->id  . $ts, $signature, $pubkeyid);
         } catch (Exception $e) {
             throw new ESRender_Exception_SslVerification('SSL signature check failed');
         }
@@ -246,14 +246,14 @@ try {
         $message_send_offset_ms = 10000;
         if(isset($remote_rep -> prop_array['message_send_offset_ms']))
             $message_send_offset_ms = $remote_rep -> prop_array['message_send_offset_ms'];
-        if($now + $message_send_offset_ms < $req_data['timestamp']) {
+        if($now + $message_send_offset_ms < $ts) {
             throw new ESRender_Exception_SslVerification('Timestamp sent bigger than current timestamp');
         }
 
         $message_offset_ms = 10000;
         if(isset($remote_rep -> prop_array['message_offset_ms']))
             $message_offset_ms = $remote_rep -> prop_array['message_offset_ms'];
-        if($now - $req_data['timestamp'] > $message_offset_ms) {
+        if($now - $ts > $message_offset_ms) {
             throw new ESRender_Exception_SslVerification('Token expired');
         }
 
@@ -284,7 +284,7 @@ try {
     if($data->node->isDirectory || $contentNode->getProperty('ccm:remoterepositorytype'))
         $version = '';
     else
-        $version = mc_Request::fetch('version', 'CHAR');
+        $version = $data->node->content->version;
 
     $ESObject = new ESObject($data->node->ref->id, $version);
     $ESObject -> setContentNode($contentNode);
@@ -301,7 +301,7 @@ try {
     }
 
     // set partial object data
-    $ObjectData = array('ESOBJECT_REP_ID' => $data->node->ref->repo, 'ESOBJECT_LMS_ID' => mc_Request::fetch('app_id', 'CHAR'), 'ESOBJECT_COURSE_ID' => mc_Request::fetch('course_id', 'CHAR'), 'ESOBJECT_RESOURCE_ID' => mc_Request::fetch('resource_id', 'CHAR'), 'ESOBJECT_VERSION' => $version, 'ESOBJECT_CONTENT_HASH' => $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
+    $ObjectData = array('ESOBJECT_REP_ID' => $data->node->ref->repo, 'ESOBJECT_LMS_ID' => mc_Request::fetch('app_id', 'CHAR'), 'ESOBJECT_COURSE_ID' => mc_Request::fetch('course_id', 'CHAR'), 'ESOBJECT_RESOURCE_ID' => mc_Request::fetch('resource_id', 'CHAR'), 'ESOBJECT_VERSION' => $version, 'ESOBJECT_CONTENT_HASH' => $data->node->content->hash);
 
     if (!$ESObject -> setData($ObjectData)) {
         $Logger -> error('Error setting instance-data.');
@@ -313,12 +313,9 @@ try {
 
     $originalDeleted = $ESObject -> ContentNode -> getProperty('{virtualproperty}originaldeleted');
     if(!empty($originalDeleted)) {
-        $ESObject -> renderOriginalDeleted($data->dummy, $data->dummy['displayKind'], $Template);
+        $ESObject -> renderOriginalDeleted($data->dummy, mc_Request::fetch('display', 'CHAR', 'window'), $Template);
     }
 
-    // stop session to allow flawless module-operation
-    session_write_close();
-    $sessionSavePath = session_save_path();
     // find appropriate module
     $ESObject -> setModule();
     $moduleName = $ESObject -> ESModule -> getName();
@@ -363,11 +360,11 @@ try {
      );
 
     // create new object instance if not existent
-    if (!$Module -> instanceExists($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash)
-        && !$Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash)) {
+    if (!$Module -> instanceExists($ESObject, $instanceParams, $data->node->content->hash)
+        && !$Module -> instanceLocked($ESObject, $instanceParams, $data->node->content->hash)) {
 
         //ensure that instance is not created several times
-        $Module -> instanceLock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
+        $Module -> instanceLock($ESObject, $instanceParams, $data->node->content->hash);
         
         foreach ($Plugins as $name => $Plugin) {
             $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preInstanciateObject()');
@@ -384,11 +381,11 @@ try {
                 'course_id' => mc_Request::fetch('course_id', 'CHAR'),
                 'object_id' => $data->node->ref->id,
                 'resource_id' => mc_Request::fetch('resource_id', 'CHAR'),
-                'user_id' => $user_id,
+                'user_id' => $data->user->authorityName,
                 'user_name' => $data->user->authorityName,
-                'user_email' => $user_email,
-                'user_givenname' => $user_givenname,
-                'user_surname' => $user_surname,
+                'user_email' => $data->user->profile->email,
+                'user_givenname' => $data->user->profile->Administrator,
+                'user_surname' => $data->user->profile->lastName,
                 'version' => $version,
                 'session' => $data->dummy['session'],
                 'width' => mc_Request::fetch('width', 'INT', 0),
@@ -403,13 +400,13 @@ try {
                 if (!$ESObject -> deleteFromDb()) {
                     $Logger -> error('Error removing object-instance "' . $ESObject -> getObjectID() . '".');
                 }
-                $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
+                $Module -> instanceUnlock($ESObject, $instanceParams, $data->node->content->hash);
                 $Logger -> info('Successfully removed created object.');
                 throw new Exception('Error creating instance.');
             }
 
             if (!$ESObject -> setData2Db()) {
-                $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
+                $Module -> instanceUnlock($ESObject, $instanceParams, $data->node->content->hash);
                 $Logger -> error('Error storing object-data in database.');
                 throw new Exception('Error storing instance-data.');
             }
@@ -427,22 +424,12 @@ try {
             $Plugin -> postInstanciateObject();
         }
 
-        $Module -> instanceUnlock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);
+        $Module -> instanceUnlock($ESObject, $instanceParams, $data->node->content->hash);
     }
 
     $ESObject ->update();
 
     $Logger -> info('Successfully fetched instance.');
-
-    // start session to store esrender-data.
-    $moduleSessionName = session_name();
-    $moduleSessionId = session_id();
-    $moduleSessionSavePath = session_save_path();
-    session_write_close();
-    session_save_path($sessionSavePath);
-    session_name($ESRENDER_SESSION_NAME);
-    session_id($esrenderSessionId);
-    session_start();
 
     $Logger -> info('Preparing render-session.');
 
@@ -458,18 +445,11 @@ try {
         'src_root' => $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR,
         'TOU' => $Module -> getTimesOfUsage(), // times of usage (0:forbidden, -1:unlimited)
         'check' => parse_url($ESObject -> getPathfile(), PHP_URL_PATH),
-        'display_kind' => $data->dummy['displayKind'], 
+        'display_kind' => mc_Request::fetch('display', 'CHAR', 'window'), 
         // real module path, independent from cache
         'moduleRoot' => realpath(dirname(__FILE__) . '/../../modules/' . $moduleName),
     	'token' => $token
     );
-
-    // re-start module-session to finish processing    
-    session_write_close();
-    session_save_path($moduleSessionSavePath);
-    session_name($moduleSessionName);
-    session_id($moduleSessionId);
-    session_start();
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preProcessObject()');
@@ -478,18 +458,18 @@ try {
 
     $Logger -> info('Processing render-object.');
     if (!$Module -> process(
-        $data->dummy['displayKind'],
+        mc_Request::fetch('display', 'CHAR', 'window'),
         array(
             'rep_id' => $data->node->ref->repo,
             'app_id' => mc_Request::fetch('app_id', 'CHAR'),
             'course_id' => mc_Request::fetch('course_id', 'CHAR'),
             'object_id' => $data->node->ref->id,
             'resource_id' => mc_Request::fetch('resource_id', 'CHAR'),
-            'user_id' => $user_id,
+            'user_id' => $data->user->authorityName,
             'user_name' => $data->user->authorityName,
-            'user_email' => $user_email,
-            'user_givenname' => $user_givenname,
-            'user_surname' => $user_surname,
+            'user_email' => $data->user->profile->email,
+            'user_givenname' => $data->user->profile->Administrator,
+            'user_surname' => $data->user->profile->lastName,
             'tracking_id' => $TrackingId,
             'session' => $data->dummy['session'],
             'width' => mc_Request::fetch('width', 'INT', 0),
@@ -498,12 +478,11 @@ try {
             'user_name_encr' => $data->dummy['username'],
             'sessionName' => $ESRENDER_SESSION_NAME,
             'sessionId' => $esrenderSessionId,
-            'usernameEncrypted' => $data->dummy['usernameEncrypted'],
             'version' => $version,
-            'backLink' => $data->dummy['backLink'],
+            'backLink' => mc_Request::fetch('backLink', 'CHAR'),
         	'token' => $token
         ),
-        $Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash))) {
+        $Module -> instanceLocked($ESObject, $instanceParams, $data->node->content->hash))) {
         $Logger -> error('Error processing object "' . $data->node->ref->id . '".');
         throw new Exception('Error processing object.');
     }
@@ -514,10 +493,10 @@ try {
 
     if (ENABLE_TRACK_OBJECT) {
         //filter locked Objects and inline requests that result from dynamic view
-        if(!Config::get('locked') && !(($remote_rep -> prop_array['appid'] == mc_Request::fetch('app_id', 'CHAR')) && $data->dummy['displayKind'] == 'inline')) {
+        if(!Config::get('locked') && !(($remote_rep -> prop_array['appid'] == mc_Request::fetch('app_id', 'CHAR')) && mc_Request::fetch('display', 'CHAR', 'window') == 'inline')) {
             foreach ($Plugins as $name => $Plugin) {
                 $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postInstanciateObject()');
-                $Plugin -> preTrackObject(array('user_id'=>$user_id, 'view_type' => $data->dummy['displayKind'], 'object_id' => $data->node->ref->id));
+                $Plugin -> preTrackObject(array('user_id'=>$user_id, 'view_type' => mc_Request::fetch('display', 'CHAR', 'window'), 'object_id' => $data->node->ref->id));
             }
             $RenderApplication -> trackObject($remote_rep -> prop_array['appid'], mc_Request::fetch('app_id', 'CHAR'), $ESObject -> getId(), $data->node->ref->id, $ESObject -> getFilename(), $version, $ESObject -> ESModule -> getModuleId(), $ESObject -> ESModule -> getName(), $user_id, $data->user->authorityName, mc_Request::fetch('course_id', 'CHAR'));
         }

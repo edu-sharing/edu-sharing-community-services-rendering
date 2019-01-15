@@ -174,7 +174,7 @@ class ESObject {
      *
      * @var string
      */
-    public $metadatahHandler = null;
+    public $metadataHandler = null;
 
     /**
      *
@@ -793,12 +793,12 @@ class ESObject {
         if($display_kind == 'dynamic') {
             $tempArray['title'] = $this->getTitle();
             if(Config::get('showMetadata'))
-                $tempArray['metadata'] = $this -> metadatahHandler -> render($template, '/metadata/dynamic');
+                $tempArray['metadata'] = $this -> metadataHandler -> render($template, '/metadata/dynamic');
             echo $template -> render('/special/originaldeleted/dynamic', $tempArray);
         } else if($display_kind == 'inline') {
             $tempArray['title'] = $this->getTitle();
             if(ENABLE_METADATA_INLINE_RENDERING) {
-                $tempArray['metadata'] = $this -> metadatahHandler -> render($template, '/metadata/inline');
+                $tempArray['metadata'] = $this -> metadataHandler -> render($template, '/metadata/inline');
             }
             echo $template -> render('/special/originaldeleted/inline', $tempArray);
         }
@@ -882,7 +882,7 @@ class ESObject {
 
     public function getMetadataHandler()
     {
-        return $this->metadatahHandler;
+        return $this->metadataHandler;
     }
 
 

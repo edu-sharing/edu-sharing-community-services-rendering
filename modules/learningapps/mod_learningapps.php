@@ -17,7 +17,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     	$Template = $this -> getTemplate();
     	$tempArray = array('url' => $this->getUrl());
     	if(Config::get('showMetadata'))
-    		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    		$tempArray['metadata'] = $this -> _ESOBJECT -> metadataHandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	$tempArray['title'] = $this->_ESOBJECT->getTitle();
     	$uniqueId = uniqid('la_');
         $data['uniqueId'] = $uniqueId;
@@ -30,7 +30,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     protected function inline(ESObject $ESObject) {
         $data = array();
         if(ENABLE_METADATA_INLINE_RENDERING) {
-            $metadata = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/inline');
+            $metadata = $this -> _ESOBJECT -> metadataHandler -> render($this -> getTemplate(), '/metadata/inline');
             $data['metadata'] = $metadata;
         }
         $license = $this->_ESOBJECT->license;

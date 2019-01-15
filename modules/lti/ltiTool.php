@@ -64,7 +64,7 @@ class ltiTool {
     
     public function inline(ESObject $ESObject) {
         if(ENABLE_METADATA_INLINE_RENDERING) {
-            $metadata = $this -> esobject -> metadatahandler -> render($this -> template, '/metadata/inline');
+            $metadata = $this -> esobject -> getMetadatahandler() -> render($this -> template, '/metadata/inline');
             $template_data['metadata'] = $metadata;
         }
         $license = $this->esobject->ESOBJECT_LICENSE;

@@ -165,7 +165,7 @@ extends ESRender_Module_Base
        $data = array();
        $data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
        if(Config::get('showMetadata'))
-       		$data['metadata'] = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/dynamic');
+       		$data['metadata'] = $this -> _ESOBJECT -> metadataHandler -> render($this -> getTemplate(), '/metadata/dynamic');
        $data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
        $data['title'] = $this->_ESOBJECT->getTitle();
        echo $this->getTemplate()->render('/module/default/dynamic', $data);

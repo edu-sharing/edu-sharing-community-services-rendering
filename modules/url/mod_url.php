@@ -42,7 +42,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     	$Template = $this -> getTemplate();
     	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
     	if(Config::get('showMetadata'))
-    		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    		$tempArray['metadata'] = $this -> _ESOBJECT -> metadataHandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	
     	$tempArray['title'] = $this->_ESOBJECT->getTitle();
     	echo $Template -> render('/module/url/dynamic', $tempArray);

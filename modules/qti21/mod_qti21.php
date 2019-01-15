@@ -118,7 +118,7 @@ extends ESRender_Module_ContentNode_Abstract
 			$Template = $this->getTemplate();
 			if($this->p_kind == ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC) {
 			    if(Config::get('showMetadata'))
-					$metadata = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/dynamic');
+					$metadata = $this -> _ESOBJECT -> metadataHandler -> render($this -> getTemplate(), '/metadata/dynamic');
 				
 				echo $Template->render('/module/qti21/dynamic', array('oru' => $oru, 'title' => $m_name, 'metadata' => $metadata, 'previewUrl' => $this->_ESOBJECT->getPreviewUrl()));
 				

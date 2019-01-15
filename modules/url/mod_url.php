@@ -65,7 +65,7 @@ extends ESRender_Module_NonContentNode_Abstract {
 
         $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING) {
-            $metadata = $this -> _ESOBJECT -> getMetadatahHandler() -> render($this -> getTemplate(), '/metadata/inline');
+            $metadata = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
         }
 
         $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));

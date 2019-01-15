@@ -108,7 +108,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
 
         $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING) {
-	       	$metadata = $this -> _ESOBJECT -> getMetadatahHandler() -> render($this -> getTemplate(), '/metadata/inline');
+	       	$metadata = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
         }
 
         $data['footer'] = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));

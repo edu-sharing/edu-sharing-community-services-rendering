@@ -439,10 +439,6 @@ class ESObject {
         return $obj_module;
     }
 
-    /**
-     *
-     * @return string
-     */
     public function getLicense() {
         return $this -> license;
     }
@@ -452,10 +448,7 @@ class ESObject {
         return $this->hash;
     }
 
-    /**
-     * @param mixed $ESOBJECT_CONTENT_HASH
-     */
-    public function setContentHash($ESOBJECT_CONTENT_HASH): void
+    public function setContentHash($ESOBJECT_CONTENT_HASH)
     {
         $this->hash = $ESOBJECT_CONTENT_HASH;
     }
@@ -588,7 +581,7 @@ class ESObject {
         if(!empty($commonlicense_key))
         	$this -> license = new ESRender_License($this);
 
-        $this -> metadatahHandler = new ESRender_Metadata_Handler($this);
+        $this -> metadataHandler = new ESRender_Metadata_Handler($this);
         $this -> sequenceHandler = new ESRender_Sequence_Handler($this);
 
         return true;
@@ -847,81 +840,52 @@ class ESObject {
 
     }
 
-    /**
-     * @return string
-     */
     public function getRepId(): string
     {
         return $this->repId;
     }
 
-    /**
-     * @return string
-     */
     public function getVersion(): string
     {
         return $this->version;
     }
 
-    /**
-     * @return string
-     */
     public function getLmsId(): string
     {
         return $this->lmsId;
     }
 
-    /**
-     * @return int
-     */
     public function getCourseId(): int
     {
         return $this->courseId;
     }
 
-    /**
-     * @return int
-     */
     public function getResourceId(): int
     {
         return $this->resourceId;
     }
 
-    /**
-     * @return string
-     */
     public function getResourceVersion(): string
     {
         return $this->resourceVersion;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getHash() : string
+    public function getHash()
     {
         return $this->hash;
     }
 
-    /**
-     * @return string
-     */
-    public function getMetadatahHandler(): string
+    public function getMetadataHandler()
     {
         return $this->metadatahHandler;
     }
 
-    /**
-     * @return string
-     */
+
     public function getSequenceHandler()
     {
         return $this->sequenceHandler;

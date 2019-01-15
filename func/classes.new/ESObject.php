@@ -587,8 +587,10 @@ class ESObject {
         $commonlicense_key = $this -> contentNode -> getNodeProperty('ccm:commonlicense_key');
         if(!empty($commonlicense_key))
         	$this -> license = new ESRender_License($this);
-        
+
         $this -> metadatahHandler = new ESRender_Metadata_Handler($this);
+        $this -> sequenceHandler = new ESRender_Sequence_Handler($this);
+
         return true;
     }
 

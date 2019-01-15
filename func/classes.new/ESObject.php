@@ -806,10 +806,8 @@ class ESObject {
                 $tempArray['metadata'] = $this -> metadatahHandler -> render($template, '/metadata/inline');
             }
             echo $template -> render('/special/originaldeleted/inline', $tempArray);
-        } else {
-            throw new ESRender_Exception_CorruptVersion($this->getTitle());
         }
-        exit();
+        exit(0);
     }
 
     public function update() {

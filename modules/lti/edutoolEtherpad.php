@@ -13,7 +13,7 @@ class edutoolEtherpad {
 	    $this -> setToken();
     }
 
-    public function display(array $requestData) {
+    public function display(ESObject $ESObject) {
         $courseId = $requestData['app_id'] . '_';
         $courseId .= empty($requestData['course_id']) ? 'default' : $requestData['course_id'];
         $resource_link_id = empty($requestData['resource_id']) ? 'default' : $requestData['resource_id'];
@@ -25,7 +25,7 @@ class edutoolEtherpad {
         return true;
     }
 
-    public function dynamic(array $requestData) {
+    public function dynamic(ESObject $ESObject) {
         $courseId = $requestData['app_id'] . '_';
         $courseId .= empty($requestData['course_id']) ? 'default' : $requestData['course_id'];
         $resource_link_id = empty($requestData['resource_id']) ? 'default' : $requestData['resource_id'];
@@ -40,7 +40,7 @@ class edutoolEtherpad {
         return true;
     }
     
-    public function inline(array $requestData) {
+    public function inline(ESObject $ESObject) {
         $courseId = $requestData['app_id'] . '_' . $requestData['course_id'];
         $resource_link_id = $requestData['resource_id'];
         $userId = $requestData['user_name'];

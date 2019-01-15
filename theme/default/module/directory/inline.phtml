@@ -25,7 +25,7 @@ $unid = uniqid();
         }
     </script>
     <?php
-    if(false === Config::get('renderInfoLMSReturn')->hasContentLicense) {
+    if(false === Config::get('hasContentLicense')) {
         echo '<span class="edusharing_warning">'.htmlentities($msg['hasNoContentLicense']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8').'</span>';
     } else {
         echo '<div class="edusharing_rendering_content_footer_directory">

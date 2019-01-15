@@ -39,7 +39,7 @@ class mod_qti
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_Base::refineInstanceConstraints()
 	 */
-	protected function refineInstanceConstraints($Sql, array $requestData, $requiredInstanceVersion)
+	protected function refineInstanceConstraints($Sql, ESObject $ESObject, $requiredInstanceVersion)
 	{
 			/*
 		 * if course-id given, a resource-id must be provided as the same object

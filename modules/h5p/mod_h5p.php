@@ -35,17 +35,17 @@ class mod_h5p
 extends ESRender_Module_ContentNode_Abstract {
 
 
-	protected function renderTemplate(array $requestData, $TemplateName, $getDefaultData = true) {
+	protected function renderTemplate(ESObject $ESObject, $TemplateName, $getDefaultData = true) {
 		$Logger = $this -> getLogger();
 		if($getDefaultData)
-			$template_data = parent::prepareRenderData($requestData);
+			$template_data = parent::prepareRenderData($ESObject);
 			$template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
 			$template_data['content'] = $this -> _ESOBJECT -> getPath() . $this -> getContentPathSuffix();
            if($TemplateName == '/module/h5p/dynamic' && Config::get('showMetadata'))
-                $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+                $template_data['metadata'] = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/dynamic');
 
             if($TemplateName == '/module/h5p/inline' && ENABLE_METADATA_INLINE_RENDERING) {
-                $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
+                $metadata = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/inline');
                 $data['metadata'] = $metadata;
             }
             $Template = $this -> getTemplate();
@@ -58,11 +58,11 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::createInstance()
 	 */
-	final public function createInstance(array $requestData) {
+	final public function createInstance(ESObject $ESObject) {
 
         $logger = $this -> getLogger();
 			
-		if (!parent::createInstance($requestData)) {
+		if (!parent::createInstance($ESObject)) {
 			return false;
 		}
 
@@ -94,8 +94,8 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::inline()
 	 */
-	protected function inline(array $requestData) {
-		echo $this -> renderTemplate($requestData, '/module/h5p/inline');
+	protected function inline(ESObject $ESObject) {
+		echo $this -> renderTemplate($ESObject, '/module/h5p/inline');
 		return true;
 	}
 
@@ -103,8 +103,8 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::dynamic()
 	 */
-	protected function dynamic(array $requestData) {
-        echo $this -> renderTemplate($requestData, '/module/h5p/dynamic');
+	protected function dynamic(ESObject $ESObject) {
+        echo $this -> renderTemplate($ESObject, '/module/h5p/dynamic');
         return true;
 	}
 

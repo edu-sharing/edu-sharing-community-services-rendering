@@ -71,8 +71,6 @@ try {
     require_once (MC_LIB_PATH . 'ESModule.php');
     require_once (MC_LIB_PATH . 'ESObject.php');
 
-    unset($CFG);
-
     // init PLUGINS
     $Plugins = array();
     $PluginConfig = '../../conf/plugins.conf.php';
@@ -88,9 +86,7 @@ try {
         $Plugin -> setDefaultLogger($Logger);
     }
 
-
     $data = json_decode(file_get_contents('php://input'));
-
 
     // init translate
     global $Translate, $LanguageCode;
@@ -135,8 +131,9 @@ try {
     if(mc_Request::fetch('forcePreview', 'CHAR') === 'true')
         Config::set('forcePreview', true);
 
-    // ACCESS TOKEN
-    Config::set('accessToken', mc_Request::fetch('accessToken', 'CHAR', ''));
+    Config::set('hasContentLicense', false);
+    if(in_array('ReadAll', $data -> node -> access))
+        Config::set('hasContentLicense', true);
 
     $CurrentDirectoryName = basename(dirname(__FILE__));
     $application = new ESApp();
@@ -144,13 +141,12 @@ try {
 
     $Logger -> debug('Initialized application.');
 
-    $hc = $application -> getHomeConf();
-    if (!$hc) {
+    $homeConfig = $application -> getHomeConf();
+    if (!$homeConfig) {
         $Logger -> error('Error loading home-configuration.');
-
         throw new ESRender_Exception_HomeConfigNotLoaded();
     }
-
+    Config::set('homeConfig', $homeConfig);
     $Logger -> debug('Successfully loaded home-configuration.');
 
     // load repository-config
@@ -169,7 +165,7 @@ try {
     $Logger -> debug('Successfully loaded repository by id "' . $data->node->ref->repo . '".');
     
     
-    $homeRepId = $hc -> prop_array['homerepid'];
+    $homeRepId = $homeConfig -> prop_array['homerepid'];
     if($homeRepId === $data->node->ref->repo || empty($homeRepId)) {
         $homeRep = $remote_rep;
     } else {
@@ -207,12 +203,7 @@ try {
     	}
     }
 
-    try {
-    	$token = md5(uniqid());
-    } catch (Exception $e) {
-    	throw new Exception('Cannot generate token.');
-    }
-
+    Config::set('token', md5(uniqid()));
 
     if(!$skipSslVerification) {
 
@@ -234,7 +225,7 @@ try {
             $signature = base64_decode($signature);
             $ok = openssl_verify(urldecode($homeRepId) . $data->node->ref->id  . $ts, $signature, $pubkeyid);
         } catch (Exception $e) {
-            throw new ESRender_Exception_SslVerification('SSL signature check failed');
+            throw new ESRender_Exception_SslVerification('Error checking signature');
         }
 
         if ($ok != 1) {
@@ -269,30 +260,23 @@ try {
         $Plugin -> preRetrieveObjectProperties($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
+
+
     require_once(dirname(__FILE__) . '/../../func/classes.new/ESContentNode.php');
     $contentNode = new ESContentNode($data);
-
-    $eduscopename = $contentNode -> getProperty('ccm:eduscopename');
-    if($eduscopename === 'safe') {
-    	if(!empty($CC_RENDER_PATH_SAFE))
-    		$CC_RENDER_PATH = $CC_RENDER_PATH_SAFE;
-    }
+    $ESObject = new ESObject($contentNode);
 
     //version
-    if ($contentNode->getProperty('ccm:remoterepositorytype'))
-        $version = '';
-    if($data->node->isDirectory || $contentNode->getProperty('ccm:remoterepositorytype'))
-        $version = '';
-    else
-        $version = $data->node->content->version;
+    if($contentNode->getNode()->isDirectory || $contentNode->getNodeProperty('ccm:remoterepositorytype'))
+        $contentNode->getNode()->content->version = '';
 
-    $ESObject = new ESObject($data->node->ref->id, $version);
-    $ESObject -> setContentNode($contentNode);
-    $ESObject -> setInfoLmsData($renderInfoLMSReturn);
+    $ESObject = new ESObject($contentNode);
 
-    if (!$ESObject -> setDataByNode()) {
-        $Logger -> error('Error importing Alfresco\'s property-node.');
-        throw new ESRender_Exception_Unauthorized('Could not import object-properties.');
+    //@todo
+    $eduscopename = $contentNode -> getNodeProperty('ccm:eduscopename');
+    if($eduscopename === 'safe') {
+        if(!empty($CC_RENDER_PATH_SAFE))
+            $CC_RENDER_PATH = $CC_RENDER_PATH_SAFE;
     }
 
     foreach ($Plugins as $name => $Plugin) {
@@ -300,28 +284,19 @@ try {
         $Plugin -> postRetrieveObjectProperties($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $contentNode, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
-    // set partial object data
-    $ObjectData = array('ESOBJECT_REP_ID' => $data->node->ref->repo, 'ESOBJECT_LMS_ID' => mc_Request::fetch('app_id', 'CHAR'), 'ESOBJECT_COURSE_ID' => mc_Request::fetch('course_id', 'CHAR'), 'ESOBJECT_RESOURCE_ID' => mc_Request::fetch('resource_id', 'CHAR'), 'ESOBJECT_VERSION' => $version, 'ESOBJECT_CONTENT_HASH' => $data->node->content->hash);
-
-    if (!$ESObject -> setData($ObjectData)) {
-        $Logger -> error('Error setting instance-data.');
-
-        throw new ESRender_Exception_Unauthorized('Could not set instance-data.');
-    }
-
     $Logger -> info('Successfully initialized instance.');
 
-    $originalDeleted = $ESObject -> ContentNode -> getProperty('{virtualproperty}originaldeleted');
+    $originalDeleted = $ESObject -> getContentNode() -> getNodeProperty('{virtualproperty}originaldeleted');
     if(!empty($originalDeleted)) {
         $ESObject -> renderOriginalDeleted($data->dummy, mc_Request::fetch('display', 'CHAR', 'window'), $Template);
     }
 
     // find appropriate module
     $ESObject -> setModule();
-    $moduleName = $ESObject -> ESModule -> getName();
+    $moduleName = $ESObject -> module -> getName();
     if (empty($moduleName)) {
         $Logger -> error('No module found');
-        $Logger -> debug('Object mime-type: "' . $ESObject -> getMimeType() . '", resource-type: "' . $ESObject -> getResourceType() . '", resource-version: "' . $ESObject -> getResourceVersion() . '".');
+        $Logger -> debug('Object mime-type: "' . $ESObject -> getMimeType() . '", resource-type: "' . $ESObject -> getResourceType() . '", resource-version: "' . $data->node->content->version . '".');
         throw new Exception('Could not load module to render object.');
     }
 
@@ -343,28 +318,12 @@ try {
 
     $Logger -> info('Loaded module "' . $moduleName . '".');
 
-    $instanceParams = array(
-        'rep_id' => $data->node->ref->repo,
-        'app_id' => mc_Request::fetch('app_id', 'CHAR'),
-        'course_id' => mc_Request::fetch('course_id', 'CHAR'),
-        'object_id' => $data->node->ref->id,
-        'resource_id' => mc_Request::fetch('resource_id', 'CHAR'),
-        'user_id' => $data->user->authorityName,
-        'user_name' => $data->user->authorityName,
-        'user_email' => $data->user->profile->email,
-        'user_givenname' => $data->user->profile->Administrator,
-        'user_surname' => $data->user->profile->lastName,
-        'version' => $version,
-        'width' => mc_Request::fetch('width', 'INT', 0),
-        'height' => mc_Request::fetch('height', 'INT', 0)
-     );
-
     // create new object instance if not existent
-    if (!$Module -> instanceExists($ESObject, $instanceParams, $data->node->content->hash)
-        && !$Module -> instanceLocked($ESObject, $instanceParams, $data->node->content->hash)) {
+    if (!$Module -> instanceExists($ESObject)
+        && !$Module -> instanceLocked($ESObject)) {
 
         //ensure that instance is not created several times
-        $Module -> instanceLock($ESObject, $instanceParams, $data->node->content->hash);
+        $Module -> instanceLock($ESObject);
         
         foreach ($Plugins as $name => $Plugin) {
             $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preInstanciateObject()');
@@ -373,40 +332,19 @@ try {
 
         try {
             $Logger -> info('Instance does not yet exists. Attempting to create new object-instance.');
-            $parsedRepoAuthUrl = parse_url($remote_rep->prop_array['authenticationwebservice_wsdl']);
-            
-            $paramsCreate = array(
-                'rep_id' => $data->node->ref->repo,
-                'app_id' => mc_Request::fetch('app_id', 'CHAR'),
-                'course_id' => mc_Request::fetch('course_id', 'CHAR'),
-                'object_id' => $data->node->ref->id,
-                'resource_id' => mc_Request::fetch('resource_id', 'CHAR'),
-                'user_id' => $data->user->authorityName,
-                'user_name' => $data->user->authorityName,
-                'user_email' => $data->user->profile->email,
-                'user_givenname' => $data->user->profile->Administrator,
-                'user_surname' => $data->user->profile->lastName,
-                'version' => $version,
-                'session' => $data->dummy['session'],
-                'width' => mc_Request::fetch('width', 'INT', 0),
-                'height' => mc_Request::fetch('height', 'INT', 0),
-                'remoteRepConf' => $remote_rep->prop_array,
-                'private_key' => $hc->prop_array['private_key'],
-                'homerepoConf' => $homeRep -> prop_array,
-                'renderAppId' => $hc->prop_array['appid']);
-            
-            if (!$Module -> createInstance($paramsCreate)) {
+
+            if (!$Module -> createInstance($ESObject)) {
                 $Logger -> error('Error creating new object-instance. Attempting to remove created object.');
                 if (!$ESObject -> deleteFromDb()) {
                     $Logger -> error('Error removing object-instance "' . $ESObject -> getObjectID() . '".');
                 }
-                $Module -> instanceUnlock($ESObject, $instanceParams, $data->node->content->hash);
+                $Module -> instanceUnlock($ESObject);
                 $Logger -> info('Successfully removed created object.');
                 throw new Exception('Error creating instance.');
             }
 
             if (!$ESObject -> setData2Db()) {
-                $Module -> instanceUnlock($ESObject, $instanceParams, $data->node->content->hash);
+                $Module -> instanceUnlock($ESObject);
                 $Logger -> error('Error storing object-data in database.');
                 throw new Exception('Error storing instance-data.');
             }
@@ -424,7 +362,7 @@ try {
             $Plugin -> postInstanciateObject();
         }
 
-        $Module -> instanceUnlock($ESObject, $instanceParams, $data->node->content->hash);
+        $Module -> instanceUnlock($ESObject);
     }
 
     $ESObject ->update();
@@ -436,19 +374,15 @@ try {
     // prepare module render data
     $_SESSION['esrender'] = array(
         'file_name' => $ESObject -> getFilename(),
-        'mod_name' => $moduleName,
-        // relative path to DOC_ROOT, e.g. '/esrender/modules/doc/files/'
-        'mod_path' => MC_PATH . $ESObject -> ESModule -> getTmpFilepath() . DIRECTORY_SEPARATOR,
-        // absolute path e.g. '/srv/www/htdocs/esrender/modules/doc/files/'
-        'mod_root' => MC_ROOT_PATH . $ESObject -> ESModule -> getTmpFilepath() . DIRECTORY_SEPARATOR,
-        // absolute path, e.g. '/srv/www/docs/'.$mod_name.'/'
+        'mod_name' => $moduleName,// relative path to DOC_ROOT, e.g. '/esrender/modules/doc/files/'
+        'mod_path' => MC_PATH . $ESObject -> module -> getTmpFilepath() . DIRECTORY_SEPARATOR,// absolute path e.g. '/srv/www/htdocs/esrender/modules/doc/files/'
+        'mod_root' => MC_ROOT_PATH . $ESObject -> module -> getTmpFilepath() . DIRECTORY_SEPARATOR,// absolute path, e.g. '/srv/www/docs/'.$mod_name.'/'
         'src_root' => $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR,
-        'TOU' => $Module -> getTimesOfUsage(), // times of usage (0:forbidden, -1:unlimited)
+        'TOU' => $Module -> getTimesOfUsage(),// times of usage (0:forbidden, -1:unlimited)
         'check' => parse_url($ESObject -> getPathfile(), PHP_URL_PATH),
-        'display_kind' => mc_Request::fetch('display', 'CHAR', 'window'), 
-        // real module path, independent from cache
+        'display_kind' => mc_Request::fetch('display', 'CHAR', 'window'),// real module path, independent from cache
         'moduleRoot' => realpath(dirname(__FILE__) . '/../../modules/' . $moduleName),
-    	'token' => $token
+    	'token' => Config::get('token')
     );
 
     foreach ($Plugins as $name => $Plugin) {
@@ -457,32 +391,7 @@ try {
     }
 
     $Logger -> info('Processing render-object.');
-    if (!$Module -> process(
-        mc_Request::fetch('display', 'CHAR', 'window'),
-        array(
-            'rep_id' => $data->node->ref->repo,
-            'app_id' => mc_Request::fetch('app_id', 'CHAR'),
-            'course_id' => mc_Request::fetch('course_id', 'CHAR'),
-            'object_id' => $data->node->ref->id,
-            'resource_id' => mc_Request::fetch('resource_id', 'CHAR'),
-            'user_id' => $data->user->authorityName,
-            'user_name' => $data->user->authorityName,
-            'user_email' => $data->user->profile->email,
-            'user_givenname' => $data->user->profile->Administrator,
-            'user_surname' => $data->user->profile->lastName,
-            'tracking_id' => $TrackingId,
-            'session' => $data->dummy['session'],
-            'width' => mc_Request::fetch('width', 'INT', 0),
-            'height' => mc_Request::fetch('height', 'INT', 0),
-            'callback' => mc_Request::fetch('callback', 'CHAR'),
-            'user_name_encr' => $data->dummy['username'],
-            'sessionName' => $ESRENDER_SESSION_NAME,
-            'sessionId' => $esrenderSessionId,
-            'version' => $version,
-            'backLink' => mc_Request::fetch('backLink', 'CHAR'),
-        	'token' => $token
-        ),
-        $Module -> instanceLocked($ESObject, $instanceParams, $data->node->content->hash))) {
+    if (!$Module -> process(mc_Request::fetch('display', 'CHAR', 'window'), $ESObject, $Module -> instanceLocked($ESObject))) {
         $Logger -> error('Error processing object "' . $data->node->ref->id . '".');
         throw new Exception('Error processing object.');
     }
@@ -498,121 +407,78 @@ try {
                 $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postInstanciateObject()');
                 $Plugin -> preTrackObject(array('user_id'=>$user_id, 'view_type' => mc_Request::fetch('display', 'CHAR', 'window'), 'object_id' => $data->node->ref->id));
             }
-            $RenderApplication -> trackObject($remote_rep -> prop_array['appid'], mc_Request::fetch('app_id', 'CHAR'), $ESObject -> getId(), $data->node->ref->id, $ESObject -> getFilename(), $version, $ESObject -> ESModule -> getModuleId(), $ESObject -> ESModule -> getName(), $user_id, $data->user->authorityName, mc_Request::fetch('course_id', 'CHAR'));
+            $RenderApplication -> trackObject($remote_rep -> prop_array['appid'], mc_Request::fetch('app_id', 'CHAR'), $ESObject -> getId(), $data->node->ref->id, $ESObject -> getFilename(), $data->node->content->version, $ESObject -> module -> getModuleId(), $ESObject -> module -> getName(), $user_id, $data->user->authorityName, mc_Request::fetch('course_id', 'CHAR'));
         }
     }
 
     $Logger -> info('Shutting down.');
 
     exit(0);
+
 } catch(ESRender_Exception_MissingRequestParam $exception) {
     $Logger -> error('Missing parameter "' . $exception -> getParamName() . '"');
     $Logger -> error($exception);
-
     $Message = new Phools_Message_Default('Missing parameter ":name".', array(new Phools_Message_Param_String(':name', $exception -> getParamName())));
-
-    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'ESRender_Exception_MissingRequestParam'));
 } catch(ESRender_Exception_SslVerification $exception) {
     $Logger -> error('SSL verification error "' . $exception -> getMessage() . '"');
     $Logger -> error($exception);
-
     $Message = new Phools_Message_Default($exception -> getMessage());
-    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'ESRender_Exception_SslVerification'));
 } catch(ESRender_Exception_InvalidRequestParam $exception) {
     $Logger -> error('Invalid parameter "' . $exception -> getParamName() . '"');
     $Logger -> error($exception);
-
-    $Message = new Phools_Message_Default('Invalid parameter ":name".', array(new Phools_Message_Param_String(':name', $exception -> getParamName())));
-
-    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
+    $Message = new Phools_Message_Default('Invalid parameter ":technicalDetail".', array(new Phools_Message_Param_String(':name', $exception -> getParamName())));
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), 'i18nName' => 'ESRender_Exception_InvalidRequestParam'));
 } catch(ESRender_Exception_HomeConfigNotLoaded $exception) {
     $Logger -> error('Error loading home-configuration.');
     $Logger -> error($exception);
-
     $Message = new Phools_Message_Default('Error loading configuration.');
-
-    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'ESRender_Exception_HomeConfigNotLoaded'));
 } catch(ESRender_Exception_AppConfigNotLoaded $exception) {
     $Logger -> error('Error loading config for application "' . $exception -> getAppId() . '".');
     $Logger -> error($exception);
-
     $Message = new Phools_Message_Default('Error loading config for application ":app_id".', array(new Phools_Message_Param_String(':app_id', $exception -> getAppId())));
-
-    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'ESRender_Exception_AppConfigNotLoaded'));
 } catch(ESRender_Exception_NetworkError $exception) {
     $Logger -> error('A network error occurred.');
     $Logger -> error($exception);
-
     $Message = new Phools_Message_Default('A network error occurred.');
-
-    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'ESRender_Exception_NetworkError'));
 } catch(ESRender_Exception_Unauthorized $exception) {
     $Logger -> error('You\'re not authorized to access this resource.');
     $Logger -> error($exception);
-
     $Message = new Phools_Message_Default('You\'re not authorized to access this resource.');
-
-    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'ESRender_Exception_Unauthorized'));
 } catch(ESRender_Exception_ConfigParamInvalidOrMissing $exception) {
     $Logger -> error('Missing or wrong config parameter "' . $exception -> getParam() . '".');
     $Logger -> error($exception);
-
     $Message = new Phools_Message_Default('The config param ":param" for app ":app" is invalid or missing. Please contact your system-administrator.');
-
-    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'ESRender_Exception_ConfigParamInvalidOrMissing'));
 } catch(ESRender_Exception_UsageError $exception) {
     $Logger -> error($exception -> getMessage());
     $Logger -> debug($exception);
-
     $Message = new Phools_Message_Default($exception -> getMessage());
-
-    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
-    
-} catch(ESRender_Exception_InfoLms $exception) {
-    $Logger -> error($exception -> getMessage());
-    $Logger -> debug($exception);
-
-    if(strpos(strtoupper($exception -> getMessage()), 'NODE_DOES_NOT_EXISTS') !== false)
-        $message = 'Object does not exist in repository';
-    else
-        $message = 'Error fetching object properties';
-
-    $Message = new Phools_Message_Default($message);
-
-    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
-
-    
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'ESRender_Exception_UsageError'));
 } catch(ESRender_Exception_Omega $exception) {
     $Logger -> error($exception -> getMessage());
     $Logger -> debug($exception);
-
     $MessageDefault = new Phools_Message_Default('Omega plugin error');
     $Message = new Phools_Message_Default($exception -> getMessage());
-
     $code = '';
     if($exception -> getCode() != 0)
         $code = $exception -> getCode();
-
-    echo $Template -> render('/error/default', array('error' => $MessageDefault -> localize($Locale, $Translate) . ' - ' . $Message -> localize($Locale, $Translate) . ' ' .  $code));
-
-
+    echo $Template -> render('/error/default', array('i18nName' => 'ESRender_Exception_Omega', 'technicalDetail' => $MessageDefault -> localize($Locale, $Translate) . ' - ' . $Message -> localize($Locale, $Translate) . ' ' .  $code));
 } catch(ESRender_Exception_CorruptVersion $exception) {
-
 	$Logger -> error($exception -> getMessage());
 	$Logger -> debug($exception);
-
 	$Message = new Phools_Message_Default('The requested version of ":title" is corrupt or missing.', array(new Phools_Message_Param_String(':title', $exception -> getTitle())));
-	
-	
-	echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate)));
-	
+	echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'ESRender_Exception_CorruptVersion'));
 } catch(Exception $exception) {
     $Logger -> error('An internal server error occurred.');
     $Logger -> debug($exception);
-
     $Message = new Phools_Message_Default('An internal server error occurred.');
-
-    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'Exception'));
 }
 
 $Logger -> info('Shutting down.');

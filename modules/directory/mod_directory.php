@@ -3,7 +3,7 @@
 class mod_directory extends ESRender_Module_NonContentNode_Abstract {
 
 
-    public function inline(array $requestData) {
+    public function inline(ESObject $ESObject) {
         $children = array();
         $i = 0;
         $childrenItems = $this->_ESOBJECT->renderInfoLMSReturn->getRenderInfoLMSReturn->children->item;
@@ -19,16 +19,16 @@ class mod_directory extends ESRender_Module_NonContentNode_Abstract {
     	    }
 	}
 
-        $creator = $this->_ESOBJECT->ContentNode->getProperty('NodeCreator_FirstName') . ' ' . $this->_ESOBJECT->ContentNode->getProperty('NodeCreator_LastName');
+        $creator = $this->_ESOBJECT->getContentNode()->getNodeProperty('NodeCreator_FirstName') . ' ' . $this->_ESOBJECT->getContentNode()->getNodeProperty('NodeCreator_LastName');
         if(strpos(strtolower($creator), 'administrator') !== false || strpos(strtolower($creator), 'unknown') !== false)
             $creator = '';
-        $data = array('title' => htmlentities($this->_ESOBJECT->getTitle()), 'children' => $children, 'parentUrl'=> $this->lmsInlineHelper($requestData), 'folderUrl' => Config::get('homeRepository')->url . '/components/workspace?' . $requestData['object_id'], 'creator' => $creator);
+        $data = array('title' => htmlentities($this->_ESOBJECT->getTitle()), 'children' => $children, 'parentUrl'=> $this->lmsInlineHelper(), 'folderUrl' => Config::get('homeRepository')->url . '/components/workspace?' . $ESObject->getObjectID(), 'creator' => $creator);
         $Template = $this -> getTemplate();
         echo $Template -> render('/module/directory/inline', $data);
         return true;
     }
 
-    public function display(array $requestData) {
+    public function display(ESObject $ESObject) {
         return;
     }
 

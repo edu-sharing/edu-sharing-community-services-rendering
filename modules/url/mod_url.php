@@ -19,11 +19,11 @@ extends ESRender_Module_NonContentNode_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_Base::display()
      */
-    protected function display(array $requestData) {
+    protected function display(ESObject $ESObject) {
         return true;
     }
     
-    protected function dynamic(array $requestData) {
+    protected function dynamic(ESObject $ESObject) {
     	if (!$this -> validate()) {
     		return false;
     	}
@@ -42,7 +42,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     	$Template = $this -> getTemplate();
     	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
     	if(Config::get('showMetadata'))
-    		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/dynamic');
     	
     	$tempArray['title'] = $this->_ESOBJECT->getTitle();
     	echo $Template -> render('/module/url/dynamic', $tempArray);
@@ -50,22 +50,22 @@ extends ESRender_Module_NonContentNode_Abstract {
     	return true;
     }
     
-    protected function inline(array $requestData) {
+    protected function inline(ESObject $ESObject) {
         if (!$this -> validate()) {
             return false;
         }
-        $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
+        $license = $this->_ESOBJECT->getLicense();
         if(!empty($license)) {
-            $license = $license -> renderFooter($this -> getTemplate(), $this->lmsInlineHelper($requestData));
+            $license = $license -> renderFooter($this -> getTemplate(), $this->lmsInlineHelper());
         }
 
         $sequence = '';
         if($this -> _ESOBJECT -> sequenceHandler -> isSequence())
-            $sequence = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper($requestData));
+            $sequence = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper());
 
         $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING) {
-            $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
+            $metadata = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/inline');
         }
 
         $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));
@@ -74,13 +74,13 @@ extends ESRender_Module_NonContentNode_Abstract {
         if(Config::get('urlEmbedding')) {
             $embedding = Config::get('urlEmbedding') . $footer;
         } else if ($this -> detectVideo()) {
-            $embedding = $this -> getVideoEmbedding($requestData['width'], $footer);
+            $embedding = $this -> getVideoEmbedding(mc_Request::fetch('width', 'INT', 600), $footer);
         } else if($this -> detectAudio()) {
             $embedding = $this->getAudioEmbedding($footer);
         } else if($this -> detectImage()) {
             $embedding = $this -> getImageEmbedding($footer);
         } else {
-            $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
+            $license = $this->_ESOBJECT->getLicense();
             if (!empty($license))
                 $license = $license->renderFooter($this->getTemplate(), $this->getUrl());
             $embedding = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this->_ESOBJECT->getTitle(), 'url' => $this->getUrl()));
@@ -101,7 +101,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
     
     protected function isYoutubeRemoteObject() {
-        if($this -> _ESOBJECT -> ContentNode -> getProperty('ccm:remoterepositorytype') == 'YOUTUBE')
+        if($this -> _ESOBJECT -> getContentNode() -> getNodeProperty('ccm:remoterepositorytype') == 'YOUTUBE')
             return true;
         return false;
     }
@@ -137,7 +137,7 @@ extends ESRender_Module_NonContentNode_Abstract {
         $objId = $this -> _ESOBJECT -> getObjectID();
         //wrappers needed to handle max width
         if($this -> isYoutubeRemoteObject()){
-            $vidId = $this->_ESOBJECT->ContentNode->getProperty('ccm:remotenodeid');
+            $vidId = $this->_ESOBJECT->getContentNode()->getNodeProperty('ccm:remotenodeid');
             return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
             			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
 			                '.$dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'YOUTUBE').'
@@ -191,7 +191,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getUrl() {
-        $urlProp = $this -> _ESOBJECT -> ContentNode -> getProperty($this -> getUrlProperty());
+        $urlProp = $this -> _ESOBJECT -> getContentNode() -> getNodeProperty($this -> getUrlProperty());
        if(!empty($urlProp))
             return $urlProp;
         return false;
@@ -228,7 +228,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             strpos($this->_ESOBJECT->getMimeType(), '/jpg') !== false ||
             strpos($this->_ESOBJECT->getMimeType(), '/jpeg') !== false ||
             strpos($this->_ESOBJECT->getMimeType(), '/gif') !== false) &&
-            $this->_ESOBJECT->ContentNode->getProperty('ccm:remoterepositorytype') !== 'DDB')
+            $this->_ESOBJECT->getContentNode()->getNodeProperty('ccm:remoterepositorytype') !== 'DDB')
             return true;
         return false;
     }

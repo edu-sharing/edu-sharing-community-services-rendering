@@ -38,9 +38,9 @@ extends ESRender_Module_ContentNode_Abstract
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::createInstance()
 	 */
-	public function createInstance(array $requestData)
+	public function createInstance(ESObject $ESObject)
 	{
-		if ( ! parent::createInstance($requestData) )
+		if ( ! parent::createInstance($ESObject) )
 		{
 			return false;
 		}
@@ -70,11 +70,11 @@ extends ESRender_Module_ContentNode_Abstract
     }
 
 
-    protected function dynamic(array $requestData)
+    protected function dynamic(ESObject $ESObject)
     {
-        $template_data['url'] = $this->_ESOBJECT->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
+        $template_data['url'] = $this->_ESOBJECT->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         if(Config::get('showMetadata'))
-            $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+            $template_data['metadata'] = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/dynamic');
         $template_data['title'] = $this->_ESOBJECT->getTitle();
         $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
         echo $this -> getTemplate() -> render('/module/html/dynamic', $template_data);
@@ -85,12 +85,12 @@ extends ESRender_Module_ContentNode_Abstract
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::download()
 	 */
-	protected function download(array $requestData)
+	protected function download(ESObject $ESObject)
 	{
 	    $Logger = $this->getLogger();
         $Logger->debug('Redirecting to location: "' . $this->_ESOBJECT->getPath().'.zip?"');
 		header('HTTP/1.1 303 See other');
-		header('Location: '.$this->_ESOBJECT->getPath().'.zip?' . session_name() . '=' . session_id(). '&token=' . $requestData['token']);
+		header('Location: '.$this->_ESOBJECT->getPath().'.zip?' . session_name() . '=' . session_id(). '&token=' . Config::get('token'));
 
 		return true;
 	}

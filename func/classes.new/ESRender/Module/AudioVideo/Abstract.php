@@ -55,8 +55,8 @@ extends ESRender_Module_ContentNode_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_ContentNode_Abstract::createInstance()
      */
-    final public function createInstance(array $requestData) {
-        if (!parent::createInstance($requestData)) {
+    final public function createInstance(ESObject $ESObject) {
+        if (!parent::createInstance($ESObject)) {
             return false;
         }
         return true;
@@ -69,16 +69,16 @@ extends ESRender_Module_ContentNode_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_Base::process()
      */
-    public function process($p_kind, array $requestData, $objectLocked = false) {
+    public function process($p_kind, ESObject $ESObject, $objectLocked = false) {
 
     	global $CC_RENDER_PATH;
     	
         if ($objectLocked) {
-            return parent::process(ESRender_Application_Interface::DISPLAY_MODE_LOCKED, $requestData);
+            return parent::process(ESRender_Application_Interface::DISPLAY_MODE_LOCKED, $ESObject);
         }
         
         if ($p_kind == ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD) {
-            return parent::process($p_kind, $requestData);
+            return parent::process($p_kind, $ESObject);
         }
         
         $arr = explode("/", $this -> _ESOBJECT -> getMimeType(), 2);
@@ -94,7 +94,7 @@ extends ESRender_Module_ContentNode_Abstract {
 
         
        	if(empty($formats))
-        	return parent::process($p_kind, $requestData);
+        	return parent::process($p_kind, $ESObject);
 
         foreach ($formats as $format) {
             $output_filename = $this -> getOutputFilename($this->getExtensionByFormat($format));
@@ -112,7 +112,7 @@ extends ESRender_Module_ContentNode_Abstract {
             } 
         }
         exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
-        return parent::process($p_kind, $requestData);
+        return parent::process($p_kind, $ESObject);
     }
 
 

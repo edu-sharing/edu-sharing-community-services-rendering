@@ -8,8 +8,8 @@ class ESRender_License {
 	private $filename = '';
 
 	public function __construct($esobject) {
-        $author = str_replace('[#]', ', ', $esobject -> ContentNode -> getProperty('ccm:lifecyclecontributer_authorFN'));
-        $authorFreeText = str_replace('[#]', ', ', $esobject -> ContentNode -> getProperty('ccm:author_freetext'));
+        $author = str_replace('[#]', ', ', $esobject -> ContentNode -> getNodeProperty('ccm:lifecyclecontributer_authorFN'));
+        $authorFreeText = str_replace('[#]', ', ', $esobject -> ContentNode -> getNodeProperty('ccm:author_freetext'));
         if($author && $authorFreeText) {
             $this -> author = $author . ' & ' . $authorFreeText;
         } else if($author) {
@@ -17,12 +17,12 @@ class ESRender_License {
         } else if($authorFreeText) {
             $this -> author = $authorFreeText;
         } else {
-            $this -> author = $esobject -> ContentNode -> getProperty('ccm:metadatacontributer_creatorFN');
+            $this -> author = $esobject -> ContentNode -> getNodeProperty('ccm:metadatacontributer_creatorFN');
         }
 
-		$this -> icon = $esobject -> ContentNode -> getProperty('{virtualproperty}licenseicon');
-		$this -> url = $esobject -> ContentNode -> getProperty('{virtualproperty}licenseurl');
-		$this -> permalink = $esobject -> ContentNode -> getProperty('{virtualproperty}permalink');
+		$this -> icon = $esobject -> ContentNode -> getNodeProperty('{virtualproperty}licenseicon');
+		$this -> url = $esobject -> ContentNode -> getNodeProperty('{virtualproperty}licenseurl');
+		$this -> permalink = $esobject -> ContentNode -> getNodeProperty('{virtualproperty}permalink');
 		$this -> filename = $esobject -> getTitle();
 	}
 

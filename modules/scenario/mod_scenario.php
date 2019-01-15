@@ -39,7 +39,7 @@ class mod_scenario
 	/**
 	 *
 	 */
-	final protected function display(array $requestData)
+	final protected function display(ESObject $ESObject)
 	{
 		include_once('config.php');
 /*
@@ -79,7 +79,7 @@ class mod_scenario
 			unset($wrappedParams);
 			global $user_data;
 			global $hc;
-
+            $wrappedParams = new stdClass();
 			//$wrappedParams->courseid = $COURSE->id;
 			$wrappedParams->applicationId = $hc->prop_array['appid'];
 			$wrappedParams->username   = (empty($user_data->authenticateByAppReturn->userid) ? $user_data->authenticateByAppReturn->username : $user_data->authenticateByAppReturn->userid);
@@ -112,9 +112,9 @@ class mod_scenario
 	/**
 	 *
 	 */
-	final public function createInstance(array $requestData)
+	final public function createInstance(ESObject $ESObject)
 	{
-		if ( ! parent::createInstance($requestData) )
+		if ( ! parent::createInstance($ESObject) )
 		{
 			return false;
 		}
@@ -132,19 +132,19 @@ class mod_scenario
 
 		foreach ($datepath as $path)
 		{
-			$l_path = getenv("DOCUMENT_ROOT").'/esrender/'.$this->_ESOBJECT->ESModule->getTmpFilepath().$l_add;
+			$l_path = getenv("DOCUMENT_ROOT").'/esrender/'.$this->_ESOBJECT->module->getTmpFilepath().$l_add;
 			@mkdir($l_path);
 			$l_add .= '/'.$path;
 		}
 
-		$content = $this->_ESOBJECT->ContentNode->properties['cm:content'];
-		$content->readContentToFile($l_path.'/'.$this->_ESOBJECT->ContentNode->properties['{http://www.alfresco.org/model/system/1.0}node-uuid']);
+		$content = $this->_ESOBJECT->getContentNode()->getNodeProperty('cm:content');
+		$content->readContentToFile($l_path.'/'.$this->_ESOBJECT->getContentNode()->getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid'));
 
-		$this->filename = $this->_ESOBJECT->ContentNode->properties['{http://www.alfresco.org/model/system/1.0}node-uuid'];
+		$this->filename = $this->_ESOBJECT->getContentNode()->getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid');
 
-		$DataArray['ESOBJECT_FILE_PATH']  = $l_path.'/'.$this->_ESOBJECT->ContentNode->properties['{http://www.alfresco.org/model/system/1.0}node-uuid'];
+		$DataArray['ESOBJECT_FILE_PATH']  = $l_path.'/'.$this->_ESOBJECT->getContentNode()->getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid');
 //		$DataArray['ESOBJECT_PATH']	   = MC_ROOT_URI.$this->_ESOBJECT->ESModule->getTmpFilepath().'/'.implode('/',$datepath2).'/'.$this->filename;
-		$DataArray['ESOBJECT_ESMODULE_ID']=  $this->_ESOBJECT->ESModule->getModuleId();
+		$DataArray['ESOBJECT_ESMODULE_ID']=  $this->_ESOBJECT->module->getModuleId();
 
 		// get virt. session
 		try
@@ -164,7 +164,7 @@ class mod_scenario
 			unset($wrappedParams);
 			global $user_data;
 			global $hc;
-
+            $wrappedParams = new stdClass();
 			//$wrappedParams->courseid = $COURSE->id;
 			$wrappedParams->applicationId = $hc->prop_array['appid'];
 			$wrappedParams->username   = (empty($user_data->authenticateByAppReturn->userid) ? $user_data->authenticateByAppReturn->username : $user_data->authenticateByAppReturn->userid);
@@ -210,6 +210,7 @@ class mod_scenario
 				return false;
 			}
 
+            $u = new stdClass();
 			$u->content   = fread($fh, filesize($DataArray['ESOBJECT_FILE_PATH']));
 			$u->courseid  = $user_data->authenticateByAppReturn->username;
 			$u->sessionid = $result->authenticateByAppReturn->sessionid;
@@ -241,7 +242,7 @@ class mod_scenario
 
 	final public function process(
 		$p_kind,
-		array $requestData)
+		ESObject $ESObject)
 	{
 		$m_mimeType = $this->_ESOBJECT->getMimeType();
 		$m_path = $this->_ESOBJECT->getPath();
@@ -253,11 +254,11 @@ class mod_scenario
 		switch( strtolower($p_kind) )
 		{
 			case ESRender_Application_Interface::DISPLAY_MODE_INLINE:
-				return $this->inline($requestData);
+				return $this->inline($ESObject);
 			break;
 
 			case ESRender_Application_Interface::DISPLAY_MODE_WINDOW:
-				return $this->display($requestData);
+				return $this->display($ESObject);
 			break;
 
 			case ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD:

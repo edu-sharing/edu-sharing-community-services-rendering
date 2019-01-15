@@ -8,7 +8,7 @@ class edutoolVanilla {
         $this -> getConfig();
     }
 
-    public function display(array $requestData) {
+    public function display(ESObject $ESObject) {
         $parms = array();
         $parms['resource_link_id'] = '123';
         $parms['lis_person_name_full'] = $requestData['user_name'];

@@ -47,137 +47,134 @@ class ESObject {
      *
      * @var int
      */
-    protected $ESOBJECT_ID = null;
+    protected $id = null;
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_ESAPPLICATION_ID = null;
+    protected $appId = null;
 
     /**
      *
      * @var int
      */
-    protected $ESOBJECT_ESMODULE_ID = null;
+    protected $moduleId = null;
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_TITLE = null;
+    protected $title = null;
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_REP_ID = null;
+    protected $repId = null;
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_OBJECT_ID = '';
+    protected $objectId = '';
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_OBJECT_VERSION = null;
+    protected $version = null;
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_VERSIONED_OBJECT_ID = null;
+    protected $versionedObjectId = null;
 
     /**
      *
      * @var
      */
-    protected $ESOBJECT_MIMETYPE = '';
+    protected $mimetype = '';
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_PATH = null;
+    protected $path = null;
 
     /**
      * @var the remote's lms-identifier, e.g. 'alf' or 'moodle197'
      */
-    protected $ESOBJECT_LMS_ID = null;
+    protected $lmsId = null;
 
     /**
      * @var the remote's lms course-identifier this resource belongs to
      */
-    protected $ESOBJECT_COURSE_ID = null;
+    protected $courseId = null;
 
     /**
      * Unique resource-identifier from used LMS.
      * @var int
      */
-    protected $ESOBJECT_RESOURCE_ID = 0;
+    protected $resourceId = 0;
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_RESOURCE_TYPE = null;
+    protected $resourceType = null;
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_RESOURCE_VERSION = null;
+    protected $resourceVersion = null;
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_FILE_PATH;
+    protected $filePath;
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_ALF_FILENAME;
+    protected $name;
 
     /**
      *
      * @var string
      */
-    protected $ESOBJECT_LICENSE = '';
+    protected $license = '';
 
     /**
      * @var ESModule
      */
-    public $ESModule = null;
+    public $module = null;
 
     /**
      *
      * @var Node
      */
-    public $ContentNode = null;
-    
+    protected $contentNode = null;
+
+    /**
+     * @return mixed
+     */
+
     /**
      *
      * @var $string
      */
-    public $ESOBJECT_CONTENT_HASH = null;
-    
-    
-    /**
-     * 
-     * @var stdObj
-     */
-    public $renderInfoLMSReturn = null;
-    
+    protected $hash = null;
+
     /**
      *
      * @var string
      */
-    public $metadatahandler = null;
+    public $metadatahHandler = null;
 
     /**
      *
@@ -187,29 +184,11 @@ class ESObject {
 
     /**
      *
-     * @param string $ObjectId The initial object-id (from SpacesStore)
      */
-    public function __construct($ObjectId, $ObjectVersion = null) {
-        //parent::__construct();
-
-        $this -> ESOBJECT_ID = 0;
-        $this -> ESOBJECT_ESAPPLICATION_ID = 0;
-        $this -> ESOBJECT_ESMODULE_ID = 0;
-        $this -> ESOBJECT_TITLE = '';
-        $this -> ESOBJECT_REP_ID = '';
-        $this -> ESOBJECT_OBJECT_ID = $ObjectId;
-        $this -> ESOBJECT_OBJECT_VERSION = $ObjectVersion;
-        $this -> ESOBJECT_MIMETYPE = '';
-        $this -> ESOBJECT_PATH = '';
-        $this -> ESOBJECT_RESOURCE_ID = 0;
-        $this -> ESOBJECT_RESOURCE_TYPE = '';
-        $this -> ESOBJECT_RESOURCE_VERSION = '';
-        $this -> ESOBJECT_FILE_PATH = '';
-        $this -> ESOBJECT_ALF_FILENAME = '';
-        $this -> ESOBJECT_CONTENT_HASH = '';
-
-        $this -> ESModule = new ESModule();
-
+    public function __construct(ESContentNode $ESContentNode) {
+        $this->contentNode = $ESContentNode;
+        $this -> module = new ESModule();
+        $this -> setDataByNode();
         return true;
     }
 
@@ -218,38 +197,9 @@ class ESObject {
      *
      */
     public function __destruct() {
-        $this -> ContentNode = null;
-        $this -> ESModule = null;
+        $this -> contentNode = null;
+        $this -> module = null;
         $this -> Logger = null;
-    }
-
-    /**
-     *
-     */
-    public function __get($name) {
-        if (!property_exists($this, $name)) {
-            throw new Exception('Accessing non-existing property "' . $name . '".');
-        }
-
-        return $this -> $name;
-    }
-
-    /**
-     * Get full name from vCard-string.
-     *
-     * @param string $vcard
-     *
-     * @return string
-     */
-    protected function getFNfromVcard($vcard) {
-        $regex = '/\nFN:(?<fn>[^\n]+)\n?/iu';
-
-        $matches = array();
-        if (!preg_match($regex, $vcard, $matches)) {
-            return false;
-        }
-
-        return $matches['fn'];
     }
 
     /**
@@ -262,19 +212,19 @@ class ESObject {
         try {
             $pdo = RsPDO::getInstance();
             $sql = 'DELETE FROM `ESOBJECT` WHERE `ESOBJECT_ID` = ? AND `ESOBJECT_REP_ID` = ?';
-            $values = array((int)$this -> ESOBJECT_ID, $this -> ESOBJECT_REP_ID);
+            $values = array((int)$this -> id, $this -> repId);
             
-            if (!empty($this -> ESOBJECT_LMS_ID)) {
+            if (!empty($this -> lmsId)) {
                 $sql .= ' AND `ESOBJECT_LMS_ID` = ? ';
-                $values[] = $this -> ESOBJECT_LMS_ID;
-                if(!empty($this -> ESOBJECT_COURSE_ID)) {
+                $values[] = $this -> lmsId;
+                if(!empty($this -> courseId)) {
                     $sql .= ' AND `ESOBJECT_COURSE_ID` = ?';
-                    $values[] = $this -> ESOBJECT_COURSE_ID;
+                    $values[] = $this -> courseId;
                 }
             }
-            if (!empty($this -> ESOBJECT_OBJECT_VERSION)) {
+            if (!empty($this -> version)) {
                 $sql .= ' AND `ESOBJECT_OBJECT_VERSION` = ?';
-                $values[] = $this -> ESOBJECT_OBJECT_VERSION;
+                $values[] = $this -> version;
             }
             
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
@@ -293,26 +243,26 @@ class ESObject {
 
 
     public function setInstanceData(array $row) {
-        $this -> ESOBJECT_ID = $row['ESOBJECT_ID'];
-        $this -> ESOBJECT_ESAPPLICATION_ID = $row['ESOBJECT_ESAPPLICATION_ID'];
-        $this -> ESOBJECT_ESMODULE_ID = $row['ESOBJECT_ESMODULE_ID'];
-        $this -> ESOBJECT_TITLE = $row['ESOBJECT_TITLE'];
-        $this -> ESOBJECT_REP_ID = $row['ESOBJECT_REP_ID'];
-        $this -> ESOBJECT_OBJECT_ID = $row['ESOBJECT_OBJECT_ID'];
-        $this -> ESOBJECT_OBJECT_VERSION = $row['ESOBJECT_OBJECT_VERSION'];
-        $this -> ESOBJECT_VERSIONED_OBJECT_ID = $row['ESOBJECT_VERSIONED_OBJECT_ID'];
-        $this -> ESOBJECT_MIMETYPE = $row['ESOBJECT_MIMETYPE'];
-        $this -> ESOBJECT_PATH = $row['ESOBJECT_PATH'];
-        $this -> ESOBJECT_LMS_ID = $row['ESOBJECT_LMS_ID'];
-        $this -> ESOBJECT_COURSE_ID = $row['ESOBJECT_COURSE_ID'];
-        $this -> ESOBJECT_RESOURCE_ID = $row['ESOBJECT_RESOURCE_ID'];
-        $this -> ESOBJECT_RESOURCE_TYPE = $row['ESOBJECT_RESOURCE_TYPE'];
-        $this -> ESOBJECT_RESOURCE_VERSION = $row['ESOBJECT_RESOURCE_VERSION'];
-        $this -> ESOBJECT_FILE_PATH = $row['ESOBJECT_FILE_PATH'];
-        $this -> ESOBJECT_ALF_FILENAME = $row['ESOBJECT_ALF_FILENAME'];
-        $this -> ESOBJECT_CONTENT_HASH = $row['ESOBJECT_CONTENT_HASH'];
+        $this -> id = $row['ESOBJECT_ID'];
+        $this -> appId = $row['ESOBJECT_ESAPPLICATION_ID'];
+        $this -> moduleId = $row['ESOBJECT_ESMODULE_ID'];
+        $this -> title = $row['ESOBJECT_TITLE'];
+        $this -> repId = $row['ESOBJECT_REP_ID'];
+        $this -> objectId = $row['ESOBJECT_OBJECT_ID'];
+        $this -> version = $row['ESOBJECT_OBJECT_VERSION'];
+        $this -> versionedObjectId = $row['ESOBJECT_VERSIONED_OBJECT_ID'];
+        $this -> mimetype = $row['ESOBJECT_MIMETYPE'];
+        $this -> path = $row['ESOBJECT_PATH'];
+        $this -> lmsId = $row['ESOBJECT_LMS_ID'];
+        $this -> courseId = $row['ESOBJECT_COURSE_ID'];
+        $this -> resourceId = $row['ESOBJECT_RESOURCE_ID'];
+        $this -> resourceType = $row['ESOBJECT_RESOURCE_TYPE'];
+        $this -> resourceVersion = $row['ESOBJECT_RESOURCE_VERSION'];
+        $this -> filePath = $row['ESOBJECT_FILE_PATH'];
+        $this -> name = $row['ESOBJECT_ALF_FILENAME'];
+        $this -> hash = $row['ESOBJECT_CONTENT_HASH'];
 
-        $this -> ESModule -> setModuleID($this -> ESOBJECT_ESMODULE_ID);
+        $this -> module -> setModuleID($this -> moduleId);
 
         return $this;
     }
@@ -321,7 +271,7 @@ class ESObject {
      *
      */
     final public function getId() {
-        return $this -> ESOBJECT_ID;
+        return $this -> id;
     }
 
 
@@ -336,11 +286,14 @@ class ESObject {
      * @param Node $p_node
      */
     final public function setContentNode(ESContentNode $p_node) {
-        $this -> ContentNode = $p_node;
+        $this -> contentNode = $p_node;
     }
 
+    /*
+     * @return ESContentNode
+     */
     final public function getContentNode() {
-        return $this -> ContentNode;
+        return $this -> contentNode;
     }
 
 
@@ -350,7 +303,7 @@ class ESObject {
      * @return string
      */
     final public function getMimeType() {
-        return $this -> ESOBJECT_MIMETYPE;
+        return $this -> mimetype;
     }
 
     /**
@@ -359,27 +312,18 @@ class ESObject {
      * @return string
      */
     final public function getResourceType() {
-        return $this -> ESOBJECT_RESOURCE_TYPE;
-    }
-
-    /**
-     * Get object's resource-version.
-     *
-     * @return string
-     */
-    final public function getResourceVersion() {
-        return $this -> ESOBJECT_RESOURCE_VERSION;
+        return $this -> resourceType;
     }
 
     /**
      *
      */
     final public function getTitle() {
-    	$title = $this -> ContentNode -> getNode() -> title;
+    	$title = $this -> contentNode -> getNode() -> title;
     	if(!empty($title))
     		return $title;
     	else
-    		return $this -> ContentNode -> getNode() -> name;
+    		return $this -> contentNode -> getNode() -> name;
     }
 
     /**
@@ -388,14 +332,14 @@ class ESObject {
      * @return string
      */
     final public function getFilename() {
-        return $this -> ESOBJECT_ALF_FILENAME;
+        return $this -> name;
     }
 
     /**
      *
      */
     final public function getPath() {
-        return MC_ROOT_URI . $this -> ESModule -> getTmpFilepath() . '/' . $this -> getSubUri() . '/' . $this -> getObjectIdVersion();
+        return MC_ROOT_URI . $this -> module -> getTmpFilepath() . '/' . $this -> getSubUri() . '/' . $this -> getObjectIdVersion();
     }
 
     /**
@@ -404,7 +348,7 @@ class ESObject {
     final public function getFilePath()// deprecated
     {
     	global $CC_RENDER_PATH;
-        return $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $this -> ESModule -> getName() . DIRECTORY_SEPARATOR . $this -> getSubPath() . DIRECTORY_SEPARATOR . $this -> getObjectIdVersion();
+        return $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $this -> module -> getName() . DIRECTORY_SEPARATOR . $this -> getSubPath() . DIRECTORY_SEPARATOR . $this -> getObjectIdVersion();
     }
 
     /**
@@ -412,7 +356,7 @@ class ESObject {
      * @return string
      */
     final public function getEsobjectFilePath() {
-        return $this -> ESOBJECT_FILE_PATH;
+        return $this -> filePath;
     }
 
     /**
@@ -420,70 +364,70 @@ class ESObject {
      */
     final public function setFilePath($path)// deprecated
     {
-        $this -> ESOBJECT_FILE_PATH = $path;
+        $this -> filePath = $path;
     }
 
     /**
      *
      */
     final public function getSubUri() {
-        return $this -> ESOBJECT_PATH;
+        return $this -> path;
     }
 
     /**
      *
      */
     final public function setSubUri($sub_uri) {
-        $this -> ESOBJECT_PATH = $sub_uri;
+        $this -> path = $sub_uri;
     }
 
     /**
      *
      */
     final public function getSubPath() {
-        return str_replace('/', DIRECTORY_SEPARATOR, $this -> ESOBJECT_PATH);
+        return str_replace('/', DIRECTORY_SEPARATOR, $this -> path);
     }
 
     /**
      *
      */
     final public function getPreviewPath() {
-        return $this -> ESOBJECT_PATH;
+        return $this -> path;
     }
 
     /**
      *
      */
     final public function getObjectID() {
-        return $this -> ESOBJECT_OBJECT_ID;
+        return $this -> objectId;
     }
 
     /**
      *
      */
     final public function getModuleID() {
-        return $this -> ESOBJECT_ESMODULE_ID;
+        return $this -> moduleId;
     }
 
     /**
      *
      */
     final public function getObjectVersion() {
-        return $this -> ESOBJECT_OBJECT_VERSION;
+        return $this -> version;
     }
 
     /**
      *
      */
     final public function getVersionedObjectId() {
-        return $this -> ESOBJECT_VERSIONED_OBJECT_ID;
+        return $this -> versionedObjectId;
     }
 
     /**
      *
      */
     final public function getObjectIdVersion() {
-        return $this -> ESOBJECT_OBJECT_ID . $this -> ESOBJECT_OBJECT_VERSION;
+        return $this -> objectId . $this -> version;
     }
 
     /**
@@ -500,7 +444,20 @@ class ESObject {
      * @return string
      */
     public function getLicense() {
-        return $this -> ESOBJECT_LICENSE;
+        return $this -> license;
+    }
+
+    public function getContentHash()
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @param mixed $ESOBJECT_CONTENT_HASH
+     */
+    public function setContentHash($ESOBJECT_CONTENT_HASH): void
+    {
+        $this->hash = $ESOBJECT_CONTENT_HASH;
     }
 
 
@@ -511,202 +468,149 @@ class ESObject {
      */
     public function setModule() {
         // runtime sanity
-        if (empty($this -> ContentNode)) {
+        if (empty($this -> contentNode)) {
             throw new Exception('No Alfresco-properties set.');
         }
 
-        if(Config::get('renderInfoLMSReturn')->hasContentLicense === false) {
+        if(false === Config::get('hasContentLicense')) {
             error_log('"hasContentLicense" is false!');
-            $this -> ESModule -> setName('doc');
-            $this -> ESModule -> loadModuleData();
-            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            $this -> module -> setName('doc');
+            $this -> module -> loadModuleData();
+            $this -> moduleId = $this -> module -> getModuleId();
             return true;
         }
 
-        if(Config::get('renderInfoLMSReturn')->directory) {
+        if($this -> contentNode -> node -> directory) {
             error_log('Property "directory" is true, using module "directory".');
-            $this -> ESModule -> setName('directory');
-            $this -> ESModule -> loadModuleData();
-            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            $this -> module -> setName('directory');
+            $this -> module -> loadModuleData();
+            $this -> moduleId = $this -> module -> getModuleId();
             return true;
         }
 
-        $toolInstanceKey = $this -> ContentNode -> getProperty('ccm:tool_instance_key');
+        $toolInstanceKey = $this -> contentNode -> getNodeProperty('ccm:tool_instance_key');
         if(!empty($toolInstanceKey)) {
             error_log('ccm:tool_instance_ref equals set, using module "lti".');
-            $this -> ESModule -> setName('lti');
-            $this -> ESModule -> loadModuleData();
-            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            $this -> module -> setName('lti');
+            $this -> module -> loadModuleData();
+            $this -> moduleId = $this -> module -> getModuleId();
             return true;
         }
 
-        if ($this -> ContentNode -> getProperty('ccm:remoterepositorytype') == 'YOUTUBE') {
+        if ($this -> contentNode -> getNodeProperty('ccm:remoterepositorytype') == 'YOUTUBE') {
             error_log('Property ccm:remoterepositorytype equals "YOUTUBE", using module "url".');
-            $this -> ESModule -> setName('url');
-            $this -> ESModule -> loadModuleData();
-            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            $this -> module -> setName('url');
+            $this -> module -> loadModuleData();
+            $this -> moduleId = $this -> module -> getModuleId();
             return true;
         }
 
-        if ($this -> ContentNode -> getProperty('ccm:remoterepositorytype') == 'LEARNINGAPPS') {
+        if ($this -> contentNode -> getNodeProperty('ccm:remoterepositorytype') == 'LEARNINGAPPS') {
             error_log('Property ccm:remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
-            $this -> ESModule -> setName('learningapps');
-            $this -> ESModule -> loadModuleData();
-            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            $this -> module -> setName('learningapps');
+            $this -> module -> loadModuleData();
+            $this -> moduleId = $this -> module -> getModuleId();
             return true;
         }
 
-        if ($this -> ContentNode -> getProperty('ccm:replicationsource') == 'oai:dmglib.org') {
+        if ($this -> contentNode -> getNodeProperty('ccm:replicationsource') == 'oai:dmglib.org') {
             error_log('Property ccm:replicationsource equals "oai:dmglib.org", using module "url".');
-            $this -> ESModule -> setName('url');
-            $this -> ESModule -> loadModuleData();
-            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            $this -> module -> setName('url');
+            $this -> module -> loadModuleData();
+            $this -> moduleId = $this -> module -> getModuleId();
             return true;
         }
 
-        $wwwurl = $this -> ContentNode -> getProperty('ccm:wwwurl');
+        $wwwurl = $this -> contentNode -> getNodeProperty('ccm:wwwurl');
 
-        if ($this -> ContentNode -> getProperty('ccm:replicationsource') == 'DE.FWU' && !empty($wwwurl)) {
+        if ($this -> contentNode -> getNodeProperty('ccm:replicationsource') == 'DE.FWU' && !empty($wwwurl)) {
             error_log('Property ccm:replicationsource equals "DE.FWU" and ccm:wwwurl set, using module "url".');
-            $this -> ESModule -> setName('url');
-            $this -> ESModule -> loadModuleData();
-            $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+            $this -> module -> setName('url');
+            $this -> module -> loadModuleData();
+            $this -> moduleId = $this -> module -> getModuleId();
             return true;
         }
 
         // load appropriate module
         if (!empty($wwwurl)) {
             error_log('Property ccm:wwwurl found, using module "url".');
-            $this -> ESModule -> setName('url');
-        } else if ($this -> ESOBJECT_MIMETYPE == 'application/zip' || $this -> ESOBJECT_MIMETYPE == 'application/vnd.moodle.backup') {
-            if (!$this -> ESModule -> setModuleByResource($this -> ESOBJECT_RESOURCE_TYPE, $this -> ESOBJECT_RESOURCE_VERSION)) {
+            $this -> module -> setName('url');
+        } else if ($this -> mimetype == 'application/zip' || $this -> mimetype == 'application/vnd.moodle.backup') {
+            if (!$this -> module -> setModuleByResource($this -> resourceType, $this -> resourceVersion)) {
                 error_log('Could not set module by resource-type/-version, using default ("doc") module.');
-                $this -> ESModule -> setName('doc');
+                $this -> module -> setName('doc');
             }
         } else {
-            if (!$this -> ESModule -> setModuleByMimetype($this -> ESOBJECT_MIMETYPE)) {
+            if (!$this -> module -> setModuleByMimetype($this -> mimetype)) {
                 error_log('Could not set module by mimetype using default ("doc") module.');
-                $this -> ESModule -> setName('doc');
+                $this -> module -> setName('doc');
             }
         }
 
-        $this -> ESModule -> loadModuleData();
+        $this -> module -> loadModuleData();
 
-        $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
+        $this -> moduleId = $this -> module -> getModuleId();
 
         return true;
     }
-
-    /**
-     *
-     */
-    final public function setData($p_DataArray) {
-        if (!empty($p_DataArray['ESOBJECT_ESAPPLICATION_ID'])) {
-            $this -> ESOBJECT_ESAPPLICATION_ID = $p_DataArray['ESOBJECT_ESAPPLICATION_ID'];
-        }
-
-        if (!empty($p_DataArray['ESOBJECT_ESMODULE_ID'])) {
-            $this -> ESOBJECT_ESMODULE_ID = $p_DataArray['ESOBJECT_ESMODULE_ID'];
-        }
-
-        if (!empty($p_DataArray['ESOBJECT_TITLE'])) {
-            $this -> ESOBJECT_TITLE = $p_DataArray['ESOBJECT_TITLE'];
-        }
-        if (!empty($p_DataArray['ESOBJECT_REP_ID'])) {
-            $this -> ESOBJECT_REP_ID = $p_DataArray['ESOBJECT_REP_ID'];
-        }
-        if (!empty($p_DataArray['ESOBJECT_MIMETYPE'])) {
-            $this -> ESOBJECT_MIMETYPE = $p_DataArray['ESOBJECT_MIMETYPE'];
-        }
-        if (!empty($p_DataArray['ESOBJECT_PATH'])) {
-            $this -> ESOBJECT_PATH = $p_DataArray['ESOBJECT_PATH'];
-        }
-        if (!empty($p_DataArray['ESOBJECT_LMS_ID'])) {
-            $this -> ESOBJECT_LMS_ID = $p_DataArray['ESOBJECT_LMS_ID'];
-        }
-        if (!empty($p_DataArray['ESOBJECT_COURSE_ID'])) {
-            $this -> ESOBJECT_COURSE_ID = $p_DataArray['ESOBJECT_COURSE_ID'];
-        }
-        if (!empty($p_DataArray['ESOBJECT_RESOURCE_ID'])) {
-            $this -> ESOBJECT_RESOURCE_ID = $p_DataArray['ESOBJECT_RESOURCE_ID'];
-        }
-        if (!empty($p_DataArray['ESOBJECT_RESOURCE_TYPE'])) {
-            $this -> ESOBJECT_RESOURCE_TYPE = $p_DataArray['ESOBJECT_RESOURCE_TYPE'];
-        }
-        if (!empty($p_DataArray['ESOBJECT_RESOURCE_VERSION'])) {
-            $this -> ESOBJECT_RESOURCE_VERSION = $p_DataArray['ESOBJECT_RESOURCE_VERSION'];
-        }
-        if (!empty($p_DataArray['ESOBJECT_FILE_PATH'])) {
-            $this -> ESOBJECT_FILE_PATH = $p_DataArray['ESOBJECT_FILE_PATH'];
-        }
-        if (!empty($p_DataArray['ESOBJECT_CONTENT_HASH'])) {
-            $this -> ESOBJECT_CONTENT_HASH = $p_DataArray['ESOBJECT_CONTENT_HASH'];
-        }
-        return true;
-    }
-
 
     final public function setDataByNode() {
 
-        $this -> ESOBJECT_ESAPPLICATION_ID = 1;
-        $this -> ESOBJECT_RESOURCE_TYPE = '';
-        $this -> ESOBJECT_RESOURCE_VERSION = '';
+        $this -> id = 0;
+        $this -> moduleId = 0;
+        $this -> title = $this -> contentNode -> getNode() -> title;
+        $this -> name = $this -> contentNode -> getNode() -> name;
+        if(empty($this -> title))
+            $this -> title = $this -> name;
+        $this -> repId = $this -> contentNode -> getNode() -> ref -> repo;
+        $this -> objectId = $this -> contentNode->getnode() -> ref -> id;
+        $this -> version = $this -> contentNode->getNode() -> content -> version;
+        $this -> mimetype = $this -> contentNode -> getNode() -> mimetype;
+        $this -> path = '';
+        $this -> resourceId = mc_Request::fetch('resource_id', 'INT', 0);
+        $this -> filePath = '';
+        $this -> hash = $this -> contentNode -> getNode()->content -> hash;
+        $this -> lmsId = mc_Request::fetch('app_id', 'CHAR', $this -> contentNode -> getNode() -> ref -> repo);
 
-        $title = $this -> ContentNode -> getNode() -> title;
-        if(empty($title))
-        	$title = $this -> ContentNode -> getNode() -> name;
-        $this -> ESOBJECT_TITLE = $title;
-
-        $mimetype = $this -> ContentNode -> getNode() -> mimetype;
-        if(!empty($mimetype))
-            $this -> ESOBJECT_MIMETYPE = $mimetype;
-
-        $this -> ESOBJECT_ALF_FILENAME = $this -> ContentNode -> getNode() -> name;
-
-        $ressourcetype = $this -> ContentNode -> getProperty('ccm:ccressourcetype');
-
+        $ressourcetype = $this -> contentNode -> getNodeProperty('ccm:ccressourcetype');
         if (!empty($ressourcetype)) {
-            $this -> ESOBJECT_RESOURCE_TYPE = $ressourcetype;
-
-            if ($this -> ESOBJECT_RESOURCE_TYPE == 'imsqti') {
-                $this -> ESOBJECT_MIMETYPE = 'application/zip';
+            $this -> resourceType = $ressourcetype;
+            if ($this -> resourceType == 'imsqti') {
+                $this -> mimetype = 'application/zip';
             }
         }
 
-        $ressourceversion = $this -> ContentNode -> getProperty('ccm:ccressourceversion');
+        $ressourceversion = $this -> contentNode -> getNodeProperty('ccm:ccressourceversion');
         if (!empty($ressourceversion))
-            $this -> ESOBJECT_RESOURCE_VERSION = $ressourceversion;
+            $this -> resourceVersion = $ressourceversion;
         
-        $commonlicense_key = $this -> ContentNode -> getProperty('ccm:commonlicense_key');
+        $commonlicense_key = $this -> contentNode -> getNodeProperty('ccm:commonlicense_key');
         if(!empty($commonlicense_key))
-        	$this -> ESOBJECT_LICENSE = new ESRender_License($this);
+        	$this -> license = new ESRender_License($this);
         
-        $this -> metadatahandler = new ESRender_Metadata_Handler($this);
-
-        $this -> sequenceHandler = new ESRender_Sequence_Handler($this);
-
+        $this -> metadatahHandler = new ESRender_Metadata_Handler($this);
         return true;
     }
 
     final public function setData2Db() {
 
         $arrFields = array(
-           'ESOBJECT_ESAPPLICATION_ID' => intval($this -> ESOBJECT_ESAPPLICATION_ID),
-           'ESOBJECT_ESMODULE_ID' => intval($this -> ESModule -> getModuleId()),
-           'ESOBJECT_TITLE' => $this -> ESOBJECT_TITLE,
-           'ESOBJECT_REP_ID' => $this -> ESOBJECT_REP_ID,
-           'ESOBJECT_OBJECT_ID' => $this -> ESOBJECT_OBJECT_ID,
-           'ESOBJECT_OBJECT_VERSION' => $this -> ESOBJECT_OBJECT_VERSION,
-           'ESOBJECT_MIMETYPE' => $this -> ESOBJECT_MIMETYPE,
-           'ESOBJECT_LMS_ID' => $this -> ESOBJECT_LMS_ID,
-           'ESOBJECT_COURSE_ID' => $this -> ESOBJECT_COURSE_ID,
-           'ESOBJECT_RESOURCE_ID' => $this -> ESOBJECT_RESOURCE_ID,
-           'ESOBJECT_RESOURCE_TYPE' => $this -> ESOBJECT_RESOURCE_TYPE,
-           'ESOBJECT_RESOURCE_VERSION' => $this -> ESOBJECT_RESOURCE_VERSION,
-           'ESOBJECT_PATH' => $this -> ESOBJECT_PATH,
-           'ESOBJECT_FILE_PATH' => $this -> ESOBJECT_FILE_PATH,
-           'ESOBJECT_ALF_FILENAME' => $this -> ESOBJECT_ALF_FILENAME,
-           'ESOBJECT_CONTENT_HASH' => $this -> ESOBJECT_CONTENT_HASH
+           'ESOBJECT_ESAPPLICATION_ID' => intval($this -> appId),
+           'ESOBJECT_ESMODULE_ID' => intval($this -> module -> getModuleId()),
+           'ESOBJECT_TITLE' => $this -> title,
+           'ESOBJECT_REP_ID' => $this -> repId,
+           'ESOBJECT_OBJECT_ID' => $this -> objectId,
+           'ESOBJECT_OBJECT_VERSION' => $this -> version,
+           'ESOBJECT_MIMETYPE' => $this -> mimetype,
+           'ESOBJECT_LMS_ID' => $this -> lmsId,
+           'ESOBJECT_COURSE_ID' => $this -> courseId,
+           'ESOBJECT_RESOURCE_ID' => $this -> resourceId,
+           'ESOBJECT_RESOURCE_TYPE' => $this -> resourceType,
+           'ESOBJECT_RESOURCE_VERSION' => $this -> resourceVersion,
+           'ESOBJECT_PATH' => $this -> path,
+           'ESOBJECT_FILE_PATH' => $this -> filePath,
+           'ESOBJECT_ALF_FILENAME' => $this -> name,
+           'ESOBJECT_CONTENT_HASH' => $this -> hash
         );
         
         $pdo =RsPDO::getInstance();
@@ -727,7 +631,7 @@ class ESObject {
             $result = $stmt -> execute();
             if(!$result)
                 throw new Exception('Error storing object in DB. ' . print_r($stmt -> errorInfo(), true));
-            $this -> ESOBJECT_ID = $pdo -> lastInsertId();
+            $this -> id = $pdo -> lastInsertId();
         } catch(PDOException $e) {
             throw new Exception($e -> getMessage());
         }
@@ -736,7 +640,7 @@ class ESObject {
 
     public function addToConversionQueue($format, $dirSep, $filename, $outputFilename, $renderPath, $mimeType) {
         $arr = array(
-            'ESOBJECT_CONVERSION_OBJECT_ID' => $this -> ESOBJECT_ID,
+            'ESOBJECT_CONVERSION_OBJECT_ID' => $this -> id,
             'ESOBJECT_CONVERSION_FORMAT' => $format,
             'ESOBJECT_CONVERSION_DIR_SEPERATOR' => $dirSep,
             'ESOBJECT_CONVERSION_FILENAME' => $filename,
@@ -815,7 +719,7 @@ class ESObject {
         try {
             $sql = 'SELECT `ESOBJECT_CONVERSION_OBJECT_ID` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format';
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
-            $stmt -> bindValue(':objectid', $this -> ESOBJECT_ID, PDO::PARAM_INT);
+            $stmt -> bindValue(':objectid', $this -> id, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format, PDO::PARAM_STR);
             $stmt -> execute();
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
@@ -836,7 +740,7 @@ class ESObject {
         try {
             $sql = 'SELECT `ESOBJECT_CONVERSION_OBJECT_ID` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format AND `ESOBJECT_CONVERSION_STATUS` like :error';
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
-            $stmt -> bindValue(':objectid', $this -> ESOBJECT_ID, PDO::PARAM_INT);
+            $stmt -> bindValue(':objectid', $this -> id, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);
             $stmt -> bindValue(':error', '%ERROR%');
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
@@ -850,11 +754,11 @@ class ESObject {
     }
 
     final public function getPathfile() {
-        return MC_ROOT_URI . $this -> ESModule -> getTmpFilepath() . '/' . $this -> getSubUri_file() . '/' . $this -> getObjectIdVersion();
+        return MC_ROOT_URI . $this -> module -> getTmpFilepath() . '/' . $this -> getSubUri_file() . '/' . $this -> getObjectIdVersion();
     }
 
     final public function getSubUri_file() {
-        return $this -> ESOBJECT_FILE_PATH;
+        return $this -> filePath;
     }
     
     public function getPositionInConversionQueue($format) {
@@ -868,7 +772,7 @@ class ESObject {
     
             $sql = 'SELECT COUNT(`ESOBJECT_CONVERSION_ID`) AS `POS` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_ID` < (SELECT `ESOBJECT_CONVERSION_ID` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format) AND `ESOBJECT_CONVERSION_STATUS` = :status';
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
-            $stmt -> bindValue(':objectid', $this->ESOBJECT_ID, PDO::PARAM_INT);
+            $stmt -> bindValue(':objectid', $this->id, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);
             $stmt -> bindValue(':status', self::CONVERSION_STATUS_WAIT);
             $stmt -> execute();
@@ -882,20 +786,11 @@ class ESObject {
         
         return $pos . ' / ' . $sum;
     }
-    
-    public function setInfoLmsData($renderInfoLMSReturn) {
-        $this -> renderInfoLMSReturn = $renderInfoLMSReturn;
-    }
 
     public function getPreviewUrl() {
         if(!empty(Config::get('base64Preview')))
             return Config::get('base64Preview');
         $previewUrl = $this -> getContentNode() -> getNode() -> preview -> url ;
-        if(!empty($this -> getObjectVersion()))
-            $previewUrl .= '&version=' . $this -> getObjectVersion();
-        $accessToken = Config::get('accessToken');
-        if(!empty($accessToken))
-            $previewUrl .= '&accessToken=' . $accessToken;
         return $previewUrl;
     }
 
@@ -903,12 +798,12 @@ class ESObject {
         if($display_kind == 'dynamic') {
             $tempArray['title'] = $this->getTitle();
             if(Config::get('showMetadata'))
-                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/dynamic');
+                $tempArray['metadata'] = $this -> metadatahHandler -> render($template, '/metadata/dynamic');
             echo $template -> render('/special/originaldeleted/dynamic', $tempArray);
         } else if($display_kind == 'inline') {
             $tempArray['title'] = $this->getTitle();
             if(ENABLE_METADATA_INLINE_RENDERING) {
-                $tempArray['metadata'] = $this -> metadatahandler -> render($template, '/metadata/inline');
+                $tempArray['metadata'] = $this -> metadatahHandler -> render($template, '/metadata/inline');
             }
             echo $template -> render('/special/originaldeleted/inline', $tempArray);
         } else {
@@ -918,38 +813,120 @@ class ESObject {
     }
 
     public function update() {
-        if($this->getTitle() !== $this->ESOBJECT_TITLE) {
+        if($this->getTitle() !== $this->title) {
             try {
                 $pdo = RsPDO::getInstance();
                 $sql = 'UPDATE `ESOBJECT` SET `ESOBJECT_TITLE` = :title WHERE `ESOBJECT_ID` = :id';
                 $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
                 $stmt -> bindValue(':title', $this->getTitle());
-                $stmt -> bindValue(':id', $this->ESOBJECT_ID, PDO::PARAM_INT);
+                $stmt -> bindValue(':id', $this->id, PDO::PARAM_INT);
                 $result = $stmt -> execute();
                 if(!$result)
                     throw new Exception('Error updating title ' . print_r($pdo -> errorInfo(), true));
-                $this->ESOBJECT_TITLE = $this->getTitle();
+                $this->title = $this->getTitle();
             } catch(PDOException $e) {
                 throw new Exception($e -> getMessage());
             }
         }
 
-        if($this->ContentNode->getProperty('cm:name') !== $this->ESOBJECT_ALF_FILENAME) {
+        if($this->contentNode->getNodeProperty('cm:name') !== $this->name) {
             try {
                 $pdo = RsPDO::getInstance();
                 $sql = 'UPDATE `ESOBJECT` SET `ESOBJECT_ALF_FILENAME` = :name WHERE `ESOBJECT_ID` = :id';
                 $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
-                $stmt -> bindValue(':name', $this->ContentNode->getProperty('cm:name'));
-                $stmt -> bindValue(':id', $this->ESOBJECT_ID, PDO::PARAM_INT);
+                $stmt -> bindValue(':name', $this->contentNode->getNodeProperty('cm:name'));
+                $stmt -> bindValue(':id', $this->id, PDO::PARAM_INT);
                 $result = $stmt -> execute();
                 if(!$result)
                     throw new Exception('Error updating name ' . print_r($pdo -> errorInfo(), true));
-                $this->ESOBJECT_ALF_FILENAME = $this->ContentNode->getProperty('cm:name');
+                $this->name = $this->contentNode->getNodeProperty('cm:name');
             } catch(PDOException $e) {
                 throw new Exception($e -> getMessage());
             }
         }
 
     }
+
+    /**
+     * @return string
+     */
+    public function getRepId(): string
+    {
+        return $this->repId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return $this->version;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLmsId(): string
+    {
+        return $this->lmsId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCourseId(): int
+    {
+        return $this->courseId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getResourceId(): int
+    {
+        return $this->resourceId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResourceVersion(): string
+    {
+        return $this->resourceVersion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash() : string
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMetadatahHandler(): string
+    {
+        return $this->metadatahHandler;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSequenceHandler()
+    {
+        return $this->sequenceHandler;
+    }
+
+
 
 }

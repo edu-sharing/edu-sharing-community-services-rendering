@@ -82,11 +82,6 @@ implements Phools_Request_Interface
 		return $this->getParam($Offset);
 	}
 
-	public function __get($ParamName)
-	{
-		return $this->getParam($ParamName);
-	}
-
 	/**
 	 * As you are not supposed to alter incoming request-data, we'll just throw
 	 * an exception to remind you of that.

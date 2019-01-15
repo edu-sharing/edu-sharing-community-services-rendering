@@ -34,9 +34,9 @@ if (file_exists(dirname(__FILE__).'/config.php')) {
 class mod_scorm
 extends ESRender_Module_ContentNode_Abstract {
 
-	public function createInstance(array $requestData) {
+	public function createInstance(ESObject $ESObject) {
 		
-		parent::createInstance($requestData);
+		parent::createInstance($ESObject);
 
         if (!file_exists(dirname(__FILE__).'/config.php')) {
             return true;
@@ -90,10 +90,6 @@ extends ESRender_Module_ContentNode_Abstract {
 		$data = $courseId;
 		file_put_contents($filename, $data);
 	}
-	
-	public function instanceExists(ESObject $ESObject, array $requestData, $contentHash) {
-		return parent::instanceExists($ESObject, $requestData, $contentHash);
-	}
 
 	/*
 	 * Call moodle WS local_edusharing_handleuser
@@ -138,7 +134,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		return false;
 	}
 
-	public function dynamic(array $requestData) {
+	public function dynamic(ESObject $ESObject) {
 
         if (!file_exists(dirname(__FILE__).'/config.php')) {
             echo parent::dynamic($requestData);
@@ -154,7 +150,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$tempArray = array('url' => $this-> getForwardUrl($requestData), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
 		
 		if(Config::get('showMetadata'))
-			$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+			$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/dynamic');
 			 
 		$tempArray['title'] = $this->_ESOBJECT->getTitle();
 		echo $Template -> render('/module/moodle/dynamic', $tempArray);

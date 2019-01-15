@@ -23,7 +23,7 @@ class mod_lti extends ESRender_Module_NonContentNode_Abstract {
     private function instantiateTool($esobject, $template) {
 
         //@todo factory pattern
-        switch($this->_ESOBJECT->ESOBJECT_RESOURCE_TYPE) {
+        switch($this->_ESOBJECT->resourceType) {
             case 'edutool-vanilla':
                 $this -> tool = new edutoolVanilla($esobject, $template);
             break;
@@ -35,15 +35,15 @@ class mod_lti extends ESRender_Module_NonContentNode_Abstract {
         }
     }
 
-    protected function dynamic(array $requestData) {
-        return $this -> tool -> dynamic($requestData);
+    protected function dynamic(ESObject $ESObject) {
+        return $this -> tool -> dynamic($ESObject);
     }
 
-    protected function display(array $requestData) {
-        return $this -> tool -> display($requestData);
+    protected function display(ESObject $ESObject) {
+        return $this -> tool -> display($ESObject);
     }
     
-    protected function inline(array $requestData) {
-        return $this -> tool -> inline($requestData);
+    protected function inline(ESObject $ESObject) {
+        return $this -> tool -> inline($ESObject);
     }
 }

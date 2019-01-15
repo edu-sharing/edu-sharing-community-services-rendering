@@ -1,32 +1,10 @@
 <?php
-global $Locale, $Translate;
-$msg = array();
-$msg['error'] = new Phools_Message_Default('Error');
-?>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title><?php echo $msg['error'] -> localize($Locale, $Translate); ?></title>
-    <link rel="stylesheet" type="text/css" href="../../theme/default/css/display.css">
-    <style>
-        div.error {
-            padding: 100px 10px;
-            text-align: center;
-        }
-        div.message_wrapper {
-            display: inline-block;
-            background-color: #c6c6c6;
-            color: #383838;
-            padding: 5px;
-            border-radius: 3px;
-        }
-    </style>
-</head>
-<body>
-    <div class="error">
-        <div class="message_wrapper">
-       		<span class="message"><?php echo htmlentities($error) ?> </span>
-        </div>
-    </div>
-</body>
-</html>
+
+http_response_code (500);
+header('Content-Type: application/json');
+
+$errorObj = new stdClass();
+$errorObj -> technicalDetail = $technicalDetail;
+$errorObj -> i18nName = $i18nName;
+
+echo json_encode($errorObj);

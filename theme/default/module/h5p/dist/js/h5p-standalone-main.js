@@ -5839,9 +5839,9 @@
         computed = computed || getStyles( elem );
 
         // Support: IE9
-        // getPropertyValue is only needed for .css('filter') (#12537)
+        // getNodePropertyValue is only needed for .css('filter') (#12537)
         if ( computed ) {
-            ret = computed.getPropertyValue( name ) || computed[ name ];
+            ret = computed.getNodePropertyValue( name ) || computed[ name ];
         }
 
         if ( computed ) {

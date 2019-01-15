@@ -30,9 +30,9 @@ class ESRender_Plugin_DDB
     public function postRetrieveObjectProperties(EsApplication &$remote_rep, &$app_id,ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
         $this -> iconUrl = $remote_rep->prop_array['clientprotocol'] .'://' . $remote_rep->prop_array['domain'] . ':' . $remote_rep->prop_array['clientport'] . '/edu-sharing/assets/images/sources/ddb.png';
         $logger = $this->getLogger();
-        if($contentNode->getProperty('ccm:remoterepositorytype') === 'DDB') {
+        if($contentNode->getNodeProperty('ccm:remoterepositorytype') === 'DDB') {
             $logger->info('remoterepositorytype = DDB, start using plugin');
-            $id = $contentNode->getProperty('ccm:remotenodeid');
+            $id = $contentNode->getNodeProperty('ccm:remotenodeid');
             
             $this -> node = $this->callApi(API_URL_1 . '/items/' . $id);
             $prop = new stdClass();
@@ -61,7 +61,7 @@ class ESRender_Plugin_DDB
 
         global $Locale, $Translate;
 
-        $wwwUrl = $contentNode -> getProperty('ccm:wwwurl');
+        $wwwUrl = $contentNode -> getNodeProperty('ccm:wwwurl');
 
         $Message = new Phools_Message_Default('jumpToDataProvider :dataProvider', array(new Phools_Message_Param_String(':dataProvider', utf8_decode($this -> node -> view -> item -> institution -> name))));
 

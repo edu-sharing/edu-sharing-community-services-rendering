@@ -16,7 +16,7 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
 	<div class="edusharing_rendering_content_wrapper" role="main">
         <?php
-        if(Config::get('renderInfoLMSReturn')->hasContentLicense === false) {
+        if(Config::get('hasContentLicense') === false) {
             echo '<h3>' . $msg['hasNoContentLicense']->localize($Locale, $Translate) . '</h3>';
         } else if(Config::get('showDownloadAdvice'))
             echo '<div id="edusharing_downloadadvice"><h3>' . $msg['cannotOpenObject']->localize($Locale, $Translate) . '</h3>' .

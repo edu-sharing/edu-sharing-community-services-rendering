@@ -17,15 +17,11 @@ class ESContentNode {
         return $this -> data -> node;
     }
 
-    public function getProperties() {
-        return $this -> data -> properties;
-    }
-    
-    public function getProperty($key) {
-        if(property_exists ($this -> data -> properties, $key)) {
-            if (is_array($this->data->properties->$key) && count($this->data->properties->$key) == 1)
-                return $this->data->properties->$key[0];
-            return $this->data->properties->$key;
+    public function getNodeProperty($key) {
+        if(property_exists ($this -> data -> node -> properties, $key)) {
+            if (is_array($this->data->node -> properties->$key) && count($this->data->node->properties->$key) == 1)
+                return $this->data->node -> properties->$key[0];
+            return $this->data->node -> properties->$key;
         }
         return false;
     }

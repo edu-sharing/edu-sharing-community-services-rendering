@@ -17,9 +17,9 @@ extends ESRender_Module_Base
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_Base::download()
 	 */
-	protected function download(array $requestData)
+	protected function download(ESObject $ESObject)
 	{
-		return $this->display($requestData);
+		return $this->display($ESObject);
 	}
 
 	/**
@@ -29,9 +29,9 @@ extends ESRender_Module_Base
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_Base::download()
 	 */
-	protected function inline(array $requestData)
+	protected function inline(ESObject $ESObject)
 	{
-		return $this->display($requestData);
+		return $this->display($ESObject);
 	}
 
 }

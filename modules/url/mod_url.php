@@ -60,12 +60,12 @@ extends ESRender_Module_NonContentNode_Abstract {
         }
 
         $sequence = '';
-        if($this -> _ESOBJECT -> sequenceHandler -> isSequence())
-            $sequence = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper());
+        if($this -> _ESOBJECT -> getSequenceHandler() -> isSequence())
+            $sequence = $this -> _ESOBJECT -> getSequenceHandler() -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper());
 
         $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING) {
-            $metadata = $this -> _ESOBJECT -> metadatahHandler -> render($this -> getTemplate(), '/metadata/inline');
+            $metadata = $this -> _ESOBJECT -> getMetadatahHandler() -> render($this -> getTemplate(), '/metadata/inline');
         }
 
         $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));

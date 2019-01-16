@@ -17,7 +17,7 @@ class ESRender_License {
         } else if($authorFreeText) {
             $this -> author = $authorFreeText;
         } else {
-            $this -> author = $esobject -> contentNode -> getNodeProperty('ccm:metadatacontributer_creatorFN');
+            $this -> author = $esobject -> getContentNode() -> getNodeProperty('ccm:metadatacontributer_creatorFN');
         }
 
 		$this -> icon = $esobject -> getContentNode() -> getNode() -> license -> icon;

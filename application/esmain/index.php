@@ -155,25 +155,13 @@ try {
         $Plugin -> preLoadRepository($data->node->ref->repo, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
-    $remote_rep = $application -> getAppByID($data->node->ref->repo);
-    if (!$remote_rep) {
-        $Logger -> error('Error loading application by requested repository-id "' . $data->node->ref->repo . '".');
-
-        throw new ESRender_Exception_AppConfigNotLoaded($data->node->ref->repo);
-    }
-
     $Logger -> debug('Successfully loaded repository by id "' . $data->node->ref->repo . '".');
-    
-    
+
     $homeRepId = $homeConfig -> prop_array['homerepid'];
-    if($homeRepId === $data->node->ref->repo || empty($homeRepId)) {
-        $homeRep = $remote_rep;
-    } else {
-        $homeRep = $application -> getAppByID($homeRepId);
-        if (!$homeRep) {
-            $Logger -> error('Error loading application by requested repository-id "' . $homeRepId . '".');
-            throw new ESRender_Exception_AppConfigNotLoaded($homeRepId);
-        }
+    $homeRep = $application -> getAppByID($homeRepId);
+    if (!$homeRep) {
+        $Logger -> error('Error loading application by requested repository-id "' . $homeRepId . '".');
+        throw new ESRender_Exception_AppConfigNotLoaded($homeRepId);
     }
 
     $homeRep->url = str_replace('/services/authbyapp', '', $homeRep->prop_array['authenticationwebservice']);
@@ -186,8 +174,6 @@ try {
         $Plugin -> postLoadRepository($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
-
-    
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preSslVerification()');
         $Plugin -> preSslVerification($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName, $homeRep);
@@ -221,9 +207,8 @@ try {
         try {
             $pubkeyid = openssl_get_publickey($homeRep -> prop_array['public_key']);
             $signature = rawurldecode($_GET['sig']);
-            $dataSsl = urldecode($homeRepId);
             $signature = base64_decode($signature);
-            $ok = openssl_verify(urldecode($homeRepId) . $data->node->ref->id  . $ts, $signature, $pubkeyid);
+            $ok = openssl_verify($data->node->ref->repo . $data->node->ref->id  . $ts, $signature, $pubkeyid);
         } catch (Exception $e) {
             throw new ESRender_Exception_SslVerification('Error checking signature');
         }

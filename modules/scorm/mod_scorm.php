@@ -150,7 +150,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$tempArray = array('url' => $this-> getForwardUrl($requestData), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
 		
 		if(Config::get('showMetadata'))
-			$tempArray['metadata'] = $this -> _ESOBJECT -> metadataHandler -> render($this -> getTemplate(), '/metadata/dynamic');
+			$tempArray['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
 			 
 		$tempArray['title'] = $this->_ESOBJECT->getTitle();
 		echo $Template -> render('/module/moodle/dynamic', $tempArray);

@@ -42,10 +42,10 @@ extends ESRender_Module_ContentNode_Abstract {
 			$template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
 			$template_data['content'] = $this -> _ESOBJECT -> getPath() . $this -> getContentPathSuffix();
            if($TemplateName == '/module/h5p/dynamic' && Config::get('showMetadata'))
-                $template_data['metadata'] = $this -> _ESOBJECT -> metadataHandler -> render($this -> getTemplate(), '/metadata/dynamic');
+                $template_data['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
 
             if($TemplateName == '/module/h5p/inline' && ENABLE_METADATA_INLINE_RENDERING) {
-                $metadata = $this -> _ESOBJECT -> metadataHandler -> render($this -> getTemplate(), '/metadata/inline');
+                $metadata = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
                 $data['metadata'] = $metadata;
             }
             $Template = $this -> getTemplate();

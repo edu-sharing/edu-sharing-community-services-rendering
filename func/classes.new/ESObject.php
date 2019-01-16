@@ -158,7 +158,7 @@ class ESObject {
      *
      * @var Node
      */
-    public $contentNode = null;
+    protected $contentNode = null;
 
     /**
      * @return mixed

@@ -8,8 +8,8 @@ class ESRender_License {
 	private $filename = '';
 
 	public function __construct($esobject) {
-        $author = str_replace('[#]', ', ', $esobject -> contentNode -> getNodeProperty('ccm:lifecyclecontributer_authorFN'));
-        $authorFreeText = str_replace('[#]', ', ', $esobject -> contentNode -> getNodeProperty('ccm:author_freetext'));
+        $author = str_replace('[#]', ', ', $esobject -> getContentNode() -> getNodeProperty('ccm:lifecyclecontributer_authorFN'));
+        $authorFreeText = str_replace('[#]', ', ', $esobject -> getContentNode() -> getNodeProperty('ccm:author_freetext'));
         if($author && $authorFreeText) {
             $this -> author = $author . ' & ' . $authorFreeText;
         } else if($author) {
@@ -20,9 +20,9 @@ class ESRender_License {
             $this -> author = $esobject -> contentNode -> getNodeProperty('ccm:metadatacontributer_creatorFN');
         }
 
-		$this -> icon = $esobject -> contentNode -> getNode() -> license -> icon;
-		$this -> url = $esobject -> contentNode -> getNode() -> license -> url;
-		$this -> permalink = $esobject -> contentNode -> getNode() -> content -> url;
+		$this -> icon = $esobject -> getContentNode() -> getNode() -> license -> icon;
+		$this -> url = $esobject -> getContentNode() -> getNode() -> license -> url;
+		$this -> permalink = $esobject -> getContentNode() -> getNode() -> content -> url;
 		$this -> filename = $esobject -> getTitle();
 	}
 

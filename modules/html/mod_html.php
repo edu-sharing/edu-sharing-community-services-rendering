@@ -74,7 +74,7 @@ extends ESRender_Module_ContentNode_Abstract
     {
         $template_data['url'] = $this->_ESOBJECT->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         if(Config::get('showMetadata'))
-            $template_data['metadata'] = $this -> _ESOBJECT -> metadataHandler -> render($this -> getTemplate(), '/metadata/dynamic');
+            $template_data['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
         $template_data['title'] = $this->_ESOBJECT->getTitle();
         $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
         echo $this -> getTemplate() -> render('/module/html/dynamic', $template_data);

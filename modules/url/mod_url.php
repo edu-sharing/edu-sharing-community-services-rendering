@@ -137,7 +137,7 @@ extends ESRender_Module_NonContentNode_Abstract {
         $objId = $this -> _ESOBJECT -> getObjectID();
         //wrappers needed to handle max width
         if($this -> isYoutubeRemoteObject()){
-            $vidId = $this->_ESOBJECT->getContentNode()->getNodeProperty('ccm:remotenodeid');
+            $vidId = $this -> _ESOBJECT -> getContentNode() -> getNode() -> remote -> id;
             return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
             			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
 			                '.$dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'YOUTUBE').'

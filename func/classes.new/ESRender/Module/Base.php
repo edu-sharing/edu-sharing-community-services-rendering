@@ -96,7 +96,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
             if($this -> _ESOBJECT -> getLicense()) {
                 $license = $this -> _ESOBJECT -> getLicense() -> renderFooter($this -> getTemplate(), $this->lmsInlineHelper());
             } else {
-                $license = '<a class="license_permalink" href="'.$this->lmsInlineHelper().'?closeOnBack=true" target="_blank" title="'.htmlentities($this->_ESOBJECT->getTitle()).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
+                $license = '<a class="license_permalink" href="'.$this->lmsInlineHelper().'&closeOnBack=true" target="_blank" title="'.htmlentities($this->_ESOBJECT->getTitle()).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
                     . htmlentities($this->_ESOBJECT->getTitle())
                     . '</es:title></a>';
             }

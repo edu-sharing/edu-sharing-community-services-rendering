@@ -137,14 +137,14 @@ class mod_scenario
 			$l_add .= '/'.$path;
 		}
 
-		$content = $this->_ESOBJECT->getContentNode()->getNodeProperty('cm:content');
-		$content->readContentToFile($l_path.'/'.$this->_ESOBJECT->getContentNode()->getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid'));
+		$content = $this -> _ESOBJECT -> getNodeProperty('cm:content');
+		$content->readContentToFile($l_path.'/'.$this->_ESOBJECT -> getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid'));
 
-		$this->filename = $this->_ESOBJECT->getContentNode()->getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid');
+		$this->filename = $this -> _ESOBJECT -> getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid');
 
-		$DataArray['ESOBJECT_FILE_PATH']  = $l_path.'/'.$this->_ESOBJECT->getContentNode()->getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid');
+		$DataArray['ESOBJECT_FILE_PATH']  = $l_path.'/'.$this -> _ESOBJECT -> getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid');
 //		$DataArray['ESOBJECT_PATH']	   = MC_ROOT_URI.$this->_ESOBJECT->ESModule->getTmpFilepath().'/'.implode('/',$datepath2).'/'.$this->filename;
-		$DataArray['ESOBJECT_ESMODULE_ID']=  $this->_ESOBJECT->module->getModuleId();
+		$DataArray['ESOBJECT_ESMODULE_ID']=  $this -> _ESOBJECT -> module -> getModuleId();
 
 		// get virt. session
 		try

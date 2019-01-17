@@ -101,7 +101,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
     
     protected function isYoutubeRemoteObject() {
-        if($this -> _ESOBJECT -> getContentNode() -> getNode() -> remote -> repository -> repositoryType  == 'YOUTUBE')
+        if($this -> _ESOBJECT -> getNode() -> remote -> repository -> repositoryType  == 'YOUTUBE')
             return true;
         return false;
     }
@@ -137,7 +137,7 @@ extends ESRender_Module_NonContentNode_Abstract {
         $objId = $this -> _ESOBJECT -> getObjectID();
         //wrappers needed to handle max width
         if($this -> isYoutubeRemoteObject()){
-            $vidId = $this -> _ESOBJECT -> getContentNode() -> getNode() -> remote -> id;
+            $vidId = $this -> _ESOBJECT -> getNode() -> remote -> id;
             return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
             			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
 			                '.$dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'YOUTUBE').'
@@ -191,7 +191,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getUrl() {
-        $urlProp = $this -> _ESOBJECT -> getContentNode() -> getNodeProperty($this -> getUrlProperty());
+        $urlProp = $this -> _ESOBJECT -> getNodeProperty($this -> getUrlProperty());
        if(!empty($urlProp))
             return $urlProp;
         return false;
@@ -228,7 +228,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             strpos($this->_ESOBJECT->getMimeType(), '/jpg') !== false ||
             strpos($this->_ESOBJECT->getMimeType(), '/jpeg') !== false ||
             strpos($this->_ESOBJECT->getMimeType(), '/gif') !== false) &&
-            $this->_ESOBJECT->getContentNode()->getNodeProperty('ccm:remoterepositorytype') !== 'DDB')
+            $this -> _ESOBJECT -> getNodeProperty('ccm:remoterepositorytype') !== 'DDB')
             return true;
         return false;
     }

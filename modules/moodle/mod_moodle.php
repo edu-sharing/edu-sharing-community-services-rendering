@@ -115,7 +115,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
-		$params = array('user_name' => htmlentities($ESObject->getContentNode()->user->authorityName), 'user_givenname' => htmlentities($ESObject->getContentNode()->user->user_givenname), 'user_surname' => htmlentities($ESObject->getContentNode()->user->profile->lastName), 'user_email' => htmlentities($ESObject->getContentNode()->user->profile->email) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
+		$params = array('user_name' => htmlentities($ESObject -> getData() -> user->authorityName), 'user_givenname' => htmlentities($ESObject->getData()->user->user_givenname), 'user_surname' => htmlentities($ESObject->getData()->user->profile->lastName), 'user_email' => htmlentities($ESObject->getData()->user->profile->email) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);

@@ -179,7 +179,7 @@ implements ESRender_Plugin_Interface
     public function postRetrieveObjectProperties(
         EsApplication &$remote_rep,
         &$app_id,
-        ESContentNode &$contentNode,
+        ESContentNode &$ESObject,
         &$course_id,
         &$resource_id,
         &$username)

@@ -49,14 +49,14 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getOriginUrl() {
-        $urlProp = $this -> _ESOBJECT -> contentNode -> getNodeProperty($this -> getUrlProperty());
+        $urlProp = $this -> _ESOBJECT -> getNodeProperty($this -> getUrlProperty());
         if(!empty($urlProp))
             return $urlProp;
         return false;
     }
 
     protected function getUrl() {
-        $urlProp = $this -> _ESOBJECT -> contentNode -> getNodeProperty($this -> getUrlProperty());
+        $urlProp = $this -> _ESOBJECT -> getNodeProperty($this -> getUrlProperty());
         if(!empty($urlProp))
             return str_replace('https://learningapps.org/', 'https://learningapps.org/view', $urlProp);
         return false;

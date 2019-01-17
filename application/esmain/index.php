@@ -245,18 +245,14 @@ try {
         $Plugin -> preRetrieveObjectProperties($homeRep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
-    require_once(dirname(__FILE__) . '/../../func/classes.new/ESContentNode.php');
-    $contentNode = new ESContentNode($data);
-    $ESObject = new ESObject($contentNode);
+    $ESObject = new ESObject($data);
 
     //version
-    if($contentNode->getNode()->isDirectory || $contentNode->getNodeProperty('ccm:remoterepositorytype'))
-        $contentNode->getNode()->content->version = '';
-
-    $ESObject = new ESObject($contentNode);
+    if($ESObject -> getNode() -> isDirectory || $ESObject->getNodeProperty('ccm:remoterepositorytype'))
+        $ESObject -> getNode() -> content -> version = '';
 
     //@todo
-    $eduscopename = $contentNode -> getNodeProperty('ccm:eduscopename');
+    $eduscopename = $ESObject -> getNodeProperty('ccm:eduscopename');
     if($eduscopename === 'safe') {
         if(!empty($CC_RENDER_PATH_SAFE))
             $CC_RENDER_PATH = $CC_RENDER_PATH_SAFE;
@@ -264,12 +260,12 @@ try {
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postRetrieveObjectProperties()');
-        $Plugin -> postRetrieveObjectProperties($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $contentNode, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
+        $Plugin -> postRetrieveObjectProperties($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $ESObject, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
     $Logger -> info('Successfully initialized instance.');
 
-    $originalDeleted = $ESObject -> getContentNode() -> getNodeProperty('{virtualproperty}originaldeleted');
+    $originalDeleted = $ESObject -> getNodeProperty('{virtualproperty}originaldeleted');
     if(!empty($originalDeleted)) {
         $ESObject -> renderOriginalDeleted($data->dummy, mc_Request::fetch('display', 'CHAR', 'window'), $Template);
     }

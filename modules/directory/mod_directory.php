@@ -19,7 +19,7 @@ class mod_directory extends ESRender_Module_NonContentNode_Abstract {
     	    }
 	}
 
-        $creator = $this->_ESOBJECT->getContentNode()->getNodeProperty('NodeCreator_FirstName') . ' ' . $this->_ESOBJECT->getContentNode()->getNodeProperty('NodeCreator_LastName');
+        $creator = $this -> _ESOBJECT -> getNodeProperty('NodeCreator_FirstName') . ' ' . $this -> _ESOBJECT -> getNodeProperty('NodeCreator_LastName');
         if(strpos(strtolower($creator), 'administrator') !== false || strpos(strtolower($creator), 'unknown') !== false)
             $creator = '';
         $data = array('title' => htmlentities($this->_ESOBJECT->getTitle()), 'children' => $children, 'parentUrl'=> $this->lmsInlineHelper(), 'folderUrl' => Config::get('homeRepository')->url . '/components/workspace?' . $ESObject->getObjectID(), 'creator' => $creator);

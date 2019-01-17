@@ -156,16 +156,6 @@ class ESObject {
 
     /**
      *
-     * @var Node
-     */
-    protected $contentNode = null;
-
-    /**
-     * @return mixed
-     */
-
-    /**
-     *
      * @var $string
      */
     protected $hash = null;
@@ -184,12 +174,35 @@ class ESObject {
 
     /**
      *
+     * @var stdClass
      */
-    public function __construct(ESContentNode $ESContentNode) {
-        $this->contentNode = $ESContentNode;
+    protected $data= null;
+
+    /**
+     *
+     */
+    public function __construct($data) {
+        $this -> data = $data;
         $this -> module = new ESModule();
         $this -> setDataByNode();
         return true;
+    }
+
+    public function getData() {
+        return $this -> data;
+    }
+
+    public function getNode() {
+        return $this -> data -> node;
+    }
+
+    public function getNodeProperty($key) {
+        if(property_exists ($this -> data -> node -> properties, $key)) {
+            if (is_array($this->data->node -> properties->$key) && count($this->data->node->properties->$key) == 1)
+                return $this->data->node -> properties->$key[0];
+            return $this->data->node -> properties->$key;
+        }
+        return false;
     }
 
     /**
@@ -197,7 +210,7 @@ class ESObject {
      *
      */
     public function __destruct() {
-        $this -> contentNode = null;
+        $this -> data = null;
         $this -> module = null;
         $this -> Logger = null;
     }
@@ -283,21 +296,6 @@ class ESObject {
     }
 
     /**
-     * @param Node $p_node
-     */
-    final public function setContentNode(ESContentNode $p_node) {
-        $this -> contentNode = $p_node;
-    }
-
-    /*
-     * @return ESContentNode
-     */
-    final public function getContentNode() {
-        return $this -> contentNode;
-    }
-
-
-    /**
      * Get object's mime-type.
      *
      * @return string
@@ -319,11 +317,11 @@ class ESObject {
      *
      */
     final public function getTitle() {
-    	$title = $this -> contentNode -> getNode() -> title;
+    	$title = $this -> getNode() -> title;
     	if(!empty($title))
     		return $title;
     	else
-    		return $this -> contentNode -> getNode() -> name;
+    		return $this -> getNode() -> name;
     }
 
     /**
@@ -461,7 +459,7 @@ class ESObject {
      */
     public function setModule() {
         // runtime sanity
-        if (empty($this -> contentNode)) {
+        if (empty($this -> getNode())) {
             throw new Exception('No Alfresco-properties set.');
         }
 
@@ -473,7 +471,7 @@ class ESObject {
             return true;
         }
 
-        if($this -> contentNode -> node -> directory) {
+        if($this -> getNode() -> directory) {
             error_log('Property "directory" is true, using module "directory".');
             $this -> module -> setName('directory');
             $this -> module -> loadModuleData();
@@ -481,7 +479,7 @@ class ESObject {
             return true;
         }
 
-        $toolInstanceKey = $this -> contentNode -> getNodeProperty('ccm:tool_instance_key');
+        $toolInstanceKey = $this -> getNodeProperty('ccm:tool_instance_key');
         if(!empty($toolInstanceKey)) {
             error_log('ccm:tool_instance_ref equals set, using module "lti".');
             $this -> module -> setName('lti');
@@ -490,7 +488,7 @@ class ESObject {
             return true;
         }
 
-        if ($this -> contentNode -> getNode() -> remote -> repository -> repositoryType == 'YOUTUBE') {
+        if ($this -> getNode() -> remote -> repository -> repositoryType == 'YOUTUBE') {
             error_log('Property ccm:remoterepositorytype equals "YOUTUBE", using module "url".');
             $this -> module -> setName('url');
             $this -> module -> loadModuleData();
@@ -498,7 +496,7 @@ class ESObject {
             return true;
         }
 
-        if ($this -> contentNode -> getNode() -> remote -> repository -> repositoryType == 'LEARNINGAPPS') {
+        if ($this -> getNode() -> remote -> repository -> repositoryType == 'LEARNINGAPPS') {
             error_log('Property ccm:remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
             $this -> module -> setName('learningapps');
             $this -> module -> loadModuleData();
@@ -506,7 +504,7 @@ class ESObject {
             return true;
         }
 
-        if ($this -> contentNode -> getNodeProperty('ccm:replicationsource') == 'oai:dmglib.org') {
+        if ($this -> getNodeProperty('ccm:replicationsource') == 'oai:dmglib.org') {
             error_log('Property ccm:replicationsource equals "oai:dmglib.org", using module "url".');
             $this -> module -> setName('url');
             $this -> module -> loadModuleData();
@@ -514,9 +512,9 @@ class ESObject {
             return true;
         }
 
-        $wwwurl = $this -> contentNode -> getNodeProperty('ccm:wwwurl');
+        $wwwurl = $this -> getNodeProperty('ccm:wwwurl');
 
-        if ($this -> contentNode -> getNodeProperty('ccm:replicationsource') == 'DE.FWU' && !empty($wwwurl)) {
+        if ($this -> getNodeProperty('ccm:replicationsource') == 'DE.FWU' && !empty($wwwurl)) {
             error_log('Property ccm:replicationsource equals "DE.FWU" and ccm:wwwurl set, using module "url".');
             $this -> module -> setName('url');
             $this -> module -> loadModuleData();
@@ -550,21 +548,21 @@ class ESObject {
 
         $this -> id = 0;
         $this -> moduleId = 0;
-        $this -> title = $this -> contentNode -> getNode() -> title;
-        $this -> name = $this -> contentNode -> getNode() -> name;
+        $this -> title = $this -> getNode() -> title;
+        $this -> name = $this -> getNode() -> name;
         if(empty($this -> title))
             $this -> title = $this -> name;
-        $this -> repId = $this -> contentNode -> getNode() -> ref -> repo;
-        $this -> objectId = $this -> contentNode->getnode() -> ref -> id;
-        $this -> version = $this -> contentNode->getNode() -> content -> version;
-        $this -> mimetype = $this -> contentNode -> getNode() -> mimetype;
+        $this -> repId = $this -> getNode() -> ref -> repo;
+        $this -> objectId = $this -> getNode() -> ref -> id;
+        $this -> version = $this -> getNode() -> content -> version;
+        $this -> mimetype = $this -> getNode() -> mimetype;
         $this -> path = '';
         $this -> resourceId = mc_Request::fetch('resource_id', 'INT', 0);
         $this -> filePath = '';
-        $this -> hash = $this -> contentNode -> getNode()->content -> hash;
-        $this -> lmsId = mc_Request::fetch('app_id', 'CHAR', $this -> contentNode -> getNode() -> ref -> repo);
+        $this -> hash = $this -> getNode() -> content -> hash;
+        $this -> lmsId = mc_Request::fetch('app_id', 'CHAR', $this -> getNode() -> ref -> repo);
 
-        $ressourcetype = $this -> contentNode -> getNodeProperty('ccm:ccressourcetype');
+        $ressourcetype = $this -> getNodeProperty('ccm:ccressourcetype');
         if (!empty($ressourcetype)) {
             $this -> resourceType = $ressourcetype;
             if ($this -> resourceType == 'imsqti') {
@@ -572,11 +570,11 @@ class ESObject {
             }
         }
 
-        $ressourceversion = $this -> contentNode -> getNodeProperty('ccm:ccressourceversion');
+        $ressourceversion = $this -> getNodeProperty('ccm:ccressourceversion');
         if (!empty($ressourceversion))
             $this -> resourceVersion = $ressourceversion;
         
-        $commonlicense_key = $this -> contentNode -> getNodeProperty('ccm:commonlicense_key');
+        $commonlicense_key = $this -> getNodeProperty('ccm:commonlicense_key');
         if(!empty($commonlicense_key))
         	$this -> license = new ESRender_License($this);
 
@@ -784,7 +782,7 @@ class ESObject {
     public function getPreviewUrl() {
         if(!empty(Config::get('base64Preview')))
             return Config::get('base64Preview');
-        $previewUrl = $this -> getContentNode() -> getNode() -> preview -> url ;
+        $previewUrl = $this -> getNode() -> preview -> url ;
         return $previewUrl;
     }
 
@@ -821,17 +819,17 @@ class ESObject {
             }
         }
 
-        if($this->contentNode->getNodeProperty('cm:name') !== $this->name) {
+        if($this -> getNodeProperty('cm:name') !== $this->name) {
             try {
                 $pdo = RsPDO::getInstance();
                 $sql = 'UPDATE `ESOBJECT` SET `ESOBJECT_ALF_FILENAME` = :name WHERE `ESOBJECT_ID` = :id';
                 $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
-                $stmt -> bindValue(':name', $this->contentNode->getNodeProperty('cm:name'));
+                $stmt -> bindValue(':name', $this -> getNodeProperty('cm:name'));
                 $stmt -> bindValue(':id', $this->id, PDO::PARAM_INT);
                 $result = $stmt -> execute();
                 if(!$result)
                     throw new Exception('Error updating name ' . print_r($pdo -> errorInfo(), true));
-                $this->name = $this->contentNode->getNodeProperty('cm:name');
+                $this->name = $this -> getNodeProperty('cm:name');
             } catch(PDOException $e) {
                 throw new Exception($e -> getMessage());
             }

@@ -57,7 +57,7 @@ extends ESRender_Module_ContentNode_Abstract {
     protected function renderTemplate(ESObject $ESObject, $TemplateName) {
 
         $Logger = $this -> getLogger();
-        $template_data = parent::prepareRenderData(ESObject);
+        $template_data = parent::prepareRenderData($ESObject);
 
         $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
 

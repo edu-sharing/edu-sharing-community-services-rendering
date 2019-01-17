@@ -149,10 +149,6 @@ try {
     Config::set('homeConfig', $homeConfig);
     $Logger -> debug('Successfully loaded home-configuration.');
 
-    if($data -> node -> remote) {
-        Config::set('remote', $data -> node -> remote);
-    }
-
     // load repository-config
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preLoadRepository()');

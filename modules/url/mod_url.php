@@ -101,7 +101,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
     
     protected function isYoutubeRemoteObject() {
-        if($this -> _ESOBJECT -> getContentNode() -> getNodeProperty('ccm:remoterepositorytype') == 'YOUTUBE')
+        if($this -> _ESOBJECT -> getContentNode() -> getNode() -> remote -> repository -> repositoryType  == 'YOUTUBE')
             return true;
         return false;
     }

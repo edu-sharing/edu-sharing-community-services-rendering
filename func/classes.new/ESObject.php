@@ -490,7 +490,7 @@ class ESObject {
             return true;
         }
 
-        if ($this -> contentNode -> getNodeProperty('ccm:remoterepositorytype') == 'YOUTUBE') {
+        if ($this -> contentNode -> getNode() -> remote -> repository -> repositoryType == 'YOUTUBE') {
             error_log('Property ccm:remoterepositorytype equals "YOUTUBE", using module "url".');
             $this -> module -> setName('url');
             $this -> module -> loadModuleData();
@@ -498,7 +498,7 @@ class ESObject {
             return true;
         }
 
-        if ($this -> contentNode -> getNodeProperty('ccm:remoterepositorytype') == 'LEARNINGAPPS') {
+        if ($this -> contentNode -> getNode() -> remote -> repository -> repositoryType == 'LEARNINGAPPS') {
             error_log('Property ccm:remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
             $this -> module -> setName('learningapps');
             $this -> module -> loadModuleData();
@@ -524,7 +524,6 @@ class ESObject {
             return true;
         }
 
-        // load appropriate module
         if (!empty($wwwurl)) {
             error_log('Property ccm:wwwurl found, using module "url".');
             $this -> module -> setName('url');

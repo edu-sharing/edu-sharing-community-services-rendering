@@ -149,6 +149,10 @@ try {
     Config::set('homeConfig', $homeConfig);
     $Logger -> debug('Successfully loaded home-configuration.');
 
+    if($data -> node -> remote) {
+        Config::set('remote', $data -> node -> remote);
+    }
+
     // load repository-config
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preLoadRepository()');
@@ -220,15 +224,15 @@ try {
         $now = microtime(true) * 1000;
 
         $message_send_offset_ms = 10000;
-        if(isset($remote_rep -> prop_array['message_send_offset_ms']))
-            $message_send_offset_ms = $remote_rep -> prop_array['message_send_offset_ms'];
+        if(isset($homeRep -> prop_array['message_send_offset_ms']))
+            $message_send_offset_ms = $homeRep -> prop_array['message_send_offset_ms'];
         if($now + $message_send_offset_ms < $ts) {
             throw new ESRender_Exception_SslVerification('Timestamp sent bigger than current timestamp');
         }
 
         $message_offset_ms = 10000;
-        if(isset($remote_rep -> prop_array['message_offset_ms']))
-            $message_offset_ms = $remote_rep -> prop_array['message_offset_ms'];
+        if(isset($homeRep -> prop_array['message_offset_ms']))
+            $message_offset_ms = $homeRep -> prop_array['message_offset_ms'];
         if($now - $ts > $message_offset_ms) {
             throw new ESRender_Exception_SslVerification('Token expired');
         }
@@ -237,15 +241,13 @@ try {
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postSslVerification()');
-        $Plugin -> postSslVerification($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName, $homeRep);
+        $Plugin -> postSslVerification($homeRep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName, $homeRep);
     }
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preRetrieveObjectProperties()');
-        $Plugin -> preRetrieveObjectProperties($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
+        $Plugin -> preRetrieveObjectProperties($homeRep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
-
-
 
     require_once(dirname(__FILE__) . '/../../func/classes.new/ESContentNode.php');
     $contentNode = new ESContentNode($data);
@@ -442,7 +444,7 @@ try {
 } catch(Exception $exception) {
     $Logger -> error('An internal server error occurred.');
     $Logger -> debug($exception);
-    $Message = new Phools_Message_Default('An internal server error occurred.');
+    $Message = new Phools_Message_Default($e->getMessage());
     echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'internal'));
 }
 

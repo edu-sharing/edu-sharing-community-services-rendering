@@ -72,10 +72,9 @@ extends ESRender_Module_Base
             $signature = urlencode(base64_encode($signature));
             openssl_free_key($pkeyid); 
             $cacheFile = $this->getCacheFileName();
-
             $url =  current(explode("/services/", Config::get('homeRepository')->prop_array['authenticationwebservice']));
             $path = '/content?';
-            $params = 'appId='.Config::get('homeConfig')->prop_array['appid'] . '&nodeId=' . $ESObject->getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $ESObject->getObjectVersion();
+            $params = 'repId=' . $ESObject -> getContentNode() -> getNode() -> ref -> repo . '&appId='.Config::get('homeConfig')->prop_array['appid'] . '&nodeId=' . $ESObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $ESObject->getObjectVersion();
             $url .= $path . $params;
             
             $handle = fopen($cacheFile, "wb");

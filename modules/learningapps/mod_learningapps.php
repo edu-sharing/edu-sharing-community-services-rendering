@@ -9,16 +9,12 @@
 class mod_learningapps
 extends ESRender_Module_NonContentNode_Abstract {
 
-    protected function display(ESObject $ESObject) {
-        parent::display($ESObject);
-    }
-
-    protected function dynamic(ESObject $ESObject) {
+    protected function dynamic() {
     	$Template = $this -> getTemplate();
     	$tempArray = array('url' => $this->getUrl());
     	if(Config::get('showMetadata'))
-    		$tempArray['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
-    	$tempArray['title'] = $this->_ESOBJECT->getTitle();
+    		$tempArray['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+    	$tempArray['title'] = $this -> esObject->getTitle();
     	$uniqueId = uniqid('la_');
         $data['uniqueId'] = $uniqueId;
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
@@ -27,13 +23,13 @@ extends ESRender_Module_NonContentNode_Abstract {
     	return true;
     }
     
-    protected function inline(ESObject $ESObject) {
+    protected function inline() {
         $data = array();
         if(ENABLE_METADATA_INLINE_RENDERING) {
-            $metadata = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
+            $metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
             $data['metadata'] = $metadata;
         }
-        $license = $this->_ESOBJECT->license;
+        $license = $this -> esObject -> getLicense();
         if(!empty($license)) {
             $data['license'] = $license -> renderFooter($this -> getTemplate());
         }
@@ -49,14 +45,14 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getOriginUrl() {
-        $urlProp = $this -> _ESOBJECT -> getNodeProperty($this -> getUrlProperty());
+        $urlProp = $this -> esObject -> getNodeProperty($this -> getUrlProperty());
         if(!empty($urlProp))
             return $urlProp;
         return false;
     }
 
     protected function getUrl() {
-        $urlProp = $this -> _ESOBJECT -> getNodeProperty($this -> getUrlProperty());
+        $urlProp = $this -> esObject -> getNodeProperty($this -> getUrlProperty());
         if(!empty($urlProp))
             return str_replace('https://learningapps.org/', 'https://learningapps.org/view', $urlProp);
         return false;

@@ -41,17 +41,16 @@ extends ESRender_Module_AudioVideo_Abstract
 
     protected $filename;
 
-    protected function prepareRenderData(
-        ESObject $ESObject, $getDefaultData = true)
+    protected function prepareRenderData($getDefaultData = true)
     {
     	global $MC_URL;
 
     	$template_data = array();
     	if($getDefaultData)
-            $template_data = parent::prepareRenderData($ESObject);
+            $template_data = parent::prepareRenderData();
     	
         $ext = $this -> getExtensionByFormat($this->getVideoFormatByRequestingDevice());
-        $object_url = dirname($this -> _ESOBJECT->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
+        $object_url = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
         $template_data['ext'] = $ext;
         $template_data['url'] = $object_url;
         if(!empty($requestData['width']))
@@ -59,7 +58,7 @@ extends ESRender_Module_AudioVideo_Abstract
         $template_data['videoObjectIdentifier'] = uniqid('v_');
         $template_data['logger'] = $MC_URL . '/log/scr/clientlog.php';
         $template_data['cachePath'] = urlencode($this -> getOutputFilename($ext));
-        $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
+        $template_data['previewUrl'] = $this -> esObject->getPreviewUrl();
         return $template_data;
     }
 
@@ -107,11 +106,10 @@ extends ESRender_Module_AudioVideo_Abstract
      * (non-PHPdoc)
      * @see ESRender_Module_Base::dynamic()
      */
-    final public function dynamic(
-    		ESObject $ESObject)
+    final public function dynamic()
     {
     	global $Locale, $ROOT_URI;
-    	$template_data = $this->prepareRenderData($ESObject, false);
+    	$template_data = $this->prepareRenderData( false);
 
     	$template_data['ajax_url'] =
             $ROOT_URI . 'application/esmain/index.php?'.
@@ -128,8 +126,8 @@ extends ESRender_Module_AudioVideo_Abstract
         $template_data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
 
         if(Config::get('showMetadata'))
-    		$template_data['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
-    	$template_data['title'] = $this->_ESOBJECT->getTitle();
+    		$template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+    	$template_data['title'] = $this -> esObject->getTitle();
     	echo $this->getTemplate()->render('/module/video/dynamic', $template_data);
     	return true;
     }
@@ -139,14 +137,12 @@ extends ESRender_Module_AudioVideo_Abstract
      * (non-PHPdoc)
      * @see ESRender_Module_Base::inline()
      */
-    final public function inline(
-        ESObject $ESObject)
+    final public function inline()
     {
-    	
     	if($_REQUEST['displayoption'] == 'min') {
-    		$template_data = $this->prepareRenderData($ESObject, false);
+    		$template_data = $this->prepareRenderData( false);
     	} else {
-    		$template_data = $this->prepareRenderData($ESObject);
+    		$template_data = $this->prepareRenderData();
     	}
     	
     	echo $this->renderInlineTemplate($template_data);
@@ -161,9 +157,9 @@ extends ESRender_Module_AudioVideo_Abstract
     final public function locked(ESObject $ESObject) {
     	    	
         $template = $this->getTemplate();
-        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> _ESOBJECT -> getObjectID() . $this->_ESOBJECT->getObjectVersion()  . '_' . $this->_ESOBJECT->getId() . '_' . $this-> getVideoFormatByRequestingDevice(). '.log';
+        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion()  . '_' . $this -> esObject->getId() . '_' . $this-> getVideoFormatByRequestingDevice(). '.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
-        $positionInConversionQueue = $this->_ESOBJECT->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice());
+        $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice());
         if(empty($progress) || is_array($progress))
             $progress = '0';
         echo $template->render('/module/video/lock', array('callback' => mc_Request::fetch('callback', 'CHAR'),

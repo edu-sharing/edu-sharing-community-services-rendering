@@ -20,8 +20,8 @@ extends ESRender_Module_Base
 
         $Filename = $CC_RENDER_PATH . DIRECTORY_SEPARATOR;
         $Filename .= $this->getName() . DIRECTORY_SEPARATOR;
-        $Filename .= $this->_ESOBJECT->getEsobjectFilePath() . DIRECTORY_SEPARATOR;
-        $Filename .= $this->_ESOBJECT->getObjectID() . $this->_ESOBJECT->getObjectVersion();
+        $Filename .= $this-> esObject ->getEsobjectFilePath() . DIRECTORY_SEPARATOR;
+        $Filename .= $this-> esObject ->getObjectID() . $this-> esObject ->getObjectVersion();
 
         return str_replace('\\','/',$Filename);
     }
@@ -30,7 +30,7 @@ extends ESRender_Module_Base
      * (non-PHPdoc)
      * @see ESRender_Module_Base::createInstance()
      */
-    public function createInstance(ESObject $ESObject) {
+    public function createInstance() {
     	global $CC_RENDER_PATH;
         ini_set('memory_limit', '4000M');
         $Logger = $this->getLogger();
@@ -38,14 +38,14 @@ extends ESRender_Module_Base
         $upath = date('Y/m/d/H/i/s');
 
         // update esobject member data
-        $this->_ESOBJECT->setFilePath($upath);
-        $this->_ESOBJECT->setSubUri($upath);
+        $this-> esObject ->setFilePath($upath);
+        $this-> esObject ->setSubUri($upath);
 
-        $this->filename = $this->_ESOBJECT->getObjectIdVersion();
+        $this->filename = $this-> esObject ->getObjectIdVersion();
 
         // real path
         $this->render_path = $CC_RENDER_PATH . DIRECTORY_SEPARATOR
-            . $this->_ESOBJECT->module->getName()
+            . $this-> esObject ->module->getName()
             .DIRECTORY_SEPARATOR
             .$upath;
 
@@ -66,7 +66,7 @@ extends ESRender_Module_Base
         
         try {       
             $timestamp = round(microtime(true) * 1000);
-            $signData = $ESObject->getObjectID() . $timestamp;
+            $signData = $this -> _ESObject->getObjectID() . $timestamp;
             $pkeyid = openssl_get_privatekey(Config::get('homeConfig')->prop_array['private_key']);
             openssl_sign($signData, $signature, $pkeyid);
             $signature = urlencode(base64_encode($signature));
@@ -74,7 +74,8 @@ extends ESRender_Module_Base
             $cacheFile = $this->getCacheFileName();
             $url =  current(explode("/services/", Config::get('homeRepository')->prop_array['authenticationwebservice']));
             $path = '/content?';
-            $params = 'repId=' . $ESObject -> getNode() -> ref -> repo . '&appId='.Config::get('homeConfig')->prop_array['appid'] . '&nodeId=' . $ESObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $ESObject->getObjectVersion();
+            $params = 'repId=' . $this -> _ESObject -> getNode() -> ref -> repo . '&appId='.Config::get('homeConfig')->prop_array['appid'] . '&nodeId=' .
+                $this -> _ESObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $this -> _ESObject -> getObjectVersion();
             $url .= $path . $params;
             
             $handle = fopen($cacheFile, "wb");
@@ -114,26 +115,10 @@ extends ESRender_Module_Base
     /**
      * @param ESObject $ESObject
      */
-    protected function download(ESObject $ESObject)
+    protected function download()
     {
         $Logger = $this->getLogger();
-        $url = $this->_ESOBJECT -> getPathfile() .  '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
-        $Logger->debug('Redirecting to location: "' . $url . '"');
-
-        header('HTTP/1.1 303 See other');
-        header('Location: ' . $url);
-
-        return true;
-    }
-
-    /**
-     * @param ESObject $ESObject
-     */
-    protected function display(ESObject $ESObject)
-    {
-        $Logger = $this->getLogger();
-
-        $url = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
+        $url = $this-> esObject  -> getPathfile() .  '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
         $Logger->debug('Redirecting to location: "' . $url . '"');
 
         header('HTTP/1.1 303 See other');
@@ -146,10 +131,10 @@ extends ESRender_Module_Base
      * (non-PHPdoc)
      * @see ESRender_Module_Base::inline()
      */
-    protected function inline(ESObject $ESObject)
+    protected function inline()
     {
         $Logger = $this->getLogger();
-        $data = parent::prepareRenderData($ESObject);
+        $data = parent::prepareRenderData($this -> _ESObject);
         $data['url'] = $this->lmsInlineHelper();
         echo $this->getTemplate()->render('/module/default/inline', $data);
         $Logger->debug('ESRender_Module_Base::inline');
@@ -157,16 +142,16 @@ extends ESRender_Module_Base
     }
     
     
-    protected function dynamic(ESObject $ESObject) {
+    protected function dynamic() {
        $Logger = $this->getLogger();
        $Logger->debug('ESRender_Module_Base::dynamic');
 
        $data = array();
-       $data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
+       $data['url'] = $this-> esObject ->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
        if(Config::get('showMetadata'))
-       		$data['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
-       $data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
-       $data['title'] = $this->_ESOBJECT->getTitle();
+       		$data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+       $data['previewUrl'] = $this-> esObject ->getPreviewUrl();
+       $data['title'] = $this-> esObject ->getTitle();
        echo $this->getTemplate()->render('/module/default/dynamic', $data);
        
        return true;

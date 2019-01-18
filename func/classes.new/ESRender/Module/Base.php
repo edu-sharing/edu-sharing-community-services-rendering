@@ -35,39 +35,39 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
     /**
      * @var ESObject
      */
-    protected $_ESOBJECT = null;
+    protected $esObject = null;
 
     /**
      * This module's name
      *
      * @var string
      */
-    protected $Name = '';
+    protected $name = '';
 
     /**
      *
      * @var string
      */
-    protected $render_path = '';
+    protected $renderPath = '';
 
     /**
      *
-     * @param string $Name
+     * @param string $name
      * @param ESRender_Application_Interface $RenderApplication
-     * @param ESObject $p_esobject
+     * @param ESObject $pesObject
      * @param Logger $Logger
      * @param Phools_Template_Interface $Template
      */
-    public function __construct($Name, ESRender_Application_Interface $RenderApplication, ESObject $p_esobject, Logger $Logger, Phools_Template_Interface $Template) {
+    public function __construct($name, ESRender_Application_Interface $RenderApplication, ESObject $esObject, Logger $Logger, Phools_Template_Interface $Template) {
         //  parent::__construct();
 
-        $this -> setName($Name) -> setRenderApplication($RenderApplication) -> setLogger($Logger) -> setTemplate($Template);
+        $this -> setname($name) -> setRenderApplication($RenderApplication) -> setLogger($Logger) -> setTemplate($Template);
 
-        $this -> _ESOBJECT = $p_esobject;
+        $this -> esObject = $esObject;
     }
 
     public function __destruct() {
-        $this -> _ESOBJECT = null;
+        $this -> esObject = null;
         $this -> Logger = null;
         $this -> Template = null;
         $this -> RenderApplication = null;
@@ -76,16 +76,14 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
     /**
      * Prepare data to be used in templates.
      *
-     * @param ESObject $ESObject
-     *
      * @return array
      */
-    protected function prepareRenderData(ESObject $ESObject) {
+    protected function prepareRenderData() {
         global $Locale, $Translate;
         $msg = array();
         $msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
 
-        $data = array('title' => $this -> _ESOBJECT -> getTitle(),
+        $data = array('title' => $this -> esObject -> getTitle(),
                     'width' => mc_Request::fetch('width', 'INT', 0),
                     'height' => mc_Request::fetch('height', 'INT', 0),
                     'backLink' => mc_Request::fetch('backLink', 'CHAR', ''));
@@ -93,61 +91,53 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         if(false === Config::get('hasContentLicense')) {
             $license = '<span class="edusharing_warning">' . htmlentities($msg['hasNoContentLicense']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8') . '</span>';
         } else {
-            if($this -> _ESOBJECT -> getLicense()) {
-                $license = $this -> _ESOBJECT -> getLicense() -> renderFooter($this -> getTemplate(), $this->lmsInlineHelper());
+            if($this -> esObject -> getLicense()) {
+                $license = $this -> esObject -> getLicense() -> renderFooter($this -> getTemplate(), $this->lmsInlineHelper());
             } else {
-                $license = '<a class="license_permalink" href="'.$this->lmsInlineHelper().'&closeOnBack=true" target="_blank" title="'.htmlentities($this->_ESOBJECT->getTitle()).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
-                    . htmlentities($this->_ESOBJECT->getTitle())
+                $license = '<a class="license_permalink" href="'.$this->lmsInlineHelper().'&closeOnBack=true" target="_blank" title="'.htmlentities($this->esObject -> getTitle()).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
+                    . htmlentities($this->esObject -> getTitle())
                     . '</es:title></a>';
             }
         }
 
         $sequence = '';
-        if($this -> _ESOBJECT -> getSequenceHandler() -> isSequence())
-            $sequence = $this -> _ESOBJECT -> getSequenceHandler() -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper());
+        if($this -> esObject -> getSequenceHandler() -> isSequence())
+            $sequence = $this -> esObject -> getSequenceHandler() -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper());
 
         $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING) {
-	       	$metadata = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
+	       	$metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
         }
 
-        $data['footer'] = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));
+        $data['footer'] = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> esObject -> getTitle()));
 
         return $data;
     }
-    
-    /**
-     * Display current ESObject.
-     *
-     * @param ESObject $ESObject
-     */
-    abstract protected function display(ESObject $ESObject);
 
     /**
      * Download current ESObject.
      *
      * @param ESObject $ESObject
      */
-    abstract protected function download(ESObject $ESObject);
+    abstract protected function download();
 
     /**
      * Render inline-portion for current ESObject.
      *
      * @param ESObject $ESObject
      */
-    abstract protected function inline(ESObject $ESObject);
+    abstract protected function inline();
 
     /**
      *
      * @param string $Sql
-     * @param ESObject $ESObject
      */
-    protected function refineInstanceConstraints($Sql, ESObject $ESObject) {
+    protected function refineInstanceConstraints($Sql) {
         // nothing to refine by default.
         return $Sql;
     }
 
-    public function instanceLocked(ESObject $ESObject) {
+    public function instanceLocked() {
         
         $Logger = $this -> getLogger();
         $pdo = RsPDO::getInstance();
@@ -160,10 +150,10 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
                 'AND `ESOBJECT_LOCK_OBJECT_VERSION` = :version');
                 
             $stmt = $pdo -> prepare($sql);
-            $stmt -> bindValue(':repid', $ESObject->getRepId());
-            $stmt -> bindValue(':contenthash', $ESObject->getContentHash());
-            $stmt -> bindValue(':objectid', $ESObject -> getObjectID());
-            $stmt -> bindValue(':version', $ESObject->getObjectVersion());
+            $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
+            $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
+            $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
+            $stmt -> bindValue(':version', $this -> esObject -> getObjectVersion());
     
             $stmt -> execute();
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
@@ -180,7 +170,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         return false;
     }
 
-    public function instanceUnlock(ESObject $ESObject) {
+    public function instanceUnlock() {
         $Logger = $this -> getLogger();
 
         $pdo = RsPDO::getInstance();
@@ -188,9 +178,9 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
             $sql = $pdo -> formatQuery('DELETE FROM `ESOBJECT_LOCK` WHERE `ESOBJECT_LOCK_REP_ID` = :repid AND `ESOBJECT_LOCK_OBJECT_ID` = :objectid AND `ESOBJECT_LOCK_OBJECT_VERSION` = :version');
     
             $stmt = $pdo -> prepare($sql);
-            $stmt -> bindValue(':repid', $ESObject -> getRepId());
-            $stmt -> bindValue(':objectid', $ESObject -> getObjectID());
-            $stmt -> bindValue(':version', $ESObject->getObjectVersion());
+            $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
+            $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
+            $stmt -> bindValue(':version', $this -> esObject -> getObjectVersion());
             $result = $stmt -> execute();
     
             if (!$result) {
@@ -204,16 +194,16 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         }
     }
 
-    public function instanceLock(ESObject $ESObject) {
+    public function instanceLock() {
 
         $pdo = RsPDO::getInstance();
         try {
             $sql = $pdo -> formatQuery('INSERT INTO `ESOBJECT_LOCK` (`ESOBJECT_LOCK_REP_ID`,`ESOBJECT_LOCK_OBJECT_ID`,`ESOBJECT_LOCK_OBJECT_VERSION`,`ESOBJECT_LOCK_CONTENT_HASH`) VALUES (:repid, :objectid, :objectversion, :contenthash)');
             $stmt = $pdo -> prepare($sql);
-            $stmt -> bindValue(':repid', $ESObject->getRepId());
-            $stmt -> bindValue(':objectid', $ESObject->getObjectID());
-            $stmt -> bindValue(':objectversion', $ESObject->getObjectVersion());
-            $stmt -> bindValue(':contenthash', $ESObject->getContentHash());
+            $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
+            $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
+            $stmt -> bindValue(':objectversion', $this -> esObject -> getObjectVersion());
+            $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
             $result = $stmt -> execute();
             if (!$result) {
                 throw new Exception('Error storing entry to lock table. PDO error info ' . print_r($stmt -> errorInfo(), true));
@@ -235,7 +225,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      * (non-PHPdoc)
      * @see ESRender_Module_Interface::instanceExists()
      */
-    public function instanceExists(ESObject $ESObject) {
+    public function instanceExists() {
         $Logger = $this -> getLogger();
 
         $pdo = RsPDO::getInstance();
@@ -244,19 +234,19 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
             $sql = 'SELECT * FROM `ESOBJECT` ' . 'WHERE `ESOBJECT_REP_ID` = :repid ' . 'AND `ESOBJECT_CONTENT_HASH` = :contenthash ' . 'AND `ESOBJECT_OBJECT_ID` = :objectid ' . 'AND `ESOBJECT_LMS_ID` = :appid ' . 'AND `ESOBJECT_OBJECT_VERSION` = :version ' . 'AND `ESOBJECT_RESOURCE_ID` = :resourceid';
 
             $stmt = $pdo -> prepare($pdo->formatQuery($sql));
-            $stmt -> bindValue(':repid', $ESObject->getRepId());
-            $stmt -> bindValue(':contenthash', $ESObject->getContentHash());
-            $stmt -> bindValue(':objectid', $ESObject -> getObjectID());
-            $stmt -> bindValue(':appid', $ESObject -> getLmsId());
-            $stmt -> bindValue(':version', $ESObject->getObjectVersion());
-            $stmt -> bindValue(':resourceid', $ESObject->getResourceId());
+            $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
+            $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
+            $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
+            $stmt -> bindValue(':appid', $this -> esObject -> getLmsId());
+            $stmt -> bindValue(':version', $this -> esObject -> getObjectVersion());
+            $stmt -> bindValue(':resourceid', $this -> esObject -> getResourceId());
             $stmt -> execute();
             
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
 
             if ($result) {
                 $Logger -> debug('Instance exists.');
-                $ESObject -> setInstanceData($result);
+                $this -> esObject -> setInstanceData($result);
                 return true;
             }
     
@@ -271,7 +261,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      * (non-PHPdoc)
      * @see ESRender_Module_Interface::createInstance()
      */
-    public function createInstance(ESObject $ESObject) {
+    public function createInstance() {
         return true;
     }
 
@@ -279,38 +269,32 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      * (non-PHPdoc)
      * @see ESRender_Module_Interface::process()
      */
-    public function process($p_kind, ESObject $ESObject) {
+    public function process($p_kind) {
 
         $Logger = $this -> getLogger();
 
         switch( strtolower($p_kind) ) {
             case ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD :
                 $Logger -> debug('Calling Module::download()');
-                return $this -> download($ESObject);
+                return $this -> download();
                 break;
 
             case ESRender_Application_Interface::DISPLAY_MODE_INLINE :
                 $Logger -> debug('Calling Module::inline()');
-                return $this -> inline($ESObject);
+                return $this -> inline();
                 break;
                 
                 
-                case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC :
-                	$Logger -> debug('Calling Module::dynamic()');
-                	return $this -> dynamic($ESObject);
-                	break;
-
-
-            case ESRender_Application_Interface::DISPLAY_MODE_WINDOW :
-                $Logger -> debug('Calling Module::display()');
-                return $this -> display($ESObject);
+            case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC :
+                $Logger -> debug('Calling Module::dynamic()');
+                return $this -> dynamic();
                 break;
 
             case ESRender_Application_Interface::DISPLAY_MODE_LOCKED :
                 //this method is only implemented in video and audio module
                 Config::set('locked', true);
                 $Logger -> debug('Calling Module::locked()');
-                return $this -> locked($ESObject);
+                return $this -> locked();
                 break;
 
             default :
@@ -329,12 +313,12 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
 
     /**
      *
-     * @param string $Name
+     * @param string $name
      *
      * @return ESRender_Module_Base
      */
-    protected function setName($Name) {
-        $this -> Name = (string)$Name;
+    protected function setname($name) {
+        $this -> name = (string)$name;
         return $this;
     }
 
@@ -342,8 +326,8 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      *
      * @return string
      */
-    public function getName() {
-        return $this -> Name;
+    public function getname() {
+        return $this -> name;
     }
 
     /**

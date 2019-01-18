@@ -174,12 +174,12 @@ try {
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postLoadRepository()');
-        $Plugin -> postLoadRepository($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
+        $Plugin -> postLoadRepository($data->node->ref->repo, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preSslVerification()');
-        $Plugin -> preSslVerification($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName, $homeRep);
+        $Plugin -> preSslVerification($data->node->ref->repo, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName, $homeRep);
     }    
 
     $skipSslVerification = false; /////check
@@ -263,7 +263,7 @@ try {
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postRetrieveObjectProperties()');
-        $Plugin -> postRetrieveObjectProperties($remote_rep, mc_Request::fetch('app_id', 'CHAR'), $ESObject, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
+        $Plugin -> postRetrieveObjectProperties($data->node->ref->repo, mc_Request::fetch('app_id', 'CHAR'), $ESObject, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
     }
 
     $Logger -> info('Successfully initialized instance.');
@@ -301,11 +301,11 @@ try {
     $Logger -> info('Loaded module "' . $moduleName . '".');
 
     // create new object instance if not existent
-    if (!$Module -> instanceExists($ESObject)
-        && !$Module -> instanceLocked($ESObject)) {
+    if (!$Module -> instanceExists()
+        && !$Module -> instanceLocked()) {
 
         //ensure that instance is not created several times
-        $Module -> instanceLock($ESObject);
+        $Module -> instanceLock();
         
         foreach ($Plugins as $name => $Plugin) {
             $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preInstanciateObject()');
@@ -315,18 +315,18 @@ try {
         try {
             $Logger -> info('Instance does not yet exists. Attempting to create new object-instance.');
 
-            if (!$Module -> createInstance($ESObject)) {
+            if (!$Module -> createInstance()) {
                 $Logger -> error('Error creating new object-instance. Attempting to remove created object.');
                 if (!$ESObject -> deleteFromDb()) {
                     $Logger -> error('Error removing object-instance "' . $ESObject -> getObjectID() . '".');
                 }
-                $Module -> instanceUnlock($ESObject);
+                $Module -> instanceUnlock();
                 $Logger -> info('Successfully removed created object.');
                 throw new Exception('Error creating instance.');
             }
 
             if (!$ESObject -> setData2Db()) {
-                $Module -> instanceUnlock($ESObject);
+                $Module -> instanceUnlock();
                 $Logger -> error('Error storing object-data in database.');
                 throw new Exception('Error storing instance-data.');
             }
@@ -344,7 +344,7 @@ try {
             $Plugin -> postInstanciateObject();
         }
 
-        $Module -> instanceUnlock($ESObject);
+        $Module -> instanceUnlock();
     }
 
     $ESObject ->update();
@@ -374,7 +374,7 @@ try {
     }
 
     $Logger -> info('Processing render-object.');
-    if (!$Module -> process(mc_Request::fetch('display', 'CHAR', 'window'), $ESObject, $Module -> instanceLocked($ESObject))) {
+    if (!$Module -> process(mc_Request::fetch('display', 'CHAR', 'window'), $Module -> instanceLocked())) {
         $Logger -> error('Error processing object "' . $data->node->ref->id . '".');
         throw new Exception('Error processing object.');
     }

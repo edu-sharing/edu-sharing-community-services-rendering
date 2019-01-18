@@ -56,7 +56,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     	if($getDefaultData)
         	$data = parent::prepareRenderData($ESObject);
         
-        $object_url = dirname($this->_ESOBJECT->getPath()) . '/' . basename($this->getOutputFilename($this)) . '?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
+        $object_url = dirname($this -> esObject->getPath()) . '/' . basename($this->getOutputFilename($this)) . '?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         $data['audio_url'] = $object_url;
         return $data;
     }
@@ -98,8 +98,8 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
         $template_data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
 
         if(Config::get('showMetadata'))
-            $template_data['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
-        $template_data['title'] = $this->_ESOBJECT->getTitle();
+            $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+        $template_data['title'] = $this -> esObject->getTitle();
         echo $this->getTemplate()->render('/module/audio/dynamic', $template_data);
         return true;
     }
@@ -108,7 +108,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_Base::inline()
      */
-    protected function inline(ESObject $ESObject) {
+    protected function inline() {
     	if($_REQUEST['displayoption'] == 'min') {
     		$data = $this->prepareRenderData($ESObject, false);
     	} else {
@@ -126,9 +126,9 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
      */
     final public function locked(ESObject $ESObject) {
         $template = $this->getTemplate();
-        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> _ESOBJECT -> getObjectID() . $this->_ESOBJECT->getObjectVersion() . self::FORMAT_AUDIO_MP3 .'.log';
+        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion() . self::FORMAT_AUDIO_MP3 .'.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput, self::FORMAT_AUDIO_MP3);
-        $positionInConversionQueue = $this->_ESOBJECT->getPositionInConversionQueue(self::FORMAT_AUDIO_MP3);
+        $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue(self::FORMAT_AUDIO_MP3);
         if(empty($progress) || is_array($progress))
             $progress = '0';
         echo $template->render('/module/audio/lock', array('callback' => mc_Request::fetch('callback', 'CHAR'),

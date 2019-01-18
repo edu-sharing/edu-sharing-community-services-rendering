@@ -34,9 +34,9 @@ if (file_exists(dirname(__FILE__).'/config.php')) {
 class mod_moodle
 extends ESRender_Module_ContentNode_Abstract {
 
-	public function createInstance(ESObject $ESObject) {
+	public function createInstance() {
 		
-		parent::createInstance($ESObject);
+		parent::createInstance();
 
         if (!file_exists(dirname(__FILE__).'/config.php')) {
             return true;
@@ -60,7 +60,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
-		$params = array('nodeid'=> $ESObject->getObjectID(),'category' => '1', 'title' => htmlentities($this->_ESOBJECT->getTitle()));
+		$params = array('nodeid'=> $this -> esObject->getObjectID(),'category' => '1', 'title' => htmlentities($this -> esObject->getTitle()));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
@@ -86,7 +86,7 @@ extends ESRender_Module_ContentNode_Abstract {
 	}
 	
 	private function cacheCourseId($courseId) {
-		$filename = $this->_ESOBJECT->getFilePath() . '.txt';
+		$filename = $this -> esObject->getFilePath() . '.txt';
 		$data = $courseId;
 		file_put_contents($filename, $data);
 	}
@@ -97,7 +97,7 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * enroll user
 	 * retrieve token for login
 	 * */
-	private function getUserToken(ESObject $ESObject) {
+	private function getUserToken() {
 
 		$logger = $this->getLogger();
 		
@@ -115,7 +115,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
-		$params = array('user_name' => htmlentities($ESObject -> getData() -> user->authorityName), 'user_givenname' => htmlentities($ESObject->getData()->user->user_givenname), 'user_surname' => htmlentities($ESObject->getData()->user->profile->lastName), 'user_email' => htmlentities($ESObject->getData()->user->profile->email) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
+		$params = array('user_name' => htmlentities($this -> esObject -> getData() -> user->authorityName), 'user_givenname' => htmlentities($this -> esObject->getData()->user->user_givenname), 'user_surname' => htmlentities($this -> esObject->getData()->user->profile->lastName), 'user_email' => htmlentities($this -> esObject->getData()->user->profile->email) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
@@ -134,37 +134,37 @@ extends ESRender_Module_ContentNode_Abstract {
 		return false;
 	}
 
-	public function dynamic(ESObject $ESObject) {
+	public function dynamic() {
 
         if (!file_exists(dirname(__FILE__).'/config.php')) {
-            echo parent::dynamic($ESObject);
+            echo parent::dynamic();
             return true;
             $Logger -> error('Error opening ' . dirname(__FILE__).'/config.php');
         }
 
 		$id = $this->getCourseId();
 		if($id === false) {
-			return parent::dynamic($ESObject);
+			return parent::dynamic();
 		}
 		$Template = $this -> getTemplate();
-		$tempArray = array('url' => $this-> getForwardUrl($ESObject), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
+		$tempArray = array('url' => $this-> getForwardUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl());
 		
 		if(Config::get('showMetadata'))
-			$tempArray['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+			$tempArray['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
 			 
-		$tempArray['title'] = $this->_ESOBJECT->getTitle();
+		$tempArray['title'] = $this -> esObject->getTitle();
 		echo $Template -> render('/module/moodle/dynamic', $tempArray);
 		return true;
 	}
 	
 	protected function getCourseId() {
-		$filename = $this->_ESOBJECT->getFilePath() . '.txt';
+		$filename = $this -> esObject->getFilePath() . '.txt';
 		$id = file_get_contents($filename);
 		return $id;
 	}
 	
-	protected function getForwardUrl($ESObject) {
-		return MOODLE_BASE_DIR . '/local/edusharing/forwardUser.php?token=' . urlencode($this-> getUserToken($ESObject));
+	protected function getForwardUrl() {
+		return MOODLE_BASE_DIR . '/local/edusharing/forwardUser.php?token=' . urlencode($this-> getUserToken());
 	}
 	
 	

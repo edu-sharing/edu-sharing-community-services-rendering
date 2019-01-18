@@ -4,7 +4,7 @@ class ESRender_Metadata_Handler {
 	
 	private $esObject = null;
 
-	public function __construct(ESObject $esObject) {		
+	public function __construct(ESObject $esObject) {
 		$this -> esObject = $esObject;
 	}
 

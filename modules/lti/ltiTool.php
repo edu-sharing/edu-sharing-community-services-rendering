@@ -8,19 +8,19 @@ define("OAUTH_SIGNATURE_METHOD", "HMAC-SHA1");
 
 class ltiTool {
 
-    private $esobject;
+    private $esObject ;
     private $template;
 
-    public function __construct($esobject, $template) {
-        $this -> esobject = $esobject;
+    public function __construct(ESObject $esObject , $template) {
+        $this -> esObject  = $esObject ;
         $this -> template = $template;
     }
 
     private function getLaunchForm($requestData) {
 
         $launch_data = array();
-        $launch_data["roles"] = $this -> esobject -> getNodeProperty('ccm:tool_instance_roles');
-        $launch_data["params"] = $this -> esobject -> getNodeProperty('ccm:tool_instance_params');
+        $launch_data["roles"] = $this -> esObject  -> getNodeProperty('ccm:tool_instance_roles');
+        $launch_data["params"] = $this -> esObject  -> getNodeProperty('ccm:tool_instance_params');
         $launch_data["lis_person_name_given"] = $requestData['user_givenname'];
         $launch_data["lis_person_name_family"] = $requestData['user_surname'];
         $launch_data["lis_person_contact_email_primary"] = $requestData['user_email'];
@@ -28,7 +28,7 @@ class ltiTool {
         $launch_data["lti_version"] = LTI_VERSION;
         $launch_data["lti_message_type"] = LTI_MESSAGE_TYPE;
         $launch_data["oauth_callback"] = OAUTH_CALLBACK;
-        $launch_data["oauth_consumer_key"] = $this -> esobject -> getNodeProperty('ccm:tool_instance_key');
+        $launch_data["oauth_consumer_key"] = $this -> esObject  -> getNodeProperty('ccm:tool_instance_key');
         $launch_data["oauth_version"] = OAUTH_VERSION;
         $launch_data["oauth_nonce"] = uniqid('', true);
         $now = new \DateTime();
@@ -42,16 +42,16 @@ class ltiTool {
             array_push($launch_params, $key . "=" . rawurlencode($launch_data[$key]));
         }
 
-        $base_string = "POST&" . urlencode($this -> esobject -> getNodeProperty('ccm:wwwurl')) . "&" . rawurlencode(implode("&", $launch_params));
-        $secret = urlencode($this -> esobject -> getNodeProperty('ccm:tool_instance_secret')) . '&';
+        $base_string = "POST&" . urlencode($this -> esObject  -> getNodeProperty('ccm:wwwurl')) . "&" . rawurlencode(implode("&", $launch_params));
+        $secret = urlencode($this -> esObject  -> getNodeProperty('ccm:tool_instance_secret')) . '&';
         $signature = base64_encode(hash_hmac("sha1", $base_string, $secret, true));
 
         $form = '<html>
             <head>
             </head>
             <body onload="document.ltiLaunchForm.submit();">
-                <form id="ltiLaunchForm_'.$this->esobject->getObjectID().'" name="ltiLaunchForm_'.$this->esobject->getObjectID().'" id="name="ltiLaunchForm_'.$this->esobject->getObjectID().'"
-                method="POST" action="' . $this -> esobject -> getNodeProperty('ccm:wwwurl') . '" target="lti_frame_'.$this->esobject->getObjectID().'">';
+                <form id="ltiLaunchForm_'.$this->esObject ->getObjectID().'" name="ltiLaunchForm_'.$this->esObject ->getObjectID().'" id="name="ltiLaunchForm_'.$this->esObject ->getObjectID().'"
+                method="POST" action="' . $this -> esObject  -> getNodeProperty('ccm:wwwurl') . '" target="lti_frame_'.$this->esObject ->getObjectID().'">';
             foreach ($launch_data as $key => $value ) {
                 $form .= '<input type="hidden" name="' . $key  . '" value="' . $value . '">';
             }
@@ -62,36 +62,36 @@ class ltiTool {
         return $form;
     }
     
-    public function inline(ESObject $ESObject) {
+    public function inline() {
         if(ENABLE_METADATA_INLINE_RENDERING) {
-            $metadata = $this -> esobject -> getMetadatahandler() -> render($this -> template, '/metadata/inline');
+            $metadata = $this -> esObject  -> getMetadatahandler() -> render($this -> template, '/metadata/inline');
             $template_data['metadata'] = $metadata;
         }
-        $license = $this->esobject->ESOBJECT_LICENSE;
+        $license = $this->esObject ->getLicense();
         if(!empty($license)) {
             $template_data['license'] = $license -> renderFooter($this -> template);
         }
-        $template_data['title'] = $this -> esobject -> getTitle();
+        $template_data['title'] = $this -> esObject  -> getTitle();
         $template_data['launchForm'] = $this->getLaunchForm($requestData);
-        $template_data['objectId'] = $this->esobject->getObjectID();
+        $template_data['objectId'] = $this->esObject ->getObjectID();
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
         $template_data['applyDataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($template_data['objectId'], '', '', 'LTI_INLINE');
         echo $this -> template -> render('/module/lti/inline', $template_data);
         return true;
     }
 
-    public function dynamic(ESObject $ESObject) {
+    public function dynamic() {
         if(Config::get('showMetadata'))
-            $template_data['metadata'] = $this -> esobject -> metadatahandler -> render($this -> template, '/metadata/dynamic');
-        $template_data['title'] = $this->esobject->getTitle();
+            $template_data['metadata'] = $this -> esObject  -> getMetadataHandler() -> render($this -> template, '/metadata/dynamic');
+        $template_data['title'] = $this->esObject ->getTitle();
         $template_data['launchForm'] = $this->getLaunchForm($requestData);
-        $template_data['objectId'] = $this->esobject->getObjectID();
+        $template_data['objectId'] = $this->esObject ->getObjectID();
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
         $template_data['applyDataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler -> getApplyDataProtectionRegulationsDialog($template_data['objectId'], '', '', 'LTI_DYNAMIC');
         echo $this -> template -> render('/module/lti/dynamic', $template_data);
         return true;
     }
 
-    public function display(ESObject $ESObject) {}
+    public function display() {}
 
 }

@@ -18,25 +18,21 @@ interface ESRender_Module_Interface
 	 *
 	 * @return bool
 	 */
-	public function instanceExists(
-		ESObject $ESObject);
+	public function instanceExists();
 
 	/**
 	 * Create an object-instance. Return true on success, false on failure.
 	 *
 	 * @return bool
 	 */
-	public function createInstance(
-		ESObject $ESObject);
+	public function createInstance();
 
 	/**
 	 * Process (display/download) a rendered object-instance.
 	 *
 	 * @return bool
 	 */
-	public function process(
-		$p_kind,
-		ESObject $ESObject);
+	public function process($p_kind);
 
 	/**
 	 *

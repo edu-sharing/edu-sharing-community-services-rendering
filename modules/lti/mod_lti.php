@@ -13,37 +13,37 @@ class mod_lti extends ESRender_Module_NonContentNode_Abstract {
     public function __construct(
         $Name,
         ESRender_Application_Interface $RenderApplication,
-        ESObject $p_esobject,
+        ESObject $p_esObject ,
         Logger $Logger,
         Phools_Template_Interface $template) {
-        parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $template);
-        $this -> instantiateTool($p_esobject, $template);
+        parent::__construct($Name, $RenderApplication,$p_esObject , $Logger, $template);
+        $this -> instantiateTool($p_esObject , $template);
     }
         
-    private function instantiateTool($esobject, $template) {
+    private function instantiateTool($esObject , $template) {
 
         //@todo factory pattern
-        switch($this->_ESOBJECT->resourceType) {
+        switch($this -> esObject->resourceType) {
             case 'edutool-vanilla':
-                $this -> tool = new edutoolVanilla($esobject, $template);
+                $this -> tool = new edutoolVanilla($esObject , $template);
             break;
             case 'edutool-etherpad':
-                $this -> tool = new edutoolEtherpad($esobject, $template);
+                $this -> tool = new edutoolEtherpad($esObject , $template);
             break;
             default:
-                $this -> tool = new ltiTool($esobject, $template);
+                $this -> tool = new ltiTool($esObject , $template);
         }
     }
 
-    protected function dynamic(ESObject $ESObject) {
-        return $this -> tool -> dynamic($ESObject);
+    protected function dynamic() {
+        return $this -> tool -> dynamic();
     }
 
-    protected function display(ESObject $ESObject) {
-        return $this -> tool -> display($ESObject);
+    protected function display() {
+        return $this -> tool -> display();
     }
     
-    protected function inline(ESObject $ESObject) {
-        return $this -> tool -> inline($ESObject);
+    protected function inline() {
+        return $this -> tool -> inline();
     }
 }

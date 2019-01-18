@@ -38,9 +38,9 @@ extends ESRender_Module_ContentNode_Abstract
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::createInstance()
 	 */
-	public function createInstance(ESObject $ESObject)
+	public function createInstance()
 	{
-		if ( ! parent::createInstance($ESObject) )
+		if ( ! parent::createInstance() )
 		{
 			return false;
 		}
@@ -70,13 +70,13 @@ extends ESRender_Module_ContentNode_Abstract
     }
 
 
-    protected function dynamic(ESObject $ESObject)
+    protected function dynamic()
     {
-        $template_data['url'] = $this->_ESOBJECT->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
+        $template_data['url'] = $this -> esObject->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         if(Config::get('showMetadata'))
-            $template_data['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
-        $template_data['title'] = $this->_ESOBJECT->getTitle();
-        $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
+            $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+        $template_data['title'] = $this -> esObject->getTitle();
+        $template_data['previewUrl'] = $this -> esObject->getPreviewUrl();
         echo $this -> getTemplate() -> render('/module/html/dynamic', $template_data);
         return true;
     }
@@ -85,12 +85,12 @@ extends ESRender_Module_ContentNode_Abstract
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::download()
 	 */
-	protected function download(ESObject $ESObject)
+	protected function download()
 	{
 	    $Logger = $this->getLogger();
-        $Logger->debug('Redirecting to location: "' . $this->_ESOBJECT->getPath().'.zip?"');
+        $Logger->debug('Redirecting to location: "' . $this -> esObject->getPath().'.zip?"');
 		header('HTTP/1.1 303 See other');
-		header('Location: '.$this->_ESOBJECT->getPath().'.zip?' . session_name() . '=' . session_id(). '&token=' . Config::get('token'));
+		header('Location: '.$this -> esObject->getPath().'.zip?' . session_name() . '=' . session_id(). '&token=' . Config::get('token'));
 
 		return true;
 	}

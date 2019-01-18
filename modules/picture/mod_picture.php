@@ -123,15 +123,15 @@ extends ESRender_Module_ContentNode_Abstract {
      * @return string
      */
     protected function getImageFilename() {
-        return $this -> _ESOBJECT -> getFilePath() . '.png';
+        return $this -> esObject -> getFilePath() . '.png';
     }
 
-    protected function renderTemplate(ESObject $ESObject, $TemplateName, $getDefaultData = true) {
-        $m_path = $this -> _ESOBJECT -> getPath();
+    protected function renderTemplate($TemplateName, $getDefaultData = true) {
+        $m_path = $this -> esObject -> getPath();
         $imageUrl = $m_path . '.png?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
         if($getDefaultData)
-        	$template_data = parent::prepareRenderData($ESObject);
-        $template_data['title'] = $this -> _ESOBJECT -> getTitle();
+        	$template_data = parent::prepareRenderData($this -> esObject);
+        $template_data['title'] = $this -> esObject -> getTitle();
         $template_data['image_url'] = $imageUrl;
         $Template = $this -> getTemplate();
         $rendered = $Template -> render($TemplateName, $template_data);
@@ -143,12 +143,12 @@ extends ESRender_Module_ContentNode_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_ContentNode_Abstract::createInstance()
      */
-    final public function createInstance(ESObject $ESObject) {
-        if (!parent::createInstance($ESObject)) {
+    final public function createInstance() {
+        if (!parent::createInstance()) {
             return false;
         }
 
-        $f_path = $this -> _ESOBJECT -> getFilePath();
+        $f_path = $this -> esObject -> getFilePath();
 
         $ObjectFilename = str_replace('\\', '/', $f_path);
         $this -> convertImage($ObjectFilename, $this -> getImageFilename(), mc_Request::fetch('width', 'INT', 0), mc_Request::fetch('height', 'INT', 0));
@@ -158,22 +158,10 @@ extends ESRender_Module_ContentNode_Abstract {
 
     /**
      * (non-PHPdoc)
-     * @see ESRender_Module_ContentNode_Abstract::display()
-     */
-    final protected function display(ESObject $ESObject) {
-        $Logger = $this -> getLogger();
-
-        echo $this -> renderTemplate($ESObject, '/module/picture/display');
-
-        return true;
-    }
-
-    /**
-     * (non-PHPdoc)
      * @see ESRender_Module_ContentNode_Abstract::inline()
      */
-    protected function inline(ESObject $ESObject) {
-        echo $this -> renderTemplate($ESObject, '/module/picture/inline');
+    protected function inline() {
+        echo $this -> renderTemplate('/module/picture/inline');
         return true;
     }
     
@@ -181,13 +169,13 @@ extends ESRender_Module_ContentNode_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_ContentNode_Abstract::dynamic()
      */
-    protected function dynamic(ESObject $ESObject) {
-    	$template_data['image_url'] = $this -> _ESOBJECT -> getPath() . '.png?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+    protected function dynamic() {
+    	$template_data['image_url'] = $this -> esObject -> getPath() . '.png?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
 
     	if(Config::get('showMetadata'))
-	    	$template_data['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+	    	$template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
 
-	    $template_data['title'] = $this->_ESOBJECT->getTitle();
+	    $template_data['title'] = $this -> esObject->getTitle();
     	echo $this -> getTemplate() -> render('/module/picture/dynamic', $template_data);
     	return true;
     }

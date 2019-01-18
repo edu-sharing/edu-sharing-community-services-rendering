@@ -54,19 +54,19 @@ extends ESRender_Module_ContentNode_Abstract {
         $this -> setDoctype();
     }
 
-    protected function renderTemplate(ESObject $ESObject, $TemplateName) {
+    protected function renderTemplate($TemplateName) {
 
         $Logger = $this -> getLogger();
-        $template_data = parent::prepareRenderData($ESObject);
+        $template_data = parent::prepareRenderData($this -> esObject);
 
-        $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
+        $template_data['previewUrl'] = $this -> esObject->getPreviewUrl();
 
 
         if(Config::get('hasContentLicense') === true) {
 
             if($this->getDoctype() == DOCTYPE_PDF) {
-                $template_data['content'] = $this -> _ESOBJECT -> getPath() . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
-                $template_data['url'] = $this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
+                $template_data['content'] = $this -> esObject -> getPath() . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+                $template_data['url'] = $this -> esObject->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
             }
 
             if($this->getDoctype() == DOCTYPE_HTML) {
@@ -79,21 +79,21 @@ extends ESRender_Module_ContentNode_Abstract {
         }
 
         if(Config::get('showMetadata'))
-        	$template_data['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+        	$template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
 
         $Template = $this -> getTemplate();
         $rendered = $Template -> render($TemplateName, $template_data);
         return $rendered;
     }
-    
-    public function createInstance(ESObject $ESObject) {
+
+    public function createInstance() {
         if(Config::get('hasContentLicense') === false)
             return true;
 
-    	if (!parent::createInstance($ESObject)) {
+    	if (!parent::createInstance()) {
     		return false;
     	}
-    	
+
     	if($this->getDoctype() == DOCTYPE_HTML) {
 	    	$Logger = $this->getLogger();
 	    	try {
@@ -106,7 +106,7 @@ extends ESRender_Module_ContentNode_Abstract {
 	    	} catch(Exception $e) {
 	    		$Logger->info('Error storing content in file "'.$this->getCacheFileName().'"_purified.html.');
 	    		return false;
-	    	}  
+	    	}
     	}
         return true;
     }
@@ -118,22 +118,16 @@ extends ESRender_Module_ContentNode_Abstract {
         return $filename;
     }
 
-    final protected function display(ESObject $ESObject) {
-        $Logger = $this -> getLogger();
-        echo $this -> renderTemplate($ESObject, $this -> getThemeByDoctype().'display');
-        return true;
-    }
-
-    final protected function dynamic(ESObject $ESObject) {
+    final protected function dynamic() {
         if($this->getDoctype() === DOCTYPE_HTML || $this->getDoctype() === DOCTYPE_TEXT) {
-            echo $this -> renderTemplate($ESObject, $this -> getThemeByDoctype().'dynamic');
+            echo $this -> renderTemplate($this -> getThemeByDoctype().'dynamic');
             return true;
         }
         else if($this->getDoctype() === DOCTYPE_PDF) {
-            echo $this -> renderTemplate($ESObject, $this -> getThemeByDoctype().'dynamic');
+            echo $this -> renderTemplate($this -> getThemeByDoctype().'dynamic');
             return true;
         }
-        else return parent::dynamic($ESObject);
+        else return parent::dynamic();
     }
 
     /**
@@ -162,23 +156,23 @@ extends ESRender_Module_ContentNode_Abstract {
      * Set doctype
      */
     protected function setDoctype() {
-        
-        
-    	if (strpos($this -> _ESOBJECT -> getMimeType(), 'text/html') !== false)
+
+
+    	if (strpos($this -> esObject -> getMimeType(), 'text/html') !== false)
     		$this->doctype = DOCTYPE_HTML;
-    	else if(strpos($this -> _ESOBJECT -> getMimeType(), 'text/plain') !== false)
+    	else if(strpos($this -> esObject -> getMimeType(), 'text/plain') !== false)
             $this->doctype = DOCTYPE_TEXT;
-        else if(strpos($this -> _ESOBJECT -> getMimeType(), 'application/pdf') !== false)
+        else if(strpos($this -> esObject -> getMimeType(), 'application/pdf') !== false)
             $this->doctype = DOCTYPE_PDF;
         else
         	$this -> doctype = DOCTYPE_UNKNOWN;
         return;
         /*
-        
-        if (strpos($this -> _ESOBJECT -> getMimeType(), 'opendocument') !== false) {
+
+        if (strpos($this -> esObject -> getMimeType(), 'opendocument') !== false) {
             $this -> doctype = DOCTYPE_UNKNOWN;
             $this -> doctype = DOCTYPE_ODF;
-        } else if (strpos($this -> _ESOBJECT -> getMimeType(), 'pdf') !== false) {
+        } else if (strpos($this -> esObject -> getMimeType(), 'pdf') !== false) {
             $this -> doctype = DOCTYPE_PDF;
         } else {
             $this -> doctype = DOCTYPE_UNKNOWN;
@@ -195,7 +189,7 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
 
-    public function process($p_kind, ESObject $ESObject) {
+    public function process($p_kind) {
         global $requestingDevice;
         $Logger = $this -> getLogger();
         if ($p_kind == ESRender_Application_Interface::DISPLAY_MODE_WINDOW && !$this->requestingDeviceCanRenderContent()) {
@@ -203,7 +197,7 @@ extends ESRender_Module_ContentNode_Abstract {
             $p_kind = ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD;
         }
 
-        parent::process($p_kind, $ESObject);
+        parent::process($p_kind);
         return true;
     }
     

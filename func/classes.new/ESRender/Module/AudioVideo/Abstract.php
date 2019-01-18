@@ -55,8 +55,8 @@ extends ESRender_Module_ContentNode_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_ContentNode_Abstract::createInstance()
      */
-    final public function createInstance(ESObject $ESObject) {
-        if (!parent::createInstance($ESObject)) {
+    final public function createInstance() {
+        if (!parent::createInstance()) {
             return false;
         }
         return true;
@@ -69,19 +69,19 @@ extends ESRender_Module_ContentNode_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_Base::process()
      */
-    public function process($p_kind, ESObject $ESObject, $objectLocked = false) {
+    public function process($p_kind, $objectLocked = false) {
 
     	global $CC_RENDER_PATH;
     	
         if ($objectLocked) {
-            return parent::process(ESRender_Application_Interface::DISPLAY_MODE_LOCKED, $ESObject);
+            return parent::process(ESRender_Application_Interface::DISPLAY_MODE_LOCKED);
         }
         
         if ($p_kind == ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD) {
-            return parent::process($p_kind, $ESObject);
+            return parent::process($p_kind);
         }
         
-        $arr = explode("/", $this -> _ESOBJECT -> getMimeType(), 2);
+        $arr = explode("/", $this -> esObject -> getMimeType(), 2);
         $type = $arr[0];
         
         switch($type) {
@@ -94,7 +94,7 @@ extends ESRender_Module_ContentNode_Abstract {
 
         
        	if(empty($formats))
-        	return parent::process($p_kind, $ESObject);
+        	return parent::process($p_kind);
 
         foreach ($formats as $format) {
             $output_filename = $this -> getOutputFilename($this->getExtensionByFormat($format));
@@ -102,9 +102,9 @@ extends ESRender_Module_ContentNode_Abstract {
              * if there is no output file add object to conversion queue if needed
              * for failed conversions skip this
              * */
-            if (!file_exists($output_filename) && !$this -> _ESOBJECT -> conversionFailed($format)) {
-                if (!$this -> _ESOBJECT -> inConversionQueue($format)) {
-                    $this -> _ESOBJECT -> addToConversionQueue($format, DIRECTORY_SEPARATOR, $this -> getCacheFileName(), $this -> getOutputFilename($this->getExtensionByFormat($format)), $CC_RENDER_PATH, $this -> _ESOBJECT -> getMimeType());
+            if (!file_exists($output_filename) && !$this -> esObject -> conversionFailed($format)) {
+                if (!$this -> esObject -> inConversionQueue($format)) {
+                    $this -> esObject -> addToConversionQueue($format, DIRECTORY_SEPARATOR, $this -> getCacheFileName(), $this -> getOutputFilename($this->getExtensionByFormat($format)), $CC_RENDER_PATH, $this -> esObject -> getMimeType());
                 }
                 //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
                 if ($formats[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_WINDOW && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC))
@@ -112,7 +112,7 @@ extends ESRender_Module_ContentNode_Abstract {
             } 
         }
         exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
-        return parent::process($p_kind, $ESObject);
+        return parent::process($p_kind);
     }
 
 

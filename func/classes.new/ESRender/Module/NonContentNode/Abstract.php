@@ -12,14 +12,14 @@ extends ESRender_Module_Base
 
 	/**
 	 * Modules of this type have no binary content to download anyway, so
-	 * the default action on download has to be display().
+	 * the default action on download has to be dynamic().
 	 *
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_Base::download()
 	 */
-	protected function download(ESObject $ESObject)
+	protected function download()
 	{
-		return $this->display($ESObject);
+		return $this->dynamic();
 	}
 
 	/**
@@ -29,9 +29,9 @@ extends ESRender_Module_Base
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_Base::download()
 	 */
-	protected function inline(ESObject $ESObject)
+	protected function inline()
 	{
-		return $this->display($ESObject);
+		return $this->dynamic();
 	}
 
 }

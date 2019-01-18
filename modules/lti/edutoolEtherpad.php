@@ -3,48 +3,48 @@
 class edutoolEtherpad {
 
     private $token;
-    private $esobject;
+    private $esObject;
     private $template;
 
-    public function __construct($esobject, $template) {
+    public function __construct(ESObject $esObject, $template) {
         $this -> getConfig();
-        $this -> esobject = $esobject;
+        $this -> esObject = $esObject;
         $this -> template = $template;
 	    $this -> setToken();
     }
 
-    public function display(ESObject $ESObject) {
-        $courseId = $requestData['app_id'] . '_';
-        $courseId .= empty($requestData['course_id']) ? 'default' : $requestData['course_id'];
-        $resource_link_id = empty($requestData['resource_id']) ? 'default' : $requestData['resource_id'];
-        $userId = $requestData['user_name'];
-        $fname = $requestData['user_name'];
+    public function display() {
+        $courseId = mc_Request::fetch('app_id', 'CHAR') . '_';
+        $courseId .= empty($requestData['course_id']) ? 'default' : mc_Request::fetch('course_id', 'CHAR');
+        $resource_link_id = empty(mc_Request::fetch('resource_id', 'CHAR')) ? 'default' : mc_Request::fetch('resource_id', 'CHAR');
+        $userId = $this -> esObject -> getData() -> user -> authorityName;
+        $fname = $this -> esObject -> getData() -> user -> authorityName;
         $params = '?fname=' . $fname . '&course_id=' . $courseId . '&resource_link_id=' . $resource_link_id . '&user_id=' . $userId .'&token=' . $this->token;
         header('HTTP/1.1 303 See other');
         header('Location: ' . ETHERPAD_PROVIDER . $params);
         return true;
     }
 
-    public function dynamic(ESObject $ESObject) {
-        $courseId = $requestData['app_id'] . '_';
-        $courseId .= empty($requestData['course_id']) ? 'default' : $requestData['course_id'];
-        $resource_link_id = empty($requestData['resource_id']) ? 'default' : $requestData['resource_id'];
-        $userId = $requestData['user_name'];
-        $fname = $requestData['user_name'];
+    public function dynamic() {
+        $courseId = mc_Request::fetch('app_id', 'CHAR') . '_';
+        $courseId .= empty($requestData['course_id']) ? 'default' : mc_Request::fetch('course_id', 'CHAR');
+        $resource_link_id = empty(mc_Request::fetch('resource_id', 'CHAR')) ? 'default' : mc_Request::fetch('resource_id', 'CHAR');
+        $userId = $this -> esObject -> getData() -> user -> authorityName;
+        $fname = $this -> esObject -> getData() -> user -> authorityName;
         $params = '?fname=' . $fname . '&course_id=' . $courseId . '&resource_link_id=' . $resource_link_id . '&user_id=' . $userId .'&token=' . $this->token;
         if(Config::get('showMetadata'))
-            $template_data['metadata'] = $this -> esobject -> metadatahandler -> render($this -> template, '/metadata/dynamic');
-        $template_data['title'] = $this->esobject->getTitle();
+            $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> template, '/metadata/dynamic');
+        $template_data['title'] = $this->esObject->getTitle();
         $template_data['url'] = ETHERPAD_PROVIDER . $params;
         echo $this -> template -> render('/module/lti/etherpad/dynamic', $template_data);
         return true;
     }
     
-    public function inline(ESObject $ESObject) {
-        $courseId = $requestData['app_id'] . '_' . $requestData['course_id'];
-        $resource_link_id = $requestData['resource_id'];
-        $userId = $requestData['user_name'];
-        $fname = $requestData['user_name'];
+    public function inline() {
+        $courseId = mc_Request::fetch('app_id', 'CHAR') . '_' . mc_Request::fetch('course_id', 'CHAR');
+        $resource_link_id = mc_Request::fetch('resource_id', 'CHAR');
+        $userId = $this -> esObject -> getData() -> user -> authorityName;
+        $fname = $this -> esObject -> getData() -> user -> authorityName;
         $params = '?fname=' . $fname . '&course_id=' . $courseId . '&resource_link_id=' . $resource_link_id . '&user_id=' . $userId . '&token=' . $this -> token;
         echo  '<iframe style="width: 98%; height: 300px; border: 1px solid #999;" src="' . ETHERPAD_PROVIDER . $params . '"></iframe>';
         return true;

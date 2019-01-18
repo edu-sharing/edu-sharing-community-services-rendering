@@ -39,7 +39,7 @@ class mod_qti
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_Base::refineInstanceConstraints()
 	 */
-	protected function refineInstanceConstraints($Sql, ESObject $ESObject, $requiredInstanceVersion)
+	protected function refineInstanceConstraints($Sql, $requiredInstanceVersion)
 	{
 			/*
 		 * if course-id given, a resource-id must be provided as the same object
@@ -53,7 +53,7 @@ class mod_qti
 		{
 			if ( empty($requestData['course_id']) OR empty($requestData['resource_id']) )
 			{
-				$Logger->error('Invalid state: Course- or resource-identifier specified, but not both of them.');
+				$this -> Logger -> error('Invalid state: Course- or resource-identifier specified, but not both of them.');
 				throw new Exception('Required resource- or course-identifier NOT found.');
 			}
 

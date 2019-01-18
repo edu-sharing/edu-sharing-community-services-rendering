@@ -80,9 +80,9 @@ class cacheCleaner {
 
         //delete from db
         if (!$esobject -> deleteFromDb())
-            $this -> logger -> info('could not delete db record with id ' . $esobject -> id);
+            $this -> logger -> info('could not delete db record with id ' . $esobject -> getId());
         else {
-            $this -> logger -> info('deleted db record with id ' . $esobject -> id);
+            $this -> logger -> info('deleted db record with id ' . $esobject -> getId());
         }
 
         $module = $esobject -> getModule();

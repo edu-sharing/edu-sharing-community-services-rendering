@@ -4,15 +4,15 @@ require_once ("ims-blti/blti_util.php");
 
 class edutoolVanilla {
     
-    public function __construct($esobject, $template) {
+    public function __construct($esObject , $template) {
         $this -> getConfig();
     }
 
-    public function display(ESObject $ESObject) {
+    public function display() {
         $parms = array();
         $parms['resource_link_id'] = '123';
-        $parms['lis_person_name_full'] = $requestData['user_name'];
-        $parms['lis_person_contact_email_primary'] = $requestData['user_name'].'@uni-weimar.de';
+        $parms['lis_person_name_full'] = $this -> esObject  -> getData() -> user -> authorityName;
+        $parms['lis_person_contact_email_primary'] = $this -> esObject  -> getData() -> user -> authorityName.'@uni-weimar.de';
         $parms['context_label'] = 'medien'; // = thread        
         $parms['user_id'] = $requestData['user_name_encr'];//use encrypted username
         

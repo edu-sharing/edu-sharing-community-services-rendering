@@ -471,7 +471,7 @@ class ESObject {
             return true;
         }
 
-        if($this -> getNode() -> directory) {
+        if($this -> getNode() -> isDirectory) {
             error_log('Property "directory" is true, using module "directory".');
             $this -> module -> setName('directory');
             $this -> module -> loadModuleData();
@@ -605,7 +605,7 @@ class ESObject {
            'ESOBJECT_CONTENT_HASH' => $this -> hash
         );
         
-        $pdo =RsPDO::getInstance();
+        $pdo = RsPDO::getInstance();
         try {
             $sql = 'INSERT INTO `ESOBJECT` (`';
             $sql .= implode('`,`', array_keys($arrFields));

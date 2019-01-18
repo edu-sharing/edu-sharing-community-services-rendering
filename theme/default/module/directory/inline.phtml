@@ -35,7 +35,7 @@ $unid = uniqid();
                     <img height="100%" src="'.$MC_URL.'/theme/default/img/edufolder.svg">
                     <div style="display: inline-block">' . $title .
                         '<span class="edusharing_rendering_content_footer_directory_creator">';
-                        if(!empty($creator))
+                        if(!empty(trim($creator)))
                             echo htmlentities($msg['createdBy']->localize($Locale, $Translate)) . ' ' . $creator;
                         echo '</span>
                     </div>
@@ -47,7 +47,7 @@ $unid = uniqid();
             echo '<ul style="display:none">';
                 foreach($children as $child) {
                     echo '<li><a target="_blank" href="'.$parentUrl.'&childobject_id='.$child['NodeID'].'">
-                    <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.htmlentities($child['cm:name']).
+                    <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.htmlentities($child['name']).
                         '</a></li>';
                 }
             echo '</ul>';

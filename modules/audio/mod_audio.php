@@ -75,35 +75,13 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
 
     /**
      * (non-PHPdoc)
-     * @see ESRender_Module_Base::display()
-     */
-    final public function display(
-        ESObject $ESObject)
-    {
-        global $Locale, $ROOT_URI;
-        $data = $this->prepareRenderData($ESObject);
-        //$data['inline'] = $this->renderInlineTemplate($data);
-        $data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='.$requestData['app_id']
-            .'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
-            .$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
-            .'&display=inline&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-        $data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
-        //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-        $Template = $this->getTemplate();
-        echo $Template->render('/module/audio/display', $data);
-
-        return true;
-    }
-    
-    /**
-     * (non-PHPdoc)
      * @see ESRender_Module_Base::dynamic()
      */
     final public function dynamic(
     		ESObject $ESObject)
     {
     	global $Locale, $ROOT_URI;
-    	$data = $this->prepareRenderData($requestData);
+    	$data = $this->prepareRenderData($ESObject);
     	//$data['inline'] = $this->renderInlineTemplate($data);
     	$data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='.$requestData['app_id']
     			.'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
@@ -126,9 +104,9 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
      */
     protected function inline(ESObject $ESObject) {
     	if($_REQUEST['displayoption'] == 'min') {
-    		$data = $this->prepareRenderData($requestData, false);
+    		$data = $this->prepareRenderData($ESObject, false);
     	} else {
-    		$data = $this->prepareRenderData($requestData);
+    		$data = $this->prepareRenderData($ESObject);
     	}
 
     	echo $this->renderInlineTemplate($data);
@@ -147,7 +125,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
         $positionInConversionQueue = $this->_ESOBJECT->getPositionInConversionQueue(self::FORMAT_AUDIO_MP3);
         if(empty($progress) || is_array($progress))
             $progress = '0';
-        echo $template->render('/module/audio/lock', array('callback' => $requestData['callback'],
+        echo $template->render('/module/audio/lock', array('callback' => mc_Request::fetch('callback', 'CHAR'),
         											'authString' => 'token='.Config::get('token').'&'.session_name().'='.session_id(),
         											'progress' => $progress,
         											'positionInConversionQueue' => $positionInConversionQueue));

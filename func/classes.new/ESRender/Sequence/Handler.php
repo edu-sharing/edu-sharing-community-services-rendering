@@ -8,7 +8,7 @@ class ESRender_Sequence_Handler {
     }
 
     public function isSequence() {
-        if(isset($this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->children->item))
+        if(isset($this -> esObject -> getData() -> children) && sizeof($this -> esObject -> getData() -> children) > 0)
             return true;
         return false;
     }
@@ -20,15 +20,14 @@ class ESRender_Sequence_Handler {
 
     private function getChildren() {
         $children = array();
-        $item = $this->esObject->renderInfoLMSReturn->getRenderInfoLMSReturn->children->item;
+        $item = $this -> esObject -> getData() -> children;
         if(!is_array($item))
             $item = array($item);
         $i = 0;
         foreach($item as $child) {
-            $children[$i]['iconUrl'] = $child->iconUrl;
-            foreach($child->properties->item as $property) {
-                $children[$i][$property->key]=$property->value;
-            }
+            $children[$i]['iconUrl'] = $child -> iconURL;
+            $children[$i]['name'] = $child -> name;
+            $children[$i]['NodeID'] = $child -> ref -> id;
             $i++;
         }
         return $children;

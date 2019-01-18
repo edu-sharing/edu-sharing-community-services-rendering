@@ -138,7 +138,6 @@ class ESModule {
 	    // use only MIME's "type/subtype" specification, skip optional parameters
 		$MimeTypeParts = explode(';', $p_mimetype);
 		$MimeType = $MimeTypeParts[0];
-
         try {
             $pdo = RsPDO::getInstance();
             $sql = $pdo -> formatQuery('SELECT `ESMODULE_NAME` FROM `ESMODULE`, `REL_ESMODULE_MIMETYPE` WHERE `ESMODULE_ID` = `REL_ESMODULE_MIMETYPE_ESMODULE_ID` AND `REL_ESMODULE_MIMETYPE_TYPE` = :mimetype');

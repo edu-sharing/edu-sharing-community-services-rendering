@@ -104,7 +104,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
 
         $sequence = '';
         if($this -> _ESOBJECT -> getSequenceHandler() -> isSequence())
-            $sequence = $this -> _ESOBJECT -> getSequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper());
+            $sequence = $this -> _ESOBJECT -> getSequenceHandler() -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper());
 
         $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING) {

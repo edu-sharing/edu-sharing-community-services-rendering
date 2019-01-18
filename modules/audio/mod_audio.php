@@ -78,24 +78,30 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
      * @see ESRender_Module_Base::dynamic()
      */
     final public function dynamic(
-    		ESObject $ESObject)
+        ESObject $ESObject)
     {
-    	global $Locale, $ROOT_URI;
-    	$data = $this->prepareRenderData($ESObject);
-    	//$data['inline'] = $this->renderInlineTemplate($data);
-    	$data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='.$requestData['app_id']
-    			.'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
-    					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
-    					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-    					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-    	$data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
-    	if(Config::get('showMetadata'))
-            $data['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+        global $Locale, $ROOT_URI;
+        $template_data = $this->prepareRenderData($ESObject, false);
 
-        $data['title'] = $this->_ESOBJECT->getTitle();
-    	echo $this->getTemplate()->render('/module/audio/dynamic', $data);
-    	
-    	return true;
+        $template_data['ajax_url'] =
+            $ROOT_URI . 'application/esmain/index.php?'.
+            'app_id=' . mc_Request::fetch('app_id', 'CHAR') .
+            '&rep_id=' . mc_Request::fetch('app_id', 'CHAR').
+            '&resource_id='. mc_Request::fetch('resource_id', 'CHAR').
+            '&course_id='.mc_Request::fetch('course_id', 'CHAR') .
+            '&display=inline' .
+            '&displayoption=min' .
+            '&language='.$Locale->getLanguageTwoLetters().
+            '&antiCache=' . mt_rand();
+        //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
+
+        $template_data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
+
+        if(Config::get('showMetadata'))
+            $template_data['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+        $template_data['title'] = $this->_ESOBJECT->getTitle();
+        echo $this->getTemplate()->render('/module/audio/dynamic', $template_data);
+        return true;
     }
 
     /**

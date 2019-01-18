@@ -88,6 +88,9 @@ try {
 
     $data = json_decode(file_get_contents('php://input'));
 
+    if(empty($data))
+        $data = $_SESSION['esrender']['data'];
+
     // init translate
     global $Translate, $LanguageCode;
     $Translate = new Phools_Translate_Array();
@@ -361,7 +364,8 @@ try {
         'check' => parse_url($ESObject -> getPathfile(), PHP_URL_PATH),
         'display_kind' => mc_Request::fetch('display', 'CHAR', 'window'),// real module path, independent from cache
         'moduleRoot' => realpath(dirname(__FILE__) . '/../../modules/' . $moduleName),
-    	'token' => Config::get('token')
+    	'token' => Config::get('token'),
+        'data' => $data
     );
 
     foreach ($Plugins as $name => $Plugin) {

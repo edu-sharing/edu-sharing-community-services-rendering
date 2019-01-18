@@ -560,7 +560,7 @@ class ESObject {
         $this -> resourceId = mc_Request::fetch('resource_id', 'INT', 0);
         $this -> filePath = '';
         $this -> hash = $this -> getNode() -> content -> hash;
-        $this -> lmsId = mc_Request::fetch('app_id', 'CHAR', $this -> getNode() -> ref -> repo);
+        $this -> lmsId = mc_Request::fetch('app_id', 'CHAR', '');
 
         $ressourcetype = $this -> getNodeProperty('ccm:ccressourcetype');
         if (!empty($ressourcetype)) {

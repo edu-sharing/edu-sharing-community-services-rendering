@@ -46,7 +46,6 @@ extends ESRender_Module_AudioVideo_Abstract
     {
     	global $MC_URL;
 
-    	
     	$template_data = array();
     	if($getDefaultData)
             $template_data = parent::prepareRenderData($ESObject);
@@ -98,9 +97,7 @@ extends ESRender_Module_AudioVideo_Abstract
      */
     protected function renderInlineTemplate(array $template_data)
     {
-
         $inline_template = 'module/video/inline';
-
         $Template = $this->getTemplate();
         return $Template->render($inline_template, $template_data);
     }
@@ -115,29 +112,25 @@ extends ESRender_Module_AudioVideo_Abstract
     {
     	global $Locale, $ROOT_URI;
     	$template_data = $this->prepareRenderData($ESObject, false);
-    
-    	//load resource asynchr. with display mode inline!
-    	/*$template_data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
-    			.$requestData['app_id']
-    			.'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
-    					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
-    					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-    					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-            $template_data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();*/
 
-//@todo deal with it (repo)
-       $template_data['ajax_url'] = 'http://localhost:8080/edu-sharing/renderingproxy?app_id=esrender&rep_id=local&obj_id=943ba2a2-b58b-4439-8fd3-711587010ffa&'
-       .'display=inline&version=1.0&locale=de&language=de&u=Dzxr1zxCCZ5HIozNs2OuK0%252BG%252BJx0HKAQgzuVjfDb3QCxOv7q%252BCM5sux3toGE2IwU%252BF5Y5Y63reo1VDwrfwnJamRf5bzAtJstMMYrOx3o%252FYcCS3Vl4rG9qX%252FeI2bpOquc2xFsrqFEpEJOlsJHumMzToxsAs0HwTLTDlGcjS6uz6VEFWhFqMKma32A%252FZvBUwo96mOKRga%252F6SUq5gbUnVYcYSr7OrCq6oJ0t5BptsYUOHNdtNTbg7vI4oAa%252BbDm4DhHCqIWQhnvT52NXvWtq24FlG4ffK3qalzwZDZ53k6u7L%252FMBcZiRWFj05sJKd9hEGbwYD3YojzRH9CTOltnU3BhiA%253D%253D'
-       .'height=&width=&resId=11&videoFormat=mp4';
+    	$template_data['ajax_url'] =
+            $ROOT_URI . 'application/esmain/index.php?'.
+            'app_id=' . mc_Request::fetch('app_id', 'CHAR') .
+    		'&rep_id=' . mc_Request::fetch('app_id', 'CHAR').
+            '&resource_id='. mc_Request::fetch('resource_id', 'CHAR').
+            '&course_id='.mc_Request::fetch('course_id', 'CHAR') .
+            '&display=inline' .
+            '&displayoption=min' .
+            '&language='.$Locale->getLanguageTwoLetters().
+            '&antiCache=' . mt_rand();
+    		//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
 
-        $template_data['ajax_url'] .= '';
-
+        $template_data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
 
         if(Config::get('showMetadata'))
     		$template_data['metadata'] = $this -> _ESOBJECT -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
     	$template_data['title'] = $this->_ESOBJECT->getTitle();
     	echo $this->getTemplate()->render('/module/video/dynamic', $template_data);
-    
     	return true;
     }
     
@@ -157,7 +150,6 @@ extends ESRender_Module_AudioVideo_Abstract
     	}
     	
     	echo $this->renderInlineTemplate($template_data);
-
         return true;
     }
     

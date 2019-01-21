@@ -53,8 +53,8 @@ extends ESRender_Module_AudioVideo_Abstract
         $object_url = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
         $template_data['ext'] = $ext;
         $template_data['url'] = $object_url;
-        if(!empty($requestData['width']))
-            $template_data['width'] = 'width: ' . $requestData['width'] . 'px';
+        if(!empty(mc_Request::fetch('width', 'INT', 0)))
+            $template_data['width'] = 'width: ' . mc_Request::fetch('width', 'INT', 0) . 'px';
         $template_data['videoObjectIdentifier'] = uniqid('v_');
         $template_data['logger'] = $MC_URL . '/log/scr/clientlog.php';
         $template_data['cachePath'] = urlencode($this -> getOutputFilename($ext));
@@ -154,7 +154,7 @@ extends ESRender_Module_AudioVideo_Abstract
      * @see ESRender_Module_Base::locked()
      * 
      */
-    final public function locked(ESObject $ESObject) {
+    final public function locked() {
     	    	
         $template = $this->getTemplate();
         $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion()  . '_' . $this -> esObject->getId() . '_' . $this-> getVideoFormatByRequestingDevice(). '.log';

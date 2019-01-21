@@ -66,7 +66,7 @@ extends ESRender_Module_Base
         
         try {       
             $timestamp = round(microtime(true) * 1000);
-            $signData = $this -> _ESObject->getObjectID() . $timestamp;
+            $signData = $this -> esObject -> getObjectID() . $timestamp;
             $pkeyid = openssl_get_privatekey(Config::get('homeConfig')->prop_array['private_key']);
             openssl_sign($signData, $signature, $pkeyid);
             $signature = urlencode(base64_encode($signature));
@@ -74,8 +74,8 @@ extends ESRender_Module_Base
             $cacheFile = $this->getCacheFileName();
             $url =  current(explode("/services/", Config::get('homeRepository')->prop_array['authenticationwebservice']));
             $path = '/content?';
-            $params = 'repId=' . $this -> _ESObject -> getNode() -> ref -> repo . '&appId='.Config::get('homeConfig')->prop_array['appid'] . '&nodeId=' .
-                $this -> _ESObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $this -> _ESObject -> getObjectVersion();
+            $params = 'repId=' . $this -> esObject -> getNode() -> ref -> repo . '&appId='.Config::get('homeConfig')->prop_array['appid'] . '&nodeId=' .
+                $this -> esObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $this -> esObject -> getObjectVersion();
             $url .= $path . $params;
             
             $handle = fopen($cacheFile, "wb");
@@ -134,7 +134,7 @@ extends ESRender_Module_Base
     protected function inline()
     {
         $Logger = $this->getLogger();
-        $data = parent::prepareRenderData($this -> _ESObject);
+        $data = parent::prepareRenderData();
         $data['url'] = $this->lmsInlineHelper();
         echo $this->getTemplate()->render('/module/default/inline', $data);
         $Logger->debug('ESRender_Module_Base::inline');

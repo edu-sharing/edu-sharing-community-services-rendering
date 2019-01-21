@@ -182,8 +182,7 @@ try {
         $Plugin -> preSslVerification($data->node->ref->repo, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName, $homeRep);
     }    
 
-    $skipSslVerification = false; /////check
-//check
+    $skipSslVerification = false;
     if(!empty(mc_Request::fetch('token', 'CHAR', ''))) {
     	if(mc_Request::fetch('token', 'CHAR', '') == $_SESSION['esrender']['token'] || empty($_SESSION['esrender']['token'])) {
         	$skipSslVerification = true;
@@ -191,11 +190,9 @@ try {
     		$Logger->error('Token not valid!');
     	}
     }
-
     Config::set('token', md5(uniqid()));
 
     if(!$skipSslVerification) {
-
         $ts = mc_Request::fetch('ts', 'CHAR');
         if (empty($ts)) {
             $Logger -> error('Missing request-param "timestamp".');
@@ -270,7 +267,7 @@ try {
 
     $originalDeleted = $ESObject -> getNodeProperty('{virtualproperty}originaldeleted');
     if(!empty($originalDeleted)) {
-        $ESObject -> renderOriginalDeleted($data->dummy, mc_Request::fetch('display', 'CHAR', 'window'), $Template);
+        $ESObject -> renderOriginalDeleted(mc_Request::fetch('display', 'CHAR', 'window'), $Template);
     }
 
     // find appropriate module

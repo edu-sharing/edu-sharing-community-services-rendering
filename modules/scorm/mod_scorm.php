@@ -60,7 +60,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
-		$params = array('nodeid'=> $requestData['object_id'],'category' => '1', 'title' => htmlentities($this -> esObject->getTitle()));
+		$params = array('nodeid'=> $this -> esObject -> getNode() -> ref -> id,'category' => '1', 'title' => htmlentities($this -> esObject->getTitle()));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
@@ -115,7 +115,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
-		$params = array('user_name' => htmlentities($this -> esobject -> getData() -> user -> authorityName), 'user_givenname' => htmlentities($requestData['user_givenname']), 'user_surname' => htmlentities($requestData['user_surname']), 'user_email' => htmlentities($requestData['user_email']) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
+		$params = array('user_name' => htmlentities($this -> esobject -> getData() -> user -> authorityName), 'user_givenname' => htmlentities($this -> esobject -> getData() -> user -> profile -> givenName), 'user_surname' => htmlentities($this -> esobject -> getData() -> user -> profile -> lastName), 'user_email' => htmlentities($this -> esobject -> getData() -> user -> profile -> email) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);

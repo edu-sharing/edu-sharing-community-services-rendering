@@ -49,17 +49,17 @@ class mod_qti
 		 * invalid request as repositories, which don't submit a course-id shall
 		 * not request a resource-id
 		 */
-		if ( ( ! empty($requestData['course_id']) ) OR ( ! empty($requestData['resource_id']) ) )
+		if ( ( ! empty(mc_Request::fetch('course_id', 'CHAR')) ) OR ( ! empty(mc_Request::fetch('resource_id', 'CHAR')) ) )
 		{
-			if ( empty($requestData['course_id']) OR empty($requestData['resource_id']) )
+			if ( empty(mc_Request::fetch('course_id', 'CHAR')) OR empty(mc_Request::fetch('resource_id', 'CHAR')) )
 			{
 				$this -> Logger -> error('Invalid state: Course- or resource-identifier specified, but not both of them.');
 				throw new Exception('Required resource- or course-identifier NOT found.');
 			}
 
-			$Sql .= ' AND `ESOBJECT_LMS_ID` = \'' . $requestData['app_id'] . '\'';
-			$Sql .= ' AND `ESOBJECT_COURSE_ID` = \'' . $requestData['course_id'] . '\'';
-			$Sql .= ' AND `ESOBJECT_RESOURCE_ID` = \'' . $requestData['resource_id'] . '\'';
+			$Sql .= ' AND `ESOBJECT_LMS_ID` = \'' . mc_Request::fetch('app_id', 'CHAR') . '\'';
+			$Sql .= ' AND `ESOBJECT_COURSE_ID` = \'' . mc_Request::fetch('course_id', 'CHAR') . '\'';
+			$Sql .= ' AND `ESOBJECT_RESOURCE_ID` = \'' . mc_Request::fetch('resource_id', 'CHAR') . '\'';
 		}
 
 		return $Sql;

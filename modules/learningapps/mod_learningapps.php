@@ -14,7 +14,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     	$tempArray = array('url' => $this->getUrl());
     	if(Config::get('showMetadata'))
     		$tempArray['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
-    	$tempArray['title'] = $this -> esObject->getTitle();
+    	$tempArray['title'] = $this -> esObject -> getTitle();
     	$uniqueId = uniqid('la_');
         $data['uniqueId'] = $uniqueId;
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();

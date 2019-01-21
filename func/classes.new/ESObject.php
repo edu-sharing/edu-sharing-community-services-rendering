@@ -786,7 +786,7 @@ class ESObject {
         return $previewUrl;
     }
 
-    public function renderOriginalDeleted($requestData, $display_kind, $template) {
+    public function renderOriginalDeleted($display_kind, $template) {
         if($display_kind == 'dynamic') {
             $tempArray['title'] = $this->getTitle();
             if(Config::get('showMetadata'))

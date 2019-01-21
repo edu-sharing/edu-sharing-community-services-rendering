@@ -87,7 +87,10 @@ extends ESRender_Module_ContentNode_Abstract
 			}
 
 			$wrappedParams = new stdClass();
-			$wrappedParams->uniqueId = $requestData["rep_id"]."-".$requestData["app_id"]."-".$requestData["course_id"]."-".$requestData["user_id"]."-".$requestData["tracking_id"]."-".$requestData['object_id'];
+			$wrappedParams->uniqueId = $this -> esObject -> getNode() -> ref -> repo . "-" .
+                mc_Request::fetch('app_id', 'CHAR') . "-" . mc_Request::fetch('course_id', 'CHAR') . "-" .
+                $this -> esObject -> getData() -> user -> authorityName . "-" .
+                $this -> esObject -> getData() -> user -> authorityName;
 
             $wrappedParams->uniqueId .= '-' . $this -> esobject -> getData() -> user -> authorityName;
 

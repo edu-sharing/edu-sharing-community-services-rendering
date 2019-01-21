@@ -124,7 +124,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
      * @see ESRender_Module_Base::locked()
      * 
      */
-    final public function locked(ESObject $ESObject) {
+    final public function locked() {
         $template = $this->getTemplate();
         $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion() . self::FORMAT_AUDIO_MP3 .'.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput, self::FORMAT_AUDIO_MP3);

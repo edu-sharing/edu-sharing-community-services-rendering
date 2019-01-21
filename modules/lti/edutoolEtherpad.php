@@ -15,7 +15,7 @@ class edutoolEtherpad {
 
     public function display() {
         $courseId = mc_Request::fetch('app_id', 'CHAR') . '_';
-        $courseId .= empty($requestData['course_id']) ? 'default' : mc_Request::fetch('course_id', 'CHAR');
+        $courseId .= empty(mc_Request::fetch('course_id', 'CHAR')) ? 'default' : mc_Request::fetch('course_id', 'CHAR');
         $resource_link_id = empty(mc_Request::fetch('resource_id', 'CHAR')) ? 'default' : mc_Request::fetch('resource_id', 'CHAR');
         $userId = $this -> esObject -> getData() -> user -> authorityName;
         $fname = $this -> esObject -> getData() -> user -> authorityName;
@@ -27,7 +27,7 @@ class edutoolEtherpad {
 
     public function dynamic() {
         $courseId = mc_Request::fetch('app_id', 'CHAR') . '_';
-        $courseId .= empty($requestData['course_id']) ? 'default' : mc_Request::fetch('course_id', 'CHAR');
+        $courseId .= empty(mc_Request::fetch('course_id', 'CHAR')) ? 'default' : mc_Request::fetch('course_id', 'CHAR');
         $resource_link_id = empty(mc_Request::fetch('resource_id', 'CHAR')) ? 'default' : mc_Request::fetch('resource_id', 'CHAR');
         $userId = $this -> esObject -> getData() -> user -> authorityName;
         $fname = $this -> esObject -> getData() -> user -> authorityName;

@@ -16,15 +16,15 @@ class ltiTool {
         $this -> template = $template;
     }
 
-    private function getLaunchForm($requestData) {
+    private function getLaunchForm() {
 
         $launch_data = array();
         $launch_data["roles"] = $this -> esObject  -> getNodeProperty('ccm:tool_instance_roles');
         $launch_data["params"] = $this -> esObject  -> getNodeProperty('ccm:tool_instance_params');
-        $launch_data["lis_person_name_given"] = $requestData['user_givenname'];
-        $launch_data["lis_person_name_family"] = $requestData['user_surname'];
-        $launch_data["lis_person_contact_email_primary"] = $requestData['user_email'];
-        $launch_data["user_id"] = $requestData['user_id'];
+        $launch_data["lis_person_name_given"] = $this -> esobject -> getData() -> user -> profile -> givenName;
+        $launch_data["lis_person_name_family"] = $this -> esobject -> getData() -> user -> profile -> lastName;
+        $launch_data["lis_person_contact_email_primary"] = $this -> esobject -> getData() -> user -> profile -> email;
+        $launch_data["user_id"] = $this -> esobject -> getData() -> user -> authorityName;
         $launch_data["lti_version"] = LTI_VERSION;
         $launch_data["lti_message_type"] = LTI_MESSAGE_TYPE;
         $launch_data["oauth_callback"] = OAUTH_CALLBACK;
@@ -72,7 +72,7 @@ class ltiTool {
             $template_data['license'] = $license -> renderFooter($this -> template);
         }
         $template_data['title'] = $this -> esObject  -> getTitle();
-        $template_data['launchForm'] = $this->getLaunchForm($requestData);
+        $template_data['launchForm'] = $this->getLaunchForm();
         $template_data['objectId'] = $this->esObject ->getObjectID();
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
         $template_data['applyDataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($template_data['objectId'], '', '', 'LTI_INLINE');
@@ -84,7 +84,7 @@ class ltiTool {
         if(Config::get('showMetadata'))
             $template_data['metadata'] = $this -> esObject  -> getMetadataHandler() -> render($this -> template, '/metadata/dynamic');
         $template_data['title'] = $this->esObject ->getTitle();
-        $template_data['launchForm'] = $this->getLaunchForm($requestData);
+        $template_data['launchForm'] = $this->getLaunchForm();
         $template_data['objectId'] = $this->esObject ->getObjectID();
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
         $template_data['applyDataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler -> getApplyDataProtectionRegulationsDialog($template_data['objectId'], '', '', 'LTI_DYNAMIC');

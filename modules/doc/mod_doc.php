@@ -57,7 +57,7 @@ extends ESRender_Module_ContentNode_Abstract {
     protected function renderTemplate($TemplateName) {
 
         $Logger = $this -> getLogger();
-        $template_data = parent::prepareRenderData($this -> esObject);
+        $template_data = parent::prepareRenderData();
 
         $template_data['previewUrl'] = $this -> esObject->getPreviewUrl();
 
@@ -130,6 +130,18 @@ extends ESRender_Module_ContentNode_Abstract {
         else return parent::dynamic();
     }
 
+    final protected function embed() {
+        if($this->getDoctype() === DOCTYPE_HTML || $this->getDoctype() === DOCTYPE_TEXT) {
+            echo $this -> renderTemplate($this -> getThemeByDoctype().'embed');
+            return true;
+        }
+        else if($this->getDoctype() === DOCTYPE_PDF) {
+            echo $this -> renderTemplate($this -> getThemeByDoctype().'embed');
+            return true;
+        }
+        else return parent::embed();
+    }
+
     /**
      * Load theme according to current doctype
      */
@@ -192,9 +204,8 @@ extends ESRender_Module_ContentNode_Abstract {
     public function process($p_kind) {
         global $requestingDevice;
         $Logger = $this -> getLogger();
-        if ($p_kind == ESRender_Application_Interface::DISPLAY_MODE_WINDOW && !$this->requestingDeviceCanRenderContent()) {
+        if (($p_kind == ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC || $p_kind == ESRender_Application_Interface::DISPLAY_MODE_EMBED) && !$this->requestingDeviceCanRenderContent()) {
             $Logger -> debug('Set display mode to ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD as requesting device will not render ' . $this->getDoctype());
-            $p_kind = ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD;
         }
 
         parent::process($p_kind);

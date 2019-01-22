@@ -92,6 +92,11 @@ class ltiTool {
         return true;
     }
 
-    public function display() {}
+    public function embed() {
+        $template_data['launchForm'] = $this->getLaunchForm();
+        $template_data['objectId'] = $this->esObject ->getObjectID();
+        echo $this -> template -> render('/module/lti/embed', $template_data);
+        return true;
+    }
 
 }

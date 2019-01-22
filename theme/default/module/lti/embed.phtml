@@ -1,0 +1,18 @@
+<?php
+global $Locale, $Translate;
+$msg = array();
+$msg['ltiGotoProvider'] = new Phools_Message_Default('ltiGotoProvider');
+?>
+
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+    <div class="edusharing_rendering_content_wrapper" role="main">
+        <iframe id="lti_frame_<?php echo $objectId?>" name="lti_frame_<?php echo $objectId?>" src="" style="display:none; border: none; width: 80%; min-height: 600px;margin: auto;"></iframe>
+        <br/><a href="#" id="edusharing_rendering_content_href" class="edusharing_rendering_content"><?php echo $msg['ltiGotoProvider']->localize($Locale, $Translate)?></a>
+    </div>
+</div>
+
+<?php echo $launchForm?>
+
+<script>
+    document.getElementById("edusharing_rendering_content_href").onclick = function() {document.getElementById('ltiLaunchForm_<?php echo $objectId?>').submit(); return false; }
+</script>

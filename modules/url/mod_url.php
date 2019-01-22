@@ -39,6 +39,30 @@ extends ESRender_Module_NonContentNode_Abstract {
     
     	return true;
     }
+
+    protected function embed() {
+        if (!$this -> validate()) {
+            return false;
+        }
+
+        if(Config::get('urlEmbedding'))
+            $embedding = Config::get('urlEmbedding');
+        else if ($this -> detectVideo())
+            $embedding = $this -> getVideoEmbedding();
+        else if($this -> detectAudio())
+            $embedding = $this -> getAudioEmbedding();
+        else if($this -> detectImage())
+            $embedding = $this -> getImageEmbedding();
+        else
+            $embedding = '';
+
+        $Template = $this -> getTemplate();
+        $tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl());
+
+        echo $Template -> render('/module/url/embed', $tempArray);
+
+        return true;
+    }
     
     protected function inline() {
         if (!$this -> validate()) {

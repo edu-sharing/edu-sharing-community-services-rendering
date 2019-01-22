@@ -19,7 +19,7 @@ extends Phools_Validator_Regex_Abstract
 				'/^'.ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD
 				.'|'.ESRender_Application_Interface::DISPLAY_MODE_INLINE
 				.'|'.ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC
-				.'|'.ESRender_Application_Interface::DISPLAY_MODE_WINDOW.'$/ui',
+				.'|'.ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC.'$/ui',
 				'/', $CustomErrorMessage);
 	}
 

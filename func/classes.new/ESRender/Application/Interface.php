@@ -14,9 +14,9 @@ interface ESRender_Application_Interface
 	 */
 	const DISPLAY_MODE_DOWNLOAD = 'download';
 	const DISPLAY_MODE_INLINE = 'inline';
-	const DISPLAY_MODE_WINDOW = 'window';
     const DISPLAY_MODE_LOCKED = 'locked';
     const DISPLAY_MODE_DYNAMIC = 'dynamic';
+    const DISPLAY_MODE_EMBED = 'embed';
 
 	const DEFAULT_WIDTH = 320;
 	const DEFAULT_HEIGHT = 240;

@@ -256,7 +256,7 @@ class mod_scenario
 				return $this->inline();
 			break;
 
-			case ESRender_Application_Interface::DISPLAY_MODE_WINDOW:
+			case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC:
 				return $this->display();
 			break;
 

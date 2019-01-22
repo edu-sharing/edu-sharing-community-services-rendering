@@ -122,15 +122,11 @@ extends ESRender_Module_ContentNode_Abstract
 			if($this->p_kind == ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC) {
 			    if(Config::get('showMetadata'))
 					$metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
-				
 				echo $Template->render('/module/qti21/dynamic', array('oru' => $oru, 'title' => $m_name, 'metadata' => $metadata, 'previewUrl' => $this -> esObject->getPreviewUrl()));
-				
-			}else if ( $_SESSION['esrender']['display_kind']=='inline')
- 			{
+			} else if($this->p_kind == ESRender_Application_Interface::DISPLAY_MODE_EMBED) {
+                echo $Template->render('/module/qti21/embed', array('oru' => $oru, 'title' => $m_name, 'previewUrl' => $this -> esObject->getPreviewUrl()));
+            } else if ( $_SESSION['esrender']['display_kind']=='inline') {
                      echo $Template->render('/module/qti21/inline', array('oru' => $oru, 'title' => $m_name));
-
-			}else {
-                     echo $Template->render('/module/qti21/display', array('oru' => $oru, 'title' => $m_name));
 			}
 
 
@@ -149,7 +145,7 @@ extends ESRender_Module_ContentNode_Abstract
         $Logger = $this->getLogger();
 
         if (!file_exists(dirname(__FILE__).'/config.php')) {
-            echo parent::inline($ESObject);
+            echo parent::inline();
             $Logger -> error('Error opening QTI config');
             return true;
         }
@@ -193,8 +189,8 @@ extends ESRender_Module_ContentNode_Abstract
 			break;
 
             case ESRender_Application_Interface::DISPLAY_MODE_INLINE:
-			case ESRender_Application_Interface::DISPLAY_MODE_WINDOW:
 			case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC:
+			case ESRender_Application_Interface::DISPLAY_MODE_EMBED:
 				return $this -> display();
 			break;
 

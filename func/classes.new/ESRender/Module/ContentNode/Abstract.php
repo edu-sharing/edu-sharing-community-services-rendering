@@ -145,7 +145,6 @@ extends ESRender_Module_Base
     protected function dynamic() {
        $Logger = $this->getLogger();
        $Logger->debug('ESRender_Module_Base::dynamic');
-
        $data = array();
        $data['url'] = $this-> esObject ->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
        if(Config::get('showMetadata'))
@@ -153,9 +152,17 @@ extends ESRender_Module_Base
        $data['previewUrl'] = $this-> esObject ->getPreviewUrl();
        $data['title'] = $this-> esObject ->getTitle();
        echo $this->getTemplate()->render('/module/default/dynamic', $data);
-       
        return true;
-    	
+    }
+
+    protected function embed() {
+        $Logger = $this->getLogger();
+        $Logger->debug('ESRender_Module_Base::embed');
+        $data = array();
+        $data['url'] = $this-> esObject ->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
+        $data['previewUrl'] = $this-> esObject ->getPreviewUrl();
+        echo $this->getTemplate()->render('/module/default/embed', $data);
+        return true;
     }
 
 

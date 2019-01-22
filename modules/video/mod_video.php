@@ -131,6 +131,32 @@ extends ESRender_Module_AudioVideo_Abstract
     	echo $this->getTemplate()->render('/module/video/dynamic', $template_data);
     	return true;
     }
+
+    /**
+     * (non-PHPdoc)
+     * @see ESRender_Module_Base::dynamic()
+     */
+    final public function embed()
+    {
+        global $Locale, $ROOT_URI;
+        $template_data = $this->prepareRenderData( false);
+        $template_data['ajax_url'] =
+            $ROOT_URI . 'application/esmain/index.php?'.
+            'app_id=' . mc_Request::fetch('app_id', 'CHAR') .
+            '&rep_id=' . mc_Request::fetch('app_id', 'CHAR').
+            '&resource_id='. mc_Request::fetch('resource_id', 'CHAR').
+            '&course_id='.mc_Request::fetch('course_id', 'CHAR') .
+            '&display=inline' .
+            '&displayoption=min' .
+            '&language='.$Locale->getLanguageTwoLetters().
+            '&antiCache=' . mt_rand();
+        //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
+
+        $template_data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
+
+        echo $this->getTemplate()->render('/module/video/embed', $template_data);
+        return true;
+    }
     
 
     /**

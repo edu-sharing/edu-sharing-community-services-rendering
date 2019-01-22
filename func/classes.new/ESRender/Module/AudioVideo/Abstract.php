@@ -72,7 +72,7 @@ extends ESRender_Module_ContentNode_Abstract {
     public function process($p_kind, $objectLocked = false) {
 
     	global $CC_RENDER_PATH;
-    	
+
         if ($objectLocked) {
             return parent::process(ESRender_Application_Interface::DISPLAY_MODE_LOCKED);
         }
@@ -107,11 +107,12 @@ extends ESRender_Module_ContentNode_Abstract {
                     $this -> esObject -> addToConversionQueue($format, DIRECTORY_SEPARATOR, $this -> getCacheFileName(), $this -> getOutputFilename($this->getExtensionByFormat($format)), $CC_RENDER_PATH, $this -> esObject -> getMimeType());
                 }
                 //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
-                if ($formats[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_WINDOW && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC))
+                if ($formats[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED))
                     $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
             } 
         }
         exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
+
         return parent::process($p_kind);
     }
 

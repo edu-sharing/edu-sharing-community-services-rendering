@@ -284,10 +284,14 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
                 return $this -> inline();
                 break;
                 
-                
             case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC :
                 $Logger -> debug('Calling Module::dynamic()');
                 return $this -> dynamic();
+                break;
+
+            case ESRender_Application_Interface::DISPLAY_MODE_EMBED :
+                $Logger -> debug('Calling Module::embed()');
+                return $this -> embed();
                 break;
 
             case ESRender_Application_Interface::DISPLAY_MODE_LOCKED :

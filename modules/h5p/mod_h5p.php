@@ -35,10 +35,10 @@ class mod_h5p
 extends ESRender_Module_ContentNode_Abstract {
 
 
-	protected function renderTemplate(ESObject $ESObject, $TemplateName, $getDefaultData = true) {
+	protected function renderTemplate($TemplateName, $getDefaultData = true) {
 		$Logger = $this -> getLogger();
 		if($getDefaultData)
-			$template_data = parent::prepareRenderData($ESObject);
+			$template_data = parent::prepareRenderData();
 			$template_data['title'] = (empty($title) ? $this -> esObject -> getTitle() : $title);
 			$template_data['content'] = $this -> esObject -> getPath() . $this -> getContentPathSuffix();
            if($TemplateName == '/module/h5p/dynamic' && Config::get('showMetadata'))
@@ -95,7 +95,7 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * @see ESRender_Module_ContentNode_Abstract::inline()
 	 */
 	protected function inline() {
-		echo $this -> renderTemplate($ESObject, '/module/h5p/inline');
+		echo $this -> renderTemplate('/module/h5p/inline');
 		return true;
 	}
 
@@ -104,9 +104,18 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * @see ESRender_Module_ContentNode_Abstract::dynamic()
 	 */
 	protected function dynamic() {
-        echo $this -> renderTemplate($ESObject, '/module/h5p/dynamic');
+        echo $this -> renderTemplate('/module/h5p/dynamic');
         return true;
 	}
+
+    /**
+     * (non-PHPdoc)
+     * @see ESRender_Module_ContentNode_Abstract::embed()
+     */
+    protected function embed() {
+        echo $this -> renderTemplate('/module/h5p/embed');
+        return true;
+    }
 
 	private function getContentPathSuffix() {
 	    return '_content';

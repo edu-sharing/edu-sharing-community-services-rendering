@@ -1,0 +1,14 @@
+<?php
+global $Locale, $Translate;
+$msg = array();
+$msg['toDownload'] = new Phools_Message_Default('toDownload');
+?>
+
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+    <div class="edusharing_rendering_content_wrapper" role="main">
+        <img class="edusharing_rendering_content_preview" src="<?php echo $previewUrl?>">
+        <?php
+            echo '<a href="' .  $url . '" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href">' .  $msg['toDownload']->localize($Locale, $Translate) . '</a>';
+        ?>
+    </div>
+</div>

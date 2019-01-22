@@ -13,17 +13,6 @@ class edutoolEtherpad {
 	    $this -> setToken();
     }
 
-    public function display() {
-        $courseId = mc_Request::fetch('app_id', 'CHAR') . '_';
-        $courseId .= empty(mc_Request::fetch('course_id', 'CHAR')) ? 'default' : mc_Request::fetch('course_id', 'CHAR');
-        $resource_link_id = empty(mc_Request::fetch('resource_id', 'CHAR')) ? 'default' : mc_Request::fetch('resource_id', 'CHAR');
-        $userId = $this -> esObject -> getData() -> user -> authorityName;
-        $fname = $this -> esObject -> getData() -> user -> authorityName;
-        $params = '?fname=' . $fname . '&course_id=' . $courseId . '&resource_link_id=' . $resource_link_id . '&user_id=' . $userId .'&token=' . $this->token;
-        header('HTTP/1.1 303 See other');
-        header('Location: ' . ETHERPAD_PROVIDER . $params);
-        return true;
-    }
 
     public function dynamic() {
         $courseId = mc_Request::fetch('app_id', 'CHAR') . '_';
@@ -37,6 +26,18 @@ class edutoolEtherpad {
         $template_data['title'] = $this->esObject->getTitle();
         $template_data['url'] = ETHERPAD_PROVIDER . $params;
         echo $this -> template -> render('/module/lti/etherpad/dynamic', $template_data);
+        return true;
+    }
+
+    public function embed() {
+        $courseId = mc_Request::fetch('app_id', 'CHAR') . '_';
+        $courseId .= empty(mc_Request::fetch('course_id', 'CHAR')) ? 'default' : mc_Request::fetch('course_id', 'CHAR');
+        $resource_link_id = empty(mc_Request::fetch('resource_id', 'CHAR')) ? 'default' : mc_Request::fetch('resource_id', 'CHAR');
+        $userId = $this -> esObject -> getData() -> user -> authorityName;
+        $fname = $this -> esObject -> getData() -> user -> authorityName;
+        $params = '?fname=' . $fname . '&course_id=' . $courseId . '&resource_link_id=' . $resource_link_id . '&user_id=' . $userId .'&token=' . $this->token;
+        $template_data['url'] = ETHERPAD_PROVIDER . $params;
+        echo $this -> template -> render('/module/lti/etherpad/embed', $template_data);
         return true;
     }
     

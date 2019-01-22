@@ -267,7 +267,7 @@ try {
 
     $originalDeleted = $ESObject -> getNodeProperty('{virtualproperty}originaldeleted');
     if(!empty($originalDeleted)) {
-        $ESObject -> renderOriginalDeleted(mc_Request::fetch('display', 'CHAR', 'window'), $Template);
+        $ESObject -> renderOriginalDeleted(mc_Request::fetch('display', 'CHAR', 'dynamic'), $Template);
     }
 
     // find appropriate module
@@ -359,7 +359,7 @@ try {
         'src_root' => $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR,
         'TOU' => $Module -> getTimesOfUsage(),// times of usage (0:forbidden, -1:unlimited)
         'check' => parse_url($ESObject -> getPathfile(), PHP_URL_PATH),
-        'display_kind' => mc_Request::fetch('display', 'CHAR', 'window'),// real module path, independent from cache
+        'display_kind' => mc_Request::fetch('display', 'CHAR', 'dynamic'),// real module path, independent from cache
         'moduleRoot' => realpath(dirname(__FILE__) . '/../../modules/' . $moduleName),
     	'token' => Config::get('token'),
         'data' => $data
@@ -371,7 +371,7 @@ try {
     }
 
     $Logger -> info('Processing render-object.');
-    if (!$Module -> process(mc_Request::fetch('display', 'CHAR', 'window'), $Module -> instanceLocked())) {
+    if (!$Module -> process(mc_Request::fetch('display', 'CHAR', 'dynamic'), $Module -> instanceLocked())) {
         $Logger -> error('Error processing object "' . $data->node->ref->id . '".');
         throw new Exception('Error processing object.');
     }
@@ -382,10 +382,10 @@ try {
 
     if (ENABLE_TRACK_OBJECT) {
         //filter locked Objects and inline requests that result from dynamic view
-        if(!Config::get('locked') && !(($remote_rep -> prop_array['appid'] == mc_Request::fetch('app_id', 'CHAR')) && mc_Request::fetch('display', 'CHAR', 'window') == 'inline')) {
+        if(!Config::get('locked') && !(($remote_rep -> prop_array['appid'] == mc_Request::fetch('app_id', 'CHAR')) && mc_Request::fetch('display', 'CHAR', 'dynamic') == 'inline')) {
             foreach ($Plugins as $name => $Plugin) {
                 $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postInstanciateObject()');
-                $Plugin -> preTrackObject(array('user_id'=>$user_id, 'view_type' => mc_Request::fetch('display', 'CHAR', 'window'), 'object_id' => $data->node->ref->id));
+                $Plugin -> preTrackObject(array('user_id'=>$user_id, 'view_type' => mc_Request::fetch('display', 'CHAR', 'dynamic'), 'object_id' => $data->node->ref->id));
             }
             $RenderApplication -> trackObject($remote_rep -> prop_array['appid'], mc_Request::fetch('app_id', 'CHAR'), $ESObject -> getId(), $data->node->ref->id, $ESObject -> getFilename(), $data->node->content->version, $ESObject -> module -> getModuleId(), $ESObject -> module -> getName(), $user_id, $data->user->authorityName, mc_Request::fetch('course_id', 'CHAR'));
         }

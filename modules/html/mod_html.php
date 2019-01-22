@@ -81,6 +81,14 @@ extends ESRender_Module_ContentNode_Abstract
         return true;
     }
 
+    protected function embed()
+    {
+        $template_data['url'] = $this -> esObject->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
+        $template_data['previewUrl'] = $this -> esObject->getPreviewUrl();
+        echo $this -> getTemplate() -> render('/module/html/embed', $template_data);
+        return true;
+    }
+
 	/**
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::download()

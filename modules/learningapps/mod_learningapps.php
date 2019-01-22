@@ -22,6 +22,15 @@ extends ESRender_Module_NonContentNode_Abstract {
         echo $Template -> render('/module/learningapps/dynamic', $tempArray);
     	return true;
     }
+
+    protected function embed() {
+        $Template = $this -> getTemplate();
+        $tempArray = array('url' => $this->getUrl());
+        $uniqueId = uniqid('la_');
+        $data['uniqueId'] = $uniqueId;
+        echo $Template -> render('/module/learningapps/embed', $tempArray);
+        return true;
+    }
     
     protected function inline() {
         $data = array();

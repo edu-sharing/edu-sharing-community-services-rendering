@@ -23,7 +23,7 @@ class mod_lti extends ESRender_Module_NonContentNode_Abstract {
     private function instantiateTool($esObject , $template) {
 
         //@todo factory pattern
-        switch($this -> esObject->resourceType) {
+        switch($this -> esObject -> getResourceType()) {
             case 'edutool-vanilla':
                 $this -> tool = new edutoolVanilla($esObject , $template);
             break;

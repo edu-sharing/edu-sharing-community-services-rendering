@@ -1,0 +1,31 @@
+<?php
+global $MC_URL;
+?>
+<script type="text/javascript"
+        src="<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
+
+<script type="text/javascript">
+    function waitForH5P(){
+        if(typeof H5P !== "undefined"){
+            (function($) {
+                $('.h5p-container').h5p({
+                    frameJs: '<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
+                    frameCss: '<?php echo $MC_URL?>/theme/default/css/h5p.css',
+                    h5pContent: '<?php echo str_replace('cache/', '', $content)?>'
+                });
+            })(H5P.jQuery);}
+        else{
+            setTimeout(waitForH5P, 50);
+        }
+    }
+    waitForH5P();
+</script>
+
+
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+    <div class="edusharing_rendering_content_wrapper" role="main">
+        <h3 class="edusharing_rendering_content_ie_hint" style="display:none"><?php echo $msg['h5p_ie_hint']->localize($Locale, $Translate) ?></h3>
+        <div class="edusharing_rendering_content h5p-container" style="max-height: 100% !important"></div> <!-- style prevents overlapping with metadata - better fix iframe height -->
+    </div>
+</div>
+

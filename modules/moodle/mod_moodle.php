@@ -156,6 +156,24 @@ extends ESRender_Module_ContentNode_Abstract {
 		echo $Template -> render('/module/moodle/dynamic', $tempArray);
 		return true;
 	}
+
+    public function embed() {
+
+        if (!file_exists(dirname(__FILE__).'/config.php')) {
+            echo parent::dynamic();
+            return true;
+            $Logger -> error('Error opening ' . dirname(__FILE__).'/config.php');
+        }
+
+        $id = $this->getCourseId();
+        if($id === false) {
+            return parent::dynamic();
+        }
+        $Template = $this -> getTemplate();
+        $tempArray = array('url' => $this-> getForwardUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl());
+        echo $Template -> render('/module/moodle/embed', $tempArray);
+        return true;
+    }
 	
 	protected function getCourseId() {
 		$filename = $this -> esObject->getFilePath() . '.txt';

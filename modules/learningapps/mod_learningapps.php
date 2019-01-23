@@ -22,7 +22,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     	$uniqueId = uniqid('la_');
         $data['uniqueId'] = $uniqueId;
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
-        $data['dataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($uniqueId, 'LearningApps.org', 'https://learningapps.org/rechtliches.php');
+        $data['dataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($uniqueId, 'LearningApps.org', 'https://learningapps.org/rechtliches.php', 'learningapps.org');
         echo $Template -> render('/module/learningapps/dynamic', $tempArray);
     	return true;
     }
@@ -42,7 +42,7 @@ extends ESRender_Module_NonContentNode_Abstract {
         $uniqueId = uniqid('la_');
         $data['uniqueId'] = $uniqueId;
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
-        $data['dataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($uniqueId, 'LearningApps.org', 'https://learningapps.org/rechtliches.php');
+        $data['dataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($uniqueId, 'LearningApps.org', 'https://learningapps.org/rechtliches.php', 'learningapps.org');
         $Template = $this -> getTemplate();
         echo $Template -> render('/module/learningapps/inline', $data);
         return true;

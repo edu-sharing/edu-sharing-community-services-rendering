@@ -35,10 +35,10 @@ class mod_h5p
 extends ESRender_Module_ContentNode_Abstract {
 
 
-	protected function renderTemplate($TemplateName, $getDefaultData = true) {
+	protected function renderTemplate($TemplateName, $getDefaultData = true, $showMetadata = true) {
 		$Logger = $this -> getLogger();
 		if($getDefaultData)
-			$template_data = parent::prepareRenderData();
+			$template_data = parent::prepareRenderData($showMetadata);
 			$template_data['title'] = (empty($title) ? $this -> esObject -> getTitle() : $title);
 			$template_data['content'] = $this -> esObject -> getPath() . $this -> getContentPathSuffix();
            if($TemplateName == '/module/h5p/dynamic' && Config::get('showMetadata'))
@@ -113,7 +113,7 @@ extends ESRender_Module_ContentNode_Abstract {
      * @see ESRender_Module_ContentNode_Abstract::embed()
      */
     protected function embed() {
-        echo $this -> renderTemplate('/module/h5p/embed');
+        echo $this -> renderTemplate('/module/h5p/embed', true, false);
         return true;
     }
 

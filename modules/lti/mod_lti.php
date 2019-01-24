@@ -39,8 +39,8 @@ class mod_lti extends ESRender_Module_NonContentNode_Abstract {
         return $this -> tool -> dynamic();
     }
 
-    protected function display() {
-        return $this -> tool -> display();
+    protected function embed() {
+        return $this -> tool -> embed();
     }
     
     protected function inline() {

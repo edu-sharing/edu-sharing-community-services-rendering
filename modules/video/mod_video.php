@@ -41,14 +41,14 @@ extends ESRender_Module_AudioVideo_Abstract
 
     protected $filename;
 
-    protected function prepareRenderData($getDefaultData = true)
+    protected function prepareRenderData($getDefaultData = true, $showMetadata = true)
     {
     	global $MC_URL;
 
     	$template_data = array();
     	if($getDefaultData)
-            $template_data = parent::prepareRenderData();
-    	
+            $template_data = parent::prepareRenderData($showMetadata);
+
         $ext = $this -> getExtensionByFormat($this->getVideoFormatByRequestingDevice());
         $object_url = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
         $template_data['ext'] = $ext;
@@ -139,7 +139,7 @@ extends ESRender_Module_AudioVideo_Abstract
     final public function embed()
     {
         global $Locale, $ROOT_URI;
-        $template_data = $this->prepareRenderData( false);
+        $template_data = $this->prepareRenderData(true, false);
         $template_data['ajax_url'] =
             $ROOT_URI . 'application/esmain/index.php?'.
             'app_id=' . mc_Request::fetch('app_id', 'CHAR') .

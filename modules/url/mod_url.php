@@ -56,8 +56,24 @@ extends ESRender_Module_NonContentNode_Abstract {
         else
             $embedding = '';
 
+
+        $license = $this -> esObject->getLicense();
+        if(!empty($license)) {
+            $license = $license -> renderFooter($this -> getTemplate(), $this->lmsInlineHelper());
+        }
+
+        $sequence = '';
+        if($this -> esObject -> getSequenceHandler() -> isSequence())
+            $sequence = $this -> esObject -> getSequenceHandler() -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper());
+
+        $metadata = '';
+        if(ENABLE_METADATA_INLINE_RENDERING) {
+            $metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
+        }
+
+        $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> esObject -> getTitle()));
         $Template = $this -> getTemplate();
-        $tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl());
+        $tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl(), 'footer' => $footer);
 
         echo $Template -> render('/module/url/embed', $tempArray);
 

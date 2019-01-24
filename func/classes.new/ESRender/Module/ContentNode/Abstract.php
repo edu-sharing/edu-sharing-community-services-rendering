@@ -158,7 +158,7 @@ extends ESRender_Module_Base
     protected function embed() {
         $Logger = $this->getLogger();
         $Logger->debug('ESRender_Module_Base::embed');
-        $data = array();
+        $data = parent::prepareRenderData(false);
         $data['url'] = $this-> esObject ->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
         $data['previewUrl'] = $this-> esObject ->getPreviewUrl();
         echo $this->getTemplate()->render('/module/default/embed', $data);

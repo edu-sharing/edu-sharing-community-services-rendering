@@ -126,11 +126,11 @@ extends ESRender_Module_ContentNode_Abstract {
         return $this -> esObject -> getFilePath() . '.png';
     }
 
-    protected function renderTemplate($TemplateName, $getDefaultData = true) {
+    protected function renderTemplate($TemplateName, $getDefaultData = true, $showMetadata = true) {
         $m_path = $this -> esObject -> getPath();
         $imageUrl = $m_path . '.png?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
         if($getDefaultData)
-        	$template_data = parent::prepareRenderData();
+        	$template_data = parent::prepareRenderData($showMetadata);
         $template_data['title'] = $this -> esObject -> getTitle();
         $template_data['image_url'] = $imageUrl;
         $Template = $this -> getTemplate();
@@ -185,6 +185,7 @@ extends ESRender_Module_ContentNode_Abstract {
      * @see ESRender_Module_ContentNode_Abstract::dynamic()
      */
     protected function embed() {
+        $template_data = parent::prepareRenderData(false);
         $template_data['image_url'] = $this -> esObject -> getPath() . '.png?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
         echo $this -> getTemplate() -> render('/module/picture/embed', $template_data);
         return true;

@@ -3,13 +3,9 @@ global $Locale, $Translate;
 $msg = array();
 $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 ?>
-
-
 <style>
-    <?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
-    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
 </style>
-
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
     <div class="edusharing_rendering_content_wrapper" role="main">
         <?php if(empty($embedding)) {
@@ -19,4 +15,5 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
         }?>
         <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
     </div>
+    <?php echo $footer?>
 </div>

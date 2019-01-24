@@ -1,15 +1,16 @@
 <?php
 global $MC_URL;
 ?>
+<style>
+    <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
+</style>
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
     <div class="edusharing_rendering_content_wrapper" role="main">
         <div id="edusharing_rendering_content"></div>
     </div>
-    <?php echo $metadata; ?>
+    <?php echo $footer?>
 </div>
-
 <script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
-
 <script>
     get_resource = function(authstring) {
         jQuery.ajax({
@@ -19,7 +20,5 @@ global $MC_URL;
             }
         });
     }
-
     get_resource("<?php echo $authString ?>");
-
 </script>

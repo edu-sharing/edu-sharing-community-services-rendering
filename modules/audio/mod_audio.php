@@ -49,12 +49,12 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
         return self::FORMAT_AUDIO_MP3_EXT;
     }
 
-    protected function prepareRenderData($getDefaultData = true) {
+    protected function prepareRenderData($getDefaultData = true, $showMetadata = true) {
     	
     	$data = array();
     	
     	if($getDefaultData)
-        	$data = parent::prepareRenderData();
+        	$data = parent::prepareRenderData($showMetadata);
         
         $object_url = dirname($this -> esObject->getPath()) . '/' . basename($this->getOutputFilename($this)) . '?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         $data['audio_url'] = $object_url;
@@ -110,8 +110,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     final public function embed()
     {
         global $Locale, $ROOT_URI;
-        $template_data = $this->prepareRenderData( false);
-
+        $template_data = $this->prepareRenderData(true, false);
         $template_data['ajax_url'] =
             $ROOT_URI . 'application/esmain/index.php?'.
             'app_id=' . mc_Request::fetch('app_id', 'CHAR') .

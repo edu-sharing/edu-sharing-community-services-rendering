@@ -54,13 +54,10 @@ extends ESRender_Module_ContentNode_Abstract {
         $this -> setDoctype();
     }
 
-    protected function renderTemplate($TemplateName) {
+    protected function renderTemplate($TemplateName, $showMetadata = true) {
 
-        $Logger = $this -> getLogger();
-        $template_data = parent::prepareRenderData();
-
+        $template_data = parent::prepareRenderData($showMetadata);
         $template_data['previewUrl'] = $this -> esObject->getPreviewUrl();
-
 
         if(Config::get('hasContentLicense') === true) {
 
@@ -132,11 +129,11 @@ extends ESRender_Module_ContentNode_Abstract {
 
     final protected function embed() {
         if($this->getDoctype() === DOCTYPE_HTML || $this->getDoctype() === DOCTYPE_TEXT) {
-            echo $this -> renderTemplate($this -> getThemeByDoctype().'embed');
+            echo $this -> renderTemplate($this -> getThemeByDoctype().'embed', false);
             return true;
         }
         else if($this->getDoctype() === DOCTYPE_PDF) {
-            echo $this -> renderTemplate($this -> getThemeByDoctype().'embed');
+            echo $this -> renderTemplate($this -> getThemeByDoctype().'embed', false);
             return true;
         }
         else return parent::embed();

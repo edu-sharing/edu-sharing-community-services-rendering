@@ -1,6 +1,9 @@
 <?php
 global $MC_URL;
 ?>
+<style>
+    <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
+</style>
 <script type="text/javascript"
         src="<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
 
@@ -27,5 +30,6 @@ global $MC_URL;
         <h3 class="edusharing_rendering_content_ie_hint" style="display:none"><?php echo $msg['h5p_ie_hint']->localize($Locale, $Translate) ?></h3>
         <div class="edusharing_rendering_content h5p-container" style="max-height: 100% !important"></div> <!-- style prevents overlapping with metadata - better fix iframe height -->
     </div>
+    <?php echo $footer?>
 </div>
 

@@ -1,16 +1,16 @@
 <?php
-global $Locale, $Translate, $MC_URL;
-$msg = array();
+global $MC_URL;
 ?>
-
+<style>
+    <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
+</style>
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
     <div class="edusharing_rendering_content_wrapper">
         <div id="edusharing_rendering_content" role="main"></div>
     </div>
+    <?php echo $footer?>
 </div>
-
 <script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
-
 <script>
     var videoFormat = 'webm';
     var v = document.createElement('video');

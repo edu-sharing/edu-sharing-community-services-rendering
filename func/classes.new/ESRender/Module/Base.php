@@ -78,7 +78,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      *
      * @return array
      */
-    protected function prepareRenderData() {
+    protected function prepareRenderData($showMetadata = true) {
         global $Locale, $Translate;
         $msg = array();
         $msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
@@ -105,7 +105,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
             $sequence = $this -> esObject -> getSequenceHandler() -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper());
 
         $metadata = '';
-        if(ENABLE_METADATA_INLINE_RENDERING) {
+        if(ENABLE_METADATA_INLINE_RENDERING && $showMetadata) {
 	       	$metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
         }
 

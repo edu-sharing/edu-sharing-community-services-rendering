@@ -15,7 +15,6 @@ global $MC_URL;?>
 }
 
 .edusharing_rendering_content_wrapper {
-    min-width: 300px;
     line-height: 1.2;
 }
 
@@ -64,7 +63,7 @@ global $MC_URL;?>
     margin-left: -295px;
     width: 350px;
     padding: 11px 0px;
-    z-index: 50;
+    z-index: 10001;
 }
 
 .edusharing_metadata_inner {
@@ -273,7 +272,7 @@ global $MC_URL;?>
 }
 
 .edusharing_rendering_content_footer_top .license_permalink, .edusharing_rendering_content_footer_top .license {
-    margin-right: 40px;
+
 }
 
 video, audio {

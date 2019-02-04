@@ -111,7 +111,6 @@ img.edusharing_rendering_content {
 .edusharing_rendering_content.edusharing_rendering_content_embedded {
 	height: calc(100vh - 170px);
 	-webkit-overflow-scrolling: touch;
-	overflow-y: scroll;
 }
 
 img.edusharing_rendering_content_preview {

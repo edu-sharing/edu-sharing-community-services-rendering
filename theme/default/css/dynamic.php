@@ -100,7 +100,7 @@ img.edusharing_rendering_content {
 	background-image: url('<?php echo $MC_URL?>/theme/default/img/background-transparent.png');
 }
 
-.edusharing_rendering_content, video, audio, #edusharing_htmlobject, .edusharing_rendering_content_preview {
+.edusharing_rendering_content, video, #edusharing_htmlobject, .edusharing_rendering_content_preview {
 	-webkit-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 	-moz-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 	box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
@@ -111,7 +111,6 @@ img.edusharing_rendering_content {
 .edusharing_rendering_content.edusharing_rendering_content_embedded {
 	height: calc(100vh - 170px);
 	-webkit-overflow-scrolling: touch;
-	overflow-y: scroll;
 }
 
 img.edusharing_rendering_content_preview {

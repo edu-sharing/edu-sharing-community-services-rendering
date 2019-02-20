@@ -200,10 +200,9 @@ div.h5p-container {
 	h1.edusharing_rendering_metadata_header_title {
 		margin: 1.8rem 0 2rem 20px;
 	}
-	#edusharing_htmlobject, .edusharing_etherpad {
+	#edusharing_htmlobject, .edusharing_etherpad, img.edusharing_rendering_content_preview {
 		max-width: 100%;
 	}
-
 }
 
 

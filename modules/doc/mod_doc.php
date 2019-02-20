@@ -55,12 +55,8 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
     protected function renderTemplate(array $requestData, $TemplateName) {
-
-        $Logger = $this -> getLogger();
         $template_data = parent::prepareRenderData($requestData);
-
         $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
-
 
         if(Config::get('renderInfoLMSReturn')->hasContentLicense === true) {
 
@@ -95,31 +91,52 @@ extends ESRender_Module_ContentNode_Abstract {
     	}
     	
     	if($this->getDoctype() == DOCTYPE_HTML) {
-	    	$Logger = $this->getLogger();
-	    	try {
-	    		require_once __dir__ . '/../../func/extern/htmlpurifier/HTMLPurifier.standalone.php';
-			   	$htmlPurifier = new HTMLPurifier();
-			   	$originalHTML = file_get_contents($this->getCacheFileName());
-			   	$purified = $htmlPurifier->purify($originalHTML);
-			   	file_put_contents($this->getCacheFileName().'_purified.html', $purified);
-			   	$Logger->info('Stored content in file "'.$this->getCacheFileName().'"_purified.html.');
-	    	} catch(Exception $e) {
-	    		$Logger->info('Error storing content in file "'.$this->getCacheFileName().'"_purified.html.');
-	    		return false;
-	    	}  
+            $Logger = $this->getLogger();
+
+            try {
+                require_once __dir__ . '/../../func/extern/htmlpurifier/HTMLPurifier.standalone.php';
+                $config = HTMLPurifier_Config::createDefault();
+                $config->set('HTML.Doctype', 'HTML 4.01 Transitional');
+                $config->set('CSS.AllowTricky', true);
+                $config->set('HTML.DefinitionID', 'html5-definitions'); // unqiue id
+                $config->set('HTML.DefinitionRev', 1);
+                if ($def = $config->maybeGetRawHTMLDefinition()) {
+                    // http://developers.whatwg.org/the-video-element.html#the-video-element
+                    $def->addElement('video', 'Block', 'Optional: (source, Flow) | (Flow, source) | Flow', 'Common', array(
+                        'src' => 'URI',
+                        'type' => 'Text',
+                        'width' => 'Length',
+                        'height' => 'Length',
+                        'poster' => 'URI',
+                        'preload' => 'Enum#auto,metadata,none',
+                        'controls' => 'Bool',
+                    ));
+                    $def->addElement('source', 'Block', 'Flow', 'Common', array(
+                        'src' => 'URI',
+                        'type' => 'Text',
+                    ));
+                }
+
+                $htmlPurifier = new HTMLPurifier($config);
+                $originalHTML = file_get_contents($this->getCacheFileName());
+                $purified = $htmlPurifier->purify($originalHTML);
+                file_put_contents($this->getCacheFileName().'_purified.html', $purified);
+                $Logger->info('Stored content in file "'.$this->getCacheFileName().'"_purified.html.');
+            } catch(Exception $e) {
+                $Logger->info('Error storing content in file "'.$this->getCacheFileName().'"_purified.html.');
+                return false;
+            }
     	}
         return true;
     }
 
     protected function getOutputFilename() {
-        $Logger = $this -> getLogger();
         $filename = $this -> getCacheFileName();
         $filename = str_replace('\\', '/', $filename);
         return $filename;
     }
 
     final protected function display(array $requestData) {
-        $Logger = $this -> getLogger();
         echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'display');
         return true;
     }

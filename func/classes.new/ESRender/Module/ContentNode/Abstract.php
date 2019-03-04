@@ -79,6 +79,12 @@ extends ESRender_Module_Base
             $url .= $path . $params;
             
             $handle = fopen($cacheFile, "wb");
+
+            if(false === $handle || empty($cacheFile)) {
+                $Logger->error('Cannot open ' . $cacheFile);
+                return false;
+            }
+
             
             $content = $this->getContent($url);
 
@@ -104,7 +110,8 @@ extends ESRender_Module_Base
         $Logger = $this->getLogger();   
         $handle = fopen($url, "rb");
         if($handle === false) {
-            $Logger->error('Cannot open ' . $url); 
+            $Logger->error('Cannot open ' . $url);
+            return false;
         }
         
         $result = stream_get_contents($handle);

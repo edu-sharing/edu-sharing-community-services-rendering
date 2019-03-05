@@ -83,15 +83,19 @@ extends ESRender_Module_ContentNode_Abstract {
     }
     
     public function createInstance(array $requestData) {
-        if(Config::get('renderInfoLMSReturn')->hasContentLicense === false)
+
+        $Logger = $this->getLogger();
+
+        if(Config::get('renderInfoLMSReturn')->hasContentLicense === false) {
+            $Logger->info('hasContentLicense set to false, skipping mod_doc::createInstance().');
             return true;
+        }
 
     	if (!parent::createInstance($requestData)) {
     		return false;
     	}
     	
     	if($this->getDoctype() == DOCTYPE_HTML) {
-            $Logger = $this->getLogger();
 
             try {
                 require_once __dir__ . '/../../func/extern/htmlpurifier/HTMLPurifier.standalone.php';

@@ -80,8 +80,6 @@ extends ESRender_Module_Base
             $params = 'appId='.$requestData['renderAppId'] . '&nodeId=' . $requestData['object_id'] . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $requestData['version'];
             $url .= $path . $params;
 
-
-            $Logger->debug('Open handle for "'.$cacheFile.'".');
             $handle = fopen($cacheFile, "wb");
 
             if(false === $handle || empty($cacheFile)) {
@@ -89,7 +87,6 @@ extends ESRender_Module_Base
                 return false;
             }
 
-            
             $content = $this->getContent($url);
 
             if($content === false) {
@@ -112,15 +109,14 @@ extends ESRender_Module_Base
     
     protected function getContent($url) {
         $Logger = $this->getLogger();
-        $Logger->debug('Open handle for "'.$url.'".');
+
         $handle = fopen($url, "rb");
         if($handle === false) {
             $Logger->error('Cannot open ' . $url);
             return false;
         }
-        $Logger->debug('Fetch content.');
+
         $result = stream_get_contents($handle);
-        $Logger->debug('Fetched content.');
         fclose($handle);
         return $result;
     }

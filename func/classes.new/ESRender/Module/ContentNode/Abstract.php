@@ -56,12 +56,14 @@ extends ESRender_Module_Base
                 $Logger->error('Error creating path "'.$this->render_path.'".');
                 return false;
             }
+            $Logger->debug('Created path "'.$this->render_path.'".');
 
             if ( ! chmod($this->render_path, 0777) )
             {
                 $Logger->error('Error changing permissions on "'.$this->render_path.'".');
                 return false;
             }
+            $Logger->debug('Changed permissions on "'.$this->render_path.'".');
         }
         
         try {       
@@ -77,11 +79,13 @@ extends ESRender_Module_Base
             $path = '/content?';
             $params = 'appId='.$requestData['renderAppId'] . '&nodeId=' . $requestData['object_id'] . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $requestData['version'];
             $url .= $path . $params;
-            
+
+
+            $Logger->debug('Open handle for "'.$cacheFile.'".');
             $handle = fopen($cacheFile, "wb");
 
             if(false === $handle || empty($cacheFile)) {
-                $Logger->error('Cannot open ' . $cacheFile);
+                $Logger->error('Cannot open handle for ' . $cacheFile);
                 return false;
             }
 
@@ -107,14 +111,16 @@ extends ESRender_Module_Base
     }
     
     protected function getContent($url) {
-        $Logger = $this->getLogger();   
+        $Logger = $this->getLogger();
+        $Logger->debug('Open handle for "'.$url.'".');
         $handle = fopen($url, "rb");
         if($handle === false) {
             $Logger->error('Cannot open ' . $url);
             return false;
         }
-        
+        $Logger->debug('Fetch content.');
         $result = stream_get_contents($handle);
+        $Logger->debug('Fetched content.');
         fclose($handle);
         return $result;
     }

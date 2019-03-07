@@ -86,11 +86,6 @@ extends ESRender_Module_ContentNode_Abstract {
 
         $Logger = $this->getLogger();
 
-        if(Config::get('renderInfoLMSReturn')->hasContentLicense === false) {
-            $Logger->info('hasContentLicense set to false, skipping mod_doc::createInstance().');
-            return true;
-        }
-
     	if (!parent::createInstance($requestData)) {
     		return false;
     	}

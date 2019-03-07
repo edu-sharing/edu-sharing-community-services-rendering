@@ -352,6 +352,11 @@ function run($installedVersion) {
             $stmt->execute ();
         }
 
+        if(version_compare ( '5.1', $installedVersion ) > 0) {
+
+           //delete unneccessary db fields
+        }
+
 	} catch ( Exception $e ) {
 		error_log ( print_r ( $e, true ) );
 		return false;

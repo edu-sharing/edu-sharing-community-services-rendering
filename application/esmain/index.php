@@ -155,7 +155,7 @@ try {
     // load repository-config
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preLoadRepository()');
-        $Plugin -> preLoadRepository($data->node->ref->repo, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
+        $Plugin -> preLoadRepository($data->node->ref->repo, $data->node->ref->id, $data->user->authorityName);
     }
 
     $Logger -> debug('Successfully loaded repository by id "' . $data->node->ref->repo . '".');
@@ -174,12 +174,12 @@ try {
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postLoadRepository()');
-        $Plugin -> postLoadRepository($data->node->ref->repo, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
+        $Plugin -> postLoadRepository($data->node->ref->repo, $data->node->ref->id, $data->user->authorityName);
     }
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preSslVerification()');
-        $Plugin -> preSslVerification($data->node->ref->repo, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName, $homeRep);
+        $Plugin -> preSslVerification($data->node->ref->repo, $data->node->ref->id, $data->user->authorityName, $homeRep);
     }    
 
     $skipSslVerification = false;
@@ -237,12 +237,12 @@ try {
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postSslVerification()');
-        $Plugin -> postSslVerification($homeRep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName, $homeRep);
+        $Plugin -> postSslVerification($homeRep, $data->node->ref->id, $data->user->authorityName, $homeRep);
     }
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preRetrieveObjectProperties()');
-        $Plugin -> preRetrieveObjectProperties($homeRep, mc_Request::fetch('app_id', 'CHAR'), $data->node->ref->id, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
+        $Plugin -> preRetrieveObjectProperties($homeRep, $data->node->ref->id, $data->user->authorityName);
     }
 
     $ESObject = new ESObject($data);
@@ -260,7 +260,7 @@ try {
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postRetrieveObjectProperties()');
-        $Plugin -> postRetrieveObjectProperties($data->node->ref->repo, mc_Request::fetch('app_id', 'CHAR'), $ESObject, mc_Request::fetch('course_id', 'CHAR'), mc_Request::fetch('resource_id', 'CHAR'), $data->user->authorityName);
+        $Plugin -> postRetrieveObjectProperties($data->node->ref->repo, $ESObject, $data->user->authorityName);
     }
 
     $Logger -> info('Successfully initialized instance.');
@@ -380,16 +380,8 @@ try {
         $Plugin -> postProcessObject();
     }
 
-    if (ENABLE_TRACK_OBJECT) {
-        //filter locked Objects and inline requests that result from dynamic view
-        if(!Config::get('locked') && !(($remote_rep -> prop_array['appid'] == mc_Request::fetch('app_id', 'CHAR')) && mc_Request::fetch('display', 'CHAR', 'dynamic') == 'inline')) {
-            foreach ($Plugins as $name => $Plugin) {
-                $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postInstanciateObject()');
-                $Plugin -> preTrackObject(array('user_id'=>$user_id, 'view_type' => mc_Request::fetch('display', 'CHAR', 'dynamic'), 'object_id' => $data->node->ref->id));
-            }
-            $RenderApplication -> trackObject($remote_rep -> prop_array['appid'], mc_Request::fetch('app_id', 'CHAR'), $ESObject -> getId(), $data->node->ref->id, $ESObject -> getFilename(), $data->node->content->version, $ESObject -> module -> getModuleId(), $ESObject -> module -> getName(), $user_id, $data->user->authorityName, mc_Request::fetch('course_id', 'CHAR'));
-        }
-    }
+
+    $RenderApplication -> trackObject($ESObject -> getId());
 
     $Logger -> info('Shutting down.');
 
@@ -437,7 +429,7 @@ try {
 } catch(Exception $exception) {
     $Logger -> error('An internal server error occurred.');
     $Logger -> debug($exception);
-    $Message = new Phools_Message_Default($e->getMessage());
+    $Message = new Phools_Message_Default($exception->getMessage());
     echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'internal'));
 }
 

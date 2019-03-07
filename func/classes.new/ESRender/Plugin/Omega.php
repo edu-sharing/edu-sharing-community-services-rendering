@@ -25,7 +25,7 @@ class ESRender_Plugin_Omega
      * (non-PHPdoc)
      * @see ESRender_Plugin_Abstract::postRetrieveObjectProperties()
      */
-    public function postRetrieveObjectProperties(EsApplication &$remote_rep, &$app_id,ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
+    public function postRetrieveObjectProperties(EsApplication &$remote_rep, ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
         $logger = $this->getLogger();
         $logger->info('Replicationsource: ' . $contentNode->getNodeProperty('ccm:replicationsource') . ', format: ' .
             $contentNode->getNodeProperty('cclom:format') .', replicationsourceid: ' . $contentNode->getNodeProperty('ccm:replicationsourceid'));

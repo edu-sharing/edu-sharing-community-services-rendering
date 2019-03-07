@@ -16,10 +16,6 @@ class cacheCleaner {
 
     public function __construct() {
         $this -> initLogger();
-        if (!ENABLE_TRACK_OBJECT) {
-            $this -> logger -> info('ENABLE_TRACK_OBJECT is diabled. Enable to use this script.');
-            exit(0);
-        }
         $this -> logger -> info('######## cacheCleaner initialized ########');
     }
 

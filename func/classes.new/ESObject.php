@@ -51,12 +51,6 @@ class ESObject {
 
     /**
      *
-     * @var string
-     */
-    protected $appId = null;
-
-    /**
-     *
      * @var int
      */
     protected $moduleId = null;
@@ -102,22 +96,6 @@ class ESObject {
      * @var string
      */
     protected $path = null;
-
-    /**
-     * @var the remote's lms-identifier, e.g. 'alf' or 'moodle197'
-     */
-    protected $lmsId = null;
-
-    /**
-     * @var the remote's lms course-identifier this resource belongs to
-     */
-    protected $courseId = null;
-
-    /**
-     * Unique resource-identifier from used LMS.
-     * @var int
-     */
-    protected $resourceId = 0;
 
     /**
      *
@@ -227,14 +205,6 @@ class ESObject {
             $sql = 'DELETE FROM `ESOBJECT` WHERE `ESOBJECT_ID` = ? AND `ESOBJECT_REP_ID` = ?';
             $values = array((int)$this -> id, $this -> repId);
             
-            if (!empty($this -> lmsId)) {
-                $sql .= ' AND `ESOBJECT_LMS_ID` = ? ';
-                $values[] = $this -> lmsId;
-                if(!empty($this -> courseId)) {
-                    $sql .= ' AND `ESOBJECT_COURSE_ID` = ?';
-                    $values[] = $this -> courseId;
-                }
-            }
             if (!empty($this -> version)) {
                 $sql .= ' AND `ESOBJECT_OBJECT_VERSION` = ?';
                 $values[] = $this -> version;
@@ -257,7 +227,6 @@ class ESObject {
 
     public function setInstanceData(array $row) {
         $this -> id = $row['ESOBJECT_ID'];
-        $this -> appId = $row['ESOBJECT_ESAPPLICATION_ID'];
         $this -> moduleId = $row['ESOBJECT_ESMODULE_ID'];
         $this -> title = $row['ESOBJECT_TITLE'];
         $this -> repId = $row['ESOBJECT_REP_ID'];
@@ -266,9 +235,6 @@ class ESObject {
         $this -> versionedObjectId = $row['ESOBJECT_VERSIONED_OBJECT_ID'];
         $this -> mimetype = $row['ESOBJECT_MIMETYPE'];
         $this -> path = $row['ESOBJECT_PATH'];
-        $this -> lmsId = $row['ESOBJECT_LMS_ID'];
-        $this -> courseId = $row['ESOBJECT_COURSE_ID'];
-        $this -> resourceId = $row['ESOBJECT_RESOURCE_ID'];
         $this -> resourceType = $row['ESOBJECT_RESOURCE_TYPE'];
         $this -> resourceVersion = $row['ESOBJECT_RESOURCE_VERSION'];
         $this -> filePath = $row['ESOBJECT_FILE_PATH'];
@@ -557,10 +523,8 @@ class ESObject {
         $this -> version = $this -> getNode() -> content -> version;
         $this -> mimetype = $this -> getNode() -> mimetype;
         $this -> path = '';
-        $this -> resourceId = mc_Request::fetch('resource_id', 'INT', 0);
         $this -> filePath = '';
         $this -> hash = $this -> getNode() -> content -> hash;
-        $this -> lmsId = mc_Request::fetch('app_id', 'CHAR', '');
 
         $ressourcetype = $this -> getNodeProperty('ccm:ccressourcetype');
         if (!empty($ressourcetype)) {
@@ -587,16 +551,12 @@ class ESObject {
     final public function setData2Db() {
 
         $arrFields = array(
-           'ESOBJECT_ESAPPLICATION_ID' => intval($this -> appId),
            'ESOBJECT_ESMODULE_ID' => intval($this -> module -> getModuleId()),
            'ESOBJECT_TITLE' => $this -> title,
            'ESOBJECT_REP_ID' => $this -> repId,
            'ESOBJECT_OBJECT_ID' => $this -> objectId,
            'ESOBJECT_OBJECT_VERSION' => $this -> version,
            'ESOBJECT_MIMETYPE' => $this -> mimetype,
-           'ESOBJECT_LMS_ID' => $this -> lmsId,
-           'ESOBJECT_COURSE_ID' => $this -> courseId,
-           'ESOBJECT_RESOURCE_ID' => $this -> resourceId,
            'ESOBJECT_RESOURCE_TYPE' => $this -> resourceType,
            'ESOBJECT_RESOURCE_VERSION' => $this -> resourceVersion,
            'ESOBJECT_PATH' => $this -> path,
@@ -845,21 +805,6 @@ class ESObject {
     public function getVersion(): string
     {
         return $this->version;
-    }
-
-    public function getLmsId(): string
-    {
-        return $this->lmsId;
-    }
-
-    public function getCourseId(): int
-    {
-        return $this->courseId;
-    }
-
-    public function getResourceId(): int
-    {
-        return $this->resourceId;
     }
 
     public function getResourceVersion(): string

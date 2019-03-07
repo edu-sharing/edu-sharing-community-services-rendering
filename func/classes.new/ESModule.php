@@ -35,7 +35,6 @@ class ESModule {
 
 	protected $ESMODULE_ID;
 	protected $ESMODULE_NAME;
-	protected $ESMODULE_DESC;
 	protected $ESMODULE_TYPE;
 	protected $ESMODULE_URI;
 	protected $ESMODULE_CONF;
@@ -51,7 +50,6 @@ class ESModule {
 
 		$this->ESMODULE_ID  =  0;
 		$this->ESMODULE_NAME = '';
-		$this->ESMODULE_DESC = '';
 
 		if ($p_id)
 		{
@@ -67,7 +65,7 @@ class ESModule {
 		$pdo = RsPDO::getInstance();
         
         try {
-    		$sql = $pdo -> formatQuery('SELECT `ESMODULE_ID`,`ESMODULE_NAME`,`ESMODULE_DESC` FROM `ESMODULE` WHERE `ESMODULE_ID` = :modid');
+    		$sql = $pdo -> formatQuery('SELECT `ESMODULE_ID`,`ESMODULE_NAME` FROM `ESMODULE` WHERE `ESMODULE_ID` = :modid');
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':modid', $p_id, PDO::PARAM_INT);
             $stmt -> execute();
@@ -78,7 +76,6 @@ class ESModule {
             
     		$this -> ESMODULE_ID   =  $result -> ESMODULE_ID;
     		$this -> ESMODULE_NAME =  $result -> ESMODULE_NAME;
-    		$this -> ESMODULE_DESC =  $result -> ESMODULE_DESC;
 
 		    return true;
             
@@ -103,7 +100,7 @@ class ESModule {
 
         try {
             $pdo = RsPDO::getInstance();
-            $sql = $pdo -> formatQuery('SELECT `ESMODULE_ID`, `ESMODULE_DESC` FROM `ESMODULE` WHERE `ESMODULE_NAME` = :modulename');
+            $sql = $pdo -> formatQuery('SELECT `ESMODULE_ID` FROM `ESMODULE` WHERE `ESMODULE_NAME` = :modulename');
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':modulename', $this->ESMODULE_NAME);
             $stmt -> execute();
@@ -113,7 +110,6 @@ class ESModule {
         }
 
 		$this->ESMODULE_ID   = $result -> ESMODULE_ID;
-		$this->ESMODULE_DESC = $result -> ESMODULE_DESC;
 
 		return true;
 	}

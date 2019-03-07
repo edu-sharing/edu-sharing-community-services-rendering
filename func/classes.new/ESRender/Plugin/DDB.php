@@ -27,7 +27,7 @@ class ESRender_Plugin_DDB
      * (non-PHPdoc)
      * @see ESRender_Plugin_Abstract::postRetrieveObjectProperties()
      */
-    public function postRetrieveObjectProperties(EsApplication &$remote_rep, &$app_id,ESObject &$ESObject, &$course_id, &$resource_id, &$username) {
+    public function postRetrieveObjectProperties(EsApplication &$remote_rep, ESObject &$ESObject, &$course_id, &$resource_id, &$username) {
         $this -> iconUrl = $remote_rep->prop_array['clientprotocol'] .'://' . $remote_rep->prop_array['domain'] . ':' . $remote_rep->prop_array['clientport'] . '/edu-sharing/assets/images/sources/ddb.png';
         $logger = $this->getLogger();
         if($ESObject->getNodeProperty('ccm:remoterepositorytype') === 'DDB') {

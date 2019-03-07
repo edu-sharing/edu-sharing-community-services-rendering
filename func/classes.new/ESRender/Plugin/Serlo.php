@@ -20,7 +20,7 @@ class ESRender_Plugin_Serlo
      * (non-PHPdoc)
      * @see ESRender_Plugin_Abstract::postRetrieveObjectProperties()
      */
-    public function postRetrieveObjectProperties(EsApplication &$remote_rep, &$app_id,ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
+    public function postRetrieveObjectProperties(EsApplication &$remote_rep,ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
 
 	if($contentNode->getNodeProperty('ccm:replicationsource') === 'serlo') {
     	    $this -> iconUrl = $remote_rep->prop_array['clientprotocol'] .'://' . $remote_rep->prop_array['domain'] . ':' . $remote_rep->prop_array['clientport'] . '/edu-sharing/assets/images/sources/serlo.png';

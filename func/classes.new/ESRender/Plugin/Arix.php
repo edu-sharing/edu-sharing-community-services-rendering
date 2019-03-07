@@ -24,7 +24,6 @@ extends ESRender_Plugin_Abstract
 	 */
 	public function postRetrieveObjectProperties(
 		EsApplication &$remote_rep,
-		&$app_id,
 		Node &$contentNode,
 		&$course_id,
 		&$resource_id,

@@ -307,13 +307,6 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
     }
 
     /**
-     * setCache
-     */
-    public function setCache() {
-        return true;
-    }
-
-    /**
      *
      * @param string $name
      *

@@ -237,7 +237,6 @@ class ESObject {
         $this -> path = $row['ESOBJECT_PATH'];
         $this -> resourceType = $row['ESOBJECT_RESOURCE_TYPE'];
         $this -> resourceVersion = $row['ESOBJECT_RESOURCE_VERSION'];
-        $this -> filePath = $row['ESOBJECT_FILE_PATH'];
         $this -> name = $row['ESOBJECT_ALF_FILENAME'];
         $this -> hash = $row['ESOBJECT_CONTENT_HASH'];
 
@@ -253,13 +252,6 @@ class ESObject {
         return $this -> id;
     }
 
-
-    /**
-     *
-     */
-    final public function setCache() {
-        return true;
-    }
 
     /**
      * Get object's mime-type.
@@ -317,22 +309,6 @@ class ESObject {
 
     /**
      *
-     * @return string
-     */
-    final public function getEsobjectFilePath() {
-        return $this -> filePath;
-    }
-
-    /**
-     *
-     */
-    final public function setFilePath($path)// deprecated
-    {
-        $this -> filePath = $path;
-    }
-
-    /**
-     *
      */
     final public function getSubUri() {
         return $this -> path;
@@ -341,8 +317,8 @@ class ESObject {
     /**
      *
      */
-    final public function setSubUri($sub_uri) {
-        $this -> path = $sub_uri;
+    final public function setSubUri($path) {
+        $this -> path = $path;
     }
 
     /**
@@ -350,13 +326,6 @@ class ESObject {
      */
     final public function getSubPath() {
         return str_replace('/', DIRECTORY_SEPARATOR, $this -> path);
-    }
-
-    /**
-     *
-     */
-    final public function getPreviewPath() {
-        return $this -> path;
     }
 
     /**
@@ -523,7 +492,6 @@ class ESObject {
         $this -> version = $this -> getNode() -> content -> version;
         $this -> mimetype = $this -> getNode() -> mimetype;
         $this -> path = '';
-        $this -> filePath = '';
         $this -> hash = $this -> getNode() -> content -> hash;
 
         $ressourcetype = $this -> getNodeProperty('ccm:ccressourcetype');
@@ -560,7 +528,6 @@ class ESObject {
            'ESOBJECT_RESOURCE_TYPE' => $this -> resourceType,
            'ESOBJECT_RESOURCE_VERSION' => $this -> resourceVersion,
            'ESOBJECT_PATH' => $this -> path,
-           'ESOBJECT_FILE_PATH' => $this -> filePath,
            'ESOBJECT_ALF_FILENAME' => $this -> name,
            'ESOBJECT_CONTENT_HASH' => $this -> hash
         );
@@ -590,17 +557,17 @@ class ESObject {
         return true;
     }
 
-    public function addToConversionQueue($format, $dirSep, $filename, $outputFilename, $renderPath, $mimeType) {
+    public function addToConversionQueue($format, $filename, $outputFilename, $renderPath, $mimeType, $resolution = null) {
         $arr = array(
             'ESOBJECT_CONVERSION_OBJECT_ID' => $this -> id,
             'ESOBJECT_CONVERSION_FORMAT' => $format,
-            'ESOBJECT_CONVERSION_DIR_SEPERATOR' => $dirSep,
             'ESOBJECT_CONVERSION_FILENAME' => $filename,
             'ESOBJECT_CONVERSION_OUTPUT_FILENAME' => $outputFilename,
             'ESOBJECT_CONVERSION_RENDER_PATH' => $renderPath,
             'ESOBJECT_CONVERSION_TIME' => time(),
             'ESOBJECT_CONVERSION_STATUS' => self::CONVERSION_STATUS_WAIT,
-            'ESOBJECT_CONVERSION_MIMETYPE' => $mimeType
+            'ESOBJECT_CONVERSION_MIMETYPE' => $mimeType,
+            'ESOBJECT_CONVERSION_RESOLUTION' => $resolution
         );
     
         $pdo = RsPDO::getInstance();
@@ -628,34 +595,40 @@ class ESObject {
          }
     }
 
-    public function setConversionStateProcessed($objId, $format) {
-        $this -> setConversionState($objId, $format, self::CONVERSION_STATUS_PROCESSED);
+    public function setConversionStateProcessed($objId, $format, $resolution = null) {
+        $this -> setConversionState($objId, $format, $resolution, self::CONVERSION_STATUS_PROCESSED);
     }
 
-    public function setConversionStateProcessing($objId, $format) {
-        $this -> setConversionState($objId, $format, self::CONVERSION_STATUS_PROCESSING);
+    public function setConversionStateProcessing($objId, $format, $resolution = null) {
+        $this -> setConversionState($objId, $format, $resolution, self::CONVERSION_STATUS_PROCESSING);
     }
     
-    public function setConversionStateError($objId, $format, $errorcode) {
-        $this -> setConversionState($objId, $format, self::CONVERSION_STATUS_ERROR . ' ' . $errorcode);
+    public function setConversionStateError($objId, $format, $errorcode, $resolution = null) {
+        $this -> setConversionState($objId, $format, $resolution, self::CONVERSION_STATUS_ERROR . ' ' . $errorcode);
     }
     
-    public function setConversionStateStuck($objId, $format) {
-        $this -> setConversionState($objId, $format, self::CONVERSION_STATUS_STUCK);
+    public function setConversionStateStuck($objId, $format, $resolution = null) {
+        $this -> setConversionState($objId, $format, $resolution, self::CONVERSION_STATUS_STUCK);
     }
 
-    protected function setConversionState($objId, $format, $state) {
+    protected function setConversionState($objId, $format, $resolution,  $state) {
 
         $pdo = RsPDO::getInstance();
         try {
             $sql = 'UPDATE `ESOBJECT_CONVERSION` set `ESOBJECT_CONVERSION_STATUS` = :convstatus, `ESOBJECT_CONVERSION_TIME` = :time ' .
                 'WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format';
+
+            if($resolution)
+                $sql .= '  AND `ESOBJECT_CONVERSION_RESOLUTION` = :resolution';
+
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':convstatus', $state);
             $stmt -> bindValue(':time', time(), PDO::PARAM_INT);
             $stmt -> bindValue(':objectid', $objId, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);
-            
+            if($resolution)
+                $stmt -> bindValue(':resolution', $resolution);
+
             $result = $stmt -> execute();
             if(!$result)
                 throw new Exception('Error setting conversion status ' . $state . '. ' . print_r($pdo -> errorInfo(), true));
@@ -665,14 +638,20 @@ class ESObject {
         }
     }
 
-    public function inConversionQueue($format) {
+    public function inConversionQueue($format, $resolution = null) {
 
         $pdo = RsPDO::getInstance();
         try {
             $sql = 'SELECT `ESOBJECT_CONVERSION_OBJECT_ID` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format';
+            if($resolution)
+                $sql .= ' AND `ESOBJECT_CONVERSION_RESOLUTION` = :resolution';
+
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':objectid', $this -> id, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format, PDO::PARAM_STR);
+            if($resolution)
+                $stmt -> bindValue(':resolution', $resolution, PDO::PARAM_STR);
+
             $stmt -> execute();
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
 
@@ -686,15 +665,20 @@ class ESObject {
         }
     }
     
-    public function conversionFailed($format) {
+    public function conversionFailed($format, $resolution = null) {
 
         $pdo = RsPDO::getInstance();
         try {
             $sql = 'SELECT `ESOBJECT_CONVERSION_OBJECT_ID` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format AND `ESOBJECT_CONVERSION_STATUS` like :error';
+            if($resolution)
+                $sql .= ' AND `ESOBJECT_CONVERSION_RESOLUTION` = :resolution';
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':objectid', $this -> id, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);
             $stmt -> bindValue(':error', '%ERROR%');
+            if($resolution)
+                $stmt -> bindValue(':resolution', $resolution);
+
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
             if(!$result)
                 return false;
@@ -710,10 +694,10 @@ class ESObject {
     }
 
     final public function getSubUri_file() {
-        return $this -> filePath;
+        return $this -> path;
     }
     
-    public function getPositionInConversionQueue($format) {
+    public function getPositionInConversionQueue($format, $resolution = null) {
         $pdo = RsPDO::getInstance();
         try {
             $sql = 'SELECT COUNT(`ESOBJECT_CONVERSION_OBJECT_ID`) AS `SUM` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_STATUS` = :state';
@@ -722,11 +706,16 @@ class ESObject {
             $stmt -> execute();
             $sum = $stmt -> fetchObject() -> SUM;     
     
-            $sql = 'SELECT COUNT(`ESOBJECT_CONVERSION_ID`) AS `POS` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_ID` < (SELECT `ESOBJECT_CONVERSION_ID` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format) AND `ESOBJECT_CONVERSION_STATUS` = :status';
+            $sql = 'SELECT COUNT(`ESOBJECT_CONVERSION_ID`) AS `POS` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_ID` < (SELECT `ESOBJECT_CONVERSION_ID` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format';
+            if($resolution)
+                $sql .= ' AND `ESOBJECT_CONVERSION_RESOLUTION` = :resolution';
+            $sql .= ') AND `ESOBJECT_CONVERSION_STATUS` = :status';
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':objectid', $this->id, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);
             $stmt -> bindValue(':status', self::CONVERSION_STATUS_WAIT);
+            if($resolution)
+                $stmt -> bindValue(':resolution', $resolution);
             $stmt -> execute();
             $pos = $stmt -> fetchObject() -> POS;
         } catch(PDOException $e) {

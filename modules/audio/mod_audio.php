@@ -40,12 +40,12 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_AudioVideo_Abstract::getOutputFilename()
      */
-    protected function getOutputFilename($format = self::FORMAT_AUDIO_MP3) {
+    protected function getOutputFilename($format = self::FORMAT_AUDIO_MP3, $resolution = NULL) {
         $filename = $this->getCacheFileName();
         return $filename .= '.' . $this->getExtensionByFormat($format);
     }
 
-    protected function getExtensionByFormat($format = self::FORMAT_AUDIO_MP3) {
+    protected function getExtensionByFormat($format = self::FORMAT_AUDIO_MP3, $resolution = NULL) {
         return self::FORMAT_AUDIO_MP3_EXT;
     }
 

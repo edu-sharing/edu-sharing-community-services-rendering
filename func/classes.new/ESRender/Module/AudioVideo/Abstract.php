@@ -19,6 +19,7 @@ extends ESRender_Module_ContentNode_Abstract {
     const FORMAT_VIDEO_WEBM_EXT = 'webm';
     const FORMAT_AUDIO_MP3 = 'FORMAT_AUDIO_MP3';
     const FORMAT_AUDIO_MP3_EXT = 'mp3';
+    const FORMAT_VIDEO_RESOLUTIONS = ['640', '1280', '1920'];
 
     /**
      *
@@ -28,7 +29,7 @@ extends ESRender_Module_ContentNode_Abstract {
      *
      * @return string
      */
-    abstract protected function getOutputFilename($ext);
+    abstract protected function getOutputFilename($ext, $resolution = NULL);
    
     protected function getVideoFormats() {  
     	    	
@@ -89,27 +90,42 @@ extends ESRender_Module_ContentNode_Abstract {
                 $formats = array(self::FORMAT_AUDIO_MP3);
             break;
             default:
-                $formats = $this->getVideoFormats();    
+                $formats = $this->getVideoFormats();
         }
 
-        
+
        	if(empty($formats))
         	return parent::process($p_kind);
 
         foreach ($formats as $format) {
-            $output_filename = $this -> getOutputFilename($this->getExtensionByFormat($format));
             /*
              * if there is no output file add object to conversion queue if needed
              * for failed conversions skip this
              * */
-            if (!file_exists($output_filename) && !$this -> esObject -> conversionFailed($format)) {
-                if (!$this -> esObject -> inConversionQueue($format)) {
-                    $this -> esObject -> addToConversionQueue($format, DIRECTORY_SEPARATOR, $this -> getCacheFileName(), $this -> getOutputFilename($this->getExtensionByFormat($format)), $CC_RENDER_PATH, $this -> esObject -> getMimeType());
+
+            if($type != 'audio') {
+                foreach (self::FORMAT_VIDEO_RESOLUTIONS as $resolution) {
+                    $outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($format), $resolution);
+                    if (!file_exists($outputFilename) && !$this->esObject->conversionFailed($format)) {
+                        if (!$this->esObject->inConversionQueue($format, $resolution)) {
+                            $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $CC_RENDER_PATH, $this->esObject->getMimeType(),$resolution);
+                        }
+                        //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
+                        if ($formats[0] == $format && $resolution == '640' && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED))
+                            $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
+                    }
                 }
-                //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
-                if ($formats[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED))
-                    $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
-            } 
+            } else {
+                $outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($format));
+                if (!file_exists($outputFilename) && !$this->esObject->conversionFailed($format)) {
+                    if (!$this->esObject->inConversionQueue($format)) {
+                        $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $CC_RENDER_PATH, $this->esObject->getMimeType());
+                    }
+                    //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
+                    if ($formats[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED))
+                        $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
+                }
+            }
         }
         exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
 

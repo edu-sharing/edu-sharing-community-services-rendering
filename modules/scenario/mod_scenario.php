@@ -275,13 +275,4 @@ class mod_scenario
 	}
 
 
-
-	/**
-	 *
-	 */
-	final public function setCache()
-	{
-		return true;
-	}
-
 }

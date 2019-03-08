@@ -50,11 +50,14 @@ extends ESRender_Module_AudioVideo_Abstract
             $template_data = parent::prepareRenderData($showMetadata);
 
         $ext = $this -> getExtensionByFormat($this->getVideoFormatByRequestingDevice());
-        $object_url = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
         $template_data['ext'] = $ext;
-        $template_data['url'] = $object_url;
+        $template_data['url'] = array();
+        foreach(ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS as $resolution) {
+            $template_data['url'][] = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext, $resolution)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
+        }
+
         if(!empty(mc_Request::fetch('width', 'INT', 0)))
-            $template_data['width'] = 'width: ' . mc_Request::fetch('width', 'INT', 0) . 'px';
+            $template_data['width'] = 'width: ' . mc_Request::fetch('width', 'INT', 600) . 'px';
         $template_data['videoObjectIdentifier'] = uniqid('v_');
         $template_data['logger'] = $MC_URL . '/log/scr/clientlog.php';
         $template_data['cachePath'] = urlencode($this -> getOutputFilename($ext));
@@ -66,11 +69,10 @@ extends ESRender_Module_AudioVideo_Abstract
      * (non-PHPdoc)
      * @see ESRender_Module_AudioVideo_Abstract::getOutputFilename()
      */
-    protected function getOutputFilename($ext) {
-        $Logger = $this->getLogger();
-        $filename = $this->getCacheFileName();
+    protected function getOutputFilename($ext, $resolution = NULL) {
+        $filename = $this -> getCacheFileName();
         $filename = str_replace('\\','/', $filename);
-        $filename .= '.' . $ext;
+        $filename .= '_'.$resolution.'.' . $ext;
         $filename = str_replace('/',DIRECTORY_SEPARATOR, $filename);
         return $filename;
     }
@@ -183,9 +185,9 @@ extends ESRender_Module_AudioVideo_Abstract
     final public function locked() {
     	    	
         $template = $this->getTemplate();
-        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion()  . '_' . $this -> esObject->getId() . '_' . $this-> getVideoFormatByRequestingDevice(). '.log';
+        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion()  . '_' . $this -> esObject->getId() . '_' . $this-> getVideoFormatByRequestingDevice() . '_640.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
-        $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice());
+        $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice(), '640');
         if(empty($progress) || is_array($progress))
             $progress = '0';
         echo $template->render('/module/video/lock', array('callback' => mc_Request::fetch('callback', 'CHAR'),

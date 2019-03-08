@@ -217,15 +217,6 @@ class ESModule {
 	/**
 	 *
 	 */
-	final public function setCache()
-	{
-		return true;
-	}
-
-
-	/**
-	 *
-	 */
 	final public function getName()
 	{
 		return $this->ESMODULE_NAME;

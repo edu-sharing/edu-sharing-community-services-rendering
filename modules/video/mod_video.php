@@ -52,12 +52,12 @@ extends ESRender_Module_AudioVideo_Abstract
         $ext = $this -> getExtensionByFormat($this->getVideoFormatByRequestingDevice());
         $template_data['ext'] = $ext;
         $template_data['url'] = array();
-        foreach(ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS as $resolution) {
-            $template_data['url'][] = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext, $resolution)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
+        foreach(array(ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S, ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_M, ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_L) as $resolution) {
+            if(file_exists($outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($ext), $resolution)))
+                $template_data['url'][$resolution] = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext, $resolution)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
         }
 
-        if(!empty(mc_Request::fetch('width', 'INT', 0)))
-            $template_data['width'] = 'width: ' . mc_Request::fetch('width', 'INT', 600) . 'px';
+        $template_data['width'] = 'width: ' . mc_Request::fetch('width', 'INT', 600) . 'px';
         $template_data['videoObjectIdentifier'] = uniqid('v_');
         $template_data['logger'] = $MC_URL . '/log/scr/clientlog.php';
         $template_data['cachePath'] = urlencode($this -> getOutputFilename($ext));
@@ -185,9 +185,9 @@ extends ESRender_Module_AudioVideo_Abstract
     final public function locked() {
     	    	
         $template = $this->getTemplate();
-        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion()  . '_' . $this -> esObject->getId() . '_' . $this-> getVideoFormatByRequestingDevice() . '_640.log';
+        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion()  . '_' . $this -> esObject->getId() . '_' . $this-> getVideoFormatByRequestingDevice() . '_' . ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S . '.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
-        $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice(), '640');
+        $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice(), ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S);
         if(empty($progress) || is_array($progress))
             $progress = '0';
         echo $template->render('/module/video/lock', array('callback' => mc_Request::fetch('callback', 'CHAR'),

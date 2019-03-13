@@ -1,3 +1,9 @@
+v5.1
+@todo
+- cleanup database
+- updater
+    - delete columns
+    - delete all objects from cache / db (object / version syntax changed)
 v4.2
 - IMS Common Cartridge packages rendering
 - Plugin for "Deutsche Digitale Bibliothek"

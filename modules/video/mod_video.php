@@ -53,8 +53,10 @@ extends ESRender_Module_AudioVideo_Abstract
         $template_data['ext'] = $ext;
         $template_data['url'] = array();
         foreach(array(ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S, ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_M, ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_L) as $resolution) {
+            $link = '';
             if(file_exists($outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($ext), $resolution)))
-                $template_data['url'][$resolution] = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext, $resolution)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
+                $link = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext, $resolution)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
+            $template_data['url'][$resolution] = $link;
         }
 
         $template_data['width'] = 'width: ' . mc_Request::fetch('width', 'INT', 600) . 'px';

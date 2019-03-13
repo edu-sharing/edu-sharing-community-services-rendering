@@ -21,7 +21,7 @@ extends ESRender_Module_Base
         $Filename = $CC_RENDER_PATH . DIRECTORY_SEPARATOR;
         $Filename .= $this->getName() . DIRECTORY_SEPARATOR;
         $Filename .= $this-> esObject ->getSubUri() . DIRECTORY_SEPARATOR;
-        $Filename .= $this-> esObject ->getObjectID() . $this-> esObject ->getObjectVersion();
+        $Filename .= $this-> esObject ->getObjectIdVersion();
 
         return str_replace('\\','/',$Filename);
     }

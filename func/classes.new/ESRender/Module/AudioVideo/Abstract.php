@@ -98,7 +98,7 @@ extends ESRender_Module_ContentNode_Abstract {
                     $outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($format));
                     if (!file_exists($outputFilename) && !$this->esObject->conversionFailed($format)) {
                         if (!$this->esObject->inConversionQueue($format)) {
-                            $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $CC_RENDER_PATH, $this->esObject->getMimeType());
+                            $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $this->esObject->getMimeType());
                         }
                         //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
                         if ($formats[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED))
@@ -117,7 +117,7 @@ extends ESRender_Module_ContentNode_Abstract {
                         $outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($format), $resolution);
                         if (!file_exists($outputFilename) && !$this->esObject->conversionFailed($format)) {
                             if (!$this->esObject->inConversionQueue($format, $resolution)) {
-                                $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $CC_RENDER_PATH, $this->esObject->getMimeType(),$resolution);
+                                $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $this->esObject->getMimeType(),$resolution);
                             }
                             //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
                             if ($formats[0] == $format && $resolution == ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED))

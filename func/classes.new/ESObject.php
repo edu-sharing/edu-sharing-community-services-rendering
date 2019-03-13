@@ -232,7 +232,6 @@ class ESObject {
         $this -> repId = $row['ESOBJECT_REP_ID'];
         $this -> objectId = $row['ESOBJECT_OBJECT_ID'];
         $this -> version = $row['ESOBJECT_OBJECT_VERSION'];
-        $this -> versionedObjectId = $row['ESOBJECT_VERSIONED_OBJECT_ID'];
         $this -> mimetype = $row['ESOBJECT_MIMETYPE'];
         $this -> path = $row['ESOBJECT_PATH'];
         $this -> resourceType = $row['ESOBJECT_RESOURCE_TYPE'];
@@ -352,15 +351,8 @@ class ESObject {
     /**
      *
      */
-    final public function getVersionedObjectId() {
-        return $this -> versionedObjectId;
-    }
-
-    /**
-     *
-     */
     final public function getObjectIdVersion() {
-        return $this -> objectId . $this -> version;
+        return $this -> objectId . '_' .  $this -> version;
     }
 
     /**
@@ -557,13 +549,12 @@ class ESObject {
         return true;
     }
 
-    public function addToConversionQueue($format, $filename, $outputFilename, $renderPath, $mimeType, $resolution = null) {
+    public function addToConversionQueue($format, $filename, $outputFilename, $mimeType, $resolution = null) {
         $arr = array(
             'ESOBJECT_CONVERSION_OBJECT_ID' => $this -> id,
             'ESOBJECT_CONVERSION_FORMAT' => $format,
             'ESOBJECT_CONVERSION_FILENAME' => $filename,
             'ESOBJECT_CONVERSION_OUTPUT_FILENAME' => $outputFilename,
-            'ESOBJECT_CONVERSION_RENDER_PATH' => $renderPath,
             'ESOBJECT_CONVERSION_TIME' => time(),
             'ESOBJECT_CONVERSION_STATUS' => self::CONVERSION_STATUS_WAIT,
             'ESOBJECT_CONVERSION_MIMETYPE' => $mimeType,

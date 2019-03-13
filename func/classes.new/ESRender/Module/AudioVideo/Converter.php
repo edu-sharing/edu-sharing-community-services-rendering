@@ -135,7 +135,7 @@ class converter {
 
         $pdo = RsPDO::getInstance();
         try {
-            $sql = 'SELECT * FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_STATUS` = :status ';
+            $sql = 'SELECT * FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_STATUS` = :status ORDER BY `ESOBJECT_CONVERSION_RESOLUTION` ASC';
             $sql = $pdo -> queryLimit($sql, 1, 0);
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':status', ESObject::CONVERSION_STATUS_WAIT);

@@ -32,6 +32,10 @@ require_once (dirname(__FILE__) . '/../../conf.inc.php');
 class mod_picture
 extends ESRender_Module_ContentNode_Abstract {
 
+    const FORMAT_IMAGE_RESOLUTIONS_L = 1920;
+    const FORMAT_IMAGE_RESOLUTIONS_M = 1280;
+    const FORMAT_IMAGE_RESOLUTIONS_S = 640;
+
     /**
      *
      * @param string $SourceFile
@@ -39,7 +43,7 @@ extends ESRender_Module_ContentNode_Abstract {
      *
      * @return bool
      */
-    protected function convertImage($SourceFile, $DestinationFile, $width, $height) {
+    protected function convertImage($SourceFile, $DestinationFile) {
         $Logger = $this -> getLogger();
         try {
 
@@ -65,51 +69,50 @@ extends ESRender_Module_ContentNode_Abstract {
 
             $origHeight = imagesy($tmpFile);
             $origWidth = imagesx($tmpFile);
+            $ratio = $origHeight / $origWidth;
 
-            if(empty($width) && empty($height)) {
-                $width = $origWidth;
-                $height = $origHeight;
-                while($width * $height > 1500000) {
-                    $width *= 0.9;
-                    $height *= 0.9;
+            foreach(array(self::FORMAT_IMAGE_RESOLUTIONS_S, self::FORMAT_IMAGE_RESOLUTIONS_M, self::FORMAT_IMAGE_RESOLUTIONS_L, $origWidth) as $width) {
+                $height = $width * $ratio;
+
+                //do not upscale
+                if($width > $origWidth) {
+                    continue;
                 }
-                $width = round($width);
-                $height = round($height);
+
+                $newImage = imagecreatetruecolor($width, $height);
+                imageAlphaBlending($newImage, false);
+                imageSaveAlpha($newImage, true);
+                if (!imagecopyresampled($newImage, $tmpFile, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight))
+                    throw new Exception('Cannot resample image to ' . $width);
+                $Logger->debug('Resampled picture (' . $width . ' px x ' . $height . ' px).');
+
+
+                $exif = @exif_read_data($SourceFile);
+                $orientation = $exif['IFD0']['Orientation'];
+
+                if (empty($orientation)) {
+                    $orientation = $exif['Orientation'];
+                }
+
+                switch ($orientation) {
+                    case 3:
+                        $newImage = imagerotate($newImage, 180, 0);
+                        break;
+                    case 6:
+                        $newImage = imagerotate($newImage, -90, 0);
+                        break;
+                    case 8:
+                        $newImage = imagerotate($newImage, 90, 0);
+                        break;
+                }
+
+
+                if (!imagepng($newImage, $DestinationFile . '_' . $width . '.png'))
+                    throw new Exception('Cannot convert image');
+                imagedestroy($newImage);
+
+                $Logger->debug('Converted picture to png.');
             }
-
-            $newImage = imagecreatetruecolor($width, $height);
-            imageAlphaBlending($newImage, false);
-            imageSaveAlpha($newImage, true);
-            if (!imagecopyresampled($newImage, $tmpFile, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight))
-                throw new Exception('Cannot resample image');
-            $Logger -> debug('Resampled picture (' . $width . ' px x ' . $height . ' px).');
-
-
-	    $exif = @exif_read_data($SourceFile);
-            $orientation = $exif['IFD0']['Orientation'];
-
-	    if(empty($orientation)) {
-		$orientation = $exif['Orientation'];
-	    }
-
-            switch($orientation) {
-                case 3:
-                    $newImage = imagerotate($newImage, 180, 0);
-                    break;
-                case 6:
-                    $newImage = imagerotate($newImage, -90, 0);
-                    break;
-                case 8:
-                    $newImage = imagerotate($newImage, 90, 0);
-                    break;
-            }
-
-
-            if (!imagepng($newImage, $DestinationFile))
-                throw new Exception('Cannot convert image');
-            imagedestroy($newImage);
-
-            $Logger -> debug('Converted picture to png.');
 
         } catch (Exception $e) {
             $Logger -> debug($e -> getMessage());
@@ -123,16 +126,14 @@ extends ESRender_Module_ContentNode_Abstract {
      * @return string
      */
     protected function getImageFilename() {
-        return $this -> esObject -> getFilePath() . '.png';
+        return $this -> esObject -> getFilePath();
     }
 
     protected function renderTemplate($TemplateName, $getDefaultData = true, $showMetadata = true) {
-        $m_path = $this -> esObject -> getPath();
-        $imageUrl = $m_path . '.png?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
         if($getDefaultData)
         	$template_data = parent::prepareRenderData($showMetadata);
         $template_data['title'] = $this -> esObject -> getTitle();
-        $template_data['image_url'] = $imageUrl;
+        $template_data['image_url'] = $this -> getImageUrl($_REQUEST['width']);
         $Template = $this -> getTemplate();
         $rendered = $Template -> render($TemplateName, $template_data);
 
@@ -151,9 +152,35 @@ extends ESRender_Module_ContentNode_Abstract {
         $f_path = $this -> esObject -> getFilePath();
 
         $ObjectFilename = str_replace('\\', '/', $f_path);
-        $this -> convertImage($ObjectFilename, $this -> getImageFilename(), mc_Request::fetch('width', 'INT', 0), mc_Request::fetch('height', 'INT', 0));
+        $this -> convertImage($ObjectFilename, $this -> getImageFilename());
 
         return true;
+    }
+
+
+    private function getImageUrl($width = self::FORMAT_IMAGE_RESOLUTIONS_L) {
+        return $this -> esObject -> getPath() . '_' . $this -> getFlavour($width) . '.png?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+    }
+
+    private function getFlavour($width) {
+        global $CC_RENDER_PATH;
+
+        $flavours = array();
+         $files = scandir($CC_RENDER_PATH . DIRECTORY_SEPARATOR . $this -> getName() . DIRECTORY_SEPARATOR . $this -> esObject -> getSubPath());
+         foreach($files as $file) {
+             if(strpos($file, '.png') !== false) {
+                $flavours[] = intval(end(explode('_', str_replace('.png', '', $file))));
+             }
+         }
+
+        rsort($flavours);
+         //default if width > available resolution
+         $flavor = $flavours[0];
+         foreach($flavours as $f) {
+             if(intval($width) <= $f)
+                 $flavor = $f;
+         }
+         return $flavor;
     }
 
     /**
@@ -170,7 +197,7 @@ extends ESRender_Module_ContentNode_Abstract {
      * @see ESRender_Module_ContentNode_Abstract::dynamic()
      */
     protected function dynamic() {
-    	$template_data['image_url'] = $this -> esObject -> getPath() . '.png?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+    	$template_data['image_url'] = $this -> getImageUrl();
 
     	if(Config::get('showMetadata'))
 	    	$template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
@@ -186,7 +213,7 @@ extends ESRender_Module_ContentNode_Abstract {
      */
     protected function embed() {
         $template_data = parent::prepareRenderData(false);
-        $template_data['image_url'] = $this -> esObject -> getPath() . '.png?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+        $template_data['image_url'] = $this -> getImageUrl();
         echo $this -> getTemplate() -> render('/module/picture/embed', $template_data);
         return true;
     }
@@ -487,5 +514,4 @@ extends ESRender_Module_ContentNode_Abstract {
 
         return $res;
     }
-
 }

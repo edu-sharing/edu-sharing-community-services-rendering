@@ -6,16 +6,11 @@
     $styleVideo = 'max-width: 100%;';
     if(isset($_REQUEST['width']) && !empty($_REQUEST['width']))
         $styleVideo .= 'width:'.(int)$_REQUEST['width'] . 'px';
-    $styleVideoWrapper = 'position:relative;';
-    if(isset($_REQUEST['width']) && !empty($_REQUEST['width']))
-        $styleVideoWrapper .= 'width:'.(int)$_REQUEST['width'] . 'px';
-
 ?>
 <style>
     <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
     <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
 </style>
-<div style="<?php echo $styleVideoWrapper?>">
     <div class="edusharing_rendering_content_video_wrapper">
         <video src="<?php echo $url[ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S]?>" style="<?php echo $styleVideo?>" data-tap-disabled="true" id="<?php echo $videoObjectIdentifier?>" data-licid="<?php echo $licid;?>" controls controlsList="nodownload" oncontextmenu="return false;"></video>
         <div class="edusharing_rendering_content_video_options">
@@ -33,7 +28,6 @@
                 </ul>
             </div>
         </div>
-    </div>
     <?php echo $footer?>
     <p id="e_<?php echo $videoObjectIdentifier ?>" style="display: none;"><?php echo $errMsg -> localize($Locale, $Translate);?></p>
 </div>

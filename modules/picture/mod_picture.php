@@ -176,6 +176,7 @@ extends ESRender_Module_ContentNode_Abstract {
         rsort($flavours);
          //default if width > available resolution
          $flavor = $flavours[0];
+         //select flovour bigger than requested
          foreach($flavours as $f) {
              if(intval($width) <= $f)
                  $flavor = $f;

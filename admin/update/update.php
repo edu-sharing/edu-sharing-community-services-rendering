@@ -353,7 +353,7 @@ function run($installedVersion) {
         }
 
         if(version_compare ( '5.1', $installedVersion ) > 0) {
-
+            $pdo = RsPDO::getInstance();
             $sql = $pdo->formatQuery ( 'ALTER TABLE `ESOBJECT_CONVERSION` ADD `ESOBJECT_CONVERSION_RESOLUTION` int(11)');
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();

@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '4.2.0' );
+define ( 'UPDATEVERSION', '5.1.0' );
 set_time_limit(1800);
 ini_set('memory_limit', '2048M');
 
@@ -354,6 +354,9 @@ function run($installedVersion) {
 
         if(version_compare ( '5.1', $installedVersion ) > 0) {
 
+            $sql = $pdo->formatQuery ( 'ALTER TABLE `ESOBJECT_CONVERSION` ADD `ESOBJECT_CONVERSION_RESOLUTION` int(11)');
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->execute ();
            //delete unneccessary db fields
         }
 

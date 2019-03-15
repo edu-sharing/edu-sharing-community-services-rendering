@@ -67,16 +67,29 @@ extends ESRender_Module_ContentNode_Abstract {
                     throw new Exception('Cannot create temporary image file');
             }
 
-            $origHeight = imagesy($tmpFile);
-            $origWidth = imagesx($tmpFile);
+
             $ratio = $origHeight / $origWidth;
 
-            foreach(array(self::FORMAT_IMAGE_RESOLUTIONS_S, self::FORMAT_IMAGE_RESOLUTIONS_M, self::FORMAT_IMAGE_RESOLUTIONS_L, $origWidth) as $width) {
-                $height = $width * $ratio;
+            //detect longest side to work with
+            $origLong = $origWidth;
+            if($ratio > 1) {
+                $origLong = $origHeight;
+            }
+
+            foreach(array(self::FORMAT_IMAGE_RESOLUTIONS_S, self::FORMAT_IMAGE_RESOLUTIONS_M, self::FORMAT_IMAGE_RESOLUTIONS_L, $origLong) as $l) {
 
                 //do not upscale
-                if($width > $origWidth) {
+                if($l > $origLong) {
                     continue;
+                }
+
+                //handle portrait and landscape format
+                if($ratio > 1) {
+                    $height = $l;
+                    $width = round($height / $ratio);
+                } else {
+                    $width = $l;
+                    $height = round($width * $ratio);
                 }
 
                 $newImage = imagecreatetruecolor($width, $height);
@@ -107,7 +120,7 @@ extends ESRender_Module_ContentNode_Abstract {
                 }
 
 
-                if (!imagepng($newImage, $DestinationFile . '_' . $width . '.png'))
+                if (!imagepng($newImage, $DestinationFile . '_' . $l . '.png'))
                     throw new Exception('Cannot convert image');
                 imagedestroy($newImage);
 
@@ -152,35 +165,61 @@ extends ESRender_Module_ContentNode_Abstract {
         $f_path = $this -> esObject -> getFilePath();
 
         $ObjectFilename = str_replace('\\', '/', $f_path);
-        $this -> convertImage($ObjectFilename, $this -> getImageFilename());
-
-        return true;
+        return $this -> convertImage($ObjectFilename, $this -> getImageFilename());
     }
 
 
-    private function getImageUrl($width = self::FORMAT_IMAGE_RESOLUTIONS_L) {
+    private function getImageUrl($width = null) {
         return $this -> esObject -> getPath() . '_' . $this -> getFlavour($width) . '.png?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
     }
 
+    /*
+     * Detect which flavor to show
+     * */
     private function getFlavour($width) {
         global $CC_RENDER_PATH;
 
         $flavours = array();
+        $tmpFile = '';
+
+        //get all available flavours
          $files = scandir($CC_RENDER_PATH . DIRECTORY_SEPARATOR . $this -> getName() . DIRECTORY_SEPARATOR . $this -> esObject -> getSubPath());
          foreach($files as $file) {
              if(strpos($file, '.png') !== false) {
+                 if(empty($tmpFile))
+                    $tmpFile = $file;
                 $flavours[] = intval(end(explode('_', str_replace('.png', '', $file))));
              }
          }
 
+         if(empty($flavours))
+             throw new Exception('No  image binary found.');
+
         rsort($flavours);
+
          //default if width > available resolution
          $flavor = $flavours[0];
-         //select flovour bigger than requested
+
+        /*
+         * handle dynamic and embed display mode
+         *
+         * set default width
+        */
+         if(empty($width)) {
+             list($width, $height) = getimagesize($CC_RENDER_PATH . DIRECTORY_SEPARATOR . $this -> getName() . DIRECTORY_SEPARATOR . $this -> esObject -> getSubPath() . DIRECTORY_SEPARATOR . $tmpFile);
+             if($width > $height) {
+                 $width = self::FORMAT_IMAGE_RESOLUTIONS_M;
+             } else {
+                 $width = self::FORMAT_IMAGE_RESOLUTIONS_S * $width / $height;
+             }
+         }
+
+         //find best matching flavour
          foreach($flavours as $f) {
              if(intval($width) <= $f)
                  $flavor = $f;
          }
+
          return $flavor;
     }
 

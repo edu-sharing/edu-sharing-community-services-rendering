@@ -41,6 +41,7 @@ extends ESRender_Module_ContentNode_Abstract {
 			$template_data = parent::prepareRenderData($requestData);
 			$template_data['title'] = (empty($title) ? $this -> _ESOBJECT -> getTitle() : $title);
 			$template_data['content'] = $this -> _ESOBJECT -> getPath() . $this -> getContentPathSuffix();
+            $template_data['objectId'] = $this -> _ESOBJECT -> getObjectID();
            if($TemplateName == '/module/h5p/dynamic' && Config::get('showMetadata'))
                 $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
 

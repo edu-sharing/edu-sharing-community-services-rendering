@@ -505,13 +505,14 @@ class ESObject {
      * @return bool
      */
     public function setModule() {
+
         // runtime sanity
         if (empty($this -> AlfrescoNode)) {
             throw new Exception('No Alfresco-properties set.');
         }
 
         if(Config::get('renderInfoLMSReturn')->hasContentLicense === false) {
-            error_log('"hasContentLicense" is false!');
+            Logger::getLogger('de.metaventis.esrender.index') -> info('"hasContentLicense" is false, using module "doc".');
             $this -> ESModule -> setName('doc');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
@@ -519,7 +520,7 @@ class ESObject {
         }
 
         if(Config::get('renderInfoLMSReturn')->directory) {
-            error_log('Property "directory" is true, using module "directory".');
+            Logger::getLogger('de.metaventis.esrender.index') -> info('Property "directory" is true, using module "directory".');
             $this -> ESModule -> setName('directory');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
@@ -528,7 +529,7 @@ class ESObject {
 
         $toolInstanceKey = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}tool_instance_key');
         if(!empty($toolInstanceKey)) {
-            error_log('{http://www.campuscontent.de/model/1.0}tool_instance_ref equals set, using module "lti".');
+            Logger::getLogger('de.metaventis.esrender.index') -> info('{http://www.campuscontent.de/model/1.0}tool_instance_ref equals set, using module "lti".');
             $this -> ESModule -> setName('lti');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
@@ -536,7 +537,7 @@ class ESObject {
         }
 
         if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'YOUTUBE') {
-            error_log('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "YOUTUBE", using module "url".');
+            Logger::getLogger('de.metaventis.esrender.index') -> info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "YOUTUBE", using module "url".');
             $this -> ESModule -> setName('url');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
@@ -544,7 +545,7 @@ class ESObject {
         }
 
         if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'LEARNINGAPPS') {
-            error_log('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
+            Logger::getLogger('de.metaventis.esrender.index') -> info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
             $this -> ESModule -> setName('learningapps');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
@@ -552,7 +553,7 @@ class ESObject {
         }
 
         if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'oai:dmglib.org') {
-            error_log('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "oai:dmglib.org", using module "url".');
+            Logger::getLogger('de.metaventis.esrender.index') -> info('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "oai:dmglib.org", using module "url".');
             $this -> ESModule -> setName('url');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
@@ -562,7 +563,7 @@ class ESObject {
         $wwwurl = $this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}wwwurl');
 
         if ($this -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}replicationsource') == 'DE.FWU' && !empty($wwwurl)) {
-            error_log('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "DE.FWU" and {http://www.campuscontent.de/model/1.0}wwwurl set, using module "url".');
+            Logger::getLogger('de.metaventis.esrender.index') -> info('Property {http://www.campuscontent.de/model/1.0}replicationsource equals "DE.FWU" and {http://www.campuscontent.de/model/1.0}wwwurl set, using module "url".');
             $this -> ESModule -> setName('url');
             $this -> ESModule -> loadModuleData();
             $this -> ESOBJECT_ESMODULE_ID = $this -> ESModule -> getModuleId();
@@ -571,16 +572,16 @@ class ESObject {
 
         // load appropriate module
         if (!empty($wwwurl)) {
-            error_log('Property {http://www.campuscontent.de/model/1.0}wwwurl found, using module "url".');
+            Logger::getLogger('de.metaventis.esrender.index') -> info('Property {http://www.campuscontent.de/model/1.0}wwwurl found, using module "url".');
             $this -> ESModule -> setName('url');
         } else if ($this -> ESOBJECT_MIMETYPE == 'application/zip' || $this -> ESOBJECT_MIMETYPE == 'application/vnd.moodle.backup') {
             if (!$this -> ESModule -> setModuleByResource($this -> ESOBJECT_RESOURCE_TYPE, $this -> ESOBJECT_RESOURCE_VERSION)) {
-                error_log('Could not set module by resource-type/-version, using default ("doc") module.');
+                Logger::getLogger('de.metaventis.esrender.index') -> info('Could not set module by resource-type/-version, using default ("doc") module.');
                 $this -> ESModule -> setName('doc');
             }
         } else {
             if (!$this -> ESModule -> setModuleByMimetype($this -> ESOBJECT_MIMETYPE)) {
-                error_log('Could not set module by mimetype using default ("doc") module.');
+                Logger::getLogger('de.metaventis.esrender.index') -> info('Could not set module by mimetype using default ("doc") module.');
                 $this -> ESModule -> setName('doc');
             }
         }

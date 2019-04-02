@@ -88,7 +88,17 @@ class ESRender_DataProtectionRegulation_Handler {
                 break;
             case 'YOUTUBE':
             case 'VIMEO':
-                $button = '<a href="#" onclick="event.preventDefault();var frame=document.getElementById(\''.$uniqueId.'\');this.parentElement.parentElement.style.display=\'none\';frame.src=frame.getAttribute(\'data-src\');frame.style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
+                $button = '<a href="#" onclick="event.preventDefault();';
+                $button .= 'var frame=document.getElementById(\''.$uniqueId.'\');';
+                $button .= 'this.parentElement.parentElement.style.display=\'none\';';
+                $button .= 'frame.src=frame.getAttribute(\'data-src\');';
+                $button .= 'frame.style.display=\'block\';';
+                $button .= 'frame.parentElement.style.position=\'\';';
+                $button .= 'frame.parentElement.style.position=\'relative\';';
+                $button .= 'frame.parentElement.style.paddingBottom=\'56.25%\';';
+                $button .= 'frame.parentElement.style.paddingTop=\'25px\';';
+                $button .= 'frame.parentElement.style.height=\'0\';"';
+                $button .= 'class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
                 $return = '
                     <div class="dataProtectionRegulations">
                         <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>

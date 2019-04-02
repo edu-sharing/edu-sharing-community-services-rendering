@@ -134,14 +134,15 @@ extends ESRender_Module_NonContentNode_Abstract {
         $height = $width * 0.5625;
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
         $objId = $this -> _ESOBJECT -> getObjectID();
+        $videoWrapperInnerStyle = 'position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;';
         //wrappers needed to handle max width
         if($this -> isYoutubeRemoteObject()){
             $vidId = $this->_ESOBJECT->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/1.0}remotenodeid');
             $applyDataProtectionRegulationsDialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
             return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
-            			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+            			<div class="videoWrapperInner" style="'.($applyDataProtectionRegulationsDialog?'':$videoWrapperInnerStyle).'">
 			                '.$applyDataProtectionRegulationsDialog.'
-            				<iframe style="' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '" id="' . $objId . '" width="' . $width . '" height="' . $height . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            				<iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video"></iframe>
             			</div>
             			'.$footer.'
             		</div>';
@@ -156,9 +157,9 @@ extends ESRender_Module_NonContentNode_Abstract {
             $vidId = $params['v'];
             $applyDataProtectionRegulationsDialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
             return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
-                        <div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+                        <div class="videoWrapperInner" style="'.($applyDataProtectionRegulationsDialog?'':$videoWrapperInnerStyle).'">
                            '.$applyDataProtectionRegulationsDialog.'
-                            <iframe style="' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '" id="' . $objId . '" width="' . $width . '" height="'.$height.'" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+                            <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video"></iframe>
                         </div>
                         '.$footer.'
                     </div>';
@@ -168,9 +169,9 @@ extends ESRender_Module_NonContentNode_Abstract {
             $vidId = end($urlArr);
             $applyDataProtectionRegulationsDialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Vimeo', 'https://help.vimeo.com/hc/de/sections/203915088-Datenschutz', 'player.vimeo.com', 'VIMEO');
             return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-            			<div class="videoWrapperInner" style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
+            			<div class="videoWrapperInner" style="'.($applyDataProtectionRegulationsDialog?'':$videoWrapperInnerStyle).'">
             			    '.$applyDataProtectionRegulationsDialog.'
-            				<iframe style="' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '" id="' . $objId . '" width="'.$width.'" height="'.$height.'" data-src="//player.vimeo.com/video/' . $vidId . '" src="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            				<iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '" id="' . $objId . '" data-src="//player.vimeo.com/video/' . $vidId . '" src="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video"></iframe>
             			</div>
             			'.$footer.'
             		</div>';

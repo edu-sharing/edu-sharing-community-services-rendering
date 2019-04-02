@@ -214,3 +214,7 @@ div.h5p-container {
 .edusharing_rendering_metadata_body .mdsGroup:first-child {
 	margin-top: 0 !important;
 }
+
+.dataProtectionRegulations, .dataProtectionRegulationsDialog {
+    border-radius: 5px;
+}

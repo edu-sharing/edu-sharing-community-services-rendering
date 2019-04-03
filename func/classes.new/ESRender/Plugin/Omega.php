@@ -102,7 +102,7 @@ class ESRender_Plugin_Omega
             throw new ESRender_Exception_Omega('given streamURL is invalid', $status);
 
         if($response -> get -> downloadURL) {
-            Config::set('downloadUrl', $MC_URL . '/'.''.'?downloadUrl='.urlencode($response -> get -> downloadURL).
+            Config::set('downloadUrl', $MC_URL . '/theme/redirect.php?downloadUrl='.urlencode($response -> get -> downloadURL).
                 '&filename=' . urlencode($contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name'))
             );
         }

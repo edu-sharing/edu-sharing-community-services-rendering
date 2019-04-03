@@ -103,8 +103,7 @@ class ESRender_Plugin_Omega
 
         if($response -> get -> downloadURL) {
             Config::set('downloadUrl', $MC_URL . '/'.''.'?downloadUrl='.urlencode($response -> get -> downloadURL).
-                '&filename=' . urlencode($contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name')).
-                '&mimeType=' . urlencode($contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name'))
+                '&filename=' . urlencode($contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name'))
             );
         }
 

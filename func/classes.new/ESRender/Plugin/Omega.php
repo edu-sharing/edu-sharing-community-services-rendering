@@ -76,8 +76,6 @@ class ESRender_Plugin_Omega
 
     protected function evaluateResponse($response = null, $contentNode) {
 
-        global $MC_URL;
-
         if(empty($response))
             throw new ESRender_Exception_Omega('API respsonse is empty');
 
@@ -102,10 +100,7 @@ class ESRender_Plugin_Omega
             throw new ESRender_Exception_Omega('given streamURL is invalid', $status);
 
         if($response -> get -> downloadURL) {
-            Config::set('downloadUrl', $MC_URL . '/'.''.'?downloadUrl='.urlencode($response -> get -> downloadURL).
-                '&filename=' . urlencode($contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name')).
-                '&mimeType=' . urlencode($contentNode -> getProperty('{http://www.alfresco.org/model/content/1.0}name'))
-            );
+            Config::set('downloadUrl', $response -> get -> downloadURL);
         }
 
         return $response;

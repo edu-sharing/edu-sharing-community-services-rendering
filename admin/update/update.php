@@ -313,6 +313,25 @@ function run($installedVersion) {
             }
         }
 
+        if (version_compare ( '4.0.12', $installedVersion ) > 0) {
+            $pdo = RsPDO::getInstance();
+            if($pdo -> getDriver() == 'pgsql') {
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESOBJECT` ALTER COLUMN `ESOBJECT_TITLE` TYPE varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESOBJECT` ALTER COLUMN `ESOBJECT_ALF_FILENAME` TYPE varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+            } else if ($pdo -> getDriver() == 'mysql') {
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESOBJECT` MODIFY `ESOBJECT_TITLE` varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESOBJECT` MODIFY `ESOBJECT_ALF_FILENAME` varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+            }
+        }
+
         if(version_compare ( '4.1.0', $installedVersion ) > 0) {
             file_put_contents(MC_ROOT_PATH . 'modules/video/config.php', 'define(\'OPTION_THREADS\', 1);', FILE_APPEND | LOCK_EX);
 

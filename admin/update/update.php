@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '4.1.6' );
+define ( 'UPDATEVERSION', '4.1.7' );
 set_time_limit(18000);
 ini_set('memory_limit', '2048M');
 
@@ -352,7 +352,7 @@ function run($installedVersion) {
             $stmt->execute();
         }
 
-        if(version_compare ( '4.1.6', $installedVersion ) > 0) {
+        if(version_compare ( '4.1.7', $installedVersion ) > 0) {
             //fix 4.0.12
             $pdo = RsPDO::getInstance();
             if ($pdo->getDriver() == 'pgsql') {

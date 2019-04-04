@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '4.0.11' );
+define ( 'UPDATEVERSION', '4.0.12' );
 set_time_limit(1800);
 ini_set('memory_limit', '2048M');
 
@@ -322,6 +322,26 @@ function run($installedVersion) {
                 $stmt->execute ();
             }
         }
+
+        if (version_compare ( '4.0.12', $installedVersion ) > 0) {
+            $pdo = RsPDO::getInstance();
+            if($pdo -> getDriver() == 'pgsql') {
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESOBJECT` ALTER COLUMN `ESOBJECT_TITLE` TYPE varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESOBJECT` ALTER COLUMN `ESOBJECT_ALF_FILENAME` TYPE varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+            } else if ($pdo -> getDriver() == 'mysql') {
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESOBJECT` MODIFY `ESOBJECT_TITLE` varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+                $sql = $pdo->formatQuery ('ALTER TABLE `ESOBJECT` MODIFY `ESOBJECT_ALF_FILENAME` varchar(512);');
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->execute ();
+            }
+        }
+
 
 	} catch ( Exception $e ) {
 		error_log ( print_r ( $e, true ) );

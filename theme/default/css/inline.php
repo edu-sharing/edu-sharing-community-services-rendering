@@ -62,6 +62,7 @@ ul.edusharing_rendering_content_video_options_resolutions i {
 ul.edusharing_rendering_content_video_options_resolutions > li {
     cursor: pointer;
     padding: 4px 0;
+    list-style: none;
 }
 
 ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_rendering_content_video_options_resolutions_converting {

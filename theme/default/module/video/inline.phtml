@@ -40,7 +40,7 @@
         $(this).prepend('<i class="material-icons">done</i>');
         var video_<?php echo $videoObjectIdentifier ?> = document.getElementById('<?php echo $videoObjectIdentifier?>');
         video_<?php echo $videoObjectIdentifier ?>.pause();
-        video_<?php echo $videoObjectIdentifier ?>.setAttribute('src', url + '#t=' + Math.ceil(video_<?php echo $videoObjectIdentifier ?>.currentTime)); // ie not working
+        video_<?php echo $videoObjectIdentifier ?>.setAttribute('src', url + '#t=' + Math.ceil(video_<?php echo $videoObjectIdentifier ?>.currentTime)); /* ie not working */
         video_<?php echo $videoObjectIdentifier ?>.load();
         video_<?php echo $videoObjectIdentifier ?>.play();
     });

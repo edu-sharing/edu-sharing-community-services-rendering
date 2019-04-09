@@ -13,17 +13,7 @@ define("VIDEO_TOKENS", serialize(array(VIDEO_TOKEN_YOUTUBE, VIDEO_TOKEN_VIMEO)))
 class mod_url
 extends ESRender_Module_NonContentNode_Abstract {
 
-    /**
-     * Deprecated
-     *
-     * (non-PHPdoc)
-     * @see ESRender_Module_Base::display()
-     */
-    protected function display(array $requestData) {
-        return true;
-    }
-    
-    protected function dynamic(array $requestData) {
+    protected function dynamic() {
     	if (!$this -> validate()) {
     		return false;
     	}
@@ -40,50 +30,90 @@ extends ESRender_Module_NonContentNode_Abstract {
     		$embedding = '';
 
     	$Template = $this -> getTemplate();
-    	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this->_ESOBJECT->getPreviewUrl());
+    	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl());
     	if(Config::get('showMetadata'))
-    		$tempArray['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+    		$tempArray['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
     	
-    	$tempArray['title'] = $this->_ESOBJECT->getTitle();
+    	$tempArray['title'] = $this -> esObject->getTitle();
     	echo $Template -> render('/module/url/dynamic', $tempArray);
     
     	return true;
     }
-    
-    protected function inline(array $requestData) {
+
+    protected function embed() {
         if (!$this -> validate()) {
             return false;
         }
-        $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
+
+        if(Config::get('urlEmbedding'))
+            $embedding = Config::get('urlEmbedding');
+        else if ($this -> detectVideo())
+            $embedding = $this -> getVideoEmbedding();
+        else if($this -> detectAudio())
+            $embedding = $this -> getAudioEmbedding();
+        else if($this -> detectImage())
+            $embedding = $this -> getImageEmbedding();
+        else
+            $embedding = '';
+
+
+        $license = $this -> esObject->getLicense();
         if(!empty($license)) {
-            $license = $license -> renderFooter($this -> getTemplate(), $this->lmsInlineHelper($requestData));
+            $license = $license -> renderFooter($this -> getTemplate(), $this->lmsInlineHelper());
         }
 
         $sequence = '';
-        if($this -> _ESOBJECT -> sequenceHandler -> isSequence())
-            $sequence = $this -> _ESOBJECT -> sequenceHandler -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper($requestData));
+        if($this -> esObject -> getSequenceHandler() -> isSequence())
+            $sequence = $this -> esObject -> getSequenceHandler() -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper());
 
         $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING) {
-            $metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/inline');
+            $metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
         }
 
-        $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> _ESOBJECT -> getTitle()));
+        $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> esObject -> getTitle()));
+        $Template = $this -> getTemplate();
+        $tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl(), 'footer' => $footer);
+
+        echo $Template -> render('/module/url/embed', $tempArray);
+
+        return true;
+    }
+    
+    protected function inline() {
+        if (!$this -> validate()) {
+            return false;
+        }
+        $license = $this -> esObject->getLicense();
+        if(!empty($license)) {
+            $license = $license -> renderFooter($this -> getTemplate(), $this->lmsInlineHelper());
+        }
+
+        $sequence = '';
+        if($this -> esObject -> getSequenceHandler() -> isSequence())
+            $sequence = $this -> esObject -> getSequenceHandler() -> render($this -> getTemplate(), '/sequence/inline', $this->lmsInlineHelper());
+
+        $metadata = '';
+        if(ENABLE_METADATA_INLINE_RENDERING) {
+            $metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
+        }
+
+        $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> esObject -> getTitle()));
 
 
         if(Config::get('urlEmbedding')) {
             $embedding = Config::get('urlEmbedding') . $footer;
         } else if ($this -> detectVideo()) {
-            $embedding = $this -> getVideoEmbedding($requestData['width'], $footer);
+            $embedding = $this -> getVideoEmbedding(mc_Request::fetch('width', 'INT', 600), $footer);
         } else if($this -> detectAudio()) {
             $embedding = $this->getAudioEmbedding($footer);
         } else if($this -> detectImage()) {
             $embedding = $this -> getImageEmbedding($footer);
         } else {
-            $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
+            $license = $this -> esObject->getLicense();
             if (!empty($license))
                 $license = $license->renderFooter($this->getTemplate(), $this->getUrl());
-            $embedding = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this->_ESOBJECT->getTitle(), 'url' => $this->getUrl()));
+            $embedding = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> esObject->getTitle(), 'url' => $this->getUrl()));
         }
 
         $data = array('embedding' => $embedding);
@@ -101,7 +131,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
     
     protected function isYoutubeRemoteObject() {
-        if($this -> _ESOBJECT -> AlfrescoNode -> getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') == 'YOUTUBE')
+        if($this -> esObject -> getNode() -> remote -> repository -> repositoryType  == 'YOUTUBE')
             return true;
         return false;
     }
@@ -114,12 +144,12 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function getAudioEmbedding($footer = '')
     {
-        return '<div><audio style="max-width:100%" src="' . $this->getUrl() . '" type="' . $this->_ESOBJECT->getMimeType() . '" controls="controls" oncontextmenu="return false;"></audio>' . $footer . '</div>';
+        return '<div><audio style="max-width:100%" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls" oncontextmenu="return false;"></audio>' . $footer . '</div>';
     }
 
         protected function getImageEmbedding($footer = '')
         {
-            return '<div><img title="' . $this->_ESOBJECT->getTitle() . '" alt="' . $this->_ESOBJECT->getTitle() . '" src="' . $this->getUrl() . '" style="max-width: 100%">
+            return '<div><img title="' . $this -> esObject->getTitle() . '" alt="' . $this -> esObject->getTitle() . '" src="' . $this->getUrl() . '" style="max-width: 100%">
                 ' . $footer . '</div>';
         }
 
@@ -133,11 +163,12 @@ extends ESRender_Module_NonContentNode_Abstract {
         //16:9
         $height = $width * 0.5625;
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
-        $objId = $this -> _ESOBJECT -> getObjectID();
+        $objId = $this -> esObject -> getObjectID();
         $videoWrapperInnerStyle = 'position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;';
+
         //wrappers needed to handle max width
         if($this -> isYoutubeRemoteObject()){
-            $vidId = $this->_ESOBJECT->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/1.0}remotenodeid');
+            $vidId = $this -> esObject -> getNode() -> remote -> id;
             $applyDataProtectionRegulationsDialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
             return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
             			<div class="videoWrapperInner" style="'.($applyDataProtectionRegulationsDialog?'':$videoWrapperInnerStyle).'">
@@ -146,7 +177,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             			</div>
             			'.$footer.'
             		</div>';
-         }
+        }
         else if (strpos($this -> getUrl(), VIDEO_TOKEN_YOUTUBE) !== false) {
             $parsedUrl = parse_url($this -> getUrl());
             $paramsArr = explode('&', $parsedUrl['query']);
@@ -176,7 +207,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             			'.$footer.'
             		</div>';
         } else {
-            $type = $this->_ESOBJECT->getMimeType();
+            $type = $this -> esObject->getMimeType();
             if(pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'mp4' || pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'webm') {
                 $type = 'video/' . pathinfo($this -> getUrl(), PATHINFO_EXTENSION);
             }
@@ -195,7 +226,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getUrl() {
-        $urlProp = $this -> _ESOBJECT -> AlfrescoNode -> getProperty($this -> getUrlProperty());
+        $urlProp = $this -> esObject -> getNodeProperty($this -> getUrlProperty());
        if(!empty($urlProp))
             return $urlProp;
         return false;
@@ -216,23 +247,23 @@ extends ESRender_Module_NonContentNode_Abstract {
             return true;
         
         //filter videos that are embedded in html
-        if(strpos($this->_ESOBJECT->getMimeType(), 'video') !== false && strpos($this -> getUrl(), '.htm') === false && strpos($this -> getUrl(), '.php') === false)
+        if(strpos($this -> esObject->getMimeType(), 'video') !== false && strpos($this -> getUrl(), '.htm') === false && strpos($this -> getUrl(), '.php') === false)
         	return true;
         
         return false;
     }
     
     protected function detectAudio() {
-    	if(strpos($this->_ESOBJECT->getMimeType(), 'audio') !== false)
+    	if(strpos($this -> esObject->getMimeType(), 'audio') !== false)
     		return true;
     }
 
     protected function detectImage() {
-        if((strpos($this->_ESOBJECT->getMimeType(), '/png') !== false ||
-            strpos($this->_ESOBJECT->getMimeType(), '/jpg') !== false ||
-            strpos($this->_ESOBJECT->getMimeType(), '/jpeg') !== false ||
-            strpos($this->_ESOBJECT->getMimeType(), '/gif') !== false) &&
-            $this->_ESOBJECT->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') !== 'DDB')
+        if((strpos($this -> esObject->getMimeType(), '/png') !== false ||
+            strpos($this -> esObject->getMimeType(), '/jpg') !== false ||
+            strpos($this -> esObject->getMimeType(), '/jpeg') !== false ||
+            strpos($this -> esObject->getMimeType(), '/gif') !== false) &&
+            $this -> esObject -> getNodeProperty('ccm:remoterepositorytype') !== 'DDB')
             return true;
         return false;
     }
@@ -242,7 +273,7 @@ extends ESRender_Module_NonContentNode_Abstract {
      *
      * @var string
      */
-    var $UrlProperty = '{http://www.campuscontent.de/model/1.0}wwwurl';
+    var $UrlProperty = 'ccm:wwwurl';
                         
      /**
      * Set the name of the property which should contain the url of interest.

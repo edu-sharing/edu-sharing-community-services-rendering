@@ -55,12 +55,14 @@ extends ESRender_Module_Base
                 $Logger->error('Error creating path "'.$this->render_path.'".');
                 return false;
             }
+            $Logger->debug('Created path "'.$this->render_path.'".');
 
             if ( ! chmod($this->render_path, 0777) )
             {
                 $Logger->error('Error changing permissions on "'.$this->render_path.'".');
                 return false;
             }
+            $Logger->debug('Changed permissions on "'.$this->render_path.'".');
         }
         
         try {       
@@ -76,9 +78,14 @@ extends ESRender_Module_Base
             $params = 'repId=' . $this -> esObject -> getNode() -> ref -> repo . '&appId='.Config::get('homeConfig')->prop_array['appid'] . '&nodeId=' .
                 $this -> esObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $this -> esObject -> getObjectVersion();
             $url .= $path . $params;
-            
+
             $handle = fopen($cacheFile, "wb");
-            
+
+            if(false === $handle || empty($cacheFile)) {
+                $Logger->error('Cannot open handle for ' . $cacheFile);
+                return false;
+            }
+
             $content = $this->getContent($url);
 
             if($content === false) {
@@ -100,12 +107,14 @@ extends ESRender_Module_Base
     }
     
     protected function getContent($url) {
-        $Logger = $this->getLogger();   
+        $Logger = $this->getLogger();
+
         $handle = fopen($url, "rb");
         if($handle === false) {
-            $Logger->error('Cannot open ' . $url); 
+            $Logger->error('Cannot open ' . $url);
+            return false;
         }
-        
+
         $result = stream_get_contents($handle);
         fclose($handle);
         return $result;

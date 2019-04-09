@@ -151,6 +151,8 @@ class ESModule {
 			//throw new Exception('Cannot load module having empty module-name.');
 		}
 
+        Logger::getLogger('de.metaventis.esrender.index') -> info('Mimetype is "'.$MimeType.'", using module "'.$result -> ESMODULE_NAME.'".');
+
 		$this->ESMODULE_NAME = $result -> ESMODULE_NAME;
 
 		return true;
@@ -186,7 +188,7 @@ class ESModule {
 				if (file_exists(dirname(__FILE__).'/../../modules/qti21/config.php')) {
 					$this->ESMODULE_NAME = 'qti21';
 				} else {
-					error_log('Module qti21 not configured so use default ("doc") module.');
+                    Logger::getLogger('de.metaventis.esrender.index') -> info('Module qti21 not configured so use default ("doc") module.');
 					$this->ESMODULE_NAME = 'doc';
 				}
 				break;
@@ -204,11 +206,10 @@ class ESModule {
 				break;
 
 			default :
-				error_log('Could not set module by resource-type/-version.');
+                Logger::getLogger('de.metaventis.esrender.index') -> info('Could not set module by resource-type/-version.');
 				return false;
 		}
-
-		error_log('Using module "'.$this->ESMODULE_NAME.'" from resource-type/-version.');
+        Logger::getLogger('de.metaventis.esrender.index') -> info('Using module "'.$this->ESMODULE_NAME.'" from resource-type/-version.');
 
 		return true;
 	}

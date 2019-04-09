@@ -1,3 +1,4 @@
+.idea
 .buildpath
 .project
 .settings
@@ -6,6 +7,7 @@ conf/de.metaventis.esrender.log4php.cachecleaner.properties
 conf/esmain
 conf/system.conf.php
 conf/plugins.conf.php
+func/extern/htmlpurifier/standalone/HTMLPurifier/DefinitionCache/Serializer/*
 install/_tmpl/log.php
 log/conversion/*
 !log/conversion/.gitignore
@@ -15,4 +17,3 @@ log/cacheCleaner.log
 log/esrender.log
 log/redirect.log
 modules/*/config.php
-.idea

@@ -30,13 +30,14 @@ class ESRender_Plugin_Omega
         $logger->info('Replicationsource: ' . $contentNode->getNodeProperty('ccm:replicationsource') . ', format: ' .
             $contentNode->getNodeProperty('cclom:format') .', replicationsourceid: ' . $contentNode->getNodeProperty('ccm:replicationsourceid'));
 
-        if(Config::get('renderInfoLMSReturn') -> hasContentLicense === false) {
-            $logger->info('hasContentLicense is false');
-            return;
-        }
+        //check!
+        //if(Config::get('renderInfoLMSReturn') -> hasContentLicense === false) {
+        //    $logger->info('hasContentLicense is false');
+        //    return;
+        //}
 
-        if(Config::get('renderInfoLMSReturn') -> contentHash > -1) {
-            $logger->info('contentHash > -1 handle as local object');
+        if(Config::get('renderInfoLMSReturn') -> contentHash !== -1) {
+            $logger->info('contentHash !== -1 handle as local object');
             return;
         }
 

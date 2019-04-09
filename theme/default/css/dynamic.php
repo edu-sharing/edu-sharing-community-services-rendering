@@ -18,6 +18,7 @@ body {
 	margin: 0;
 	font-size: 100%;
 	min-height: 100%;
+    padding-bottom: 1px;
 }
 
 #edusharing_rendering_metadata {
@@ -196,10 +197,9 @@ a.dataProtectionRegulationsButton {
 	h1.edusharing_rendering_metadata_header_title {
 		margin: 1.8rem 0 2rem 20px;
 	}
-	#edusharing_htmlobject, .edusharing_etherpad {
+	#edusharing_htmlobject, .edusharing_etherpad, img.edusharing_rendering_content_preview {
 		max-width: 100%;
 	}
-
 }
 
 
@@ -209,4 +209,8 @@ a.dataProtectionRegulationsButton {
 }
 .edusharing_rendering_metadata_body .mdsGroup:first-child {
 	margin-top: 0 !important;
+}
+
+.dataProtectionRegulations, .dataProtectionRegulationsDialog {
+    border-radius: 5px;
 }

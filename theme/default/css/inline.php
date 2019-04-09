@@ -334,7 +334,6 @@ video, audio {
 .dataProtectionRegulations, .dataProtectionRegulationsDialog {
 background: #fff;
 padding: 20px;
-border-radius: 5px;
 -webkit-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 -moz-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);

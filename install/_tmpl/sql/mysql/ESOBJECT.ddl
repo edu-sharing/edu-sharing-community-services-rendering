@@ -1,7 +1,7 @@
 CREATE TABLE `ESOBJECT` (
   `ESOBJECT_ID` int(11) NOT NULL auto_increment,
   `ESOBJECT_ESMODULE_ID` int(11) default NULL,
-  `ESOBJECT_TITLE` varchar(150) default NULL,
+  `ESOBJECT_TITLE` varchar(512) default NULL,
   `ESOBJECT_ALF_FILENAME` varchar(100) default NULL,
   `ESOBJECT_REP_ID` varchar(100) default NULL,
   `ESOBJECT_OBJECT_ID` varchar(100) default NULL,

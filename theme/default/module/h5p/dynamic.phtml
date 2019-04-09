@@ -22,8 +22,22 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
                     frameCss: '<?php echo $MC_URL?>/theme/default/css/h5p.css',
                     h5pContent: '<?php echo str_replace('cache/', '', $content)?>'
                 });
-            })(H5P.jQuery);}
-        else{
+
+               /* setTimeout(function(){
+                    H5P.externalDispatcher.on('xAPI', function (event) {
+                        alert('xAPI event: ', event);
+                        if (event.data.statement.result) {
+                            alert('It\'s a completed event.');
+                            // Send to server. . . .
+                        }
+                        if (event.getScore() === event.getMaxScore() && event.getMaxScore() > 0){
+                            alert('scored');
+                        }
+                    });
+                }, 1000);*/
+
+            })(H5P.jQuery);
+        } else{
             setTimeout(waitForH5P, 50);
         }
     }

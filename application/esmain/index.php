@@ -348,6 +348,11 @@ try {
 
     $Logger -> info('Successfully fetched instance.');
 
+    if(mc_Request::fetch('display', 'CHAR') == 'null') {
+        $Logger -> info('Prerender request - exit.');
+        exit(0);
+    }
+
     $Logger -> info('Preparing render-session.');
 
     // prepare module render data

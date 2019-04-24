@@ -325,7 +325,7 @@ function run($installedVersion) {
 
             $pdo = RsPDO::getInstance();
 
-            $sql = $pdo -> formatQuery( 'SELECT max(`ESMODULE_ID`) FROM `ESMODULE`' );
+            $sql = $pdo -> formatQuery( 'SELECT max(`ESMODULE_ID`) as max FROM `ESMODULE`' );
             $stmt = $pdo -> prepare ( $sql );
             $stmt -> execute();
             $result = $stmt -> fetchObject();
@@ -338,7 +338,7 @@ function run($installedVersion) {
             $stmt->bindValue ( ':moddesc', 'h5p' );
             $stmt->execute ();
 
-            $sql = $pdo -> formatQuery( 'SELECT max(`ESMODULE_ID`) FROM `ESMODULE`' );
+            $sql = $pdo -> formatQuery( 'SELECT max(`ESMODULE_ID`) as max FROM `ESMODULE`' );
             $stmt = $pdo -> prepare ( $sql );
             $stmt -> execute();
             $result = $stmt -> fetchObject();
@@ -367,7 +367,7 @@ function run($installedVersion) {
             $stmt->bindValue ( ':name', 'scorm2004' );
             $stmt->execute ();
 
-            $sql = $pdo -> formatQuery( 'SELECT max(`ESMODULE_ID`) FROM `ESMODULE`' );
+            $sql = $pdo -> formatQuery( 'SELECT max(`ESMODULE_ID`) as max FROM `ESMODULE`' );
             $stmt = $pdo -> prepare ( $sql );
             $stmt -> execute();
             $result = $stmt -> fetchObject();

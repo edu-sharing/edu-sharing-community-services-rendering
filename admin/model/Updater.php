@@ -50,15 +50,23 @@ class Updater {
 			return true;
 		return false;
 	}
-	
-	private function setUpdateVersion() {
-		$pdo = RsPDO::getInstance();
-		$sql = $pdo -> formatQuery('INSERT INTO `VERSION` (`VERSION_VNUMBER`, `VERSION_TYPE`) VALUES (:version, :type)');
-		$stmt = $pdo -> prepare($sql);
-		$stmt -> bindValue(':version', $this -> updateVersion);
-		$stmt -> bindValue(':type', 'update');
-		return $stmt -> execute();
-	}
+
+    private function setUpdateVersion() {
+        $pdo = RsPDO::getInstance();
+
+        $sql = $pdo -> formatQuery( 'SELECT max(`VERSION_ID`) as max FROM `VERSION`' );
+        $stmt = $pdo -> prepare ( $sql );
+        $stmt -> execute();
+        $result = $stmt -> fetchObject();
+        $maxPrimaryKey = $result->max;
+
+        $sql = $pdo -> formatQuery('INSERT INTO `VERSION` (`VERSION_ID`, `VERSION_VNUMBER`, `VERSION_TYPE`) VALUES (:versionid, :version, :type)');
+        $stmt = $pdo -> prepare($sql);
+        $stmt -> bindValue(':versionid', $maxPrimaryKey + 1);
+        $stmt -> bindValue(':version', $this -> updateVersion);
+        $stmt -> bindValue(':type', 'update');
+        return $stmt -> execute();
+    }
 	
 	private function getInstalledVersion() {
 	    $version=new Version();

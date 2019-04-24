@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '4.0.12' );
+define ( 'UPDATEVERSION', '4.0.13' );
 set_time_limit(1800);
 ini_set('memory_limit', '2048M');
 
@@ -296,9 +296,15 @@ function run($installedVersion) {
             $stmt->bindValue ( ':mime', 'text/plain' );
             $stmt->execute ();
 
-            $pdo = RsPDO::getInstance();
-            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modname, :moddesc)' );
+            $sql = $pdo -> formatQuery( 'SELECT max(`ESMODULE_ID`) FROM `ESMODULE`' );
+            $stmt = $pdo -> prepare ( $sql );
+            $stmt -> execute();
+            $result = $stmt -> fetchObject();
+            $maxPrimaryKey = $result->max;
+
+            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_ID`, `ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modid, :modname, :moddesc)' );
             $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':modid', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':modname', 'learningapps' );
             $stmt->bindValue ( ':moddesc', 'learningapps' );
             $stmt->execute ();

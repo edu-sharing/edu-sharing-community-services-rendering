@@ -60,7 +60,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
-		$params = array('nodeid'=> $requestData['object_id'],'category' => '1', 'title' => htmlentities($this->_ESOBJECT->getTitle()));
+		$params = array('nodeid'=> $requestData['object_id'],'category' => MOODLE_CATEGORY_ID, 'title' => htmlentities($this->_ESOBJECT->getTitle()));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);

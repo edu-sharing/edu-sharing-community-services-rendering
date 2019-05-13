@@ -44,23 +44,30 @@ extends ESRender_Module_ContentNode_Abstract {
 
 
         $logger = $this->getLogger();
-		
-		
+
+
 		if(empty(MOODLE_BASE_DIR)) {
 			$logger->error('MOODLE_BASE_DIR not set');
 			return false;
 		}
-		
+
 		if(empty(MOODLE_TOKEN)) {
 			$logger->error('MOODLE_TOKEN not set');
 			return false;
 		}
-		
+
+		if(empty(MOODLE_CATEGORY_ID)) {
+            $logger->error('MOODLE_CATEGORY_ID not set');
+            return false;
+        }
+
 		$url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_edusharing_restore&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
-		$params = array('nodeid'=> $this -> esObject->getObjectID(),'category' => '1', 'title' => htmlentities($this -> esObject->getTitle()));
+
+		$params = array('nodeid'=> $this -> esObject->getObjectID(),'category' => MOODLE_CATEGORY_ID, 'title' => htmlentities($this -> esObject->getTitle()));
+
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
@@ -84,7 +91,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$logger->error('Error restoring course to moodle - ' . $httpcode . ' ' . json_decode($resp)->exception);
 		return false;
 	}
-	
+
 	private function cacheCourseId($courseId) {
 		$filename = $this -> esObject->getFilePath() . '.txt';
 		$data = $courseId;

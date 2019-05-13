@@ -1,0 +1,5 @@
+<?php
+
+define('MOODLE_BASE_DIR', '');
+define('MOODLE_TOKEN', '');
+define('MOODLE_CATEGORY_ID', '');

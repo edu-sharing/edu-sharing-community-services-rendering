@@ -486,6 +486,9 @@ class ESObject {
         $this -> path = '';
         $this -> hash = $this -> getNode() -> content -> hash;
 
+        if(empty($this -> hash))
+            $this -> hash = 0;
+
         $ressourcetype = $this -> getNodeProperty('ccm:ccressourcetype');
         if (!empty($ressourcetype)) {
             $this -> resourceType = $ressourcetype;

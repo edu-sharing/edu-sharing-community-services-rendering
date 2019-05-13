@@ -431,6 +431,26 @@ function run($installedVersion) {
             $stmt->bindValue ( ':modid', '10' );
             $stmt->bindValue ( ':mime', 'image/webp' );
             $stmt->execute ();
+
+            /*
+             * Because content management as well as image and video processing has massively changed in this release it is not wrong to clear cache
+             */
+            $sql = $pdo->formatQuery ( 'DELETE FROM `ESOBJECT`' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->execute ();
+            $sql = $pdo->formatQuery ( 'DELETE FROM `ESOBJECT_LOCK`' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->execute ();
+            $sql = $pdo->formatQuery ( 'DELETE FROM `ESTRACK`' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->execute ();
+            $sql = $pdo->formatQuery ( 'DELETE FROM `ESOBJECT_CONVERSION`' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->execute ();
+
+            rrmdir(CC_RENDER_PATH, true);
+            if(!empty(CC_RENDER_PATH_SAFE))
+                rrmdir(CC_RENDER_PATH_SAFE, true);
         }
 
     } catch ( Exception $e ) {
@@ -441,7 +461,7 @@ function run($installedVersion) {
     return true;
 }
 
-function rrmdir($dir) {
+function rrmdir($dir, $keepRoot = false) {
     if (is_dir ( $dir )) {
         $objects = scandir ( $dir );
         foreach ( $objects as $object ) {
@@ -452,6 +472,7 @@ function rrmdir($dir) {
                     unlink ( $dir . "/" . $object );
             }
         }
-        rmdir ( $dir );
+        if(!$keepRoot)
+            rmdir ( $dir );
     }
 }

@@ -222,6 +222,10 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      * object. Override this method to implement module-specific behaviour
      * (@see modules/moodle/mod_moodle.php).
      *
+     * From version 5.1 object version is no longer regarded. If an object's content do not change in different versions
+     * we use the existing cache object.
+     * In this case the object version will be overridden in this function and must be interpreted as content version!
+     *
      * (non-PHPdoc)
      * @see ESRender_Module_Interface::instanceExists()
      */
@@ -231,13 +235,12 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         $pdo = RsPDO::getInstance();
 
         try {
-            $sql = 'SELECT * FROM `ESOBJECT` ' . 'WHERE `ESOBJECT_REP_ID` = :repid ' . 'AND `ESOBJECT_CONTENT_HASH` = :contenthash ' . 'AND `ESOBJECT_OBJECT_ID` = :objectid ' . 'AND `ESOBJECT_OBJECT_VERSION` = :version ';
+            $sql = 'SELECT * FROM `ESOBJECT` ' . 'WHERE `ESOBJECT_REP_ID` = :repid ' . 'AND `ESOBJECT_CONTENT_HASH` = :contenthash ' . 'AND `ESOBJECT_OBJECT_ID` = :objectid ';
 
             $stmt = $pdo -> prepare($pdo->formatQuery($sql));
             $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
             $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
             $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
-            $stmt -> bindValue(':version', $this -> esObject -> getObjectVersion());
             $stmt -> execute();
             
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);

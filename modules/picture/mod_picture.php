@@ -170,7 +170,7 @@ extends ESRender_Module_ContentNode_Abstract {
             return self::EXTENSION_SVG;
 
         if($file) {
-            list($origWidth, $origHeight, $type) = getimagesize($file);
+            $type = exif_imagetype ($file);
         }
 
         switch ($type) {
@@ -215,7 +215,7 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
     public function isSvg($filePath) {
-        return 'image/svg+xml' === mime_content_type($filePath) || 'image/svg' === mime_content_type($filePath);
+        return strpos(@mime_content_type($filePath), 'image/svg') !== false;
     }
 
     private function getImageUrl($width = null) {

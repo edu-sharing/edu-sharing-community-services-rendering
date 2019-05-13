@@ -35,6 +35,11 @@ extends ESRender_Module_ContentNode_Abstract {
     const FORMAT_IMAGE_RESOLUTIONS_L = 1920;
     const FORMAT_IMAGE_RESOLUTIONS_M = 1280;
     const FORMAT_IMAGE_RESOLUTIONS_S = 640;
+    const EXTENSION_GIF = 'gif';
+    const EXTENSION_JPEG = 'jpeg';
+    const EXTENSION_PNG = 'png';
+    const EXTENSION_SVG = 'svg';
+    const EXTENSION_WEBP = 'webp';
 
     /**
      *
@@ -47,6 +52,11 @@ extends ESRender_Module_ContentNode_Abstract {
         $Logger = $this -> getLogger();
         try {
 
+            if($this->isSvg($SourceFile)) {
+                copy($SourceFile, $DestinationFile . '.' . self::EXTENSION_SVG);
+                return true;
+            }
+
             list($origWidth, $origHeight, $type) = getimagesize($SourceFile);
 
             switch ($type) {
@@ -58,6 +68,9 @@ extends ESRender_Module_ContentNode_Abstract {
                     break;
                 case IMAGETYPE_PNG:
                     $tmpFile = imagecreatefrompng($SourceFile);
+                    break;
+                case IMAGETYPE_WEBP:
+                    $tmpFile = imagecreatefromwebp($SourceFile);
                     break;
                 case IMAGETYPE_BMP:
                     //php gd image creation from bmp is not implemented
@@ -120,11 +133,25 @@ extends ESRender_Module_ContentNode_Abstract {
                 }
 
 
-                if (!imagepng($newImage, $DestinationFile . '_' . $l . '.png'))
+                $conversionSuccess = false;
+
+
+                /*
+                 * for max compatibility convert all formats to png except jpeg (svg skipped earlier)
+                 */
+                switch ($type) {
+                    case IMAGETYPE_JPEG:
+                        $conversionSuccess = imagejpeg($newImage, $DestinationFile . '_' . $l . '.' . $this -> getFileExtension($type));
+                        break;
+                    default :
+                        $conversionSuccess = imagepng($newImage, $DestinationFile . '_' . $l . '.' . $this -> getFileExtension($type));
+                }
+
+                if (!$conversionSuccess)
                     throw new Exception('Cannot convert image');
                 imagedestroy($newImage);
 
-                $Logger->debug('Converted picture to png.');
+                $Logger->debug('Converted image to ' . $this -> getFileExtension($type));
             }
 
         } catch (Exception $e) {
@@ -132,6 +159,26 @@ extends ESRender_Module_ContentNode_Abstract {
             return false;
         }
         return true;
+    }
+
+    private function getFileExtension($type = null, $file = null) {
+
+        if($type === null && $file === null)
+            throw new Exception('Either a type or file must be provided.');
+
+        if($this->isSvg($file))
+            return self::EXTENSION_SVG;
+
+        if($file) {
+            list($origWidth, $origHeight, $type) = getimagesize($file);
+        }
+
+        switch ($type) {
+            case IMAGETYPE_JPEG:
+                return self::EXTENSION_JPEG;
+            default:
+                return self::EXTENSION_PNG;
+        }
     }
 
     /**
@@ -163,21 +210,27 @@ extends ESRender_Module_ContentNode_Abstract {
         }
 
         $f_path = $this -> esObject -> getFilePath();
-
         $ObjectFilename = str_replace('\\', '/', $f_path);
         return $this -> convertImage($ObjectFilename, $this -> getImageFilename());
     }
 
+    public function isSvg($filePath) {
+        return 'image/svg+xml' === mime_content_type($filePath) || 'image/svg' === mime_content_type($filePath);
+    }
 
     private function getImageUrl($width = null) {
-        return $this -> esObject -> getPath() . '_' . $this -> getFlavour($width) . '.png?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+        $fileExtension = $this -> getFileExtension(null, $this -> esObject -> getFilePath());
+        return $this -> esObject -> getPath() . $this -> getFlavour($width, $fileExtension) . '.' . $fileExtension . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
     }
 
     /*
      * Detect which flavor to show
      * */
-    private function getFlavour($width) {
+    private function getFlavour($width, $fileExtension) {
         global $CC_RENDER_PATH;
+
+        if($fileExtension === self::EXTENSION_SVG)
+            return '';
 
         $flavours = array();
         $tmpFile = '';
@@ -185,10 +238,10 @@ extends ESRender_Module_ContentNode_Abstract {
         //get all available flavours
          $files = scandir($CC_RENDER_PATH . DIRECTORY_SEPARATOR . $this -> getName() . DIRECTORY_SEPARATOR . $this -> esObject -> getSubPath());
          foreach($files as $file) {
-             if(strpos($file, '.png') !== false) {
+             if(strpos($file, '.' . $fileExtension) !== false) {
                  if(empty($tmpFile))
                     $tmpFile = $file;
-                $flavours[] = intval(end(explode('_', str_replace('.png', '', $file))));
+                $flavours[] = intval(end(explode('_', str_replace('.' . $fileExtension, '', $file))));
              }
          }
 
@@ -220,7 +273,7 @@ extends ESRender_Module_ContentNode_Abstract {
                  $flavor = $f;
          }
 
-         return $flavor;
+         return '_' . $flavor;
     }
 
     /**

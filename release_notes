@@ -1,4 +1,12 @@
 v5.1
+- simplified communications with repository
+- video/audio conversion triggered directly by upload
+- multiple video resolutions to choose from
+- images are prerendered in several resolutions
+- support for svg images
+- support for webp images
+
+
 @todo
 - cleanup database
 - updater

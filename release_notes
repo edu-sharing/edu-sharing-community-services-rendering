@@ -5,13 +5,14 @@ v5.1
 - images are prerendered in several resolutions
 - support for svg images
 - support for webp images
-
+- apps share objects
+- only build new cache object if content has changed
 
 @todo
 - cleanup database
 - updater
-    - delete columns
-    - delete all objects from cache / db (object / version syntax changed)
+    - delete unused columns
+
 v4.2
 - IMS Common Cartridge packages rendering
 - Plugin for "Deutsche Digitale Bibliothek"

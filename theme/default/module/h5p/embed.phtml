@@ -1,5 +1,7 @@
 <?php
-global $MC_URL;
+global $Locale, $Translate, $MC_URL;
+$msg = array();
+$msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
 ?>
 <style>
     <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
@@ -16,8 +18,8 @@ global $MC_URL;
                     frameCss: '<?php echo $MC_URL?>/theme/default/css/h5p.css',
                     h5pContent: '<?php echo str_replace('cache/', '', $content)?>'
                 });
-            })(H5P.jQuery);}
-        else{
+            })(H5P.jQuery);
+        } else{
             setTimeout(waitForH5P, 50);
         }
     }
@@ -33,3 +35,12 @@ global $MC_URL;
     <?php echo $footer?>
 </div>
 
+<script>
+    //for ie <= 11 show hint
+    if(window.navigator.userAgent.indexOf('MSIE ') > 0) {
+        var hints = document.getElementsByClassName('edusharing_rendering_content_ie_hint');
+        for (var i = 0; i < hints.length; i++) {
+            hints[i].style.display = 'block'
+        }
+    }
+</script>

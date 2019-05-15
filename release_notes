@@ -5,6 +5,7 @@ v5.1
 - images are prerendered in several resolutions
 - support for svg images
 - support for webp images
+- support for animated gifs
 - apps share objects
 - only build new cache object if content has changed
 

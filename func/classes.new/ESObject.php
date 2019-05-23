@@ -823,6 +823,7 @@ class ESObject {
             $stmt -> bindValue(':objectid', $this -> ESOBJECT_ID, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);
             $stmt -> bindValue(':error', '%ERROR%');
+            $stmt -> execute();
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
             if(!$result)
                 return false;

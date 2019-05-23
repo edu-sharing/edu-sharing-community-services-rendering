@@ -894,6 +894,14 @@ try {
 	
 	echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate)));
 	
+} catch(ESRender_Exception_Conversion $exception) {
+    $Logger -> error($exception -> getMessage());
+    $Logger -> debug($exception);
+
+    $Message = new Phools_Message_Default('The media element could not be converted.');
+
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), ));
+
 } catch(Exception $exception) {
     $Logger -> error('An internal server error occurred.');
     $Logger -> debug($exception);

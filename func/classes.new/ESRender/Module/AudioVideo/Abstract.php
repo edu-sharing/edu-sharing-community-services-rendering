@@ -98,6 +98,13 @@ extends ESRender_Module_ContentNode_Abstract {
 
         foreach ($formats as $format) {
             $output_filename = $this -> getOutputFilename($this->getExtensionByFormat($format));
+
+            /*
+             * Throw an exception if conversion to the requested format failed earlier
+             * */
+            if ($formats[0] == $format && $this -> _ESOBJECT -> conversionFailed($format))
+                throw new ESRender_Exception_Conversion('Could not convert Object ' . $this -> _ESOBJECT ->getId() . ' to ' . $format);
+
             /*
              * if there is no output file add object to conversion queue if needed
              * for failed conversions skip this
@@ -109,7 +116,7 @@ extends ESRender_Module_ContentNode_Abstract {
                 //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
                 if ($formats[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_WINDOW && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC))
                     $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
-            } 
+            }
         }
         exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
         return parent::process($p_kind, $requestData);

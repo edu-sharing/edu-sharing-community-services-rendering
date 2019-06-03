@@ -36,6 +36,8 @@ extends ESRender_Module_NonContentNode_Abstract {
             $embedding = $this -> getAudioEmbedding();
         else if($this -> detectImage())
             $embedding = $this -> getImageEmbedding();
+        else if($this -> detectH5P())
+            $embedding = $this -> getH5PEmbedding();
     	else
     		$embedding = '';
 
@@ -79,7 +81,9 @@ extends ESRender_Module_NonContentNode_Abstract {
             $embedding = $this->getAudioEmbedding($footer);
         } else if($this -> detectImage()) {
             $embedding = $this -> getImageEmbedding($footer);
-        } else {
+        } else if($this -> detectH5P()) {
+            $embedding = $this -> getH5PEmbedding($footer);
+        }else {
             $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
             if (!empty($license))
                 $license = $license->renderFooter($this->getTemplate(), $this->getUrl());
@@ -109,6 +113,12 @@ extends ESRender_Module_NonContentNode_Abstract {
     protected function getLinkEmbedding() {
         $htm =  '<script> if (typeof single != "undefined") location.href="'.$this -> getUrl().'";</script>';    
         $htm .= '<a href="' . $this -> getUrl() . '" target="_blank"><es:title xmlns:es="http://edu-sharing.net/object" >' . htmlspecialchars($this -> getUrl(), ENT_QUOTES, 'UTF-8') . '</es:title></a>';
+        return $htm;         
+    }
+
+    protected function getH5PEmbedding($footer = '') {
+        $htm = '<div style="max-width:100%"><iframe src="'.$this->getUrl().'" width="800px" height="500px" frameborder="0" allowfullscreen="allowfullscreen"></iframe>';
+        $htm .= '<script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>'. $footer.'</div>';
         return $htm;         
     }
 
@@ -234,6 +244,13 @@ extends ESRender_Module_NonContentNode_Abstract {
             strpos($this->_ESOBJECT->getMimeType(), '/gif') !== false) &&
             $this->_ESOBJECT->AlfrescoNode->getProperty('{http://www.campuscontent.de/model/1.0}remoterepositorytype') !== 'DDB')
             return true;
+        return false;
+    }
+
+    protected function detectH5P() {
+    	if(strpos($this -> getUrl(), 'h5p.org/h5p/embed') !== false){
+            return true;
+        }
         return false;
     }
 

@@ -401,6 +401,23 @@ function run($installedVersion) {
             }
         }
 
+        if(version_compare ( '4.2', $installedVersion ) > 0) {
+            $pdo = RsPDO::getInstance();
+
+            $sql = $pdo -> formatQuery( 'SELECT max(`REL_ESMODULE_MIMETYPE_ID`) as max FROM `REL_ESMODULE_MIMETYPE`' );
+            $stmt = $pdo -> prepare ( $sql );
+            $stmt -> execute();
+            $result = $stmt -> fetchObject();
+            $maxPrimaryKey = $result->max;
+
+            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :mod, :mimetype)' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':id', $maxPrimaryKey + 1 );
+            $stmt->bindValue ( ':mod', 9);
+            $stmt->bindValue ( ':mimetype', 'video/avi');
+            $stmt->execute ();
+        }
+
     } catch ( Exception $e ) {
         error_log ( print_r ( $e, true ) );
         return false;

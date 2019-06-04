@@ -271,8 +271,11 @@ try {
     if(mc_Request::fetch('forcePreview', 'CHAR') === 'true')
         Config::set('forcePreview', true);
 
+    Config::set('isMobile', false);
+    if(mc_Request::fetch('isMobile', 'CHAR') === 'true')
+        Config::set('isMobile', true);
 
-
+    
     // ACCESS TOKEN
     $accessToken = mc_Request::fetch('accessToken', 'CHAR', '');
     Config::set('accessToken', $accessToken);

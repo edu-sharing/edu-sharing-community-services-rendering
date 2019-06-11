@@ -22,6 +22,19 @@
 
 require_once (dirname(__FILE__) . '/../../conf.inc.php');
 
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p.classes.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-file-storage.interface.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-default-storage.class.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-development.class.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-event-base.class.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-metadata.class.php');
+
+require_once (dirname(__FILE__) . '/H5PFramework.php');
+require_once (dirname(__FILE__) . '/H5PContentHandler.php');
+
+
+
+
 /**
  *
  * @author shippeli
@@ -41,12 +54,15 @@ extends ESRender_Module_ContentNode_Abstract {
     private static $settings = array();
 
     public function __construct($Name, ESRender_Application_Interface $RenderApplication, ESObject $p_esobject, Logger $Logger, Phools_Template_Interface $Template) {
-        parent::construct($Name, $RenderApplication,$p_esobject, $Logger, $Template);
+        parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $Template);
+
+       // Phools_Autoload::addDirectory(dirname(__FILE__));
+        //Phools_Autoload::addDirectory(__DIR__ . '/../../vendor/lib/h5p-php-library');
 
         if(isset($_GET['h5p']))
             $this->testfile = $_GET['h5p'];
         global $db;
-        $db = new PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
+        $db = new PDO('sqlite:'.__DIR__.'/h5p.sqlite');
         $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
         $this->H5PFramework = new H5PFramework();

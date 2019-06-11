@@ -1,8 +1,7 @@
 <?php
 
-namespace connector\tools\h5p;
 
-class H5PFramework implements \H5PFrameworkInterface {
+class H5PFramework implements H5PFrameworkInterface {
 
 
 
@@ -26,11 +25,14 @@ class H5PFramework implements \H5PFrameworkInterface {
 
 
     public function get_h5p_path() {
-        return DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p';
+        return __DIR__;
+        //return DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p';
     }
 
     public function get_h5p_url() {
-        return WWWURL . '/src/tools/h5p';
+        global $MC_URL;
+        return $MC_URL . '/modules/h5p';
+        //return WWWURL . '/src/tools/h5p';
     }
 
     /**
@@ -985,8 +987,7 @@ class H5PFramework implements \H5PFrameworkInterface {
 
     /**
      * Determines if content slug is used.
-     *
-     * @param string $slug
+     *     * @param string $slug
      * @return boolean
      */
     public function isContentSlugAvailable($slug)

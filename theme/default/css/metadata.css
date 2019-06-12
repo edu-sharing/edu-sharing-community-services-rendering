@@ -60,6 +60,7 @@
 .edusharing_rendering_metadata_body .mdsContributorGroup .mdsWidgetCaption,
 .edusharing_rendering_metadata_body .mdsContributorGroup .mdsValue{
     margin-left: 0;
+    margin-right: 10px;
 }
 
 .edusharing_rendering_metadata_body .mds_license img {

@@ -5,6 +5,7 @@ ul.h5p-actions {
     display: none;
 }
 
+/* do not cut content but avoid video jittering */
 html.h5p-iframe {
-    overflow: hidden;
+    overflow-y: scroll;
 }

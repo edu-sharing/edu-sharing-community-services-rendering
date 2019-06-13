@@ -69,7 +69,6 @@ extends ESRender_Module_ContentNode_Abstract {
         $this->H5PCore = new H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), mc_Request::fetch('language', 'CHAR', 'de'), false);
         $this->H5PValidator = new H5PValidator($this->H5PFramework, $this->H5PCore);
         $this->H5PStorage = new H5PStorage($this->H5PFramework, $this->H5PCore);
-
     }
 
 
@@ -230,42 +229,6 @@ extends ESRender_Module_ContentNode_Abstract {
 
         return $settings;
     }
-
-	/**
-	 * (non-PHPdoc)
-	 * @see ESRender_Module_ContentNode_Abstract::createInstance()
-	 */
-	final public function createInstance(array $requestData) {
-/*
-        $logger = $this -> getLogger();
-			
-		if (!parent::createInstance($requestData)) {
-			return false;
-		}
-
-		$path = str_replace('\\', '/', $this -> _ESOBJECT -> getFilePath());
-
-        try {
-            if (!copy($path, $path . '.zip')) {
-                throw new Exception('Error copying zip.');
-            }
-            if (!mkdir($path . $this -> getContentPathSuffix(), 0744) ) {
-                throw new Exception('Error creating content folder.');
-            }
-
-            $zip = new ZipArchive;
-            $res = $zip -> open($path . '.zip');
-            if ($res !== true)
-                throw new Exception('Error opening zip');
-            $zip->extractTo($path . $this->getContentPathSuffix() . DIRECTORY_SEPARATOR);
-            $zip->close();
-        } catch (Exception $e) {
-            $logger -> error('Error unzipping ' . $path . '.zip ');
-            return false;
-        }
-*/
-        return parent::createInstance($requestData);
-	}
 
 	/**
 	 * (non-PHPdoc)

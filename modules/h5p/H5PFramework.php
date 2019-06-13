@@ -27,7 +27,6 @@ class H5PFramework implements H5PFrameworkInterface {
     public function get_h5p_path() {
         global $MC_DOCROOT;
         return $MC_DOCROOT . '/rendering-service/vendor/lib/h5p';
-        return __DIR__;
     }
 
     public function get_h5p_url() {

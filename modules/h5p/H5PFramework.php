@@ -25,13 +25,13 @@ class H5PFramework implements H5PFrameworkInterface {
 
 
     public function get_h5p_path() {
-        global $MC_DOCROOT;
-        return $MC_DOCROOT . '/rendering-service/vendor/lib/h5p';
+        global $CC_RENDER_PATH;
+        return $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p';
     }
 
     public function get_h5p_url() {
         global $MC_URL;
-        return $MC_URL . '/vendor/lib/h5p';
+        return $MC_URL . '/modules/cache/h5p';
     }
 
     /**

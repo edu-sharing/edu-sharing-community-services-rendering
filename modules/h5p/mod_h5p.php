@@ -32,20 +32,11 @@ require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-metadata.class
 require_once (dirname(__FILE__) . '/H5PFramework.php');
 require_once (dirname(__FILE__) . '/H5PContentHandler.php');
 
-define('DOMAIN', 'http://127.0.0.1');
-define('PATH', '/rendering-service/vendor/lib/h5p');
+$pUrl = parse_url($MC_URL);
+define('DOMAIN', $pUrl['scheme'] . '://' . $pUrl['host'] . ':' . $pUrl['port']);
+define('PATH', $pUrl['path'] . '/modules/cache/h5p');
 
 
-
-/**
- *
- * @author shippeli
- * @version 1.0
- * @package core
- * @subpackage classes.new
- * 
- * @see https://github.com/tunapanda/h5p-standalone
- */
 class mod_h5p
 extends ESRender_Module_ContentNode_Abstract {
 
@@ -214,7 +205,7 @@ extends ESRender_Module_ContentNode_Abstract {
                    'contentUserData' => admin_url('admin-ajax.php?token=' . wp_create_nonce('h5p_contentuserdata') . '&action=h5p_contents_user_data&content_id=:contentId&data_type=:dataType&sub_content_id=:subContentId')
                ),*/
             'saveFreq' => false,
-            'siteUrl' => DOMAIN . PATH,
+            //'siteUrl' => DOMAIN . PATH,
             'l10n' => array(
                 'H5P' => '',
             ),

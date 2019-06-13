@@ -25,14 +25,14 @@ class H5PFramework implements H5PFrameworkInterface {
 
 
     public function get_h5p_path() {
+        global $MC_DOCROOT;
+        return $MC_DOCROOT . '/rendering-service/vendor/lib/h5p';
         return __DIR__;
-        //return DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p';
     }
 
     public function get_h5p_url() {
         global $MC_URL;
-        return $MC_URL . '/modules/h5p';
-        //return WWWURL . '/src/tools/h5p';
+        return $MC_URL . '/vendor/lib/h5p';
     }
 
     /**
@@ -178,7 +178,7 @@ class H5PFramework implements H5PFrameworkInterface {
      */
     public function getLibraryFileUrl($libraryFolderName, $fileName)
     {
-        return WWWURL . '/' . 'src' . '/' . 'tools' . '/' . 'h5p' . '/' . 'libraries' . '/' . $libraryFolderName . '/' . $fileName;
+        return __DIR__ . DIRECTORY_SEPARATOR . 'libraries' . DIRECTORY_SEPARATOR . $libraryFolderName . DIRECTORY_SEPARATOR . $fileName;
     }
 
     /**
@@ -188,13 +188,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *   Path to the folder where the last uploaded h5p for this session is located.
      */
     public function getUploadedH5pFolderPath() {
-        static $dir;
-
-        if (is_null($dir)) {
-            $h5p = \connector\tools\h5p\H5P::getInstance();
-            $dir = $h5p->H5PCore->fs->getTmpPath();
-        }
-        return $dir;
+        return $this->uploadedH5pFolderPath;
     }
 
     /**
@@ -204,13 +198,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *   Path to the last uploaded h5p
      */
     public function getUploadedH5pPath() {
-        static $dir;
-
-        if (is_null($dir)) {
-            $h5p = \connector\tools\h5p\H5P::getInstance();
-            $dir = $h5p->H5PCore->fs->getTmpPath() . '.h5p';
-        }
-        return $dir;
+        return $this->uploadedH5pPath;
     }
 
 
@@ -418,11 +406,11 @@ class H5PFramework implements H5PFrameworkInterface {
             $library['hasIcon'] = 0;
         }
         $library['hasIcon'] ? $hasIcon = 1 : $hasIcon = 0;
-
         if ($new) {
+
             $db->query('INSERT INTO h5p_libraries '.
                 '(name,title,major_version,minor_version,patch_version,runnable,fullscreen,embed_types,preloaded_js,'.
-                    'preloaded_css,drop_library_css,semantics,has_icon) '.
+                    'preloaded_css,drop_library_css,semantics,tutorial_url,has_icon) '.
                 'values ('. $db->quote($library['machineName']) .','
                 .$db->quote($library['title']).','
                 .$library['majorVersion'].','.$library['minorVersion'].','.$library['patchVersion'].','.$library['runnable'].','
@@ -432,6 +420,7 @@ class H5PFramework implements H5PFrameworkInterface {
                 .$db->quote($preloadedCss).','
                 .$db->quote($dropLibraryCss).','
                 .$db->quote($library['semantics']).','
+                .$db->quote($library['tutorial_url']).','
                 .$hasIcon .')');
             $library['libraryId'] = $db->lastInsertId();
 
@@ -512,8 +501,8 @@ class H5PFramework implements H5PFrameworkInterface {
         global $db;
 
         if (!isset($content['id'])) {
-            $db -> query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,disable)'.
-                'values ('.time().','.$db->quote($content['title']).','.$db->quote($content['params']).',\'iframe\','.$content['library']['libraryId'].','.$db->quote($content['disable']).')');
+            $db -> query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,user_id,slug,filtered,disable)'.
+                'values ('.time().','.$db->quote($content['title']).','.$db->quote($content['params']).',\'iframe\','.$content['library']['libraryId'].','.$db->quote('').','.$db->quote('').','.$db->quote('').','.$db->quote($content['disable']).')');
 
             $content['id'] = $this->id =  $db->lastInsertId();
 
@@ -561,8 +550,7 @@ class H5PFramework implements H5PFrameworkInterface {
             FROM h5p_libraries hl
             WHERE name = '.$db->quote($dependency['machineName']).'
                 AND major_version = '.$dependency['majorVersion'].'
-                AND minor_version = '.$dependency['minorVersion'].'
-            ON DUPLICATE KEY UPDATE dependency_type ='.$db->quote($dependency_type));
+                AND minor_version = '.$dependency['minorVersion']);// ON CONFLICT(library_id) REPLACE SET dependency_type ='.$db->quote($dependency_type));
             
         }
     }

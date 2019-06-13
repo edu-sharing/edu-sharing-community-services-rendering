@@ -1,5 +1,5 @@
 
-Options FollowSymLinks
-RewriteEngine On
+#Options FollowSymLinks
+#RewriteEngine On
 
-RewriteRule ^.* redirect.php?ID=%{REQUEST_URI}&%{QUERY_STRING}
+#RewriteRule ^.* redirect.php?ID=%{REQUEST_URI}&%{QUERY_STRING}

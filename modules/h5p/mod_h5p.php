@@ -32,6 +32,8 @@ require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-metadata.class
 require_once (dirname(__FILE__) . '/H5PFramework.php');
 require_once (dirname(__FILE__) . '/H5PContentHandler.php');
 
+define('DOMAIN', 'http://127.0.0.1');
+define('PATH', '/rendering-service/vendor/lib/h5p');
 
 
 
@@ -56,18 +58,15 @@ extends ESRender_Module_ContentNode_Abstract {
     public function __construct($Name, ESRender_Application_Interface $RenderApplication, ESObject $p_esobject, Logger $Logger, Phools_Template_Interface $Template) {
         parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $Template);
 
-       // Phools_Autoload::addDirectory(dirname(__FILE__));
-        //Phools_Autoload::addDirectory(__DIR__ . '/../../vendor/lib/h5p-php-library');
+        //unlink(__DIR__ . DIRECTORY_SEPARATOR . 'h5p.sqlite');
+        //copy(__DIR__ . DIRECTORY_SEPARATOR . 'empty.sqlite', __DIR__ . DIRECTORY_SEPARATOR . 'h5p.sqlite');
 
-        if(isset($_GET['h5p']))
-            $this->testfile = $_GET['h5p'];
         global $db;
         $db = new PDO('sqlite:'.__DIR__.'/h5p.sqlite');
         $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
         $this->H5PFramework = new H5PFramework();
-        $this->H5PCore = new H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), LANG, false);
-        $this->H5PCore->aggregateAssets = TRUE; // why not?
+        $this->H5PCore = new H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), mc_Request::fetch('language', 'CHAR', 'de'), false);
         $this->H5PValidator = new H5PValidator($this->H5PFramework, $this->H5PCore);
         $this->H5PStorage = new H5PStorage($this->H5PFramework, $this->H5PCore);
 
@@ -76,19 +75,22 @@ extends ESRender_Module_ContentNode_Abstract {
 
 	protected function renderTemplate(array $requestData, $TemplateName, $getDefaultData = true) {
         @mkdir($this->H5PFramework->get_h5p_path());
-        mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->testfile));
-        copy('test' . DIRECTORY_SEPARATOR . $this->testfile, $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->testfile) . DIRECTORY_SEPARATOR . $this->testfile);
-        $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->testfile);
-        $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->testfile) . DIRECTORY_SEPARATOR . $this->testfile;
+        @mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()));
+        copy($this->_ESOBJECT->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p');
+
+        $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID());
+        $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p';
         $this->H5PCore->disableFileCheck = true;
-        $this->H5PValidator->isValidPackage();
-        $this->H5PStorage->savePackage(array('title' => 'ein titel', 'disable' => 0));
-        $content = $this->H5PCore->loadContent($this->H5PFramework->id);
 
-        $this->add_assets($content);
-        $this->render($content['id']);
-
-
+        try {
+            $this->H5PValidator->isValidPackage();
+            $this->H5PStorage->savePackage(array('title' => 'ein titel', 'disable' => 0));
+            $content = $this->H5PCore->loadContent($this->H5PFramework->id);
+            $this->add_assets($content);
+            $this->render($content['id']);
+        } catch(Exception $e) {
+            var_dump($e);
+        }
 	}
 
     private function add_assets($content) {
@@ -157,7 +159,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $cache_buster = '?ver=' . time();
 
         // Use relative URL to support both http and https.
-        $lib_url =  DOMAIN . PATH . '/vendor/h5p/h5p-core/';
+        $lib_url =  DOMAIN . '/rendering-service/vendor/lib/h5p-core/';
         $rel_path = '/' . preg_replace('/^[^:]+:\/\/[^\/]+\//', '', $lib_url);
         // Add core stylesheets
         foreach (H5PCore::$styles as $style) {

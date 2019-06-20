@@ -1,143 +1,61 @@
 <?php
-global $Locale, $Translate, $MC_URL;
+global $Locale, $Translate;
 $msg = array();
-$msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
-$msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
-
-
-require_once(dirname(__FILE__).'../../../../../vendor/lib/h5p-php-library/h5p.classes.php');
-
+$id = uniqid();
 ?>
 
 <style>
-<?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
 </style>
 
-<!--<style>
-    <?php /*include(dirname(__FILE__) . '/../../css/dynamic.php'); */?>
-    <?php /*include(dirname(__FILE__) . '/../../css/metadata.css'); */?>
-    iframe.h5p-iframe {
-        height: 100%;
-    }
-
-
-<script type="text/javascript"
-        src="<?php /*echo $MC_URL*/?>/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
-
-<script type="text/javascript">
-    function waitForH5P(){
-        if(typeof H5P !== "undefined"){
-            (function($) {
-                $('.h5p-container').h5p({
-                    frameJs: '<?php /*echo $MC_URL*/?>/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
-                    frameCss: '<?php /*echo $MC_URL*/?>/theme/default/css/h5p.css',
-                    h5pContent: '<?php /*echo str_replace('cache/', '', $content)*/?>'
-                });
-
-               /* setTimeout(function(){
-                    H5P.externalDispatcher.on('xAPI', function (event) {
-                        alert('xAPI event: ', event);
-                        if (event.data.statement.result) {
-                            alert('It\'s a completed event.');
-                            // Send to server. . . .
-                        }
-                        if (event.getScore() === event.getMaxScore() && event.getMaxScore() > 0){
-                            alert('scored');
-                        }
-                    });
-                }, 1000);*/
-
-            })(H5P.jQuery);
-        } else{
-            setTimeout(waitForH5P, 50);
-        }
-    }
-    waitForH5P();
-</script>
-
-
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-    <h1 class="edusharing_rendering_content_title"><?php /*echo $title */?></h1>
+    <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
     <div class="edusharing_rendering_content_wrapper" role="main">
-        <h3 class="edusharing_rendering_content_ie_hint" style="display:none"><?php /*echo $msg['h5p_ie_hint']->localize($Locale, $Translate) */?></h3>
-        <div class="edusharing_rendering_content h5p-container" style="max-height: 100% !important"></div>
+        <iframe id="<?php echo $id?>" src="<?php echo $iframeurl?>" style="width:100%;height:auto;border:none" allowfullscreen="allowfullscreen"></iframe>
     </div>
-</div>-->
+    <?php echo $metadata; ?>
+</div>
+<script>
+/*
 
+@todo adjust height on resize (following code works but h5p content must resize itself which does not work yet)
 
-<?php
+    var height = 0;
+    var width = parseInt(window.getComputedStyle(document.getElementById('<?php echo $id?>')).getPropertyValue('width').replace(/px/i, ''));
+    var ratio = 0;
 
-    /**
-   * Download and add H5P content from given url.
-   *
-   * NOTE: Be sure to check the user's permission before calling this function!
-   * NOTE: Will not check disk quotas before adding content.
-   *
-   * @since 1.11.3
-   * @param string $url
-   * @return int ID of new content
-   */
-  function fetch_h5p($url) {
-    // Override core permission checks
-    $core = $this->get_h5p_instance('core');
-    $core->mayUpdateLibraries(TRUE);
-
-    // Download .h5p file
-    $path = $core->h5pF->getUploadedH5pPath();
-    $response = $core->h5pF->fetchExternalData($url, NULL, TRUE, empty($path) ? TRUE : $path);
-    if (!$response) {
-      throw new Exception('Unable to download .h5p file');
+    function setRatio() {
+        ratio = height / width;
     }
 
-    // Validate file
-    $validator = $this->get_h5p_instance('validator');
-    if (!$validator->isValidPackage()) {
-      @unlink($core->h5pF->getUploadedH5pPath());
-      throw new Exception('Failed validating .h5p file');
+    window.onresize = function(event) {
+        var wwidth =  parseInt(window.getComputedStyle(document.getElementById('<?php echo $id?>')).getPropertyValue('width').replace(/px/i, ''));
+        wwidth = parseInt(wwidth);
+        height = Math.ceil(wwidth*ratio);
+      //  alert(wwidth + ' ' + height);
+        document.getElementById('<?php echo $id?>').style.height=height+'px';
     }
-
-    // Create content
-    $content = array(
-      'disable' => H5PCore::DISABLE_NONE,
-      'metadata' => array(
-        // Fetch title from h5p.json or use a default string if not available
-        'title' => empty($validator->h5pC->mainJsonData['title']) ? 'Uploaded Content' : $validator->h5pC->mainJsonData['title']
-      )
-    );
-
-    // Save content
-    $storage = new H5PStorage($core->h5pF, $core);
-    $storage->savePackage($content);
-
-    // Clear cached value for dirsize.
-    delete_transient('dirsize_cache');
-
-    // Return new content ID
-    return $storage->contentId;
-  }
+*/
+    //set height to value received from iframe document
+    window.addEventListener('message', function(e) {
+        var eventName = e.data[0];
+        var data = e.data[1];
+        switch(eventName) {
+            case 'setHeight':
+                //height = data;
+                document.getElementById('<?php echo $id?>').style.height=data+'px';
+                //setRatio();
+                break;
+        }
+    }, false);
 
 
+//@todo xapi
 
-    //echo str_replace('cache/', '', $content);
-    echo fetch_h5p($content);
-
-?>
-
-
-<?php echo $metadata; ?>
-
+</script>
 <?php
 $downloadUrl = Config::get('downloadUrl');
 if(!empty($downloadUrl))
     echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
 ?>
-<script>
-    //for ie <= 11 show hint
-    if(window.navigator.userAgent.indexOf('MSIE ') > 0) {
-        var hints = document.getElementsByClassName('edusharing_rendering_content_ie_hint');
-        for (var i = 0; i < hints.length; i++) {
-            hints[i].style.display = 'block'
-        }
-    }
-</script>
-

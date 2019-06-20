@@ -33,7 +33,7 @@ require_once (dirname(__FILE__) . '/H5PFramework.php');
 require_once (dirname(__FILE__) . '/H5PContentHandler.php');
 
 $pUrl = parse_url($MC_URL);
-define('DOMAIN', $pUrl['scheme'] . '://' . $pUrl['host'] . ':' . $pUrl['port']);
+define('DOMAIN', $pUrl['scheme'] . '://' . $pUrl['host']); // port only if specified!!!!!!
 define('PATH', $pUrl['path'] . '/modules/cache/h5p');
 
 
@@ -45,16 +45,20 @@ extends ESRender_Module_ContentNode_Abstract {
     private $H5PValidator;
     private $H5PStorage;
     private static $settings = array();
+    private $dbFile;
 
     public function __construct($Name, ESRender_Application_Interface $RenderApplication, ESObject $p_esobject, Logger $Logger, Phools_Template_Interface $Template) {
+        global $CC_RENDER_PATH;
+
         parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $Template);
 
-        //unlink(__DIR__ . DIRECTORY_SEPARATOR . 'h5p.sqlite');
-        //copy(__DIR__ . DIRECTORY_SEPARATOR . 'empty.sqlite', __DIR__ . DIRECTORY_SEPARATOR . 'h5p.sqlite');
+        $this ->dbFile = $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR . uniqid();
+        if(!file_exists($this ->dbFile))
+            copy(__DIR__ . DIRECTORY_SEPARATOR . 'empty.sqlite', $this ->dbFile);
 
         global $db;
-        $db = new PDO('sqlite:'.__DIR__.'/h5p.sqlite');
-        $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+        $db = new PDO('sqlite:' . $this ->dbFile);
+        $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
         $this->H5PFramework = new H5PFramework();
         $this->H5PCore = new H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), mc_Request::fetch('language', 'CHAR', 'de'), false);
@@ -77,7 +81,27 @@ extends ESRender_Module_ContentNode_Abstract {
             $this->H5PStorage->savePackage(array('title' => 'ein titel', 'disable' => 0));
             $content = $this->H5PCore->loadContent($this->H5PFramework->id);
             $this->add_assets($content);
-            $this->render($content['id']);
+
+            $template_data = array();
+
+            $filename = $this->_ESOBJECT->getFilePath() . '.html';
+            file_put_contents($filename, $this->render($content['id']));
+
+            $m_path = $this -> _ESOBJECT -> getPath();
+
+            if($getDefaultData)
+                $template_data = parent::prepareRenderData($requestData);
+
+            if(Config::get('showMetadata'))
+                $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+
+            $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+            $template_data['title'] = $this->_ESOBJECT->getTitle();
+            echo $this -> getTemplate() -> render($TemplateName, $template_data);
+
+            global $db;
+            $db = null;
+            unlink($this->dbFile);
         } catch(Exception $e) {
             var_dump($e);
         }
@@ -104,31 +128,48 @@ extends ESRender_Module_ContentNode_Abstract {
 
     private function render($contentId) {
 
-        echo '<html><head>';
+        $html = '<html><head>';
 
-        echo '<script>window.H5PIntegration='. json_encode(self::$settings).'</script>';
+        $html .= '<script>window.H5PIntegration='. json_encode(self::$settings).'</script>';
 
         foreach (self::$settings['core']['styles'] as $style) {
-            echo '<link rel="stylesheet" href="' . DOMAIN . $style.'"> ';
+            $html .= '<link rel="stylesheet" href="' . DOMAIN . $style.'"> ';
         }
         foreach (self::$settings['contents']['cid-'.$contentId]['styles'] as $style) {
-            echo '<link rel="stylesheet" href="'. $style.'"> ';
+            $html .= '<link rel="stylesheet" href="'. $style.'"> ';
         }
 
         foreach (self::$settings['core']['scripts'] as $script) {
-            echo '<script src="'. DOMAIN. $script.'"></script> ';
+            $html .= '<script src="'. DOMAIN. $script.'"></script> ';
         }
 
         foreach (self::$settings['contents']['cid-'.$contentId]['scripts'] as $script) {
-            echo '<script src="'.$script.'"></script> ';
+            $html .= '<script src="'.$script.'"></script> ';
         }
 
-        echo '</head><body>';
+        $html .= '</head><body>';
 
 
-        echo '<div class="h5p-iframe-wrapper"><iframe id="h5p-iframe-' . $contentId . '" class="h5p-iframe" data-content-id="' . $contentId . '" style="height:1px" src="about:blank" frameBorder="0" scrolling="no"></iframe></div>';
+      //$html .= '<div class="h5p-iframe-wrapper"><iframe id="h5p-iframe-' . $contentId . '" class="h5p-iframe" data-content-id="' . $contentId . '" style="height:1px" src="about:blank" frameBorder="0" scrolling="no"></iframe></div>';
 
-        echo '</body></html>';
+        $html .= '<div class="h5p-content" data-content-id="' . $contentId . '"></div>';
+
+        $html .= '</body>';
+
+        //post message send height to parent to adjust iframe height
+        $html .= '<script>var lastHeight = 0; function resize() {
+                    var height = document.getElementsByTagName("html")[0].scrollHeight;
+                    if(lastHeight != height) {
+                        window.parent.postMessage(["setHeight", height], "*"); 
+                    lastHeight = height;
+                  }
+                }
+                setInterval(resize, 100);
+            </script>';
+
+        $html .= '</html>';
+
+        return $html;
     }
 
 
@@ -160,6 +201,10 @@ extends ESRender_Module_ContentNode_Abstract {
         foreach (H5PCore::$scripts as $script) {
             self::$settings['core']['scripts'][] = $rel_path . $script . $cache_buster;
         }
+
+
+        self::$settings['core']['scripts'][] = $rel_path . 'js/h5p-resizer.js';
+
     }
 
     public function get_content_settings($content)
@@ -169,55 +214,30 @@ extends ESRender_Module_ContentNode_Abstract {
 
         $safe_parameters = $core->filterParameters($content);
 
-        // Getting author's user id
-        //$author_id = (int)(is_array($content) ? $content['user_id'] : $content->user_id);
-        $author_id = 3;
         // Add JavaScript settings for this content
+        //@see https://h5p.org/creating-your-own-h5p-plugin
         $settings = array(
             'library' => H5PCore::libraryToString($content['library']),
             'jsonContent' => $safe_parameters,
             'fullScreen' => $content['library']['fullscreen'],
-            // 'exportUrl' => get_option('h5p_export', TRUE) ? $this->get_h5p_url() . '/exports/' . ($content['slug'] ? $content['slug'] . '-' : '') . $content['id'] . '.h5p' : '',
-            //  'embedCode' => '<iframe src="' . admin_url('admin-ajax.php?action=h5p_embed&id=' . $content['id']) . '" width=":w" height=":h" frameborder="0" allowfullscreen="allowfullscreen"></iframe>',
-            //  'resizeCode' => '<script src="' . plugins_url('h5p/h5p-php-library/js/h5p-resizer.js') . '" charset="UTF-8"></script>',
-            //  'url' => admin_url('admin-ajax.php?action=h5p_embed&id=' . $content['id']),
+            'resizeCode' => '<script src="' . DOMAIN . '/rendering-service/vendor/lib/h5p-core/js/h5p-resizer.js' . '" charset="UTF-8"></script>',
             'title' => $content['title'],
-            'displayOptions' => $core->getDisplayOptionsForView($content['disable'], $author_id),
-            'contentUserData' => array(
-                0 => array(
-                    'state' => '{}'
-                )
-            )
+            'displayOptions' => array(), //$core->getDisplayOptionsForView($content['disable'], 0) // not needed here
         );
 
         return $settings;
 
     }
 
-
+    //@see https://h5p.org/creating-your-own-h5p-plugin
     public function get_core_settings() {
         $settings = array(
             'baseUrl' =>  DOMAIN,
             'url' => PATH,
-            // 'postUserStatistics' => (get_option('h5p_track_user', TRUE) === '1') && $current_user->ID,
-            /*   'ajax' => array(
-                   'setFinished' => admin_url('admin-ajax.php?token=' . wp_create_nonce('h5p_result') . '&action=h5p_setFinished'),
-                   'contentUserData' => admin_url('admin-ajax.php?token=' . wp_create_nonce('h5p_contentuserdata') . '&action=h5p_contents_user_data&content_id=:contentId&data_type=:dataType&sub_content_id=:subContentId')
-               ),*/
-            'saveFreq' => false,
-            //'siteUrl' => DOMAIN . PATH,
             'l10n' => array(
                 'H5P' => '',
             ),
-            'hubIsEnabled' => false
         );
-
-        $settings['user'] = array(
-            'name' => 'steffen',
-            'mail' => 'hippeli@metaventis.com'
-        );
-
-
         return $settings;
     }
 
@@ -238,10 +258,5 @@ extends ESRender_Module_ContentNode_Abstract {
         echo $this -> renderTemplate($requestData, '/module/h5p/dynamic');
         return true;
 	}
-
-	private function getContentPathSuffix() {
-	    return '_content';
-}
-
 
 }

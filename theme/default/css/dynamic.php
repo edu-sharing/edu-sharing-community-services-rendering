@@ -185,6 +185,18 @@ div.h5p-container {
 
 @media (max-width: 900px) {
 
+    .edusharing_rendering_content_wrapper{
+        margin: 5px;
+    }
+
+    .edusharing_rendering_content_title{
+        margin: 1rem 0 1rem 0;
+    }
+
+    a.edusharing_rendering_content {
+        margin: 1rem 0 1rem 0;
+    }
+
 	.edusharing_rendering_content_wrapper h3 {
 		font-size: 90%;
 		margin: 0.5rem 0rem;

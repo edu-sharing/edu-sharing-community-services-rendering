@@ -59,6 +59,10 @@ ul.edusharing_rendering_content_video_options_resolutions i {
     font-size: 18px !important;
 }
 
+i.edusharing_rendering_content_video_options_toggle {
+    text-shadow: 0px 0px 4px #333;
+}
+
 ul.edusharing_rendering_content_video_options_resolutions > li {
     cursor: pointer;
     padding: 4px 0;

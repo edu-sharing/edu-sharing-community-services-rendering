@@ -102,7 +102,7 @@ global $MC_URL;?>
 }
 
 .edusharing_metadata:after {
-    border-bottom: 15px solid #fff;
+    border-bottom: 15px solid #f6f6f6;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
     top: -3px;

@@ -967,7 +967,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param int $libraryId
      * @return int
      */
-    public function getNumContent($libraryId)
+    public function getNumContent($libraryId, $skip = NULL)
     {
         // TODO: Implement getNumContent() method.
     }
@@ -984,6 +984,11 @@ class H5PFramework implements H5PFrameworkInterface {
         $st -> execute();
         return !$st->fetchColumn();
     }
+
+    public function libraryHasUpgrade($library) {
+        return false;
+    }
+
 
     /**
      * Generates statistics from the event log per library

@@ -127,6 +127,7 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
     private function render($contentId) {
+        global $MC_URL;
 
         $html = '<html><head>';
 
@@ -142,6 +143,9 @@ extends ESRender_Module_ContentNode_Abstract {
         foreach (self::$settings['core']['scripts'] as $script) {
             $html .= '<script src="'. DOMAIN. $script.'"></script> ';
         }
+
+        //neccessary to render latex
+        $html .= '<script src="'.$MC_URL.'/vendor/js/mathdisplay.js"></script> ';
 
         foreach (self::$settings['contents']['cid-'.$contentId]['scripts'] as $script) {
             $html .= '<script src="'.$script.'"></script> ';

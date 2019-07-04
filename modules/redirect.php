@@ -71,16 +71,10 @@ if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST[
     $filesize = filesize($src_file);
 
     $path_parts = pathinfo($src_file);
-    if($path_parts['extension'] === 'css')
-        $mime_type = 'text/css';
-    else
-        $mime_type = 'application/javascript';
 
     $mimetype = mime_content_type($src_file);
 
     header("Content-type: ".$mimetype);
-
-
     header("Content-length: " . $filesize);
     header('Access-Control-Allow-Origin: *');
 

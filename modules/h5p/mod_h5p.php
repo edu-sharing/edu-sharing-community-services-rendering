@@ -52,7 +52,7 @@ extends ESRender_Module_ContentNode_Abstract {
 
         parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $Template);
 
-        $this ->dbFile = $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR . uniqid();
+        $this ->dbFile = $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR . 'db';
         if(!file_exists($this ->dbFile))
             copy(__DIR__ . DIRECTORY_SEPARATOR . 'empty.sqlite', $this ->dbFile);
 
@@ -68,6 +68,9 @@ extends ESRender_Module_ContentNode_Abstract {
 
 
 	protected function renderTemplate(array $requestData, $TemplateName, $getDefaultData = true) {
+
+        global $CC_RENDER_PATH;
+
         @mkdir($this->H5PFramework->get_h5p_path());
         @mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()));
         copy($this->_ESOBJECT->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p');
@@ -99,9 +102,27 @@ extends ESRender_Module_ContentNode_Abstract {
             $template_data['title'] = $this->_ESOBJECT->getTitle();
             echo $this -> getTemplate() -> render($TemplateName, $template_data);
 
-            global $db;
-            $db = null;
-            unlink($this->dbFile);
+
+
+            /*
+             * @todo
+             * Move all contents from content/id/ to objects cache folder and rewrite requests accordingly.
+             * Then delete content folder and db entries (see below).
+             *
+             * OR
+             *
+             * Quickfix: Script that deletes contents/libraries/db to avoid huge data accumulation.
+             * Don't forget to delete h5p objects from table esobject as well.
+             *
+             * Explanation:
+             * Unfortunately h5p lib does not provide the possiblility to (dynamically) change the h5p content save
+             * path. It is always content/id/.
+             *
+             * */
+            //$this -> H5PFramework -> deleteContentData($content['id']);
+            //$this -> H5PFramework -> deleteLibraryUsage($content['id']);
+            //$this -> rrmdir($CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $content['id']);
+
         } catch(Exception $e) {
             var_dump($e);
         }
@@ -262,5 +283,21 @@ extends ESRender_Module_ContentNode_Abstract {
         echo $this -> renderTemplate($requestData, '/module/h5p/dynamic');
         return true;
 	}
+
+    public function rrmdir($dir) {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($dir."/".$object))
+                        $this -> rrmdir($dir."/".$object);
+                    else
+                        unlink($dir."/".$object);
+                }
+            }
+            rmdir($dir);
+        }
+    }
+
 
 }

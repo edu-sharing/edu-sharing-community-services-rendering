@@ -376,7 +376,7 @@ try {
     }
 
 
-    if(1==2 && !$skipSslVerification) { //testing
+    if(!$skipSslVerification) { //testing
 
         $req_data['timestamp'] = mc_Request::fetch('ts', 'CHAR');
         if (empty($req_data['timestamp'])) {

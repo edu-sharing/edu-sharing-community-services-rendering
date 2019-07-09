@@ -29,7 +29,7 @@ extends Step {
     private $pdo = '';
 
     // contains create statements of all tables
-    private $all_tables = array();
+    public $all_tables = array();
 
     private $db_srv_version = null;
 
@@ -136,6 +136,16 @@ extends Step {
         return $this -> db_drvr;
     }
 
+    //used by cli installer
+    function setDbDrvr($driver) {
+        $this->db_drvr = $driver;
+    }
+
+    //used by cli installer
+    function setPdo($pdo) {
+        $this->pdo = $pdo;
+    }
+
     function getDbHost() {
         return $this -> db_host;
     }
@@ -189,19 +199,21 @@ extends Step {
      *
      */
     function createTables() {
-
         $created = 0;
         try {
             foreach ($this -> all_tables as $name => $definition) {
                 //drop all tables then create new
-                $stm = $this -> pdo -> prepare('DROP TABLE IF EXISTS "' . $name . '"');
+                $stm = $this -> pdo -> prepare('DROP TABLE IF EXISTS `' . $name . '`');
                 $stm -> execute();
                 $stm = $this -> pdo -> prepare($definition);
                 $stm -> execute();
                 $created++;
             }
             if (!empty($created)) {
-                $this -> info(sprintf(install_msg_table_count_create, $created));
+                if(defined('CLI_MODE') && CLI_MODE)
+                    echo '[OK] Create ' . $created . ' Tables' . PHP_EOL;
+                else
+                    $this -> info(sprintf(install_msg_table_count_create, $created));
             }
             $this -> writeLog('tables_created', $created);
         } catch (PDOException $e) {
@@ -233,12 +245,18 @@ extends Step {
                 $stm -> execute();
                 $loaded++;
             } catch (Exception $e) {
-                SysMsg::showError("Error on filling DB.");
+                if(defined('CLI_MODE') && CLI_MODE)
+                    echo 'Error on filling DB.' . PHP_EOL;
+                else
+                    SysMsg::showError("Error on filling DB.");
             }
         }
 
         if ($loaded) {
-            $this -> info(sprintf(install_msg_table_count_load_succeed, $loaded));
+            if(defined('CLI_MODE') && CLI_MODE)
+                echo '[OK] Fill ' . $loaded . ' tables' . PHP_EOL;
+            else
+                $this -> info(sprintf(install_msg_table_count_load_succeed, $loaded));
         }
 
         return true;
@@ -253,7 +271,10 @@ extends Step {
         $handle = opendir($srcPath);
 
         if (!$handle) {
-            SysMsg::showError('can not open path "' . $srcPath . '"');
+            if(defined('CLI_MODE') && CLI_MODE)
+                echo 'Can not open path "' . $srcPath . '"';
+            else
+                SysMsg::showError('can not open path "' . $srcPath . '"');
             return false;
         }
 

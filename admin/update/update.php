@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '4.2.0.RC1' );
+define ( 'UPDATEVERSION', '4.2.0.RC2' );
 set_time_limit(18000);
 ini_set('memory_limit', '2048M');
 

@@ -5,18 +5,19 @@ $id  = uniqid();
 
 <div>
     <iframe id="<?php echo $id?>" src="<?php echo $iframeurl?>" data-licid="<?php echo $licid;?>" style="width:100%;height:auto;border:none" allowfullscreen="allowfullscreen"></iframe>
-    <script>
+   <script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
+    <!--<script>
         window.addEventListener('message', function(e) {
             var eventName = e.data[0];
             var data = e.data[1];
             switch(eventName) {
                 case 'setHeight':
                     //height = data;
-                    document.getElementById('<?php echo $id?>').style.height=data+'px';
+                    document.getElementById('<?php /*echo $id*/?>').style.height=data+'px';
                     //setRatio();
                     break;
             }
-        }, false);    </script>
+        }, false);    </script>-->
     <?php echo $footer?>
     <style>
         <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>

@@ -77,6 +77,7 @@ class execute
     function getBaseDir() { return $this->base_dir; }
     function getUrl() { return $this -> rs_url;}   
     function getRepoUrl()  { return $this->repo_url; }
+    function setRepoUrl($repoUrl)  { $this->repo_url = $repoUrl; }
     function getRepoHost() { return $this->repo_host; }
     function getRepoPort() { return $this->repo_port; }
     function getRepoScheme() { return $this->repo_scheme; }

@@ -8,7 +8,7 @@ $msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
 	href="<?php echo $MC_URL?>/theme/default/css/h5p.css" />
 
   <script type="text/javascript"
-	src="<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-main.min.js"></script>
+	src="<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
 
 
 <script type="text/javascript">
@@ -27,6 +27,7 @@ $msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
     }
     waitForH5P();
 </script>
+
 <div>
     <div id="<?php echo $uniqid?>" class="h5p-container"></div>
     <span class="edusharing_rendering_content_ie_hint" style="display:none"><?php echo $msg['h5p_ie_hint']->localize($Locale, $Translate) ?></span>

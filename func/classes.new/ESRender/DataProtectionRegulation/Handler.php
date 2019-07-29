@@ -2,7 +2,7 @@
 
 class ESRender_DataProtectionRegulation_Handler {
 
-    public function getApplyDataProtectionRegulationsDialog($uniqueId, $providerName, $providerUrlTermsOfUse, $type = null) {
+    public function getApplyDataProtectionRegulationsDialog($uniqueId, $providerName, $providerUrlTermsOfUse, $url = null, $type = null) {
         global $Locale, $Translate;
 
         $msg = array();

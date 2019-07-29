@@ -185,7 +185,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
                         '.$applyDataProtectionRegulationsDialog.'
                     <div id="videoWrapperInner_'.$objId.'" class="videoWrapperInner" style="position: relative; padding-top: 25px;' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '">
-                        <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;background: transparent url(\''.$this->_ESOBJECT->getPreviewUrl().'\') 50% 50% / cover no-repeat;" oncontextmenu="return false;" controlsList="nodownload">
+                        <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;" oncontextmenu="return false;" controlsList="nodownload">
                             <source src="' . $this -> getUrl() . '" type="' . $type . '"></source>
                         </video>
                     </div>

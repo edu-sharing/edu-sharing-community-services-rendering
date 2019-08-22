@@ -66,8 +66,7 @@ if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST[
 
     $_SESSION['esrender']['check'] = $_REQUEST['ID'];
 
-    $src_file = str_replace('/rendering-service/modules/cache', 'C:\xampp\cache\rendering-service', $_REQUEST['ID']);
-
+    $src_file = str_replace('/rendering-service/modules/cache', $CC_RENDER_PATH, $_REQUEST['ID']);
     $filesize = filesize($src_file);
 
     $path_parts = pathinfo($src_file);

@@ -25,7 +25,7 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
 		<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
 		<img class="edusharing_rendering_content_preview" src="<?php echo $previewUrl?>">
         <?php if(Config::get('showDownloadButton'))
-		    echo '<a href="' .  $url . '" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href">' .  $msg['toDownload']->localize($Locale, $Translate) . '</a>';
+		    echo '<a href="' .  $url . '" download="'.$title.'" class="edusharing_rendering_content" id="edusharing_rendering_content_href">' .  $msg['toDownload']->localize($Locale, $Translate) . '</a>';
         ?>
 	</div>
 	<?php echo $metadata; ?>

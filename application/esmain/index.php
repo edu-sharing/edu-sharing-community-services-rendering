@@ -71,6 +71,7 @@ try {
     require_once (MC_LIB_PATH . 'ESModule.php');
     require_once (MC_LIB_PATH . 'ESObject.php');
 
+
     // init PLUGINS
     $Plugins = array();
     $PluginConfig = '../../conf/plugins.conf.php';
@@ -192,7 +193,7 @@ try {
     }
     Config::set('token', md5(uniqid()));
 
-    if(!$skipSslVerification) {
+    if(!$skipSslVerification) { //testing
         $ts = mc_Request::fetch('ts', 'CHAR');
         if (empty($ts)) {
             $Logger -> error('Missing request-param "timestamp".');
@@ -429,7 +430,7 @@ try {
     $Message = new Phools_Message_Default($exception -> getMessage());
     $code = '';
     if($exception -> getCode() != 0)
-        $code = $exception -> getCode();
+        $code = $exception -> getCode();	
     echo $Template -> render('/error/default', array('i18nName' => 'internal', 'technicalDetail' => $MessageDefault -> localize($Locale, $Translate) . ' - ' . $Message -> localize($Locale, $Translate) . ' ' .  $code));
 } catch(Exception $exception) {
     $Logger -> error('An internal server error occurred.');

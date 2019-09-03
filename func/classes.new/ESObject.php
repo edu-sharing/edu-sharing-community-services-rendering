@@ -671,8 +671,7 @@ class ESObject {
             $stmt -> bindValue(':format', $format);
             $stmt -> bindValue(':error', '%ERROR%');
             if($resolution)
-                $stmt -> bindValue(':resolution', $resolution);
-
+                $stmt -> bindValue(':resolution', $resolution);            
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
             if(!$result)
                 return false;

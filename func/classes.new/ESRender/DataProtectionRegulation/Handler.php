@@ -109,6 +109,29 @@ class ESRender_DataProtectionRegulation_Handler {
                     </div>
                 ';
                 break;
+            case 'H5P':
+            
+                echo "<script>console.log(".json_encode($Translate).")</script>";
+
+                $button = '<a href="#" onclick="event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\''.$uniqueId.'\').style.display=\'block\';window.dispatchEvent(new Event(\'resize\'));" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
+                $return = '
+                    <div class="dataProtectionRegulations">
+                        <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
+                        <p>'.$msg['dataProtectionRegulations2']->localize($Locale, $Translate).'</p>
+                        <p>';
+                if(empty($providerUrlTermsOfUse)) {
+                    $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
+
+                } else {
+                    $return .= '<b>'.$msg['dataProtectionRegulations3']->localize($Locale, $Translate).'</b><br/>
+                                        <a href="'.$providerUrlTermsOfUse.'" target="_blank">'.$msg['dataProtectionRegulations']->localize($Locale, $Translate).'</a> '.$msg['of']->localize($Locale, $Translate).' '.$providerName.'<br/>';
+
+                }
+                $return .= $button.'
+                        </p>
+                    </div>
+                ';
+                break;
             default:
                 $button = '<a href="#" onclick="event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\''.$uniqueId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
                 $return = '

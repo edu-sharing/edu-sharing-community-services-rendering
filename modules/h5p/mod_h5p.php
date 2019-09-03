@@ -22,80 +22,256 @@
 
 require_once (dirname(__FILE__) . '/../../conf.inc.php');
 
-/**
- *
- * @author shippeli
- * @version 1.0
- * @package core
- * @subpackage classes.new
- * 
- * @see https://github.com/tunapanda/h5p-standalone
- */
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p.classes.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-file-storage.interface.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-default-storage.class.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-development.class.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-event-base.class.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-metadata.class.php');
+
+require_once (dirname(__FILE__) . '/H5PFramework.php');
+require_once (dirname(__FILE__) . '/H5PContentHandler.php');
+
+$pUrl = parse_url($MC_URL);
+define('DOMAIN', $pUrl['scheme'] . '://' . $pUrl['host']); // port only if specified!!!!!!
+define('PATH', $pUrl['path'] . '/modules/cache/h5p');
+
+
 class mod_h5p
 extends ESRender_Module_ContentNode_Abstract {
 
+    private $H5PFramework;
+    private $H5PCore;
+    private $H5PValidator;
+    private $H5PStorage;
+    private static $settings = array();
+    private $dbFile;
 
-	protected function renderTemplate($TemplateName, $getDefaultData = true, $showMetadata = true) {
-		$Logger = $this -> getLogger();
-		if($getDefaultData)
-			$template_data = parent::prepareRenderData($showMetadata);
-			$template_data['title'] = (empty($title) ? $this -> esObject -> getTitle() : $title);
-			$template_data['content'] = $this -> esObject -> getPath() . $this -> getContentPathSuffix();
-           if($TemplateName == '/module/h5p/dynamic' && Config::get('showMetadata'))
-                $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+    public function __construct($Name, ESRender_Application_Interface $RenderApplication, ESObject $p_esobject, Logger $Logger, Phools_Template_Interface $Template) {
+        global $CC_RENDER_PATH;
 
-            if($TemplateName == '/module/h5p/inline' && ENABLE_METADATA_INLINE_RENDERING) {
-                $metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
-                $data['metadata'] = $metadata;
-            }
-            $Template = $this -> getTemplate();
-			$rendered = $Template -> render($TemplateName, $template_data);
+        parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $Template);
 
-			return $rendered;
-	}
+        $this ->dbFile = $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR . 'db';
+        if(!file_exists($this ->dbFile))
+            copy(__DIR__ . DIRECTORY_SEPARATOR . 'empty.sqlite', $this ->dbFile);
 
-	/**
-	 * (non-PHPdoc)
-	 * @see ESRender_Module_ContentNode_Abstract::createInstance()
-	 */
-	final public function createInstance() {
+        global $db;
+        $db = new PDO('sqlite:' . $this ->dbFile);
+        $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
-        $logger = $this -> getLogger();
-			
-		if (!parent::createInstance()) {
-			return false;
-		}
+        $this->H5PFramework = new H5PFramework();
+        $this->H5PCore = new H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), mc_Request::fetch('language', 'CHAR', 'de'), false);
+        $this->H5PValidator = new H5PValidator($this->H5PFramework, $this->H5PCore);
+        $this->H5PStorage = new H5PStorage($this->H5PFramework, $this->H5PCore);
+    }
 
-		$path = str_replace('\\', '/', $this -> esObject -> getFilePath());
+
+	protected function renderTemplate(array $requestData, $TemplateName, $getDefaultData = true) {
+
+        global $CC_RENDER_PATH;
+
+        @mkdir($this->H5PFramework->get_h5p_path());
+        @mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()));
+        copy($this->_ESOBJECT->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p');
+
+        $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID());
+        $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p';
+        $this->H5PCore->disableFileCheck = true;
 
         try {
-            if (!copy($path, $path . '.zip')) {
-                throw new Exception('Error copying zip.');
-            }
-            if (!mkdir($path . $this -> getContentPathSuffix(), 0744) ) {
-                throw new Exception('Error creating content folder.');
-            }
+            $this->H5PValidator->isValidPackage();
+            $this->H5PStorage->savePackage(array('title' => 'ein titel', 'disable' => 0));
+            $content = $this->H5PCore->loadContent($this->H5PFramework->id);
+            $this->add_assets($content);
 
-            $zip = new ZipArchive;
-            $res = $zip -> open($path . '.zip');
-            if ($res !== true)
-                throw new Exception('Error opening zip');
-            $zip->extractTo($path . $this->getContentPathSuffix() . DIRECTORY_SEPARATOR);
-            $zip->close();
-        } catch (Exception $e) {
-            $logger -> error('Error unzipping ' . $path . '.zip ');
-            return false;
+            $template_data = array();
+
+            $filename = $this->_ESOBJECT->getFilePath() . '.html';
+            file_put_contents($filename, $this->render($content['id']));
+
+            $m_path = $this -> _ESOBJECT -> getPath();
+
+            if($getDefaultData)
+                $template_data = parent::prepareRenderData($requestData);
+
+            if(Config::get('showMetadata'))
+                $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+
+            $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+            $template_data['title'] = $this->_ESOBJECT->getTitle();
+            echo $this -> getTemplate() -> render($TemplateName, $template_data);
+
+
+
+            /*
+             * @todo
+             * Move all contents from content/id/ to objects cache folder and rewrite requests accordingly.
+             * Then delete content folder and db entries (see below).
+             *
+             * OR
+             *
+             * Quickfix: Script that deletes contents/libraries/db to avoid huge data accumulation.
+             * Don't forget to delete h5p objects from table esobject as well.
+             *
+             * Explanation:
+             * Unfortunately h5p lib does not provide the possiblility to (dynamically) change the h5p content save
+             * path. It is always content/id/.
+             *
+             * */
+            //$this -> H5PFramework -> deleteContentData($content['id']);
+            //$this -> H5PFramework -> deleteLibraryUsage($content['id']);
+            //$this -> rrmdir($CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $content['id']);
+
+        } catch(Exception $e) {
+            var_dump($e);
+        }
+	}
+
+    private function add_assets($content) {
+
+        // Add core assets
+        $this->add_core_assets();
+
+        $cid = 'cid-' . $this->H5PFramework->id;
+        if (!isset(self::$settings['contents'][$cid])) {
+            self::$settings['contents'][$cid] = $this->get_content_settings($content);
+
+            // Get assets for this content
+            $preloaded_dependencies = $this -> H5PCore ->loadContentDependencies($content['id'], 'preloaded');
+
+            $files = $this -> H5PCore -> getDependenciesFiles($preloaded_dependencies);
+
+            self::$settings['contents'][$cid]['scripts'] = $this -> H5PCore->getAssetsUrls($files['scripts']);
+            self::$settings['contents'][$cid]['styles'] = $this -> H5PCore->getAssetsUrls($files['styles']);
+        }
+    }
+
+    private function render($contentId) {
+        global $MC_URL;
+
+        $html = '<html><head>';
+
+        $html .= '<script>window.H5PIntegration='. json_encode(self::$settings).'</script>';
+
+        foreach (self::$settings['core']['styles'] as $style) {
+            $html .= '<link rel="stylesheet" href="' . DOMAIN . $style.'"> ';
+        }
+        foreach (self::$settings['contents']['cid-'.$contentId]['styles'] as $style) {
+            $html .= '<link rel="stylesheet" href="'. $style.'"> ';
         }
 
-		return true;
-	}
+        foreach (self::$settings['core']['scripts'] as $script) {
+            $html .= '<script src="'. DOMAIN. $script.'"></script> ';
+        }
+
+        //neccessary to render latex
+        $html .= '<script src="'.$MC_URL.'/vendor/js/mathdisplay.js"></script> ';
+
+        foreach (self::$settings['contents']['cid-'.$contentId]['scripts'] as $script) {
+            $html .= '<script src="'.$script.'"></script> ';
+        }
+
+        $html .= '</head><body>';
+
+
+      //$html .= '<div class="h5p-iframe-wrapper"><iframe id="h5p-iframe-' . $contentId . '" class="h5p-iframe" data-content-id="' . $contentId . '" style="height:1px" src="about:blank" frameBorder="0" scrolling="no"></iframe></div>';
+
+        $html .= '<div class="h5p-content" data-content-id="' . $contentId . '"></div>';
+
+        $html .= '</body>';
+
+        //post message send height to parent to adjust iframe height
+        $html .= '<script>var lastHeight = 0; function resize() {
+                    var height = document.getElementsByTagName("html")[0].scrollHeight;
+                    if(lastHeight != height) {
+                        window.parent.postMessage(["setHeight", height], "*"); 
+                    lastHeight = height;
+                  }
+                }
+                setInterval(resize, 100);
+            </script>';
+
+        $html .= '</html>';
+
+        return $html;
+    }
+
+
+    private function add_core_assets() {
+
+        if (self::$settings !== null) {
+            //return; // Already added
+        }
+
+        self::$settings = $this->get_core_settings();
+
+        self::$settings['core'] = array(
+            'styles' => array(),
+            'scripts' => array()
+        );
+        self::$settings['loadedJs'] = array();
+        self::$settings['loadedCss'] = array();
+        $cache_buster = '?ver=' . time();
+
+        // Use relative URL to support both http and https.
+        $lib_url =  DOMAIN . '/rendering-service/vendor/lib/h5p-core/';
+        $rel_path = '/' . preg_replace('/^[^:]+:\/\/[^\/]+\//', '', $lib_url);
+        // Add core stylesheets
+        foreach (H5PCore::$styles as $style) {
+            self::$settings['core']['styles'][] = $rel_path . $style . $cache_buster;
+        }
+
+        // Add core JavaScript
+        foreach (H5PCore::$scripts as $script) {
+            self::$settings['core']['scripts'][] = $rel_path . $script . $cache_buster;
+        }
+
+
+        self::$settings['core']['scripts'][] = $rel_path . 'js/h5p-resizer.js';
+
+    }
+
+    public function get_content_settings($content)
+    {
+        global $wpdb;
+        $core = $this->H5PCore;
+
+        $safe_parameters = $core->filterParameters($content);
+
+        // Add JavaScript settings for this content
+        //@see https://h5p.org/creating-your-own-h5p-plugin
+        $settings = array(
+            'library' => H5PCore::libraryToString($content['library']),
+            'jsonContent' => $safe_parameters,
+            'fullScreen' => $content['library']['fullscreen'],
+            'resizeCode' => '<script src="' . DOMAIN . '/rendering-service/vendor/lib/h5p-core/js/h5p-resizer.js' . '" charset="UTF-8"></script>',
+            'title' => $content['title'],
+            'displayOptions' => array(), //$core->getDisplayOptionsForView($content['disable'], 0) // not needed here
+        );
+
+        return $settings;
+
+    }
+
+    //@see https://h5p.org/creating-your-own-h5p-plugin
+    public function get_core_settings() {
+        $settings = array(
+            'baseUrl' =>  DOMAIN,
+            'url' => PATH,
+            'l10n' => array(
+                'H5P' => '',
+            ),
+        );
+        return $settings;
+    }
 
 	/**
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::inline()
 	 */
-	protected function inline() {
-		echo $this -> renderTemplate('/module/h5p/inline');
+	protected function inline(array $requestData) {
+		echo $this -> renderTemplate($requestData, '/module/h5p/inline');
 		return true;
 	}
 
@@ -103,23 +279,25 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::dynamic()
 	 */
-	protected function dynamic() {
-        echo $this -> renderTemplate('/module/h5p/dynamic');
+	protected function dynamic(array $requestData) {
+        echo $this -> renderTemplate($requestData, '/module/h5p/dynamic');
         return true;
 	}
 
-    /**
-     * (non-PHPdoc)
-     * @see ESRender_Module_ContentNode_Abstract::embed()
-     */
-    protected function embed() {
-        echo $this -> renderTemplate('/module/h5p/embed', true, false);
-        return true;
+    public function rrmdir($dir) {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($dir."/".$object))
+                        $this -> rrmdir($dir."/".$object);
+                    else
+                        unlink($dir."/".$object);
+                }
+            }
+            rmdir($dir);
+        }
     }
-
-	private function getContentPathSuffix() {
-	    return '_content';
-}
 
 
 }

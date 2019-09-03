@@ -70,8 +70,8 @@ extends ESRender_Module_ContentNode_Abstract {
 
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30 );
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 90 );
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$resp = curl_exec($ch);
 		echo curl_error($ch);
@@ -125,8 +125,8 @@ extends ESRender_Module_ContentNode_Abstract {
 		$params = array('user_name' => htmlentities($this -> esObject -> getData() -> user->authorityName), 'user_givenname' => htmlentities($this -> esObject->getData()->user->user_givenname), 'user_surname' => htmlentities($this -> esObject->getData()->user->profile->lastName), 'user_email' => htmlentities($this -> esObject->getData()->user->profile->email) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30 );
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 90 );
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$resp = curl_exec($ch);
 		echo curl_error($ch);

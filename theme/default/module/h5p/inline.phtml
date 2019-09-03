@@ -1,35 +1,26 @@
 <?php
-global $Locale, $Translate, $MC_URL;
-$uniqid = uniqid('h5p_');
-$msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
+$licid = $uniqueId . '_lic';
+$id  = uniqid();
 ?>
 
-<link type="text/css" rel="stylesheet" media="all"
-	href="<?php echo $MC_URL?>/theme/default/css/h5p.css" />
-
-  <script type="text/javascript"
-	src="<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
-
-
-<script type="text/javascript">
-    function waitForH5P(){
-        if(typeof H5P !== "undefined"){
-            (function($) {
-                $('#<?php echo $uniqid?>').h5p({
-                    frameJs: '<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
-                    frameCss: '<?php echo $MC_URL?>/theme/default/css/h5p.css',
-                    h5pContent: '<?php echo str_replace('cache/', '', $content)?>'
-                });
-            })(H5P.jQuery);}
-        else{
-            setTimeout(waitForH5P, 50);
-        }
-    }
-    waitForH5P();
-</script>
 <div>
-    <div id="<?php echo $uniqid?>" class="h5p-container"></div>
-    <span class="edusharing_rendering_content_ie_hint" style="display:none"><?php echo $msg['h5p_ie_hint']->localize($Locale, $Translate) ?></span>
+    <iframe id="<?php echo $id?>" src="<?php echo $iframeurl?>" data-licid="<?php echo $licid;?>" style="width:100%;height:auto;border:none" allowfullscreen="allowfullscreen"></iframe>
+   <script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
+    <!--<script>
+        window.addEventListener('message', function(e) {
+            var eventName = e.data[0];
+            var data = e.data[1];
+            switch(eventName) {
+                case 'setHeight':
+                    //height = data;
+                    document.getElementById('<?php /*echo $id*/?>').style.height=data+'px';
+                    //setRatio();
+                    break;
+            }
+        }, false);    </script>-->
     <?php echo $footer?>
+    <style>
+        <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+        <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
+    </style>
 </div>
-

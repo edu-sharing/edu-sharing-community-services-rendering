@@ -67,16 +67,16 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
 
-	protected function renderTemplate(array $requestData, $TemplateName, $getDefaultData = true) {
+	protected function renderTemplate($TemplateName, $getDefaultData = true, $showMetadata = true) {
 
         global $CC_RENDER_PATH;
 
         @mkdir($this->H5PFramework->get_h5p_path());
-        @mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()));
-        copy($this->_ESOBJECT->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p');
+        @mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
+        copy($this->esObject->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()) . DIRECTORY_SEPARATOR . $this->esObject->getObjectID() . '.h5p');
 
-        $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID());
-        $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p';
+        $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID());
+        $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()) . DIRECTORY_SEPARATOR . $this->esObject->getObjectID() . '.h5p';
         $this->H5PCore->disableFileCheck = true;
 
         try {
@@ -87,19 +87,19 @@ extends ESRender_Module_ContentNode_Abstract {
 
             $template_data = array();
 
-            $filename = $this->_ESOBJECT->getFilePath() . '.html';
+            $filename = $this->esObject->getFilePath() . '.html';
             file_put_contents($filename, $this->render($content['id']));
 
-            $m_path = $this -> _ESOBJECT -> getPath();
+            $m_path = $this -> esObject -> getPath();
 
             if($getDefaultData)
-                $template_data = parent::prepareRenderData($requestData);
+                $template_data = parent::prepareRenderData($showMetadata);
 
             if(Config::get('showMetadata'))
-                $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+                $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
 
-            $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-            $template_data['title'] = $this->_ESOBJECT->getTitle();
+            $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id().'&token=' .  Config::get('token');
+            $template_data['title'] = $this->esObject->getTitle();
             echo $this -> getTemplate() -> render($TemplateName, $template_data);
 
 
@@ -214,8 +214,9 @@ extends ESRender_Module_ContentNode_Abstract {
         self::$settings['loadedCss'] = array();
         $cache_buster = '?ver=' . time();
 
-        // Use relative URL to support both http and https.
+        // Use relative URL to support both http and https.basename($MC_URL)
         $lib_url =  DOMAIN . '/rendering-service/vendor/lib/h5p-core/';
+        //$lib_url =  DOMAIN . basename($MC_URL).'/vendor/lib/h5p-core/';
         $rel_path = '/' . preg_replace('/^[^:]+:\/\/[^\/]+\//', '', $lib_url);
         // Add core stylesheets
         foreach (H5PCore::$styles as $style) {
@@ -227,14 +228,12 @@ extends ESRender_Module_ContentNode_Abstract {
             self::$settings['core']['scripts'][] = $rel_path . $script . $cache_buster;
         }
 
-
         self::$settings['core']['scripts'][] = $rel_path . 'js/h5p-resizer.js';
 
     }
 
     public function get_content_settings($content)
     {
-        global $wpdb;
         $core = $this->H5PCore;
 
         $safe_parameters = $core->filterParameters($content);
@@ -248,7 +247,6 @@ extends ESRender_Module_ContentNode_Abstract {
             'resizeCode' => '<script src="' . DOMAIN . '/rendering-service/vendor/lib/h5p-core/js/h5p-resizer.js' . '" charset="UTF-8"></script>',
             'title' => $content['title'],
             'displayOptions' => array(), //$core->getDisplayOptionsForView($content['disable'], 0) // not needed here
-        );
 
         return $settings;
 
@@ -270,8 +268,8 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::inline()
 	 */
-	protected function inline(array $requestData) {
-		echo $this -> renderTemplate($requestData, '/module/h5p/inline');
+	protected function inline() {
+		echo $this -> renderTemplate('/module/h5p/inline');
 		return true;
 	}
 
@@ -279,8 +277,8 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::dynamic()
 	 */
-	protected function dynamic(array $requestData) {
-        echo $this -> renderTemplate($requestData, '/module/h5p/dynamic');
+	protected function dynamic() {
+        echo $this -> renderTemplate('/module/h5p/dynamic');
         return true;
 	}
 

@@ -92,14 +92,20 @@ extends ESRender_Module_ContentNode_Abstract {
 
             $m_path = $this -> _ESOBJECT -> getPath();
 
+            //$h5p_scripts = $this->getScripts($content['id']);
+
             if($getDefaultData)
                 $template_data = parent::prepareRenderData($requestData);
 
             if(Config::get('showMetadata'))
                 $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
 
+            //$template_data['h5p_scripts'] = $h5p_scripts;
+
             $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
             $template_data['title'] = $this->_ESOBJECT->getTitle();
+            $template_data['h5pId'] = $content['id'];
+            $template_data['h5pApi'] = $content['id'];
             echo $this -> getTemplate() -> render($TemplateName, $template_data);
 
 
@@ -148,11 +154,12 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
     private function render($contentId) {
+        error_log('Render H5P');
         global $MC_URL;
 
         $html = '<html><head>';
 
-        $html .= '<script>window.H5PIntegration='. json_encode(self::$settings).'</script>';
+        $html .= '<script>H5PIntegration='. json_encode(self::$settings).'</script>';
 
         foreach (self::$settings['core']['styles'] as $style) {
             $html .= '<link rel="stylesheet" href="' . DOMAIN . $style.'"> ';
@@ -192,11 +199,50 @@ extends ESRender_Module_ContentNode_Abstract {
                 setInterval(resize, 100);
             </script>';
 
+        $html .= '<script>
+
+            function onXapi(event) {
+                var data = {
+                                action: "xapi_event"
+                            };  
+                data.statement = JSON.stringify(event.data.statement);
+                
+                let xapi = false; //turn LRS on or off
+                if(xapi){
+                    fetch("'.DOMAIN . '/rendering-service/modules/h5p/xapi.php'.'", {
+                        method : "post",
+                        mode:    "cors",
+                        headers: {
+                            "Content-Type": "application/json",  // sent request
+                            "Accept":     "application/json"   // expected data sent back
+                        },
+                        body: JSON.stringify({
+                            data: data,
+                            url: "'. $this -> _ESOBJECT -> getPath() .'.html",
+                            title: "'.str_replace('.h5p', '', $this->_ESOBJECT->getTitle()).'"
+                        })
+                    })
+                    .then(function(response) {
+                        if (response.status >= 200 && response.status < 300) {
+                            return response.text()
+                        }
+                        throw new Error(response.statusText)
+                    })
+                    .then(function(response) {
+                        console.log(response);
+                    })
+                }                
+                    
+            if (typeof H5P !== \'undefined\' && H5P.externalDispatcher){
+                H5P.externalDispatcher.on(\'xAPI\', onXapi);
+                console.log("h5p xapi ready");
+            }
+                </script>';
+
         $html .= '</html>';
 
         return $html;
     }
-
 
     private function add_core_assets() {
 
@@ -227,16 +273,13 @@ extends ESRender_Module_ContentNode_Abstract {
             self::$settings['core']['scripts'][] = $rel_path . $script . $cache_buster;
         }
 
-
         self::$settings['core']['scripts'][] = $rel_path . 'js/h5p-resizer.js';
 
     }
 
     public function get_content_settings($content)
     {
-        global $wpdb;
         $core = $this->H5PCore;
-
         $safe_parameters = $core->filterParameters($content);
 
         // Add JavaScript settings for this content
@@ -247,7 +290,19 @@ extends ESRender_Module_ContentNode_Abstract {
             'fullScreen' => $content['library']['fullscreen'],
             'resizeCode' => '<script src="' . DOMAIN . '/rendering-service/vendor/lib/h5p-core/js/h5p-resizer.js' . '" charset="UTF-8"></script>',
             'title' => $content['title'],
-            'displayOptions' => array(), //$core->getDisplayOptionsForView($content['disable'], 0) // not needed here
+            //'displayOptions' => array(), //$core->getDisplayOptionsForView($content['disable'], 0) // not needed here
+            'displayOptions' => [
+                                    "frame" => true, // Show frame and buttons below H5P
+                                    "export"=> false, // Display download button
+                                    "embed"=> false, // Display embed button
+                                    "copyright"=> true, // Display copyright button
+                                    "icon"=> true // Display H5P icon
+                                ],
+            'contentUserData' => array(
+                0 => array(
+                    'state' => '{}'
+                )
+            )
         );
 
         return $settings;
@@ -259,9 +314,46 @@ extends ESRender_Module_ContentNode_Abstract {
         $settings = array(
             'baseUrl' =>  DOMAIN,
             'url' => PATH,
+            'postUserStatistics' => true,
+            'saveFreq' => false,
+            'siteUrl'=> DOMAIN,
             'l10n' => array(
-                'H5P' => '',
+                'H5P' => [
+                      "fullscreen"=> "Fullscreen",
+                      "disableFullscreen"=> "Disable fullscreen",
+                      "download"=> "Download",
+                      "copyrights"=> "Rights of use",
+                      "embed"=> "Embed",
+                      "size"=> "Size",
+                      "showAdvanced"=> "Show advanced",
+                      "hideAdvanced"=> "Hide advanced",
+                      "advancedHelp"=> "Include this script on your website if you want dynamic sizing of the embedded content:",
+                      "copyrightInformation"=> "Rights of use",
+                      "close"=> "Close",
+                      "title"=> "Title",
+                      "author"=> "Author",
+                      "year"=> "Year",
+                      "source"=> "Source",
+                      "license"=> "License",
+                      "thumbnail"=> "Thumbnail",
+                      "noCopyrights"=> "No copyright information available for this content.",
+                      "downloadDescription"=> "Download this content as a H5P file.",
+                      "copyrightsDescription"=> "View copyright information for this content.",
+                      "embedDescription"=> "View the embed code for this content.",
+                      "h5pDescription"=> "Visit H5P.org to check out more cool content.",
+                      "contentChanged"=> "This content has changed since you last used it.",
+                      "startingOver"=> "You'll be starting over.",
+                      "by"=> "by",
+                      "showMore"=> "Show more",
+                      "showLess"=> "Show less",
+                      "subLevel"=> "Sublevel",
+                      "reuse"=> "Reuse",
+                      "reuseContent"=> "Reuse Content",
+                      "contentType"=> "Content Type"
+                ],
             ),
+            'hubIsEnabled' => false,
+            'libraryUrl' => DOMAIN . '/rendering-service/vendor/lib/h5p-core/js',
         );
         return $settings;
     }

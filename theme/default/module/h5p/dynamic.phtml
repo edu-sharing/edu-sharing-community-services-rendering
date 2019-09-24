@@ -13,8 +13,8 @@ $id = uniqid();
 
 <div class="edusharing_rendering_wrapper h5p-org-content-wrapper" vocab="http://schema.org/" typeof="WebPage">
     <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
-    <div class="edusharing_rendering_content_wrapper h5p-iframe-wrapper" role="main">
-        <iframe id="h5p-iframe-<?php echo $h5pId?>" src="<?php echo $iframeurl?>" class="h5p-iframe h5p-initialized" data-content-id="<?php echo $h5pId?>" style="width:80%;height:auto;border:none" allowfullscreen="allowfullscreen" frameBorder="0" scrolling="no"></iframe>
+    <div class="edusharing_rendering_content_wrapper" role="main">
+        <iframe id="<?php echo $h5pId?>" src="<?php echo $iframeurl?>" class="h5p-iframe h5p-initialized" data-content-id="<?php echo $h5pId?>" style="width:85%;height:auto;border:none" allowfullscreen="allowfullscreen" frameBorder="0" scrolling="no"></iframe>
     </div>
     <?php echo $metadata; ?>
 </div>
@@ -49,7 +49,7 @@ $id = uniqid();
         switch(eventName) {
             case 'setHeight':
                 //height = data;
-                document.getElementById('h5p-iframe-<?php echo $h5pId?>').style.height=data+'px';
+                document.getElementById('<?php echo $h5pId?>').style.height=data+'px';
                 //setRatio();
                 break;
         }

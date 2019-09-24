@@ -20,7 +20,7 @@ class H5PFramework implements H5PFrameworkInterface {
      */
     public function getPlatformInfo()
     {
-        return array('name' => 'edu-sharing', 'version' => '1.0', 'h5pVersion' => '1.17');
+        return array('name' => 'edu-sharing', 'version' => '1.0', 'h5pVersion' => '1.23');
     }
 
 
@@ -333,6 +333,7 @@ class H5PFramework implements H5PFrameworkInterface {
     public function isInDevMode()
     {
         // TODO: Implement isInDevMode() method.
+        return false;
     }
 
     /**
@@ -424,8 +425,6 @@ class H5PFramework implements H5PFrameworkInterface {
             $library['libraryId'] = $db->lastInsertId();
 
         } else {
-
-
 
             $db->query('UPDATE h5p_libraries SET '.
                     'title = '. $db->quote($library['title']) .','.
@@ -542,7 +541,7 @@ class H5PFramework implements H5PFrameworkInterface {
     public function saveLibraryDependencies($libraryId, $dependencies, $dependency_type)
     {
         global $db;
-
+        $db->beginTransaction();
         foreach ($dependencies as $dependency) {
             $db->query('INSERT INTO h5p_libraries_libraries (library_id, required_library_id, dependency_type)
             SELECT '.$libraryId.', hl.id, '.$db->quote($dependency_type).'
@@ -550,8 +549,8 @@ class H5PFramework implements H5PFrameworkInterface {
             WHERE name = '.$db->quote($dependency['machineName']).'
                 AND major_version = '.$dependency['majorVersion'].'
                 AND minor_version = '.$dependency['minorVersion']);// ON CONFLICT(library_id) REPLACE SET dependency_type ='.$db->quote($dependency_type));
-            
         }
+        $db->commit();
     }
 
     /**
@@ -624,14 +623,13 @@ class H5PFramework implements H5PFrameworkInterface {
             }
         }
 
+        $db->beginTransaction();
         foreach ($librariesInUse as $dependency) {
-
             $dropCss = in_array($dependency['library']['machineName'], $dropLibraryCssList) ? 1 : 0;
             $db ->query('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, drop_css, weight) '.
                 'values('.$contentId.',\''.$dependency['library']['libraryId'].'\',\''.$dependency['type'].'\',\''.$dropCss.'\',\''.$dependency['weight'].'\')');
-
-
         }
+        $db->commit();
     }
 
     /**

@@ -69,19 +69,29 @@ extends ESRender_Module_ContentNode_Abstract {
 
 	protected function renderTemplate(array $requestData, $TemplateName, $getDefaultData = true) {
 
-        global $CC_RENDER_PATH;
+        global $db;
 
-        @mkdir($this->H5PFramework->get_h5p_path());
-        @mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()));
-        copy($this->_ESOBJECT->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p');
+        //check if Content already exists in db & cache
+        $query = "SELECT id FROM h5p_contents WHERE title='".$this->_ESOBJECT->getObjectID()."'";
+        $statement = $db -> query($query);
+        $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
-        $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID());
-        $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p';
-        $this->H5PCore->disableFileCheck = true;
+        if(!$results[0]->id){// only create new folder if we dont already have the object
+            @mkdir($this->H5PFramework->get_h5p_path());
+            @mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()));
+            copy($this->_ESOBJECT->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p');
+
+            $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID());
+            $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p';
+            $this->H5PCore->disableFileCheck = true;
+
+            $this->H5PValidator->isValidPackage();
+            $this->H5PStorage->savePackage(array('title' => $this->_ESOBJECT->getObjectID(), 'disable' => 0));
+        }else{
+            $this->H5PFramework->id = $results[0]->id;
+        }
 
         try {
-            $this->H5PValidator->isValidPackage();
-            $this->H5PStorage->savePackage(array('title' => 'ein titel', 'disable' => 0));
             $content = $this->H5PCore->loadContent($this->H5PFramework->id);
             $this->add_assets($content);
 
@@ -92,23 +102,17 @@ extends ESRender_Module_ContentNode_Abstract {
 
             $m_path = $this -> _ESOBJECT -> getPath();
 
-            //$h5p_scripts = $this->getScripts($content['id']);
-
             if($getDefaultData)
                 $template_data = parent::prepareRenderData($requestData);
 
             if(Config::get('showMetadata'))
                 $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
 
-            //$template_data['h5p_scripts'] = $h5p_scripts;
-
             $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
             $template_data['title'] = $this->_ESOBJECT->getTitle();
             $template_data['h5pId'] = $content['id'];
             $template_data['h5pApi'] = $content['id'];
             echo $this -> getTemplate() -> render($TemplateName, $template_data);
-
-
 
             /*
              * @todo
@@ -154,7 +158,7 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
     private function render($contentId) {
-        error_log('Render H5P');
+        //error_log('Render H5P');
         global $MC_URL;
 
         $html = '<html><head>';
@@ -181,8 +185,7 @@ extends ESRender_Module_ContentNode_Abstract {
 
         $html .= '</head><body>';
 
-
-      //$html .= '<div class="h5p-iframe-wrapper"><iframe id="h5p-iframe-' . $contentId . '" class="h5p-iframe" data-content-id="' . $contentId . '" style="height:1px" src="about:blank" frameBorder="0" scrolling="no"></iframe></div>';
+        //$html .= '<div class="h5p-iframe-wrapper"><iframe id="h5p-iframe-' . $contentId . '" class="h5p-iframe" data-content-id="' . $contentId . '" style="height:1px" src="about:blank" frameBorder="0" scrolling="no"></iframe></div>';
 
         $html .= '<div class="h5p-content" data-content-id="' . $contentId . '"></div>';
 
@@ -233,9 +236,10 @@ extends ESRender_Module_ContentNode_Abstract {
                     })
                 }                
                     
-            if (typeof H5P !== \'undefined\' && H5P.externalDispatcher){
-                H5P.externalDispatcher.on(\'xAPI\', onXapi);
-                console.log("h5p xapi ready");
+                if (typeof H5P !== \'undefined\' && H5P.externalDispatcher){
+                    H5P.externalDispatcher.on(\'xAPI\', onXapi);
+                    console.log("h5p xapi ready");
+                }
             }
                 </script>';
 

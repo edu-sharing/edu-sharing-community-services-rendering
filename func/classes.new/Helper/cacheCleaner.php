@@ -17,7 +17,7 @@ class cacheCleaner {
     public function __construct() {
         $this -> initLogger();
         if (!ENABLE_TRACK_OBJECT) {
-            $this -> logger -> info('ENABLE_TRACK_OBJECT is diabled. Enable to use this script.');
+            $this -> logger -> info('ENABLE_TRACK_OBJECT is disabled. Enable to use this script.');
             exit(0);
         }
         $this -> logger -> info('######## cacheCleaner initialized ########');
@@ -106,7 +106,7 @@ class cacheCleaner {
                     $query = "DELETE FROM h5p_contents WHERE title='".$esobject->getObjectID()."'";
                     $statement = $h5p_db -> query($query);
                     $result = $statement->execute();
-                    $this -> logger -> info('deleted h5p from sqlite.');
+                    $this -> logger -> info('deleted h5p-'.$h5pID.' from sqlite.');
 
                     //delete cache folder
                     $dirPath = $this->renderPath . DIRECTORY_SEPARATOR . $module -> getName() . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $h5pID;

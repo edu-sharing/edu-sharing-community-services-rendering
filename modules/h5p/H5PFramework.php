@@ -500,7 +500,7 @@ class H5PFramework implements H5PFrameworkInterface {
 
         if (!isset($content['id'])) {
             $db -> query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,user_id,slug,filtered,disable)'.
-                'values ('.time().','.$db->quote($content['title']).','.$db->quote($content['params']).',\'iframe\','.$content['library']['libraryId'].','.$db->quote('').','.$db->quote('').','.$db->quote('').','.$db->quote($content['disable']).')');
+                'values ('.time().','.$db->quote($content['title']).','.$db->quote($content['params']).', \'iframe\' ,'.$db->quote($content['library']['libraryId']).','.$db->quote('').','.$db->quote('').','.$db->quote('').','.$db->quote($content['disable']).')');
 
             $content['id'] = $this->id =  $db->lastInsertId();
 
@@ -865,7 +865,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *   - dropCss(optional): csv of machine names
      */
     public function loadContentDependencies($id, $type = NULL)
-    {//echo $id;
+    {
         global $db;
         $query = 'SELECT hl.id
               , hl.name AS machineName

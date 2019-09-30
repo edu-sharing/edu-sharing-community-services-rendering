@@ -518,12 +518,12 @@ interface H5PFrameworkInterface {
 
   /**
    * Will clear filtered params for all the content that uses the specified
-   * library. This means that the content dependencies will have to be rebuilt,
+   * libraries. This means that the content dependencies will have to be rebuilt,
    * and the parameters re-filtered.
    *
-   * @param int $library_id
+   * @param array $library_ids
    */
-  public function clearFilteredParameters($library_id);
+  public function clearFilteredParameters($library_ids);
 
   /**
    * Get number of contents that has to get their content dependencies rebuilt
@@ -1623,6 +1623,7 @@ class H5PStorage {
     }
 
     // Go through the libraries again to save dependencies.
+    $library_ids = [];
     foreach ($this->h5pC->librariesJsonData as &$library) {
       if (!$library['saveDependencies']) {
         continue;
@@ -1644,8 +1645,12 @@ class H5PStorage {
         $this->h5pF->saveLibraryDependencies($library['libraryId'], $library['editorDependencies'], 'editor');
       }
 
-      // Make sure libraries dependencies, parameter filtering and export files gets regenerated for all content who uses this library.
-      $this->h5pF->clearFilteredParameters($library['libraryId']);
+      $library_ids[] = $library['libraryId'];
+    }
+
+    // Make sure libraries dependencies, parameter filtering and export files gets regenerated for all content who uses these libraries.
+    if (!empty($library_ids)) {
+      $this->h5pF->clearFilteredParameters($library_ids);
     }
 
     // Tell the user what we've done.
@@ -1993,7 +1998,7 @@ class H5PCore {
 
   public static $coreApi = array(
     'majorVersion' => 1,
-    'minorVersion' => 22
+    'minorVersion' => 23
   );
   public static $styles = array(
     'styles/h5p.css',

@@ -35,6 +35,7 @@ require_once (dirname(__FILE__) . '/H5PContentHandler.php');
 $pUrl = parse_url($MC_URL);
 define('DOMAIN', $pUrl['scheme'] . '://' . $pUrl['host']); // port only if specified!!!!!!
 define('PATH', $pUrl['path'] . '/modules/cache/h5p');
+define('DIR', $pUrl['path']);
 
 
 class mod_h5p
@@ -78,15 +79,32 @@ extends ESRender_Module_ContentNode_Abstract {
 
         if(!$results[0]->id){// only create new folder if we dont already have the object
             @mkdir($this->H5PFramework->get_h5p_path());
-            @mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()));
-            copy($this->_ESOBJECT->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p');
 
-            $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID());
-            $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p';
-            $this->H5PCore->disableFileCheck = true;
+            //if dir exits -> somebody else is building the h5p-object. Abort and let the user try again.
+            if(@mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) )){
+                copy($this->_ESOBJECT->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p');
 
-            $this->H5PValidator->isValidPackage();
-            $this->H5PStorage->savePackage(array('title' => $this->_ESOBJECT->getObjectID(), 'disable' => 0));
+                $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID());
+                $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p';
+                $this->H5PCore->disableFileCheck = true;
+
+                if($this->H5PValidator->isValidPackage()){
+                    $this->H5PStorage->savePackage(array('title' => $this->_ESOBJECT->getObjectID(), 'disable' => 0));
+                    error_log('h5p saved');
+                }else{
+                    $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
+                    error_log('There was a problem with the H5P-file: '.$h5p_error->code);
+                    $template_data['h5p_new'] = 'There was a problem with the H5P-file: '.$h5p_error->code.'<br>'.$h5p_error->message;
+                    echo $this -> getTemplate() -> render($TemplateName, $template_data);
+                    return;
+                }
+
+            }else{
+                $template_data['h5p_new'] = 'This file is being worked on. Please try again in a few moments.';
+                echo $this -> getTemplate() -> render($TemplateName, $template_data);
+                return;
+            }
+
         }else{
             $this->H5PFramework->id = $results[0]->id;
         }
@@ -113,25 +131,6 @@ extends ESRender_Module_ContentNode_Abstract {
             $template_data['h5pId'] = $content['id'];
             $template_data['h5pApi'] = $content['id'];
             echo $this -> getTemplate() -> render($TemplateName, $template_data);
-
-            /*
-             * @todo
-             * Move all contents from content/id/ to objects cache folder and rewrite requests accordingly.
-             * Then delete content folder and db entries (see below).
-             *
-             * OR
-             *
-             * Quickfix: Script that deletes contents/libraries/db to avoid huge data accumulation.
-             * Don't forget to delete h5p objects from table esobject as well.
-             *
-             * Explanation:
-             * Unfortunately h5p lib does not provide the possiblility to (dynamically) change the h5p content save
-             * path. It is always content/id/.
-             *
-             * */
-            //$this -> H5PFramework -> deleteContentData($content['id']);
-            //$this -> H5PFramework -> deleteLibraryUsage($content['id']);
-            //$this -> rrmdir($CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $content['id']);
 
         } catch(Exception $e) {
             var_dump($e);
@@ -186,13 +185,12 @@ extends ESRender_Module_ContentNode_Abstract {
         $html .= '</head><body>';
 
         //$html .= '<div class="h5p-iframe-wrapper"><iframe id="h5p-iframe-' . $contentId . '" class="h5p-iframe" data-content-id="' . $contentId . '" style="height:1px" src="about:blank" frameBorder="0" scrolling="no"></iframe></div>';
-
         $html .= '<div class="h5p-content" data-content-id="' . $contentId . '"></div>';
 
         $html .= '</body>';
 
         //post message send height to parent to adjust iframe height
-        $html .= '<script>var lastHeight = 0; function resize() {
+        /*$html .= '<script>var lastHeight = 0; function resize() {
                     var height = document.getElementsByTagName("html")[0].scrollHeight;
                     if(lastHeight != height) {
                         window.parent.postMessage(["setHeight", height], "*"); 
@@ -200,46 +198,42 @@ extends ESRender_Module_ContentNode_Abstract {
                   }
                 }
                 setInterval(resize, 100);
-            </script>';
+            </script>';*/
 
         $html .= '<script>
 
+            const xapi = false; //turn LRS on or off
             function onXapi(event) {
                 var data = {
                                 action: "xapi_event"
                             };  
-                data.statement = JSON.stringify(event.data.statement);
+                data.statement = JSON.stringify(event.data.statement);                
                 
-                let xapi = false; //turn LRS on or off
                 if(xapi){
-                    fetch("'.DOMAIN . '/rendering-service/modules/h5p/xapi.php'.'", {
-                        method : "post",
-                        mode:    "cors",
-                        headers: {
-                            "Content-Type": "application/json",  // sent request
-                            "Accept":     "application/json"   // expected data sent back
-                        },
-                        body: JSON.stringify({
-                            data: data,
-                            url: "'. $this -> _ESOBJECT -> getPath() .'.html",
-                            title: "'.str_replace('.h5p', '', $this->_ESOBJECT->getTitle()).'"
-                        })
-                    })
-                    .then(function(response) {
-                        if (response.status >= 200 && response.status < 300) {
-                            return response.text()
+                    console.log("Sending xApi-Event to Repo");
+                    event.data.statement.object.id = "'.$this -> _ESOBJECT -> getPath().'";
+                    event.data.statement.object.definition.name = {"en-US": "'.$this->_ESOBJECT->getTitle().'"};
+                    const nodeID = "'.$this->_ESOBJECT->getObjectID().'";
+                    let xhr = new XMLHttpRequest();
+                    xhr.open("POST", "'.Config::get('homeRepository')->url.'/rest/node/v1/nodes/-home-/"+nodeID+"/xapi", true);
+                    xhr.setRequestHeader("Content-type", "application/json");
+                    xhr.setRequestHeader("Accept", "application/json");
+                    xhr.crossDomain = true;
+                    xhr.withCredentials = true;
+                    //xhr.setRequestHeader("Authorization", "EDU-TICKET "+ticket);
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState == 4 && xhr.status === 200) {
+                            let response = JSON.parse(xhr.response);
+                            //console.log(response);
                         }
-                        throw new Error(response.statusText)
-                    })
-                    .then(function(response) {
-                        console.log(response);
-                    })
-                }                
-                    
-                if (typeof H5P !== \'undefined\' && H5P.externalDispatcher){
-                    H5P.externalDispatcher.on(\'xAPI\', onXapi);
-                    console.log("h5p xapi ready");
+                    }
+                    xhr.send(JSON.stringify(event.data.statement));                
                 }
+             }                
+                    
+            if (typeof H5P !== "undefined" && H5P.externalDispatcher && xapi){
+                H5P.externalDispatcher.on("xAPI", onXapi);
+                console.log("h5p xapi ready");
             }
                 </script>';
 
@@ -255,7 +249,6 @@ extends ESRender_Module_ContentNode_Abstract {
         }
 
         self::$settings = $this->get_core_settings();
-
         self::$settings['core'] = array(
             'styles' => array(),
             'scripts' => array()
@@ -265,7 +258,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $cache_buster = '?ver=' . time();
 
         // Use relative URL to support both http and https.
-        $lib_url =  DOMAIN . '/rendering-service/vendor/lib/h5p-core/';
+        $lib_url =  DOMAIN . DIR .'/vendor/lib/h5p-core/';
         $rel_path = '/' . preg_replace('/^[^:]+:\/\/[^\/]+\//', '', $lib_url);
         // Add core stylesheets
         foreach (H5PCore::$styles as $style) {
@@ -292,7 +285,7 @@ extends ESRender_Module_ContentNode_Abstract {
             'library' => H5PCore::libraryToString($content['library']),
             'jsonContent' => $safe_parameters,
             'fullScreen' => $content['library']['fullscreen'],
-            'resizeCode' => '<script src="' . DOMAIN . '/rendering-service/vendor/lib/h5p-core/js/h5p-resizer.js' . '" charset="UTF-8"></script>',
+            'resizeCode' => '<script src="' . DOMAIN . DIR . '/vendor/lib/h5p-core/js/h5p-resizer.js' . '" charset="UTF-8"></script>',
             'title' => $content['title'],
             //'displayOptions' => array(), //$core->getDisplayOptionsForView($content['disable'], 0) // not needed here
             'displayOptions' => [
@@ -310,7 +303,6 @@ extends ESRender_Module_ContentNode_Abstract {
         );
 
         return $settings;
-
     }
 
     //@see https://h5p.org/creating-your-own-h5p-plugin
@@ -379,21 +371,5 @@ extends ESRender_Module_ContentNode_Abstract {
         echo $this -> renderTemplate($requestData, '/module/h5p/dynamic');
         return true;
 	}
-
-    public function rrmdir($dir) {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (is_dir($dir."/".$object))
-                        $this -> rrmdir($dir."/".$object);
-                    else
-                        unlink($dir."/".$object);
-                }
-            }
-            rmdir($dir);
-        }
-    }
-
 
 }

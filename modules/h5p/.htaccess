@@ -1,5 +1,4 @@
-
 Options FollowSymLinks
-RewriteEngine On
+RewriteEngine Off
 
 RewriteRule ^.* redirect.php?ID=%{REQUEST_URI}&%{QUERY_STRING}

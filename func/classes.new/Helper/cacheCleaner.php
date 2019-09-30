@@ -1,6 +1,6 @@
 <?php
 
-define('RATIO_MAX', 0.8);
+define('RATIO_MAX', 0.08);
 
 error_reporting(0);
 
@@ -17,7 +17,7 @@ class cacheCleaner {
     public function __construct() {
         $this -> initLogger();
         if (!ENABLE_TRACK_OBJECT) {
-            $this -> logger -> info('ENABLE_TRACK_OBJECT is diabled. Enable to use this script.');
+            $this -> logger -> info('ENABLE_TRACK_OBJECT is disabled. Enable to use this script.');
             exit(0);
         }
         $this -> logger -> info('######## cacheCleaner initialized ########');
@@ -53,6 +53,8 @@ class cacheCleaner {
             $stmt -> bindValue(':state', 'Y');
             $stmt -> execute();
             $esObjectId = $stmt -> fetchObject() -> ESTRACK_ESOBJECT_ID;
+
+            $this -> logger -> info('esObjectId: '.$esObjectId);
             
             if(empty($esObjectId)) {
                 $this -> logger -> info('Could not get result from ESTRACK.');
@@ -65,7 +67,7 @@ class cacheCleaner {
             $stmt -> bindValue(':esobjectid', $esObjectId);
             $result = $stmt -> execute();
 
-            $sql = 'SELECT * FROM `ESOBJECT` WHERE `ESOBJECT_ID` = :esobject_id';
+            $sql = "SELECT * FROM `ESOBJECT` WHERE `ESOBJECT_ID` = :esobject_id";
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':esobject_id', $esObjectId);
             $stmt -> execute();
@@ -75,31 +77,67 @@ class cacheCleaner {
             print_r($e -> getMessage());
         }
 
-        $esobject = new ESObject(0);
-        $esobject -> setInstanceData($result);
+        if(is_array($result)){
+            $esobject = new ESObject(0);
+            $esobject -> setInstanceData($result);
 
-        //delete from db
-        if (!$esobject -> deleteFromDb())
-            $this -> logger -> info('could not delete db record with id ' . $esobject -> ESOBJECT_ID);
-        else {
-            $this -> logger -> info('deleted db record with id ' . $esobject -> ESOBJECT_ID);
-        }
+            //delete from db
+            if (!$esobject -> deleteFromDb())
+                $this -> logger -> info('could not delete db record with id ' . $esobject -> ESOBJECT_ID);
+            else {
+                $this -> logger -> info('deleted db record with id ' . $esobject -> ESOBJECT_ID);
+            }
 
-        $module = $esobject -> getModule();
-        
-        //delete cache folder
-        $dirPath = $this->renderPath . $module -> getName() . '/' . $esobject -> getSubUri_file();
-        if (!$this -> removeDir($dirPath))
-            $this -> logger -> info('could not delete ' . $dirPath);
-        else
-            $this -> logger -> info('deleted ' . $dirPath . ' ########### ' . $esobject -> getFilename());
-        
-        if(!empty($this->renderPathSave)) {
-        	$dirPath = $this->renderPathSave . $module -> getName() . '/' . $esobject -> getSubUri_file();
-        	if (!$this -> removeDir($dirPath))
-        		$this -> logger -> info('could not delete ' . $dirPath);
-        	else
-        		$this -> logger -> info('deleted ' . $dirPath . ' ########### ' . $esobject -> getFilename());
+            $module = $esobject -> getModule();
+
+            if($module->getName() == 'h5p'){
+
+                $dbFile = $this->renderPath . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR . 'db';
+                if(file_exists($dbFile)){
+                    $h5p_db = new PDO('sqlite:' . $dbFile);
+                    $h5p_db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+
+                    //get h5p-ID for the directory name
+                    $query = "SELECT id FROM h5p_contents WHERE title='".$esobject->getObjectID()."'";
+                    $statement = $h5p_db -> query($query);
+                    $h5pID = $statement->fetchAll(\PDO::FETCH_OBJ)[0]->id;
+
+                    //delete h5p sqlite entry
+                    $query = "DELETE FROM h5p_contents WHERE title='".$esobject->getObjectID()."'";
+                    $statement = $h5p_db -> query($query);
+                    $result = $statement->execute();
+                    $this -> logger -> info('deleted h5p-'.$h5pID.' from sqlite.');
+
+                    //delete cache folder
+                    $dirPath = $this->renderPath . DIRECTORY_SEPARATOR . $module -> getName() . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $h5pID;
+                    if (!$this -> removeDir($dirPath)){
+                        $this -> logger -> info('could not delete ' . $dirPath);
+                    }else{
+                        $this -> logger -> info('deleted ' . $dirPath );
+                    }
+
+                }else{
+                    $this -> logger -> info('could not find h5p-sqlite-db at ' . $dbFile);
+                }
+
+            }
+
+            //delete cache folder
+            $dirPath = $this->renderPath . DIRECTORY_SEPARATOR . $module -> getName() . DIRECTORY_SEPARATOR . $esobject -> getSubUri_file();
+            if (!$this -> removeDir($dirPath)){
+                $this -> logger -> info('could not delete ' . $dirPath);
+            }else{
+                $this -> logger -> info('deleted ' . $dirPath . ' ########### ' . $esobject -> getFilename());
+            }
+
+            if(!empty($this->renderPathSave)) {
+                $dirPath = $this->renderPathSave . DIRECTORY_SEPARATOR . $module -> getName() . DIRECTORY_SEPARATOR . $esobject -> getSubUri_file();
+                if (!$this -> removeDir($dirPath)){
+                    $this -> logger -> info('could not delete ' . $dirPath);
+                }else{
+                    $this -> logger -> info('deleted ' . $dirPath . ' ########### ' . $esobject -> getFilename());
+                }
+            }
         }
 
         return true;
@@ -123,7 +161,7 @@ class cacheCleaner {
     }
 
     public function cleanUp($forceDelete = false) {
-   	
+
         try {
             $availableSpace = disk_total_space($this->renderPath);
             $cacheSize = $this -> dirSize($this->renderPath);
@@ -132,7 +170,6 @@ class cacheCleaner {
             	$cacheSize += $this -> dirSize($this->renderPathSave);
             }
             $diskUsageRatio = $cacheSize / $availableSpace;
-
             $this -> logger -> info('#### cleanup (pass ' . ++$this -> pass . ')');
             $this -> logger -> info('available disk space: ' . round($availableSpace / pow(1024, 3), 2) . 'GiB');
             $this -> logger -> info('size of cache: ' . round($cacheSize / pow(1024, 3), 2) . 'GiB');

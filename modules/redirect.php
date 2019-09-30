@@ -58,6 +58,46 @@ function cc_rd_debug($err_msg) {
         cc_rd_log_die($err_msg);
     }
 }
+
+/*
+ * h5p stuff
+ * */
+if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST['ID'], '..') === false) {
+
+    $_SESSION['esrender']['check'] = $_REQUEST['ID'];
+
+    $src_file = str_replace('/rendering-service/modules/cache', $CC_RENDER_PATH, $_REQUEST['ID']);
+    $filesize = filesize($src_file);
+
+    $path_parts = pathinfo($src_file);
+
+    $mimetype = mime_content_type($src_file);
+
+    header("Content-type: ".$mimetype);
+    header("Content-length: " . $filesize);
+    header('Access-Control-Allow-Origin: *');
+
+    if($filesize <= 2048) {
+        @readfile($src_file);
+    } else {
+        $fd = fopen($src_file, 'rb');
+        while(!feof($fd)) {
+            $buffer = fread($fd, 2048);
+            echo $buffer;
+            flush();
+        }
+        fclose($fd);
+    }
+    exit();
+
+}
+
+
+
+
+
+
+
 // start session to read object-data
 if (!empty($_GET[$ESRENDER_SESSION_NAME])) {
     $l_sid = $_GET[$ESRENDER_SESSION_NAME];

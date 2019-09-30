@@ -1,75 +1,71 @@
 <?php
-global $Locale, $Translate, $MC_URL;
+global $Locale, $Translate;
 $msg = array();
-$msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
-$msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
+$id = uniqid();
 ?>
 
 <style>
     <?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
     <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
-    iframe.h5p-iframe {
-        height: 100%;
-    }
 </style>
 
-<script type="text/javascript"
-        src="<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-main.min.js"></script>
+<?php //echo $h5p_scripts; ?>
 
-<script type="text/javascript">
-    function waitForH5P(){
-        if(typeof H5P !== "undefined"){
-            (function($) {
-                $('.h5p-container').h5p({
-                    frameJs: '<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
-                    frameCss: '<?php echo $MC_URL?>/theme/default/css/h5p.css',
-                    h5pContent: '<?php echo str_replace('cache/', '', $content)?>'
-                });
-
-               /* setTimeout(function(){
-                    H5P.externalDispatcher.on('xAPI', function (event) {
-                        alert('xAPI event: ', event);
-                        if (event.data.statement.result) {
-                            alert('It\'s a completed event.');
-                            // Send to server. . . .
-                        }
-                        if (event.getScore() === event.getMaxScore() && event.getMaxScore() > 0){
-                            alert('scored');
-                        }
-                    });
-                }, 1000);*/
-
-            })(H5P.jQuery);
-        } else{
-            setTimeout(waitForH5P, 50);
-        }
-    }
-    waitForH5P();
-</script>
-
-
-<div class="edusharing_rendering_wrapper" style="padding-bottom: 10px" vocab="http://schema.org/" typeof="WebPage">
+<div class="edusharing_rendering_wrapper h5p-org-content-wrapper" vocab="http://schema.org/" typeof="WebPage">
     <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
     <div class="edusharing_rendering_content_wrapper" role="main">
-        <h3 class="edusharing_rendering_content_ie_hint" style="display:none"><?php echo $msg['h5p_ie_hint']->localize($Locale, $Translate) ?></h3>
-        <div class="edusharing_rendering_content h5p-container" style="max-height: 100% !important"></div> <!-- style prevents overlapping with metadata - better fix iframe height -->
+        <?php if(empty($h5p_new)){ ?>
+            <iframe id="<?php echo $h5pId?>" src="<?php echo $iframeurl?>" class="h5p-iframe h5p-initialized" data-content-id="<?php echo $h5pId?>" style="width:85%;height:auto;border:none" allowfullscreen="allowfullscreen" frameBorder="0" scrolling="no"></iframe>
+            <script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
+        <?php }else{ ?>
+            <h3><?php echo $h5p_new?></h3>
+        <?php } ?>
     </div>
+    <?php echo $metadata; ?>
 </div>
 
-<?php echo $metadata; ?>
 
+
+<script>
+/*
+
+@todo adjust height on resize (following code works but h5p content must resize itself which does not work yet)
+
+    var height = 0;
+    var width = parseInt(window.getComputedStyle(document.getElementById('<?php echo $id?>')).getPropertyValue('width').replace(/px/i, ''));
+    var ratio = 0;
+
+    function setRatio() {
+        ratio = height / width;
+    }
+
+    window.onresize = function(event) {
+        var wwidth =  parseInt(window.getComputedStyle(document.getElementById('<?php echo $id?>')).getPropertyValue('width').replace(/px/i, ''));
+        wwidth = parseInt(wwidth);
+        height = Math.ceil(wwidth*ratio);
+      //  alert(wwidth + ' ' + height);
+        document.getElementById('<?php echo $h5pId?>').style.height=height+'px';
+    }
+*/
+    //set height to value received from iframe document
+    window.addEventListener('message', function(e) {
+        var eventName = e.data[0];
+        var data = e.data[1];
+        switch(eventName) {
+            case 'setHeight':
+                //height = data;
+                document.getElementById('<?php echo $h5pId?>').style.height=data+'px';
+                //setRatio();
+                break;
+        }
+    }, false);
+
+
+//@todo xapi
+
+</script>
 <?php
 $downloadUrl = Config::get('downloadUrl');
 if(!empty($downloadUrl))
     echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
 ?>
-<script>
-    //for ie <= 11 show hint
-    if(window.navigator.userAgent.indexOf('MSIE ') > 0) {
-        var hints = document.getElementsByClassName('edusharing_rendering_content_ie_hint');
-        for (var i = 0; i < hints.length; i++) {
-            hints[i].style.display = 'block'
-        }
-    }
-</script>
-

@@ -15,7 +15,7 @@ $id = uniqid();
     <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
     <div class="edusharing_rendering_content_wrapper" role="main">
         <?php if(empty($h5p_new)){ ?>
-            <iframe id="<?php echo $h5pId?>" src="<?php echo $iframeurl?>" class="h5p-iframe h5p-initialized" data-content-id="<?php echo $h5pId?>" style="width:85%;height:auto;border:none" allowfullscreen="allowfullscreen" frameBorder="0" scrolling="no"></iframe>
+            <iframe id="<?php echo $h5pId?>" src="<?php echo $iframeurl?>" class="h5p-iframe h5p-initialized" data-content-id="<?php echo $h5pId?>" style="width:85%;height:250px;border:none" allowfullscreen="allowfullscreen" frameBorder="0" scrolling="no"></iframe>
             <script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
         <?php }else{ ?>
             <h3><?php echo $h5p_new?></h3>
@@ -53,8 +53,7 @@ $id = uniqid();
         var data = e.data[1];
         switch(eventName) {
             case 'setHeight':
-                //height = data;
-                document.getElementById('<?php echo $h5pId?>').style.height=data+'px';
+                //document.getElementById('<?php echo $h5pId?>').style.height=data+'px';
                 //setRatio();
                 break;
         }

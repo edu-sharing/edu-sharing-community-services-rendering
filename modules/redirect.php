@@ -21,6 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+
+
 ob_start();
 set_time_limit(0);
 include_once ('../conf.inc.php');
@@ -59,6 +61,7 @@ function cc_rd_debug($err_msg) {
     }
 }
 
+
 /*
  * h5p stuff
  * */
@@ -91,11 +94,6 @@ if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST[
     exit();
 
 }
-
-
-
-
-
 
 
 // start session to read object-data
@@ -199,6 +197,9 @@ if ((!is_file($src_file)) || (!is_readable($src_file))) {
 
 $finfo = finfo_open(FILEINFO_MIME_TYPE);
 $mime_type = finfo_file($finfo, $src_file);
+if (substr($src_file, -3) == 'svg'){    //set correct type for svg
+    $mime_type = 'image/svg+xml';
+}
 
 finfo_close($finfo);
 
@@ -216,6 +217,66 @@ if (!@include ('./' . $_SESSION['esrender']['mod_name'] . '/redirect_header.inc.
 }
 
 $filesize = filesize($src_file);
+
+// Check if it's a HTTP range request
+if(isset($_SERVER['HTTP_RANGE'])) {
+    // Parse the range header to get the byte offset
+    $ranges = array_map(
+        'intval', // Parse the parts into integer
+        explode(
+            '-', // The range separator
+            substr($_SERVER['HTTP_RANGE'], 6) // Skip the `bytes=` part of the header
+        )
+    );
+
+    // If the last range param is empty, it means the EOF (End of File)
+    if (!$ranges[1]) {
+        $ranges[1] = $filesize - 1;
+    }
+
+    // Send the appropriate headers
+    header('HTTP/1.1 206 Partial Content');
+    header('Accept-Ranges: bytes');
+    header('Content-Length: ' . ($ranges[1] - $ranges[0]+1)); // The size of the range
+
+    // Send the ranges we offered
+    header(
+        sprintf(
+            'Content-Range: bytes %d-%d/%d', // The header format
+            $ranges[0], // The start range
+            $ranges[1], // The end range
+            $filesize // Total size of the file
+        )
+    );
+
+    header('Access-Control-Allow-Origin: *');
+
+    ob_clean();
+
+    // It's time to output the file
+    $f = fopen($src_file, 'rb'); // Open the file in binary mode
+    $chunkSize = 8192; // The size of each chunk to output
+
+    // Seek to the requested start range
+    fseek($f, $ranges[0]);
+
+    // Start outputting the data
+    while (true) {
+        // Check if we have outputted all the data requested
+        if (ftell($f) >= $ranges[1]) {
+            break;
+        }
+
+        // Output the data
+        echo fread($f, $chunkSize);
+
+        // Flush the buffer immediately
+        @ob_flush();
+        flush();
+    }
+    fclose($f);
+    exit(0);
+}
 
 header("Content-length: " . $filesize);
 header('Access-Control-Allow-Origin: *');

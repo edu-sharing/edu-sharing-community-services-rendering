@@ -73,7 +73,7 @@ extends ESRender_Module_ContentNode_Abstract {
         global $db;
 
         //check if Content already exists in db & cache
-        $query = "SELECT id FROM h5p_contents WHERE title='".$this->_ESOBJECT->getObjectID()."'";
+        $query = "SELECT id FROM h5p_contents WHERE title='".$this->_ESOBJECT->getObjectID()."-v".$this->_ESOBJECT->getObjectVersion()."'";
         $statement = $db -> query($query);
         $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
@@ -83,13 +83,12 @@ extends ESRender_Module_ContentNode_Abstract {
             //if dir exits -> somebody else is building the h5p-object. Abort and let the user try again.
             if(@mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) )){
                 copy($this->_ESOBJECT->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p');
-
                 $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID());
                 $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p';
                 $this->H5PCore->disableFileCheck = true;
 
                 if($this->H5PValidator->isValidPackage()){
-                    $this->H5PStorage->savePackage(array('title' => $this->_ESOBJECT->getObjectID(), 'disable' => 0));
+                    $this->H5PStorage->savePackage(array('title' => $this->_ESOBJECT->getObjectID()."-v".$this->_ESOBJECT->getObjectVersion(), 'disable' => 0));
                     error_log('h5p saved');
                 }else{
                     $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
@@ -148,7 +147,6 @@ extends ESRender_Module_ContentNode_Abstract {
 
             // Get assets for this content
             $preloaded_dependencies = $this -> H5PCore ->loadContentDependencies($content['id'], 'preloaded');
-
             $files = $this -> H5PCore -> getDependenciesFiles($preloaded_dependencies);
 
             self::$settings['contents'][$cid]['scripts'] = $this -> H5PCore->getAssetsUrls($files['scripts']);
@@ -161,7 +159,6 @@ extends ESRender_Module_ContentNode_Abstract {
         global $MC_URL;
 
         $html = '<html><head>';
-
         $html .= '<script>H5PIntegration='. json_encode(self::$settings).'</script>';
 
         foreach (self::$settings['core']['styles'] as $style) {
@@ -182,6 +179,9 @@ extends ESRender_Module_ContentNode_Abstract {
             $html .= '<script src="'.$script.'"></script> ';
         }
 
+        //some css-styles to display h5p-content correctly. not sure why some of it ist needed.
+        $html .= '<style> body{font-family: sans-serif;} .h5p-image>img{height: auto !important;} .h5p-dialogcards-card-text{height: auto !important;}</style>';
+
         $html .= '</head><body>';
 
         //$html .= '<div class="h5p-iframe-wrapper"><iframe id="h5p-iframe-' . $contentId . '" class="h5p-iframe" data-content-id="' . $contentId . '" style="height:1px" src="about:blank" frameBorder="0" scrolling="no"></iframe></div>';
@@ -190,10 +190,10 @@ extends ESRender_Module_ContentNode_Abstract {
         $html .= '</body>';
 
         //post message send height to parent to adjust iframe height
-        /*$html .= '<script>var lastHeight = 0; function resize() {
+       /* $html .= '<script>var lastHeight = 0; function resize() {
                     var height = document.getElementsByTagName("html")[0].scrollHeight;
-                    if(lastHeight != height) {
-                        window.parent.postMessage(["setHeight", height], "*"); 
+                    if(lastHeight <= height-30 || lastHeight >= height+30) {                        
+                        window.parent.postMessage(["setHeight", height], "*");
                     lastHeight = height;
                   }
                 }
@@ -207,35 +207,36 @@ extends ESRender_Module_ContentNode_Abstract {
                 var data = {
                                 action: "xapi_event"
                             };  
-                data.statement = JSON.stringify(event.data.statement);                
+                data.statement = JSON.stringify(event.data.statement);  
                 
-                if(xapi){
-                    console.log("Sending xApi-Event to Repo");
-                    event.data.statement.object.id = "'.$this -> _ESOBJECT -> getPath().'";
-                    event.data.statement.object.definition.name = {"en-US": "'.$this->_ESOBJECT->getTitle().'"};
-                    const nodeID = "'.$this->_ESOBJECT->getObjectID().'";
-                    let xhr = new XMLHttpRequest();
-                    xhr.open("POST", "'.Config::get('homeRepository')->url.'/rest/node/v1/nodes/-home-/"+nodeID+"/xapi", true);
-                    xhr.setRequestHeader("Content-type", "application/json");
-                    xhr.setRequestHeader("Accept", "application/json");
-                    xhr.crossDomain = true;
-                    xhr.withCredentials = true;
-                    //xhr.setRequestHeader("Authorization", "EDU-TICKET "+ticket);
-                    xhr.onreadystatechange = function() {
-                        if (xhr.readyState == 4 && xhr.status === 200) {
-                            let response = JSON.parse(xhr.response);
-                            //console.log(response);
-                        }
+                console.log("Sending xApi-Event to Repo");
+                event.data.statement.object.id = "'.$this -> _ESOBJECT -> getPath().'";
+                event.data.statement.object.definition.name = {"en-US": "'.$this->_ESOBJECT->getTitle().'"};
+                const nodeID = "'.$this->_ESOBJECT->getObjectID().'";
+                let xhr = new XMLHttpRequest();                    
+                xhr.open("POST", "'.Config::get('baseUrl').'/rest/node/v1/nodes/-home-/"+nodeID+"/xapi", true);
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.crossDomain = true;
+                xhr.withCredentials = true;
+                //xhr.setRequestHeader("Authorization", "EDU-TICKET "+ticket);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status === 200) {
+                        let response = JSON.parse(xhr.response);
+                        //console.log(response);
                     }
-                    xhr.send(JSON.stringify(event.data.statement));                
                 }
+                xhr.send(JSON.stringify(event.data.statement));                
+                
              }                
-                    
+            //console.log("'.Config::get('baseUrl').'/rest/node/v1/nodes/-home-/'.$this->_ESOBJECT->getObjectID().'/xapi");     
             if (typeof H5P !== "undefined" && H5P.externalDispatcher && xapi){
                 H5P.externalDispatcher.on("xAPI", onXapi);
                 console.log("h5p xapi ready");
             }
                 </script>';
+
+        //$html .= $this->add_settings();
 
         $html .= '</html>';
 
@@ -270,7 +271,7 @@ extends ESRender_Module_ContentNode_Abstract {
             self::$settings['core']['scripts'][] = $rel_path . $script . $cache_buster;
         }
 
-        self::$settings['core']['scripts'][] = $rel_path . 'js/h5p-resizer.js';
+        //self::$settings['core']['scripts'][] = $rel_path . 'js/h5p-resizer.js';
 
     }
 
@@ -285,13 +286,14 @@ extends ESRender_Module_ContentNode_Abstract {
             'library' => H5PCore::libraryToString($content['library']),
             'jsonContent' => $safe_parameters,
             'fullScreen' => $content['library']['fullscreen'],
-            'resizeCode' => '<script src="' . DOMAIN . DIR . '/vendor/lib/h5p-core/js/h5p-resizer.js' . '" charset="UTF-8"></script>',
+            //'resizeCode' => '<script src="' . DOMAIN . DIR . '/vendor/lib/h5p-core/js/h5p-resizer.js' . '" charset="UTF-8"></script>',
             'title' => $content['title'],
             //'displayOptions' => array(), //$core->getDisplayOptionsForView($content['disable'], 0) // not needed here
             'displayOptions' => [
                                     "frame" => true, // Show frame and buttons below H5P
                                     "export"=> false, // Display download button
                                     "embed"=> false, // Display embed button
+                                    "copyright"=> true, // Display copyright button
                                     "copyright"=> true, // Display copyright button
                                     "icon"=> true // Display H5P icon
                                 ],
@@ -352,6 +354,31 @@ extends ESRender_Module_ContentNode_Abstract {
             'libraryUrl' => DOMAIN . '/rendering-service/vendor/lib/h5p-core/js',
         );
         return $settings;
+    }
+
+    public function add_settings() {
+        if (self::$settings !== null) {
+            return $this->print_settings(self::$settings);
+        }
+    }
+
+    /**
+     * JSON encode and print the given H5P JavaScript settings.
+     *
+     * @since 1.0.0
+     * @param array $settings
+     */
+    public function print_settings(&$settings, $obj_name = 'H5PIntegration') {
+        static $printed;
+        if (!empty($printed[$obj_name])) {
+            return; // Avoid re-printing settings
+        }
+
+        $json_settings = json_encode($settings);
+        if ($json_settings !== FALSE) {
+            $printed[$obj_name] = TRUE;
+            return '<script>' . $obj_name . ' = ' . $json_settings . ';</script>';
+        }
     }
 
 	/**

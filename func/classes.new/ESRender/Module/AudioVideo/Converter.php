@@ -90,7 +90,7 @@ class converter {
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_MP4 :
                         $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.mp4';
-                        exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-f mp4 -vcodec libx264" . " " . $this->threads . " " . "-acodec aac -movflags faststart -strict -2 -y" . " " . $tmpName . " " ."2>>" . $logfile, $whatever, $code);
+                        exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-1:'min(1080,ih)'\" -c:a copy" . " " . $tmpName . " " ."2>>" . $logfile, $whatever, $code);
                         $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
                         if($code > 0) {
                             unlink($tmpName);
@@ -101,8 +101,8 @@ class converter {
                         }
                         break;                       
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_WEBM :
-                        $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.webm';                        
-                        exec($this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " ."-vcodec libvpx" . " " . $this->threads ." " . "-acodec libvorbis -y -b:v 1M -crf 10" . " " . $tmpName . " " . "2>>" . $logfile, $whatever, $code);
+                        $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.webm';
+                        exec($this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " ."-c:v libvpx-vp9" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(1080,ih)'\"" . " " . $tmpName . " " . "2>>" . $logfile, $whatever, $code);
                         $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
                         if($code > 0) {
                             unlink($tmpName);

@@ -399,4 +399,43 @@ extends ESRender_Module_ContentNode_Abstract {
         return true;
 	}
 
+
+    /**
+     * Test if this object already exists for this module. This method
+     * checks only ESRender's ESOBJECT-table to for existance of this
+     * object. Override this method to implement module-specific behaviour
+     * (@see modules/moodle/mod_moodle.php).
+     *
+     * (non-PHPdoc)
+     * @see ESRender_Module_Interface::instanceExists()
+     */
+    public function instanceExists(ESObject $ESObject, array $requestData, $contentHash) {
+        $Logger = $this -> getLogger();
+
+        $pdo = RsPDO::getInstance();
+
+        try {
+            $sql = 'SELECT * FROM `ESOBJECT` ' . 'WHERE `ESOBJECT_REP_ID` = :repid ' . 'AND `ESOBJECT_CONTENT_HASH` = :contenthash ' . 'AND `ESOBJECT_OBJECT_ID` = :objectid ';
+
+            $stmt = $pdo -> prepare($pdo->formatQuery($sql));
+            $stmt -> bindValue(':repid', $requestData['rep_id']);
+            $stmt -> bindValue(':contenthash', $contentHash);
+            $stmt -> bindValue(':objectid', $ESObject -> getObjectID());
+            $stmt -> execute();
+
+            $result = $stmt -> fetch(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                $Logger -> debug('Instance exists.');
+                $ESObject -> setInstanceData($result);
+                return true;
+            }
+
+            $Logger -> debug('Instance does not exist.');
+            return false;
+        } catch (PDOException $e) {
+            throw new Exception($e -> getMessage());
+        }
+    }
+
 }

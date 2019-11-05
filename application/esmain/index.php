@@ -439,44 +439,54 @@ try {
 
     $client = new SoapClient(
         $remote_rep->prop_array['renderinfowebservice_wsdl'],
-        $SoapClientParams); 
+        $SoapClientParams);
 
-    try
-    {
-        $timestamp = round(microtime(true) * 1000);
-        $signData = $hc->prop_array['appid'] . $timestamp . $req_data['obj_id'];
-        $priv_key = $hc -> prop_array['private_key'];
-        $pkeyid = openssl_get_privatekey($priv_key);      
-        openssl_sign($signData, $signature, $pkeyid);
-        $signature = base64_encode($signature);
-        openssl_free_key($pkeyid);    
+    $NUM_OF_ATTEMPTS = 3;   //sometimes simultaneous calls can cause conflicts. so try 4 times and then throw exception if error persists
+    $attempts = 0;
+    do {
+        try {
+            $timestamp = round(microtime(true) * 1000);
+            $signData = $hc->prop_array['appid'] . $timestamp . $req_data['obj_id'];
+            $priv_key = $hc -> prop_array['private_key'];
+            $pkeyid = openssl_get_privatekey($priv_key);
+            openssl_sign($signData, $signature, $pkeyid);
+            $signature = base64_encode($signature);
+            openssl_free_key($pkeyid);
 
-        $headers = array();    
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'appId', $hc->prop_array['appid']);
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'timestamp', $timestamp); 
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signature', $signature); 
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signed', $signData);
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'baseUrl', $req_data['baseUrl']);
-        $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'locale', $Locale->getLanguageTwoLetters() . '_' . $Locale->getCountryTwoLetters());
+            $headers = array();
+            $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'appId', $hc->prop_array['appid']);
+            $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'timestamp', $timestamp);
+            $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signature', $signature);
+            $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'signed', $signData);
+            $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'baseUrl', $req_data['baseUrl']);
+            $headers[] = new SOAPHeader('http://render.webservices.edu_sharing.org', 'locale', $Locale->getLanguageTwoLetters() . '_' . $Locale->getCountryTwoLetters());
 
-        $client->__setSoapHeaders($headers); 
-        
-        if(empty($req_data['version']))
-            $req_data['version'] = '-1';
+            $client->__setSoapHeaders($headers);
 
-         $params = array(
-            "userName" => $user_name,
-            "nodeId" => $req_data['obj_id'],
-            "lmsId" => $req_data['app_id'],
-            "courseId" => $req_data['course_id'],
-            "resourceId" => $req_data['resource_id'],
-            "version" => $req_data['version']
-        );
-        $renderInfoLMSReturn = $client->getRenderInfoLMS($params);
+            if(empty($req_data['version']))
+                $req_data['version'] = '-1';
 
-    } catch (Exception $e) {
-        throw new ESRender_Exception_InfoLms($e);
-    }
+             $params = array(
+                "userName" => $user_name,
+                "nodeId" => $req_data['obj_id'],
+                "lmsId" => $req_data['app_id'],
+                "courseId" => $req_data['course_id'],
+                "resourceId" => $req_data['resource_id'],
+                "version" => $req_data['version']
+            );
+            $renderInfoLMSReturn = $client->getRenderInfoLMS($params);
+
+        } catch (Exception $e) {
+            if($attempts == $NUM_OF_ATTEMPTS){
+                throw new ESRender_Exception_InfoLms($e);
+                break;
+            }
+            $attempts++;
+            sleep(1);
+            continue;
+        }
+        break;
+    } while($attempts < $NUM_OF_ATTEMPTS);
 
     Config::set('renderInfoLMSReturn', $renderInfoLMSReturn -> getRenderInfoLMSReturn);
     // check usage

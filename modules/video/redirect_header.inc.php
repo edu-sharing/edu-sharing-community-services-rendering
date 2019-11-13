@@ -26,7 +26,7 @@
 // $file_name  : original file name
 
 // TAKEN FROM: http://mobiforge.com/developing/story/content-delivery-mobile-devices
-function rangeDownload($file) {
+function rangeDownload_old($file) {
 
     $fp = @fopen($file, 'rb');
 
@@ -103,6 +103,7 @@ function rangeDownload($file) {
         fseek($fp, $start);
         header('HTTP/1.1 206 Partial Content');
     }
+
     // Notify the client the byte range we'll be outputting
     header("Content-Range: bytes $start-$end/$size");
     header("Content-Length: $length");
@@ -127,8 +128,73 @@ function rangeDownload($file) {
     fclose($fp);
 }
 
+function rangeDownload($file){
+    //$fp = @fopen($file, 'rb');
+
+    $filesize = filesize($file);
+
+    if(isset($_SERVER['HTTP_RANGE'])) {
+        // Parse the range header to get the byte offset
+        $ranges = array_map(
+            'intval', // Parse the parts into integer
+            explode(
+                '-', // The range separator
+                substr($_SERVER['HTTP_RANGE'], 6) // Skip the `bytes=` part of the header
+            )
+        );
+
+        // If the last range param is empty, it means the EOF (End of File)
+        if (!$ranges[1]) {
+            $ranges[1] = $filesize - 1;
+        }
+
+        // Send the appropriate headers
+        header('HTTP/1.1 206 Partial Content');
+        header('Accept-Ranges: bytes');
+        header('Content-Length: ' . ($ranges[1] - $ranges[0]+1)); // The size of the range
+
+        // Send the ranges we offered
+        header(
+            sprintf(
+                'Content-Range: bytes %d-%d/%d', // The header format
+                $ranges[0], // The start range
+                $ranges[1], // The end range
+                $filesize // Total size of the file
+            )
+        );
+
+        header('Access-Control-Allow-Origin: *');
+
+        ob_clean();
+
+        // It's time to output the file
+        $f = fopen($file, 'rb'); // Open the file in binary mode
+        $chunkSize = 8192; // The size of each chunk to output
+
+        // Seek to the requested start range
+        fseek($f, $ranges[0]);
+
+        // Start outputting the data
+        while (true) {
+            // Check if we have outputted all the data requested
+            if (ftell($f) >= $ranges[1]) {
+                break;
+            }
+
+            // Output the data
+            echo fread($f, $chunkSize);
+
+            // Flush the buffer immediately
+            @ob_flush();
+            flush();
+        }
+        fclose($f);
+        exit(0);
+    }
+}
+
 header("Content-type: " . $mime_type);
-header("Content-length: " . filesize($src_file));
+//header("Content-length: " . filesize($src_file));
 
 if($display_kind == ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD){
     header('Content-Disposition: attachment; filename="' . $file_name . '"');

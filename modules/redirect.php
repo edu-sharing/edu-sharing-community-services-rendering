@@ -75,6 +75,9 @@ if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST[
     $path_parts = pathinfo($src_file);
 
     $mimetype = mime_content_type($src_file);
+    if(strpos($src_file, '.css')){
+        $mimetype = 'text/css';
+    }
 
     header("Content-type: ".$mimetype);
     header("Content-length: " . $filesize);
@@ -200,6 +203,7 @@ $mime_type = finfo_file($finfo, $src_file);
 if (substr($src_file, -3) == 'svg'){    //set correct type for svg
     $mime_type = 'image/svg+xml';
 }
+
 
 finfo_close($finfo);
 

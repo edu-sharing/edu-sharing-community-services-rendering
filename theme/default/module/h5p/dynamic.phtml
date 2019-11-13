@@ -9,14 +9,12 @@ $id = uniqid();
     <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
 </style>
 
-<?php //echo $h5p_scripts; ?>
-
 <div class="edusharing_rendering_wrapper h5p-org-content-wrapper" vocab="http://schema.org/" typeof="WebPage">
     <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
     <div class="edusharing_rendering_content_wrapper" role="main">
         <?php if(empty($h5p_new)){ ?>
-            <iframe id="<?php echo $h5pId?>" src="<?php echo $iframeurl?>" class="h5p-iframe h5p-initialized" data-content-id="<?php echo $h5pId?>" style="width:85%;height:250px;border:none" allowfullscreen="allowfullscreen" frameBorder="0" scrolling="no"></iframe>
-            <script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
+            <iframe src="<?php echo $iframeurl?>" style="width:85%;border:none" allowfullscreen="allowfullscreen" frameBorder="0" scrolling="no"></iframe>
+            <script src="<?php echo $MC_URL; ?>/modules/h5p/h5p-resizer.js" charset="UTF-8"></script>
         <?php }else{ ?>
             <h3><?php echo $h5p_new?></h3>
         <?php } ?>
@@ -24,45 +22,6 @@ $id = uniqid();
     <?php echo $metadata; ?>
 </div>
 
-
-
-<script>
-/*
-
-@todo adjust height on resize (following code works but h5p content must resize itself which does not work yet)
-
-    var height = 0;
-    var width = parseInt(window.getComputedStyle(document.getElementById('<?php echo $id?>')).getPropertyValue('width').replace(/px/i, ''));
-    var ratio = 0;
-
-    function setRatio() {
-        ratio = height / width;
-    }
-
-    window.onresize = function(event) {
-        var wwidth =  parseInt(window.getComputedStyle(document.getElementById('<?php echo $id?>')).getPropertyValue('width').replace(/px/i, ''));
-        wwidth = parseInt(wwidth);
-        height = Math.ceil(wwidth*ratio);
-      //  alert(wwidth + ' ' + height);
-        document.getElementById('<?php echo $h5pId?>').style.height=height+'px';
-    }
-*/
-    //set height to value received from iframe document
-    window.addEventListener('message', function(e) {
-        var eventName = e.data[0];
-        var data = e.data[1];
-        switch(eventName) {
-            case 'setHeight':
-                //document.getElementById('<?php echo $h5pId?>').style.height=data+'px';
-                //setRatio();
-                break;
-        }
-    }, false);
-
-
-//@todo xapi
-
-</script>
 <?php
 $downloadUrl = Config::get('downloadUrl');
 if(!empty($downloadUrl))

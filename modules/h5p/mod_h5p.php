@@ -158,85 +158,68 @@ extends ESRender_Module_ContentNode_Abstract {
         //error_log('Render H5P');
         global $MC_URL;
 
-        $html = '<html><head>';
-        $html .= '<script>H5PIntegration='. json_encode(self::$settings).'</script>';
+        $html  = '<!doctype html>';
+        $html .= '<html lang="en" class="h5p-iframe"><head>';
 
-        foreach (self::$settings['core']['styles'] as $style) {
-            $html .= '<link rel="stylesheet" href="' . DOMAIN . $style.'"> ';
-        }
-        foreach (self::$settings['contents']['cid-'.$contentId]['styles'] as $style) {
-            $html .= '<link rel="stylesheet" href="'. $style.'"> ';
-        }
+        $html .= '<meta charset="utf-8">';
+        $html .= '<title>'.'H5P-iframe'.'</title>';
 
         foreach (self::$settings['core']['scripts'] as $script) {
             $html .= '<script src="'. DOMAIN. $script.'"></script> ';
+        }
+        foreach (self::$settings['contents']['cid-'.$contentId]['scripts'] as $script) {
+            $html .= '<script src="'.$script.'"></script> ';
         }
 
         //neccessary to render latex
         $html .= '<script src="'.$MC_URL.'/vendor/js/mathdisplay.js"></script> ';
 
-        foreach (self::$settings['contents']['cid-'.$contentId]['scripts'] as $script) {
-            $html .= '<script src="'.$script.'"></script> ';
+        foreach (self::$settings['core']['styles'] as $style) {
+            $html .= '<link rel="stylesheet" href="' . DOMAIN . $style.'" type="text/css">';
         }
-
-        //some css-styles to display h5p-content correctly. not sure why some of it ist needed.
-        $html .= '<style> body{font-family: sans-serif;} .h5p-image>img{height: auto !important;} .h5p-dialogcards-card-text{height: auto !important;}</style>';
+        foreach (self::$settings['contents']['cid-'.$contentId]['styles'] as $style) {
+            $html .= '<link rel="stylesheet" href="'. $style.'" type="text/css">';
+        }
 
         $html .= '</head><body>';
 
-        //$html .= '<div class="h5p-iframe-wrapper"><iframe id="h5p-iframe-' . $contentId . '" class="h5p-iframe" data-content-id="' . $contentId . '" style="height:1px" src="about:blank" frameBorder="0" scrolling="no"></iframe></div>';
         $html .= '<div class="h5p-content" data-content-id="' . $contentId . '"></div>';
 
         $html .= '</body>';
 
-        //post message send height to parent to adjust iframe height
-       /* $html .= '<script>var lastHeight = 0; function resize() {
-                    var height = document.getElementsByTagName("html")[0].scrollHeight;
-                    if(lastHeight <= height-30 || lastHeight >= height+30) {                        
-                        window.parent.postMessage(["setHeight", height], "*");
-                    lastHeight = height;
-                  }
-                }
-                setInterval(resize, 100);
-            </script>';*/
-
+        //xApi-Connection
         $html .= '<script>
-
             const xapi = false; //turn LRS on or off
             function onXapi(event) {
                 var data = {
                                 action: "xapi_event"
-                            };  
-                data.statement = JSON.stringify(event.data.statement);  
-                
-                console.log("Sending xApi-Event to Repo");
+                            };
+                data.statement = JSON.stringify(event.data.statement);
+                //console.log("Sending xApi-Event to Repo");
                 event.data.statement.object.id = "'.$this -> _ESOBJECT -> getPath().'";
                 event.data.statement.object.definition.name = {"en-US": "'.$this->_ESOBJECT->getTitle().'"};
                 const nodeID = "'.$this->_ESOBJECT->getObjectID().'";
-                let xhr = new XMLHttpRequest();                    
+                let xhr = new XMLHttpRequest();
                 xhr.open("POST", "'.Config::get('baseUrl').'/rest/node/v1/nodes/-home-/"+nodeID+"/xapi", true);
                 xhr.setRequestHeader("Content-type", "application/json");
                 xhr.setRequestHeader("Accept", "application/json");
                 xhr.crossDomain = true;
                 xhr.withCredentials = true;
-                //xhr.setRequestHeader("Authorization", "EDU-TICKET "+ticket);
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == 4 && xhr.status === 200) {
                         let response = JSON.parse(xhr.response);
                         //console.log(response);
                     }
                 }
-                xhr.send(JSON.stringify(event.data.statement));                
-                
-             }                
-            //console.log("'.Config::get('baseUrl').'/rest/node/v1/nodes/-home-/'.$this->_ESOBJECT->getObjectID().'/xapi");     
+                xhr.send(JSON.stringify(event.data.statement));
+             }
             if (typeof H5P !== "undefined" && H5P.externalDispatcher && xapi){
                 H5P.externalDispatcher.on("xAPI", onXapi);
                 console.log("h5p xapi ready");
             }
                 </script>';
 
-        //$html .= $this->add_settings();
+        $html .= '<script>H5PIntegration='. json_encode(self::$settings).'</script>';
 
         $html .= '</html>';
 
@@ -270,9 +253,6 @@ extends ESRender_Module_ContentNode_Abstract {
         foreach (H5PCore::$scripts as $script) {
             self::$settings['core']['scripts'][] = $rel_path . $script . $cache_buster;
         }
-
-        //self::$settings['core']['scripts'][] = $rel_path . 'js/h5p-resizer.js';
-
     }
 
     public function get_content_settings($content)

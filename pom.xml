@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.edu_sharing</groupId>
+    <artifactId>edu_sharing-renderingservice</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+    <name>edu sharing Rendering-Service</name>
+    <url>https://scm.edu-sharing.com/edu-sharing/rendering-service</url>
+    <dependencies />
+    <build>
+        <finalName>${project.artifactId}-${revision}</finalName>
+        <!-- your list of plugins -->
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>${project.basedir}/assembly.xml</descriptor>
+                    </descriptors>
+                    <tarLongFileMode>posix</tarLongFileMode>
+                </configuration>
+                <executions>
+                        <execution>
+                            <id>dist-assembly</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>single</goal> <!-- that's all :) -->
+                            </goals>
+                        </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>validate-the-git-infos</id>
+                        <goals>
+                            <goal>validateRevision</goal>
+                        </goals>
+                        <!-- *NOTE*: The default phase of validateRevision is verify, but in case you want to
+                        change it, you can do so by adding the phase here -->
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <verbose>false</verbose>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.basedir}/git.properties</generateGitPropertiesFilename>
+                    <format>properties</format>
+                    <offline>true</offline>
+                    <excludeProperties>
+                        <excludeProperty>git.user.*</excludeProperty>
+                    </excludeProperties>
+                    <gitDescribe>
+                        <skip>true</skip>
+                    </gitDescribe>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+  <repositories>
+        <repository>
+            <id>nexus-intern</id>
+            <url>https://artifacts.edu-sharing.com/repository/maven-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>nexus-intern-snapshots</id>
+            <url>https://artifacts.edu-sharing.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus-intern</id>
+            <url>https://artifacts.edu-sharing.com/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-intern-snapshots</id>
+            <url>https://artifacts.edu-sharing.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

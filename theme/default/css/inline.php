@@ -280,6 +280,10 @@ video, audio {
     border: 0;
 }
 
+.edu_audio_wrapper{
+    display: inline-block;
+}
+
 .dataProtectionRegulations, .dataProtectionRegulationsDialog {
 background: #fff;
 padding: 20px;

@@ -85,12 +85,13 @@ class converter {
                 }
                 break; 
             case 'video' :
+                error_log('converting video');
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), $conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
                 $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode($conv -> ESOBJECT_CONVERSION_DIR_SEPERATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . $conv -> ESOBJECT_CONVERSION_FORMAT . '.log';
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_MP4 :
                         $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.mp4';
-                        exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-1:'min(1080,ih)'\" -c:a copy" . " " . $tmpName . " " ."2>>" . $logfile, $whatever, $code);
+                        exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(1080\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a copy" . " " . $tmpName . " " ."2>>" . $logfile, $whatever, $code);
                         $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
                         if($code > 0) {
                             unlink($tmpName);

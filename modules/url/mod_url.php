@@ -207,7 +207,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     protected function getUrl() {
         $urlProp = $this -> _ESOBJECT -> AlfrescoNode -> getProperty($this -> getUrlProperty());
        if(!empty($urlProp))
-            return $urlProp;
+            return html_entity_decode($urlProp);
         return false;
     }
 

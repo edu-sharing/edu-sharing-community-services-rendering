@@ -832,7 +832,6 @@ class ESObject {
     }
     
     public function conversionFailed($format) {
-
         $pdo = RsPDO::getInstance();
         try {
             $sql = 'SELECT `ESOBJECT_CONVERSION_OBJECT_ID` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format AND `ESOBJECT_CONVERSION_STATUS` like :error';
@@ -842,10 +841,12 @@ class ESObject {
             $stmt -> bindValue(':error', '%ERROR%');
             $stmt -> execute();
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
-            if(!$result)
+            if(!$result){
                 return false;
-            else
+            }else{
                 return true;
+            }
+
         } catch(Exception $e) {
             throw new Exception($e -> getMessage());
         }

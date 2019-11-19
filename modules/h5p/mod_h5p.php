@@ -159,8 +159,8 @@ extends ESRender_Module_ContentNode_Abstract {
         global $MC_URL;
 
         $html  = '<!doctype html>';
-        $html .= '<html lang="en" class="h5p-iframe"><head>';
-
+        $html .= '<html lang="en" class="h5p-iframe">';
+        $html .= '<head>';
         $html .= '<meta charset="utf-8">';
         $html .= '<title>'.'H5P-iframe'.'</title>';
 
@@ -180,11 +180,9 @@ extends ESRender_Module_ContentNode_Abstract {
         foreach (self::$settings['contents']['cid-'.$contentId]['styles'] as $style) {
             $html .= '<link rel="stylesheet" href="'. $style.'" type="text/css">';
         }
-
-        $html .= '</head><body>';
-
+        $html .= '</head>';
+        $html .= '<body>';
         $html .= '<div class="h5p-content" data-content-id="' . $contentId . '"></div>';
-
         $html .= '</body>';
 
         //xApi-Connection

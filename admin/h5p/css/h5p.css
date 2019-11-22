@@ -1,0 +1,120 @@
+
+body {
+    padding: 40px;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #e4f3f9;
+    background-image: url('../../img/edulogo.svg');
+    background-position: right 20px top 20px;
+    background-size: 200px auto;
+    background-repeat: no-repeat;
+}
+
+a, a:hover, a:visited, a:active {
+    color: darkblue;
+    text-decoration: none;
+}
+h3{
+    display: inline;
+}
+
+input{
+    padding: 12px 24px;
+}
+
+.btn {
+    display: inline-block;
+    margin: 12px 4px;
+    padding: 12px 24px;
+    overflow: hidden;
+    border-width: 0;
+    outline: none;
+    font-weight: bolder;
+    cursor: pointer;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+    background-color: #48708e;
+    color: #ecf0f1;
+    transition: background-color .3s;
+}
+
+.btn:hover, .btn:focus {
+    background-color: #183f5c;
+}
+
+.version{
+    font-weight: bold;
+    color: #00a0d2;
+    text-decoration: underline;
+}
+
+.menu{
+    display: flex;
+    text-decoration: none;
+    list-style: none;
+}
+
+.menu li{
+    margin-left: 20px;
+}
+
+.menu li a{
+    color: #00a0d2;
+    transition: ease-in-out 0.5s;
+}
+
+.menu li a:hover{
+    color: #1f67a8;
+}
+
+.h5p-search{
+    width: 85%;
+    margin: 12px auto;
+}
+
+.update-core{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: baseline;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #aaa;
+}
+
+.choose-core{
+    border: 1px solid #eee;
+    margin: 0 5px;
+}
+
+.file-upload{
+    background: white;
+    padding: 8px;
+    border: 1px solid #bbb;
+}
+
+.h5p-content{
+    width: 85%;
+    margin: 0 auto;
+    text-align: left;
+    background: white;
+    padding: 5px;
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid #eee;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #eee;
+}
+
+.pagination{
+    display: flex;
+    justify-content: center;
+    list-style: none;
+}
+
+.pagination a{
+    margin: 5px 15px;
+}

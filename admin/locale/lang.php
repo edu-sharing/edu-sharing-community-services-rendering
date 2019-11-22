@@ -18,3 +18,4 @@ define('LANG_CHECKERRORLOG', 'Please check the error log.');
 define('LANG_VERSION_RUNNING', 'You are running version');
 define('LANG_CHOOSE_UPDATE', 'Check for updates');
 define('LANG_CHOOSE_DBTOOL', 'Open database tool');
+define('LANG_CHOOSE_H5P', 'Open H5P Backend');

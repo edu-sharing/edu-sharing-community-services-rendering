@@ -43,7 +43,8 @@ body {
 }
 
 h1, h2 {
-	font-size: 1.3em;
+	font-size: 1.5em;
+    fot-weight: bold;
 	margin-bottom: 40px;
 }
 
@@ -292,4 +293,47 @@ input, select {
 
 #version_running {
 	color: #555;
+}
+
+.rs-admin{
+
+}
+
+.file-upload{
+    padding: 8px;
+    padding-left: 0;
+    margin-top: 24px;
+}
+
+.file-upload h3{
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.choose-core{
+    padding: 8px;
+    background: white;
+
+}
+
+.btn {
+    display: inline-block;
+    margin: 12px 4px;
+    padding: 12px 24px;
+    overflow: hidden;
+    border-width: 0;
+    outline: none;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .4);
+    background-color: #48708e;
+    color: #ecf0f1;
+    transition: ease-in-out 0.2s;
+}
+
+.btn:hover, .btn:focus {
+    background-color: #183f5c;
+transform:scale(1.02);
 }

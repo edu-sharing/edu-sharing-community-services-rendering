@@ -1,5 +1,5 @@
 <?php
-
+require_once(dirname(__FILE__).'/config.php');
 
 class H5PFramework implements H5PFrameworkInterface {
 
@@ -20,7 +20,7 @@ class H5PFramework implements H5PFrameworkInterface {
      */
     public function getPlatformInfo()
     {
-        return array('name' => 'edu-sharing', 'version' => '1.0', 'h5pVersion' => '1.23');
+        return array('name' => 'edu-sharing', 'version' => '1.0', 'h5pVersion' => H5P_Version);
     }
 
 

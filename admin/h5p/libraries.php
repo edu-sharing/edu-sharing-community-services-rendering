@@ -28,11 +28,15 @@ $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
     <title>H5P-Admin-Backend</title>
 
     <link rel="stylesheet" href="css/h5p.css" />
-    <script src="sweetalert2.all.min.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
 
-<?php include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'update_core.php'; ?>
+<?php
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'update_core.php';
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'update_library.php';
+?>
+
 
 <h1>H5P-Admin-Backend - Libraries</h1>
 <ul class="menu">
@@ -84,9 +88,9 @@ if ($_POST['search_h5p']){
     try{
 
         if(is_numeric($_POST['search_h5p'])){
-            $query_condition = "WHERE id=".$_POST['search_h5p']." OR title LIKE '%".$_POST['search_h5p']."%'";
+            $query_condition = "WHERE id=".$_POST['search_h5p']." OR title LIKE '%".$_POST['search_h5p']."%' ORDER BY name ASC";
         }else{
-            $query_condition = "WHERE title LIKE '%".$_POST['search_h5p']."%'";
+            $query_condition = "WHERE title LIKE '%".$_POST['search_h5p']."%' ORDER BY name ASC";
         }
 
         $total_pages_sql = "SELECT COUNT(*) FROM h5p_libraries ".$query_condition;
@@ -111,7 +115,7 @@ if ($_POST['search_h5p']){
     $total_rows =  $statement->fetchColumn();
     $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-    $query = "SELECT id, title, major_version, minor_version, patch_version FROM h5p_libraries LIMIT ".$offset.", ".$no_of_records_per_page;
+    $query = "SELECT id, title, name, major_version, minor_version, patch_version FROM h5p_libraries ORDER BY title ASC LIMIT ".$offset.", ".$no_of_records_per_page;
     $statement = $db -> query($query);
     $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
@@ -138,7 +142,6 @@ if ($_POST['search_h5p']){
             var_dump($e);
         }
 
-
         try{  //get the number of libraries that require the library
             $lib_req_sql = "SELECT COUNT(*) FROM h5p_libraries_libraries WHERE library_id=".$result->id;
             $statement = $db -> query($lib_req_sql);
@@ -147,14 +150,50 @@ if ($_POST['search_h5p']){
             var_dump($e);
         }
 
+        try{
+            $lib_version_sql = "SELECT id, major_version, minor_version, patch_version FROM h5p_libraries WHERE name='".$result->name."'";
+            $statement = $db -> query($lib_version_sql);
+            $lib_versions =  $statement->fetchAll(\PDO::FETCH_OBJ);
+        }catch(Exception $e) {
+            echo $lib_version_sql.'</br>';
+            var_dump($e);
+        }
+        $newer_version = false;
+        if (count($lib_versions) > 1){
+            $current_version = $result->major_version.'.'.$result->minor_version.'.'.$result->patch_version;
+            $new_version = $current_version;
+            foreach ($lib_versions as $version){
+                $tmp_version = $version->major_version.'.'.$version->minor_version.'.'.$version->patch_version;
+                if (version_compare ($current_version,  $tmp_version) === -1){
+                    $newer_version = true;
+                    if (version_compare ($new_version,  $tmp_version) === -1){
+                        $new_version = $tmp_version;
+                        $new_version_id = $version->id;
+                    }
+
+                }
+            }
+        }
+
+
 
         echo '<tr>';
         echo '<td>'.$result->id.'</td>';
-        echo '<td>'.$result->title.'</td>';
+        echo '<td><a class="library-link" href="library_detail.php?libraryId='.$result->id.'&libraryTitle='.$result->title.'">'.$result->title.'</a></td>';
         echo '<td>'.$result->major_version.'.'.$result->minor_version.'.'.$result->patch_version.'</td>';
         echo '<td>'.$lib_uses.'</td>';
         echo '<td>'.$lib_req.'</td>';
-        echo '<td>'.'update'.'</td>';
+        if ($lib_uses == 0){
+            echo '<td>delete</td>';
+        }elseif($newer_version){
+            echo '<td><form action="libraries.php" method=post class=update_library>
+                    <input type=hidden value="'.$result->id.'"name=update_library />
+                    <input type=hidden value="'.$new_version_id.'"name=new_library_id />
+                    <input class="btn" type=submit value="Update Library to '.$new_version.'" />
+                  </form></td>';
+        }else{
+            echo '<td></td>';
+        }
         echo '</tr>';
     } ?>
 </table>

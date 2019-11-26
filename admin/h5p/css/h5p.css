@@ -99,6 +99,13 @@ input{
     border-collapse: collapse;
 }
 
+.library-link{
+    font-weight: bold;
+    color: #00a0d2;
+    text-decoration: underline;
+    transition: ease-in-out 0.5s;
+}
+
 td, th {
     border: 1px solid #eee;
     text-align: left;

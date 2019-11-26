@@ -22,7 +22,7 @@ $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
     <title>H5P-Admin-Backend</title>
 
     <link rel="stylesheet" href="css/h5p.css" />
-    <script src="sweetalert2.all.min.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
 
@@ -57,6 +57,10 @@ if($_POST['delete_h5p']){
     }else{
         error_log('deleted ' . $dirPath);
     }
+
+    $query_libraries = "DELETE FROM h5p_contents_libraries WHERE content_id = ".$_POST['delete_h5p'];
+    $statement_libraries = $db -> query($query_libraries);
+    $results_libraries = $statement_libraries->execute();
 
     $query = "DELETE FROM h5p_contents WHERE id = ".$_POST['delete_h5p'];
     $statement = $db -> query($query);

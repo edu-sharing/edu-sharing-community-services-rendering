@@ -70,7 +70,7 @@
         echo '<a style="margin-left: 20px;" class="btn" href="?action=dbtool">'.LANG_CHOOSE_DBTOOL.'</a>';
         echo '<a style="margin-left: 20px;" class="btn" href="?action=h5ptool">'.LANG_CHOOSE_H5P.'</a>';
     ?>
-        <form class="file-upload" method="post" enctype="multipart/form-data">
+        <form class="file-upload" action="../admin/index.php" method="post" enctype="multipart/form-data">
             <h3>Upload a file to the renderingservice:</h3>
             <input class="choose-core" type="file" name="fileToUpload" id="fileToUpload">
             <input class="btn" type="submit" value="Upload File" name="upload_file">

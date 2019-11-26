@@ -103,6 +103,10 @@ class cacheCleaner {
                     $h5pID = $statement->fetchAll(\PDO::FETCH_OBJ)[0]->id;
 
                     //delete h5p sqlite entry
+                    $query_libraries = "DELETE FROM h5p_contents_libraries WHERE content_id = ".$_POST['delete_h5p'];
+                    $statement_libraries = $h5p_db -> query($query_libraries);
+                    $results_libraries = $statement_libraries->execute();
+
                     $query = "DELETE FROM h5p_contents WHERE title='".$esobject->getObjectID()."'";
                     $statement = $h5p_db -> query($query);
                     $result = $statement->execute();

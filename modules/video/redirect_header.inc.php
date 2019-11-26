@@ -25,6 +25,20 @@
 // $mime_type  : mime type of real file
 // $file_name  : original file name
 
+header("Content-type: " . $mime_type);
+//header("Content-length: " . filesize($src_file));
+
+if($display_kind == ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD){
+    header('Content-Disposition: attachment; filename="' . $file_name . '"');
+}else {
+    //rangeDownload($src_file);
+    rangeDownload_old($src_file);
+    //serveFilePartial($src_file, $file_name);
+    //partialContent($src_file);
+    exit();
+}
+
+
 // TAKEN FROM: http://mobiforge.com/developing/story/content-delivery-mobile-devices
 function rangeDownload_old($file) {
 
@@ -41,14 +55,14 @@ function rangeDownload_old($file) {
     // Now that we've gotten so far without errors we send the accept range header
     /* At the moment we only support single ranges.
      * Multiple ranges requires some more work to ensure it works correctly
-     * and comply with the spesifications: http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.2
+     * and comply with the specifications: http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.2
      *
-     * Multirange support annouces itself with:
+     * Multirange support announces itself with:
      * header('Accept-Ranges: bytes');
      *
      * Multirange content must be sent with multipart/byteranges mediatype,
      * (mediatype = mimetype)
-     * as well as a boundry header to indicate the various chunks of data.
+     * as well as a boundary header to indicate the various chunks of data.
      */
     header("Accept-Ranges: 0-$length");
     // header('Accept-Ranges: bytes');
@@ -73,7 +87,7 @@ function rangeDownload_old($file) {
         }
         // If the range starts with an '-' we start from the beginning
         // If not, we forward the file pointer
-        // And make sure to get the end byte if spesified
+        // And make sure to get the end byte if specified
         if ($range == '-') { //fix
             // The n-number of the last bytes is requested
             $c_start = $size - substr($range, 1);
@@ -114,7 +128,7 @@ function rangeDownload_old($file) {
 
         if ($p + $buffer > $end) {
 
-            // In case we're only outputtin a chunk, make sure we don't
+            // In case we're only outputting a chunk, make sure we don't
             // read past the length
             $buffer = $end - $p + 1;
         }
@@ -192,14 +206,3 @@ function rangeDownload($file){
         exit(0);
     }
 }
-
-header("Content-type: " . $mime_type);
-//header("Content-length: " . filesize($src_file));
-
-if($display_kind == ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD){
-    header('Content-Disposition: attachment; filename="' . $file_name . '"');
-}else {
-    rangeDownload($src_file);
-    exit();
-}
-

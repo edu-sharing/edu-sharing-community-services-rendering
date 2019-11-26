@@ -47,7 +47,7 @@ H5P.MathDisplay = (function () {
       if (!that.settings.observers || that.settings.observers.length === 0) {
         that.settings = that.extend({
           observers: [
-            {name: 'mutationObserver', params: {cooldown: 500}},
+            //{name: 'mutationObserver', params: {cooldown: 500}},
             {name: 'domChangedListener'},
             //{name: 'interval', params: {time: 1000}},
           ]
@@ -284,6 +284,10 @@ H5P.MathDisplay = (function () {
 
           if (that.mathjax.Hub.queue.running + that.mathjax.Hub.queue.pending === 0 || counter === 0) {
             that.mathJaxTriggeredResize = true;
+
+            console.log('waitForMathJaxDone mathJaxTriggeredResize: '+that.resized);
+            that.resized = true;
+
 
             if (that.parent) {
               that.parent.trigger('resize');

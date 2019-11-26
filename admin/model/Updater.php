@@ -2,10 +2,10 @@
 
 class Updater {
 	
-	private $installedVersion = '';
-	private $updateVersion = '';
+	public $installedVersion = '';
+    public $updateVersion = '';
 	
-	public function __construct($do) {
+	public function __construct($do = null) {
 		include dirname(__FILE__) . '/../update/update.php';
 		$this -> installedVersion = $this -> getinstalledversion();
 		$this -> updateVersion = UPDATEVERSION;
@@ -34,7 +34,7 @@ class Updater {
 	}
 	
 	
-	private function isUpdatable() {
+	public function isUpdatable() {
 	
 		if(version_compare($this -> updateVersion, $this -> installedVersion) > 0)
 			return true;
@@ -42,7 +42,7 @@ class Updater {
 			return false;
 	}
 	
-	private function update() {
+	public function update() {
 		$sucesss = run($this -> installedVersion);
 		if($sucesss)
 			$success = $this -> setUpdateVersion();

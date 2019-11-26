@@ -69,7 +69,10 @@ class RemoteAppPropertyHandler {
                     $appReg -> save($appRegFile);
                 }
             }
-            $this -> exc -> info(install_msg_add_registry_repo);
+            if(defined('CLI_MODE') && CLI_MODE)
+                echo '[OK] Import repository properties' . PHP_EOL;
+            else
+                $this -> exc -> info(install_msg_add_registry_repo);
         } catch (Exception $e) {
             $this -> exc -> error(install_err_add_registry_repo);
         }

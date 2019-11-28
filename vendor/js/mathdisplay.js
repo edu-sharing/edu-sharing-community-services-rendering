@@ -49,7 +49,7 @@ H5P.MathDisplay = (function () {
           observers: [
             {name: 'mutationObserver', params: {cooldown: 500}},
             {name: 'domChangedListener'},
-            //{name: 'interval', params: {time: 1000}},
+            //{name: 'interval', params: {time: 2000}},
           ]
         }, that.settings);
       }
@@ -65,11 +65,18 @@ H5P.MathDisplay = (function () {
                 extensions: ['tex2jax.js'],
                 showMathMenu: false,
                 jax: ['input/TeX','output/HTML-CSS'],
+                //jax: ['input/TeX','output/SVG'],
                 tex2jax: {
                   // Important, otherwise MathJax will be rendered inside CKEditor
                   ignoreClass: "ckeditor"
                 },
-                messageStyle: 'none'
+                messageStyle: 'none',
+                "HTML-CSS": {
+                  styles: {
+                    ".MathJax": {margin: "0"},
+                    ".MathJax_Display": {margin: "0"}
+                  }
+                }
               }
             }
           }
@@ -261,7 +268,7 @@ H5P.MathDisplay = (function () {
         // Resize interaction after there are no more DOM changes to expect by MathJax
         function triggerResize() {
           try {
-            if (H5P && H5P.instances && H5P.instances.length !== 0) {
+            if (H5P && H5P.instances && H5P.instances.length !== 0 && document.querySelectorAll('.MathJax').length > 0) {
               H5P.instances[0].trigger('resize');
             }
           }

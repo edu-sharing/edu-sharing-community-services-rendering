@@ -169,6 +169,10 @@ global $MC_URL;?>
     padding: 12px;
 }
 
+.edusharing_rendering_content_footer_directory_img{
+    max-height: 33px;
+}
+
 .edusharing_rendering_content_footer_directory_header {
     display: flex;
     align-items: center;

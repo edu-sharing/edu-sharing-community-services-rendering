@@ -29,6 +29,14 @@ header("Access-Control-Allow-Headers: *");
 try {
     include_once ('../../conf.inc.php');
 
+    // init LOGGER
+    require_once (dirname(__FILE__) . '/../../func/extern/apache-log4php-2.0.0-incubating/src/main/php/Logger.php');
+    Logger::configure(dirname(__FILE__) . '/../../conf/de.metaventis.esrender.log4php.properties');
+    $Logger = Logger::getLogger('de.metaventis.esrender.index');
+
+    $Logger -> info('Starting up.');
+    $Logger -> debug($_SERVER['REQUEST_URI']);
+
     // start session
     if (empty($ESRENDER_SESSION_NAME)) {
         error_log('ESRENDER_SESSION_NAME not set in conf/system.conf.php');
@@ -51,13 +59,7 @@ try {
         throw new Exception('Could not get current session_id().');
     }
 
-    // init LOGGER
-    require_once (dirname(__FILE__) . '/../../func/extern/apache-log4php-2.0.0-incubating/src/main/php/Logger.php');
-    Logger::configure(dirname(__FILE__) . '/../../conf/de.metaventis.esrender.log4php.properties');
-    $Logger = Logger::getLogger('de.metaventis.esrender.index');
 
-    $Logger -> info('Starting up.');
-    $Logger -> debug($_SERVER['REQUEST_URI']);
 
     // init PROXY
     $ProxyConfig = '../../conf/proxy.conf.php';

@@ -1,3 +1,11 @@
+v5.0
+- Completely rebuilt H5P-Integration: Now based on the official H5P-Core-Libraries
+- Option to integrate H5P with an Learning-Record-Store
+- CacheCleaner now includes H5P
+- ffmpeg video-conversion up to 6 times faster
+- Only re-convert video if the content changed
+- Improved support for partial-content requests
+
 v4.2
 - IMS Common Cartridge packages rendering
 - Plugin for "Deutsche Digitale Bibliothek"

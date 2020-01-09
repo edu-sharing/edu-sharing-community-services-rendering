@@ -32,7 +32,7 @@ $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 <h1>H5P-Admin-Backend - Libraries</h1>
 <ul class="menu">
     <li><a href="index.php">H5P-Content</a></li>
-    <li><a href="libraries.php">H5P-Libraries</a></li>
+    <li><a href="libraries2.php">H5P-Libraries</a></li>
     <li><a href="../index.php">Rendering-Service-Admin</a></li>
 </ul>
 
@@ -93,13 +93,30 @@ if ($_GET['libraryId']){
             $statement = $db -> query($query);
             $h5p_content = $statement->fetchAll(\PDO::FETCH_OBJ);
 
+            if (isValidTimeStamp($h5p_content[0]->updated_at)){
+                $last_update = date('Y-m-d H:i:s', intval($h5p_content[0]->updated_at));
+            }else{
+                $last_update = $h5p_content[0]->updated_at;
+            }
+
             echo '<tr>';
             echo '<td>'.$result->content_id.'</td>';
             echo '<td>'.$h5p_content[0]->title.'</td>';
             echo '<td>'.$h5p_content[0]->description.'</td>';
-            echo '<td>'.date('H:i:s - d.m.Y', intval($h5p_content[0]->updated_at)).'</td>';
+            echo '<td>'.$last_update.'</td>';
             echo '</tr>';
-        } ?>
+        }
+
+        function isValidTimeStamp($timestamp)
+        {
+            if (preg_match('/\D/', $timestamp)){
+                return false;
+            }else{
+                return true;
+            }
+        }
+
+        ?>
     </table>
 
     <ul class="pagination">

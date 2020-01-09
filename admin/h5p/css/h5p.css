@@ -10,7 +10,6 @@ body {
 }
 
 a, a:hover, a:visited, a:active {
-    color: darkblue;
     text-decoration: none;
 }
 h3{
@@ -21,7 +20,7 @@ input{
     padding: 12px 24px;
 }
 
-.btn {
+.btn, .h5p-admin-upgrade-button {
     display: inline-block;
     margin: 12px 4px;
     padding: 12px 24px;
@@ -124,4 +123,16 @@ tr:nth-child(even) {
 
 .pagination a{
     margin: 5px 15px;
+}
+
+.wrap{
+    border-top: 1px solid #aaa;
+}
+
+select{
+    text-align: right;
+    padding: 10px 20px;
+    margin-right: 6px;
+    cursor: pointer;
+    border-radius: 2px;
 }

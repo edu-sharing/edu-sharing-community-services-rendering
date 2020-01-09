@@ -647,7 +647,31 @@ class H5PFramework implements H5PFrameworkInterface {
      */
     public function getLibraryUsage($libraryId, $skipContent = FALSE)
     {
-        // TODO: Implement getLibraryUsage() method.
+        global $db;
+
+
+            $statement = $db -> query("SELECT COUNT(distinct c.id)
+              FROM h5p_libraries l
+              JOIN h5p_contents_libraries cl ON l.id = cl.library_id
+              JOIN h5p_contents c ON cl.content_id = c.id
+              WHERE l.id = ".$libraryId);
+
+            $content = $statement->fetch();
+
+            $statement = $db -> query("SELECT COUNT(*)
+              FROM h5p_libraries_libraries
+              WHERE required_library_id = ".$libraryId);
+
+            $libraries = $statement->fetch();
+
+            return array(
+                //'content' => $skipContent ? -1 : $content[0],
+                'content' => $content[0],
+                'libraries' => $libraries[0]
+            );
+
+
+
     }
 
     /**
@@ -967,7 +991,16 @@ class H5PFramework implements H5PFrameworkInterface {
      */
     public function getNumContent($libraryId, $skip = NULL)
     {
-        // TODO: Implement getNumContent() method.
+        global $db;
+        //$skip_query = empty($skip) ? '' : " AND id NOT IN ($skip)";
+
+        $statement = $db -> prepare( "SELECT COUNT(id)
+                                                FROM h5p_contents
+                                                WHERE library_id = :libId");
+        $statement->bindParam(':libId', $libraryId);
+        $statement->execute();
+        return $statement->fetchColumn();
+
     }
 
     /**

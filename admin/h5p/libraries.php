@@ -3,6 +3,11 @@
 require_once (dirname(__FILE__) . '/../../conf.inc.php');
 require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p.classes.php');
 require_once (dirname(__FILE__) . '/../../modules/h5p/H5PFramework.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-file-storage.interface.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-default-storage.class.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-development.class.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-event-base.class.php');
+require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-metadata.class.php');
 require_once dirname(__FILE__) . '/../locale/lang.php';
 
 session_start();
@@ -13,6 +18,8 @@ if ($_SESSION['loggedin'] !== 1){
 
 global $H5PFramework;
 $H5PFramework = new H5PFramework();
+$H5PCore = new H5PCore($H5PFramework, $H5PFramework->get_h5p_path(), $H5PFramework->get_h5p_url(), mc_Request::fetch('language', 'CHAR', 'de'), false);
+$H5PStorage = new H5PStorage($H5PFramework, $H5PCore);
 
 global $MC_URL;
 global $db;
@@ -29,12 +36,13 @@ $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
     <link rel="stylesheet" href="css/h5p.css" />
     <script src="js/sweetalert2.all.min.js"></script>
+
+
 </head>
 <body>
 
 <?php
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'update_core.php';
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'update_library.php';
 ?>
 
 
@@ -63,65 +71,12 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'update_library.php';
 </div>
 
 
+
 <div class="h5p-search">
-    <form action="libraries.php" method=post class=delete-h5p>
-        <input value="<?php echo $_POST['search_h5p']; ?>" placeholder="ID, Title..." name=search_h5p />
-        <input class="btn" type=submit value="Search" />
-    </form></td>
+    </br>
 </div>
 
 
-
-<?php
-
-if (isset($_GET['pageno'])) {
-    $pageno = $_GET['pageno'];
-} else {
-    $pageno = 1;
-}
-$no_of_records_per_page = 20;
-$offset = ($pageno-1) * $no_of_records_per_page;
-
-
-
-if ($_POST['search_h5p']){
-    try{
-
-        if(is_numeric($_POST['search_h5p'])){
-            $query_condition = "WHERE id=".$_POST['search_h5p']." OR title LIKE '%".$_POST['search_h5p']."%' ORDER BY name ASC";
-        }else{
-            $query_condition = "WHERE title LIKE '%".$_POST['search_h5p']."%' ORDER BY name ASC";
-        }
-
-        $total_pages_sql = "SELECT COUNT(*) FROM h5p_libraries ".$query_condition;
-        $statement = $db -> query($total_pages_sql);
-        $total_rows =  $statement->fetchColumn();
-        $total_pages = ceil($total_rows / $no_of_records_per_page);
-
-        $query = "SELECT id, title, major_version, minor_version, patch_version  FROM h5p_libraries ".$query_condition." LIMIT ".$offset.", ".$no_of_records_per_page;
-        $statement = $db -> query($query);
-        $results = $statement->fetchAll(\PDO::FETCH_OBJ);
-        if(empty($results)){
-            echo '<h3>Nothing found for: '.$_POST['search_h5p'].'</h3>';
-        }elseif(!$results){
-            print_r($results);
-        }
-    }catch(Exception $e) {
-        var_dump($e);
-    }
-}else{
-    $total_pages_sql = "SELECT COUNT(*) FROM h5p_libraries";
-    $statement = $db -> query($total_pages_sql);
-    $total_rows =  $statement->fetchColumn();
-    $total_pages = ceil($total_rows / $no_of_records_per_page);
-
-    $query = "SELECT id, title, name, major_version, minor_version, patch_version FROM h5p_libraries ORDER BY title ASC LIMIT ".$offset.", ".$no_of_records_per_page;
-    $statement = $db -> query($query);
-    $results = $statement->fetchAll(\PDO::FETCH_OBJ);
-
-}
-
-?>
 
 <table class="h5p-content">
     <tr>
@@ -132,83 +87,43 @@ if ($_POST['search_h5p']){
         <th># Used by libraries</th>
         <th>Actions</th>
     </tr>
-    <?php foreach ($results as $result){
+    <?php
 
-        try{  //get the number of contents that uses the library
-            $lib_uses_sql = "SELECT COUNT(*) FROM h5p_contents_libraries WHERE library_id=".$result->id;
-            $statement = $db -> query($lib_uses_sql);
-            $lib_uses =  $statement->fetchColumn();
-        }catch(Exception $e) {
-            var_dump($e);
-        }
+    $not_cached = $H5PFramework->getNumNotFiltered();
+    $libraries = $H5PFramework->loadLibraries();
 
-        try{  //get the number of libraries that require the library
-            $lib_req_sql = "SELECT COUNT(*) FROM h5p_libraries_libraries WHERE library_id=".$result->id;
-            $statement = $db -> query($lib_req_sql);
-            $lib_req =  $statement->fetchColumn();
-        }catch(Exception $e) {
-            var_dump($e);
-        }
+    foreach ($libraries as $versions) {
+        foreach ($versions as $library) {
+            $usage = $H5PFramework->getLibraryUsage($library->id, $not_cached ? TRUE : FALSE);
+            $upgrades = $H5PCore->getUpgrades($library, $versions);
 
-        try{
-            $lib_version_sql = "SELECT id, major_version, minor_version, patch_version FROM h5p_libraries WHERE name='".$result->name."'";
-            $statement = $db -> query($lib_version_sql);
-            $lib_versions =  $statement->fetchAll(\PDO::FETCH_OBJ);
-        }catch(Exception $e) {
-            echo $lib_version_sql.'</br>';
-            var_dump($e);
-        }
-        $newer_version = false;
-        if (count($lib_versions) > 1){
-            $current_version = $result->major_version.'.'.$result->minor_version.'.'.$result->patch_version;
-            $new_version = $current_version;
-            foreach ($lib_versions as $version){
-                $tmp_version = $version->major_version.'.'.$version->minor_version.'.'.$version->patch_version;
-                if (version_compare ($current_version,  $tmp_version) === -1){
-                    $newer_version = true;
-                    if (version_compare ($new_version,  $tmp_version) === -1){
-                        $new_version = $tmp_version;
-                        $new_version_id = $version->id;
-                    }
+
+
+            echo '<tr>';
+                echo '<td>'.$library->id.'</td>';
+                echo '<td><a class="library-link" href="library_detail.php?libraryId='.$library->id.'&libraryTitle='.$library->title.'">'.$library->title.'</a></td>';
+                echo '<td>'.H5PCore::libraryVersion($library).'</td>';
+                echo '<td>'.$usage['content'].'</td>';
+                echo '<td>'.$usage['libraries'].'</td>';
+                echo '<td>';
+                if (!empty($upgrades)){
+                    echo '<form action="libraries-update.php" method=post >
+                        <input type=hidden value="'.$library->id.'"name=library_id />
+                        <input class="btn" type=submit value="Update" />
+                      </form>';
+                }else{
 
                 }
-            }
+                echo '</td>';
+
+            echo '</tr>';
+
         }
+    }
 
-
-
-        echo '<tr>';
-        echo '<td>'.$result->id.'</td>';
-        echo '<td><a class="library-link" href="library_detail.php?libraryId='.$result->id.'&libraryTitle='.$result->title.'">'.$result->title.'</a></td>';
-        echo '<td>'.$result->major_version.'.'.$result->minor_version.'.'.$result->patch_version.'</td>';
-        echo '<td>'.$lib_uses.'</td>';
-        echo '<td>'.$lib_req.'</td>';
-        if ($lib_uses == 0){
-            echo '<td>delete</td>';
-        }elseif($newer_version){
-            echo '<td><form action="libraries.php" method=post class=update_library>
-                    <input type=hidden value="'.$result->id.'"name=update_library />
-                    <input type=hidden value="'.$new_version_id.'"name=new_library_id />
-                    <input class="btn" type=submit value="Update Library to '.$new_version.'" />
-                  </form></td>';
-        }else{
-            echo '<td></td>';
-        }
-        echo '</tr>';
-    } ?>
+     ?>
 </table>
 
-<ul class="pagination">
-    <li><a href="?pageno=1">&lt;&lt;First</a></li>
-    <li class="<?php if($pageno <= 1){ echo 'disabled'; } ?>">
-        <a href="<?php if($pageno <= 1){ echo '#'; } else { echo "?pageno=".($pageno - 1); } ?>">&lt;Prev</a>
-    </li>
-    <li> <?php echo 'Page '.$pageno.' of '.$total_pages;?> </li>
-    <li class="<?php if($pageno >= $total_pages){ echo 'disabled'; } ?>">
-        <a href="<?php if($pageno >= $total_pages){ echo '#'; } else { echo "?pageno=".($pageno + 1); } ?>">Next&gt;</a>
-    </li>
-    <li><a href="?pageno=<?php echo $total_pages; ?>">Last&gt;&gt;</a></li>
-</ul>
 
 </body>
 </html>

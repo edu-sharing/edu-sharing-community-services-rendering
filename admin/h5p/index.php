@@ -29,7 +29,7 @@ $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 <h1>H5P-Admin-Backend - Content</h1>
 <ul class="menu">
     <li><a href="index.php">H5P-Content</a></li>
-    <li><a href="libraries2.php">H5P-Libraries</a></li>
+    <li><a href="libraries.php">H5P-Libraries</a></li>
     <li><a href="../index.php">Rendering-Service-Admin</a></li>
 </ul>
 

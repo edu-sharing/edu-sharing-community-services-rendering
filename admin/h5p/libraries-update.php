@@ -42,7 +42,7 @@ $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 <h1>H5P-Admin-Backend - Libraries</h1>
 <ul class="menu">
     <li><a href="index.php">H5P-Content</a></li>
-    <li><a href="libraries2.php">H5P-Libraries</a></li>
+    <li><a href="libraries.php">H5P-Libraries</a></li>
     <li><a href="../index.php">Rendering-Service-Admin</a></li>
 </ul>
 
@@ -95,7 +95,7 @@ $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
    * @since 1.1.0
    */
   function display_content_upgrades($library) {
-    global $db, $H5PCore, $H5PFramework, $CC_RENDER_PATH;
+    global $db, $H5PCore, $H5PFramework;
 
 
     $statement = $db -> prepare("SELECT hl2.id, hl2.name, hl2.title, hl2.major_version, hl2.minor_version, hl2.patch_version
@@ -112,7 +112,6 @@ $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
     foreach ($versions as $version) {
       if ($version->id === $library->id) {
         $upgrades = $H5PCore->getUpgrades($version, $versions);
-        //error_log(print_r( $upgrades, true));
         break;
       }
     }
@@ -161,12 +160,11 @@ $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
         'errorLibrary' => ('Missing required library %lib.'),
         'errorTooHighVersion' => ('Parameters contain %used while only %supported or earlier are supported.'),
         'errorNotSupported' => ('Parameters contain %used which is not supported.'),
-        'done' => sprintf(('You have successfully upgraded %s.'), $contents) . '<br/><a class="btn" href="libraries2.php">' . 'Return' . '</a>',
+        'done' => sprintf(('You have successfully upgraded %s.'), $contents) . '<br/><a class="btn" href="libraries.php">' . 'Return' . '</a>',
         'library' => array(
           'name' => $library->name,
           'version' => $library->major_version . '.' . $library->minor_version,
         ),
-        //'libraryBaseUrl' => $CC_RENDER_PATH . 'h5p'. DIRECTORY_SEPARATOR . 'libraries',
         'libraryBaseUrl' => 'h5p_ajax.php?action=h5p_content_upgrade_library&library=',
         'scriptBaseUrl' => '../../vendor/lib/h5p-core/js/',
         'buster' => '?ver=' . $H5PFramework->getPlatformInfo()['h5pVersion'],

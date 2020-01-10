@@ -1,42 +1,5 @@
 <?php
-
-require_once (dirname(__FILE__) . '/../../conf.inc.php');
-require_once dirname(__FILE__) . '/../locale/lang.php';
-
-session_start();
-if ($_SESSION['loggedin'] !== 1){
-    echo 'Not logged in! <a href="../index.php">Login</a>';
-    exit;
-}
-
-
-global $MC_URL;
-global $db;
-$db = new PDO('sqlite:' . $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR . 'db');
-$db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>H5P-Admin-Backend</title>
-
-    <link rel="stylesheet" href="css/h5p.css" />
-    <script src="js/sweetalert2.all.min.js"></script>
-</head>
-<body>
-
-
-<h1>H5P-Admin-Backend - Libraries</h1>
-<ul class="menu">
-    <li><a href="index.php">H5P-Content</a></li>
-    <li><a href="libraries.php">H5P-Libraries</a></li>
-    <li><a href="../index.php">Rendering-Service-Admin</a></li>
-</ul>
-
-<?php
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
 
 if (isset($_GET['pageno'])) {
     $pageno = $_GET['pageno'];
@@ -46,14 +9,9 @@ if (isset($_GET['pageno'])) {
 $no_of_records_per_page = 20;
 $offset = ($pageno-1) * $no_of_records_per_page;
 
-
-
 if ($_GET['libraryId']){
-
     $librayId = $_GET['libraryId'];
-
     try{
-
         $query_condition = "WHERE library_id = ".$librayId;
 
         $total_pages_sql = "SELECT COUNT(*) FROM h5p_contents_libraries ".$query_condition;
@@ -76,10 +34,9 @@ if ($_GET['libraryId']){
     echo '<h3>Nothing found for: '.$_GET['libraryId'].'</h3>';
 }
 
-
 ?>
 <div>
-    <h2>Content that uses <?php echo $_GET['libraryTitle']; ?>:</h2>
+    <h2 class="detail-header">Content that uses <?php echo $_GET['libraryTitle']; ?>:</h2>
     <table class="h5p-content">
         <tr>
             <th>ID</th>
@@ -131,7 +88,6 @@ if ($_GET['libraryId']){
         <li><a href="?libraryId=<?php echo $librayId; ?>&librayTitle=<?php echo $_GET['libraryTitle']; ?>&pageno=<?php echo $total_pages; ?>">Last&gt;&gt;</a></li>
     </ul>
 </div>
-
 
 </body>
 </html>

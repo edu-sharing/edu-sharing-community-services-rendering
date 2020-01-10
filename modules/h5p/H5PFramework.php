@@ -980,7 +980,12 @@ class H5PFramework implements H5PFrameworkInterface {
      */
     public function getNumNotFiltered()
     {
-        // TODO: Implement getNumNotFiltered() method.
+        global $db;
+
+        $statement = $db -> query( "SELECT COUNT(id)
+                                                FROM h5p_contents
+                                                WHERE filtered = ''");
+        return intval($statement->fetchColumn());
     }
 
     /**

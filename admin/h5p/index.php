@@ -1,55 +1,15 @@
 <?php
-
-require_once dirname(__FILE__) . '/../locale/lang.php';
-require_once dirname(__FILE__) . '/../../conf.inc.php';
-
-session_start();
-if ($_SESSION['loggedin'] !== 1){
-    echo 'Not logged in! <a href="../index.php">Login</a>';
-    exit;
-}
-
-global $db;
-$db = new PDO('sqlite:' . $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR . 'db');
-$db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>H5P-Admin-Backend</title>
-
-    <link rel="stylesheet" href="css/h5p.css" />
-    <script src="js/sweetalert2.all.min.js"></script>
-</head>
-<body>
-
-<h1>H5P-Admin-Backend - Content</h1>
-<ul class="menu">
-    <li><a href="index.php">H5P-Content</a></li>
-    <li><a href="libraries.php">H5P-Libraries</a></li>
-    <li><a href="../index.php">Rendering-Service-Admin</a></li>
-</ul>
 
 <div class="h5p-search">
     <form action="index.php"  method=post class=delete-h5p>
         <input value="<?php echo $_POST['search_h5p']; ?>" placeholder="ID, Node-ID, Title..." name=search_h5p />
         <input class="btn" type=submit value="Search" />
-    </form></td>
+    </form>
 </div>
 
 <?php
-
-require_once (dirname(__FILE__) . '/../../conf.inc.php');
-
-global $db;
-$db = new PDO('sqlite:' . $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR . 'db');
-$db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-
-
-
 if($_POST['delete_h5p']){
     $dirPath =  $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'. DIRECTORY_SEPARATOR . 'content'. DIRECTORY_SEPARATOR. $_POST['delete_h5p'];
     if (!removeDir($dirPath)){

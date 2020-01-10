@@ -1,12 +1,9 @@
 
 body {
-    padding: 40px;
     font-family: 'Open Sans', sans-serif;
     background-color: #e4f3f9;
-    background-image: url('../../img/edulogo.svg');
-    background-position: right 20px top 20px;
-    background-size: 200px auto;
-    background-repeat: no-repeat;
+
+    margin: 0;
 }
 
 a, a:hover, a:visited, a:active {
@@ -42,14 +39,41 @@ input{
 
 .version{
     font-weight: bold;
-    color: #00a0d2;
-    text-decoration: underline;
+    color: #336699;
+}
+
+.h5p-header{
+    width: 100%;
+    display: flex;
+    align-content: baseline;
+    color: #fff;
+    background: #383838;
+    background-image: url('../../img/edulogo-white-text.svg');
+    background-position: right 20px top 20px;
+    background-size: 120px auto;
+    background-repeat: no-repeat;
+    margin-bottom: 24px;
+    border-bottom: 6px solid #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+}
+
+.h5p-header h1{
+    padding-left: 40px;
 }
 
 .menu{
     display: flex;
+    align-items: center;
     text-decoration: none;
     list-style: none;
+    margin-left: 16px;
+    padding-right: 20px;
+    background: #505050;
+    border-radius: 2px;
+}
+
+ul{
+    padding-inline-start: 0;
 }
 
 .menu li{
@@ -57,12 +81,12 @@ input{
 }
 
 .menu li a{
-    color: #00a0d2;
+    color: #fff;
     transition: ease-in-out 0.5s;
 }
 
 .menu li a:hover{
-    color: #1f67a8;
+    color: #00a0d2;
 }
 
 .h5p-search{
@@ -98,6 +122,10 @@ input{
     border-collapse: collapse;
 }
 
+.detail-header{
+    padding-left: 40px;
+}
+
 .library-link{
     font-weight: bold;
     color: #00a0d2;
@@ -126,7 +154,8 @@ tr:nth-child(even) {
 }
 
 .wrap{
-    border-top: 1px solid #aaa;
+    width: 90%;
+    margin: 0 auto;
 }
 
 select{

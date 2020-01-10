@@ -18,13 +18,13 @@ if($_POST['delete_h5p']){
         error_log('deleted ' . $dirPath);
     }
 
-    $query_libraries = "DELETE FROM h5p_contents_libraries WHERE content_id = ".$_POST['delete_h5p'];
-    $statement_libraries = $db -> query($query_libraries);
-    $results_libraries = $statement_libraries->execute();
+    $query_libraries = $db -> prepare("DELETE FROM h5p_contents_libraries WHERE content_id = :id");
+    $query_libraries->bindParam(':id', $_POST['delete_h5p']);
+    $results_libraries = $query_libraries->execute();
 
-    $query = "DELETE FROM h5p_contents WHERE id = ".$_POST['delete_h5p'];
-    $statement = $db -> query($query);
-    $results = $statement->execute();
+    $query = $db -> prepare("DELETE FROM h5p_contents WHERE id = :id");
+    $query->bindParam(':id', $_POST['delete_h5p']);
+    $results = $query->execute();
     if($results){
         echo "
             <script>
@@ -81,21 +81,28 @@ $offset = ($pageno-1) * $no_of_records_per_page;
 
 if ($_POST['search_h5p']){
     try{
+        $like_id = '%' . $_POST['search_h5p']. '%';
+        $params = array(
+            ':like_id'    =>  $like_id
+        );
 
         if(is_numeric($_POST['search_h5p'])){
-            $query_condition = "WHERE id=".$_POST['search_h5p']." OR title LIKE '%".$_POST['search_h5p']."%' OR description LIKE '%".$_POST['search_h5p']."%'";
+            $query_condition = "WHERE id=:id OR title LIKE :like_id OR description LIKE :like_id";
+            $params[':id'] = $_POST['search_h5p'];
         }else{
-            $query_condition = "WHERE title LIKE '%".$_POST['search_h5p']."%' OR description LIKE '%".$_POST['search_h5p']."%'";
+            $query_condition = "WHERE title LIKE :like_id OR description LIKE :like_id";
         }
 
-        $total_pages_sql = "SELECT COUNT(*) FROM h5p_contents ".$query_condition;
-        $statement = $db -> query($total_pages_sql);
-        $total_rows =  $statement->fetchColumn();
+        $total_pages_sql = $db -> prepare("SELECT COUNT(*) FROM h5p_contents ".$query_condition);
+        $total_pages_sql->execute($params);
+        $total_rows =  $total_pages_sql->fetchColumn();
         $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-        $query = "SELECT id, title, updated_at, description FROM h5p_contents ".$query_condition." LIMIT ".$offset.", ".$no_of_records_per_page;
-        $statement = $db -> query($query);
-        $results = $statement->fetchAll(\PDO::FETCH_OBJ);
+        $query = $db -> prepare("SELECT id, title, updated_at, description FROM h5p_contents ".$query_condition." LIMIT :offset, :no_of_records_per_page");
+        $params[':offset'] = $offset;
+        $params[':no_of_records_per_page'] = $no_of_records_per_page;
+        $query->execute($params);
+        $results = $query->fetchAll(\PDO::FETCH_OBJ);
         if(empty($results)){
             echo "
             <script>
@@ -118,9 +125,11 @@ if ($_POST['search_h5p']){
     $total_rows =  $statement->fetchColumn();
     $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-    $query = "SELECT id, title, updated_at, description  FROM h5p_contents LIMIT ".$offset.", ".$no_of_records_per_page;
-    $statement = $db -> query($query);
-    $results = $statement->fetchAll(\PDO::FETCH_OBJ);
+    $query = $db -> prepare("SELECT id, title, updated_at, description  FROM h5p_contents LIMIT :offset, :no_of_records_per_page");
+    $query->bindParam(':offset', $offset);
+    $query->bindParam(':no_of_records_per_page', $no_of_records_per_page);
+    $query->execute();
+    $results = $query->fetchAll(\PDO::FETCH_OBJ);
 }
 ?>
 

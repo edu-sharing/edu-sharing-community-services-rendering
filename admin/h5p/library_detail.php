@@ -14,14 +14,18 @@ if ($_GET['libraryId']){
     try{
         $query_condition = "WHERE library_id = ".$librayId;
 
-        $total_pages_sql = "SELECT COUNT(*) FROM h5p_contents_libraries ".$query_condition;
-        $statement = $db -> query($total_pages_sql);
-        $total_rows =  $statement->fetchColumn();
+        $total_pages_sql = $db -> prepare("SELECT COUNT(*) FROM h5p_contents_libraries WHERE library_id = :librayId");
+        $total_pages_sql->bindParam(':librayId', $librayId);
+        $total_pages_sql->execute();
+        $total_rows =  $total_pages_sql->fetchColumn();
         $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-        $query = "SELECT content_id FROM h5p_contents_libraries ".$query_condition." LIMIT ".$offset.", ".$no_of_records_per_page;
-        $statement = $db -> query($query);
-        $results = $statement->fetchAll(\PDO::FETCH_OBJ);
+        $query = $db -> prepare("SELECT content_id FROM h5p_contents_libraries WHERE library_id = :librayId LIMIT :offset, :no_of_records_per_page");
+        $query->bindParam(':librayId', $librayId);
+        $query->bindParam(':offset', $offset);
+        $query->bindParam(':no_of_records_per_page', $no_of_records_per_page);
+        $query->execute();
+        $results = $query->fetchAll(\PDO::FETCH_OBJ);
         if(empty($results)){
             echo '<h3>Nothing found for: '.$librayId.'</h3>';
         }elseif(!$results){
@@ -46,9 +50,10 @@ if ($_GET['libraryId']){
         </tr>
         <?php foreach ($results as $result){
 
-            $query = "SELECT id, title, updated_at, description  FROM h5p_contents WHERE id = ".$result->content_id;
-            $statement = $db -> query($query);
-            $h5p_content = $statement->fetchAll(\PDO::FETCH_OBJ);
+            $query = $db -> prepare("SELECT id, title, updated_at, description  FROM h5p_contents WHERE id = :content_id");
+            $query->bindParam(':content_id', $result->content_id);
+            $query->execute();
+            $h5p_content = $query->fetchAll(\PDO::FETCH_OBJ);
 
             if (isValidTimeStamp($h5p_content[0]->updated_at)){
                 $last_update = date('Y-m-d H:i:s', intval($h5p_content[0]->updated_at));

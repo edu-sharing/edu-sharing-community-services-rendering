@@ -11,10 +11,11 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
     }
 
     // Try to find content with $id.
-    $statement = $db -> query("SELECT id, title, name, major_version, minor_version, patch_version, runnable, fullscreen
+    $statement = $db -> prepare("SELECT id, title, name, major_version, minor_version, patch_version, runnable, fullscreen
           FROM h5p_libraries
-          WHERE id = ".$id);
-
+          WHERE id = :id");
+    $statement->bindParam(':id', $id);
+    $statement->execute();
     $library = $statement->fetch(\PDO::FETCH_OBJ);
 
     if (!$library) {

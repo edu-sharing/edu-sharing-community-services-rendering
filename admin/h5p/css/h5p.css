@@ -50,9 +50,16 @@ input{
     background-color: #183f5c;
 }
 
+.version-wrap{
+    color: #fff;
+    background: #505050;
+    font-weight: 400;
+    padding: 12px;
+    border: 1px solid #aaa;
+}
+
 .version{
-    font-weight: bold;
-    color: #336699;
+    font-weight: 800;
 }
 
 .h5p-header{

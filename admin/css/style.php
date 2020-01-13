@@ -33,13 +33,10 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-600.svg#OpenSans') format('svg'); /* Legacy iOS */
 }
 body {
-	padding: 40px;
+	padding: 0;
+    margin: 0;
 	font-family: 'Open Sans', sans-serif;
 	background-color: #e4f3f9;
-	background-image: url('../img/edulogo.svg');
-	background-position: right 20px top 20px;
-	background-size: 200px auto;
-	background-repeat: no-repeat;
 }
 
 h1, h2 {
@@ -98,7 +95,7 @@ body.execute {
 }
 
 div {
-	padding: 5px 15px 5px 5px;
+	padding: 0;
 }
 
 div button {
@@ -267,6 +264,29 @@ input, select {
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
 	font-size: 0.9em;
+}
+
+.header{
+    width: 100%;
+    display: flex;
+    align-content: baseline;
+    color: #fff;
+    background: #383838;
+    background-image: url('../img/edulogo-white-text.svg');
+    background-position: right 20px top 20px;
+    background-size: 120px auto;
+    background-repeat: no-repeat;
+    margin-bottom: 24px;
+    border-bottom: 6px solid #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+}
+
+.header h1{
+    padding-left: 40px;
+}
+
+.wrap{
+    padding: 10px 40px;
 }
 
 .login {

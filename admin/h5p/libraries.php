@@ -4,9 +4,9 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'update_core.php';
 ?>
 
 <div class="update-core">
-    <h3>Installed H5P-Version: <span class="version"><?php echo($H5PFramework->getPlatformInfo()['h5pVersion']);?></span></h3>
+    <h3 class="version-wrap">Installed H5P-Version: <span class="version"><?php echo($H5PFramework->getPlatformInfo()['h5pVersion']);?></span></h3>
     <form class="file-upload" action="libraries.php" method="post" enctype="multipart/form-data">
-        <h3>Upload new H5P-Core-Libraries:</h3>
+                <h3>Upload new H5P-Core-Libraries:</h3>
         <input class="choose-core" type="file" name="fileToUpload" id="fileToUpload">
         <input class="btn" type="submit" value="Upload" name="upload_core">
     </form>

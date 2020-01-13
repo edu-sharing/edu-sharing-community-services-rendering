@@ -35,6 +35,7 @@ $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
     <title>H5P-Admin-Backend</title>
 
     <link rel="stylesheet" href="css/h5p.css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet">
     <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>

@@ -1,7 +1,4 @@
-<?php
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
-?>
-
+<?php include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php'; ?>
 
 <div class="wrap">
     <?php
@@ -24,8 +21,6 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
 
     $settings = display_content_upgrades($library);
     print_settings($settings, 'H5PAdminIntegration');
-
-
 
       /**
    * JSON encode and print the given H5P JavaScript settings.
@@ -54,7 +49,6 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
   function display_content_upgrades($library) {
     global $db, $H5PCore, $H5PFramework;
 
-
     $statement = $db -> prepare("SELECT hl2.id, hl2.name, hl2.title, hl2.major_version, hl2.minor_version, hl2.patch_version
           FROM h5p_libraries hl1
           JOIN h5p_libraries hl2
@@ -64,7 +58,6 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
     $statement->bindParam(':libId', $library->id);
     $statement->execute();
     $versions = $statement->fetchAll(\PDO::FETCH_OBJ);
-
 
     foreach ($versions as $version) {
       if ($version->id === $library->id) {
@@ -80,7 +73,14 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
                     title: 'Attention!',
                     text: 'There are no available upgrades for ".$library->title." ".$library->major_version . "." . $library->minor_version."." . $library->patch_version."',
                     position: 'center',
-                    icon: 'warning'
+                    icon: 'warning',
+                    showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: 'Back'
+                }).then((result) => {
+                  if (result.value) {
+                    window.open('../h5p/libraries.php', '_self');
+                  }
                 })
             </script>
         ";
@@ -94,9 +94,16 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
             <script>
                 Swal.fire({
                     title: 'Attention!',
-                    text: 'There\'s no content instances to upgrade for ".$library->title." ".$library->major_version . "." . $library->minor_version."." . $library->patch_version."',
+                    text: 'There are no content instances to upgrade for ".$library->title." ".$library->major_version . "." . $library->minor_version."." . $library->patch_version."',
                     position: 'center',
-                    icon: 'warning'
+                    icon: 'warning',
+                    showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: 'Back'
+                }).then((result) => {
+                  if (result.value) {
+                    window.open('../h5p/libraries.php', '_self');
+                  }
                 })
             </script>
         ";
@@ -134,7 +141,6 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
       )
     );
 
-
     echo '
         <script type="text/javascript" src="../../vendor/lib/h5p-core/js/jquery.js"></script>
         <script type="text/javascript" src="../../vendor/lib/h5p-core/js/h5p-utils.js"></script>
@@ -147,9 +153,7 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
 
     return $settings;
   }
-
     ?>
-
 
     <?php if ($library): ?>
         <h2><?php printf('Upgrade %s %d.%d.%d content', $library->title, $library->major_version, $library->minor_version, $library->patch_version); ?></h2>

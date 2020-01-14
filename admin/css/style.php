@@ -283,6 +283,8 @@ input, select {
 
 .header h1{
     padding-left: 40px;
+    margin: 26px 0;
+    text-transform: capitalize;
 }
 
 .wrap{

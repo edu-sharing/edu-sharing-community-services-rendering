@@ -53,6 +53,10 @@ extends ESRender_Module_ContentNode_Abstract {
 
         parent::__construct($Name, $RenderApplication,$p_esobject, $Logger, $Template);
 
+        if (!file_exists($CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR)) {
+            mkdir($CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR, 0755);
+        }
+
         $this ->dbFile = $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR . 'db';
         if(!file_exists($this ->dbFile))
             copy(__DIR__ . DIRECTORY_SEPARATOR . 'empty.sqlite', $this ->dbFile);

@@ -22,7 +22,7 @@ body {
 }
 
 #edusharing_rendering_metadata {
-	background-color: #f6f6f6;
+	background-color: #fff;
 	padding-bottom: 30px;
 }
 .edusharing_rendering_metadata_header{

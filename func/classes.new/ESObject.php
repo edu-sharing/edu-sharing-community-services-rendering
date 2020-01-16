@@ -406,6 +406,13 @@ class ESObject {
             return true;
         }
 
+        if ($this->getNode()->type == 'ccm:saved_search') {
+            Logger::getLogger('de.metaventis.esrender.index')->info('Node type is "ccm:saved_search" is true, using module "saved_search".');
+            $this->module->setName('saved_search');
+            $this->moduleId = $this->module->getModuleId();
+            return true;
+        }
+
         $toolInstanceKey = $this -> getNodeProperty('ccm:tool_instance_key');
         if(!empty($toolInstanceKey)) {
             Logger::getLogger('de.metaventis.esrender.index') -> info('{http://www.campuscontent.de/model/1.0}tool_instance_ref equals set, using module "lti".');

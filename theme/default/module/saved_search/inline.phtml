@@ -1,0 +1,36 @@
+<style>
+    <?php include_once(dirname(__FILE__) . '/../../css/inline.php'); ?>
+    <?php include_once(dirname(__FILE__) . '/saved_search.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+</style>
+<div class="es-saved-search">
+    <div class="header">
+        <i class="material-icons">search</i>
+        <?php
+        $url = "$homeRepoUrl/components/search?savedSearch=$objectId&ticket={{{TICKET}}}";
+        echo <<<EOT
+            <a class="title" href="$url" target="_blank">$title</a>
+            $metaData
+        EOT
+        ?>
+        </span>
+    </div>
+    <ul>
+        <?php foreach ($children as $el) { ?>
+            <li class="entry">
+                <?php
+                $url = "$homeRepoUrl/components/render/{$el->ref->id}?ticket={{{TICKET}}}";
+                $previewUrl = "{$el->preview->url}&ticket={{{TICKET}}}";
+                echo <<<EOT
+                    <div class="content">
+                        <div class="preview">
+                            <img src="$previewUrl"/>
+                        </div>
+                        <a class="title" href="$url" target="_blank">$el->name</a>
+                    </div>
+                EOT;
+                ?>
+            </li>
+        <?php } ?>
+    </ul>
+</div>

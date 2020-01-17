@@ -28,17 +28,19 @@ extends ESRender_Module_NonContentNode_Abstract {
     		return false;
     	}
 
-    	if(Config::get('urlEmbedding'))
+    	if(Config::get('urlEmbedding')) {
             $embedding = Config::get('urlEmbedding');
-    	else if ($this -> detectVideo())
-    		$embedding = $this -> getVideoEmbedding();
-        else if($this -> detectAudio())
-            $embedding = $this -> getAudioEmbedding();
-        else if($this -> detectImage())
-            $embedding = $this -> getImageEmbedding();
-        else if($this -> detectH5P())
-            $embedding = $this -> getH5PEmbedding();
-    	else
+        }else if ($this -> detectVideo()) {
+            $embedding = $this->getVideoEmbedding();
+        }else if($this -> detectAudio()) {
+            $embedding = $this->getAudioEmbedding();
+        }else if($this -> detectImage()) {
+            $embedding = $this->getImageEmbedding();
+        }else if($this -> detectH5P()) {
+            $embedding = $this->getH5PEmbedding();
+        }else if($this -> detectPrezi()) {
+            $embedding = $this->getPreziEmbedding();
+        }else
     		$embedding = '';
 
     	$Template = $this -> getTemplate();
@@ -82,7 +84,9 @@ extends ESRender_Module_NonContentNode_Abstract {
         } else if($this -> detectImage()) {
             $embedding = $this -> getImageEmbedding($footer);
         } else if($this -> detectH5P()) {
-            $embedding = $this -> getH5PEmbedding($footer);
+            $embedding = $this->getH5PEmbedding($footer);
+        }else if($this -> detectPrezi()) {
+            $embedding = $this->getPreziEmbedding($footer);
         }else {
             $license = $this->_ESOBJECT->ESOBJECT_LICENSE;
             if (!empty($license))
@@ -120,6 +124,15 @@ extends ESRender_Module_NonContentNode_Abstract {
         $htm = '<div style="max-width:100%"><iframe src="'.$this->getUrl().'" width="800px" height="500px" frameborder="0" allowfullscreen="allowfullscreen"></iframe>';
         $htm .= '<script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>'. $footer.'</div>';
         return $htm;         
+    }
+
+    protected function getPreziEmbedding($footer = '') {
+        $preziUrl = $this->getUrl();
+        if(substr($preziUrl , -1)!='/'){
+            $preziUrl .= '/';
+        }
+        $htm = '<div style="max-width:100%"><iframe width="800" height="580" src="'.$preziUrl.'embed" webkitallowfullscreen="1" mozallowfullscreen="1" allowfullscreen="1"></iframe>'. $footer.'</div>';
+        return $htm;
     }
 
     protected function getAudioEmbedding($footer = '')
@@ -249,6 +262,13 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function detectH5P() {
     	if(strpos($this -> getUrl(), 'h5p.org/h5p/embed') !== false){
+            return true;
+        }
+        return false;
+    }
+
+    protected function detectPrezi() {
+        if(strpos($this -> getUrl(), 'prezi.com/view/') !== false){
             return true;
         }
         return false;

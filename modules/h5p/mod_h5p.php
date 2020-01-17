@@ -294,7 +294,12 @@ extends ESRender_Module_ContentNode_Abstract {
         $settings = array(
             'baseUrl' =>  DOMAIN,
             'url' => PATH,
-            'postUserStatistics' => true,
+            'postUserStatistics' => false,
+            'ajaxPath' => '',     // Only used by older Content Types
+            'ajax' => array(
+                    'setFinished' => '',
+                    'contentUserData' => ''
+                ),
             'saveFreq' => false,
             'siteUrl'=> DOMAIN,
             'l10n' => array(

@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '4.2.3' );
+define ( 'UPDATEVERSION', '5.1.0' );
 set_time_limit(18000);
 ini_set('memory_limit', '2048M');
 
@@ -418,6 +418,58 @@ function run($installedVersion) {
             $stmt->execute ();
         }
 
+        if(version_compare ( '5.1', $installedVersion ) > 0) {
+
+            $pdo = RsPDO::getInstance();
+
+            $sql = $pdo -> formatQuery( 'SELECT max(`REL_ESMODULE_MIMETYPE_ID`) as max FROM `REL_ESMODULE_MIMETYPE`' );
+            $stmt = $pdo -> prepare ( $sql );
+            $stmt -> execute();
+            $result = $stmt -> fetchObject();
+            $maxPrimaryKey = $result->max;
+
+            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':id', $maxPrimaryKey + 1 );
+            $stmt->bindValue ( ':modid', '10' );
+            $stmt->bindValue ( ':mime', 'image/svg' );
+            $stmt->execute ();
+
+            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':id', $maxPrimaryKey + 2 );
+            $stmt->bindValue ( ':modid', '10' );
+            $stmt->bindValue ( ':mime', 'image/svg+xml' );
+            $stmt->execute ();
+
+            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->bindValue ( ':id', $maxPrimaryKey + 3 );
+            $stmt->bindValue ( ':modid', '10' );
+            $stmt->bindValue ( ':mime', 'image/webp' );
+            $stmt->execute ();
+
+            /*
+             * Because content management as well as image and video processing has massively changed in this release it is not wrong to clear cache
+             */
+            $sql = $pdo->formatQuery ( 'DELETE FROM `ESOBJECT`' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->execute ();
+            $sql = $pdo->formatQuery ( 'DELETE FROM `ESOBJECT_LOCK`' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->execute ();
+            $sql = $pdo->formatQuery ( 'DELETE FROM `ESTRACK`' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->execute ();
+            $sql = $pdo->formatQuery ( 'DELETE FROM `ESOBJECT_CONVERSION`' );
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->execute ();
+
+            rrmdir(CC_RENDER_PATH, true);
+            if(!empty(CC_RENDER_PATH_SAFE))
+                rrmdir(CC_RENDER_PATH_SAFE, true);
+        }
+
     } catch ( Exception $e ) {
         error_log ( print_r ( $e, true ) );
         return false;
@@ -426,7 +478,7 @@ function run($installedVersion) {
     return true;
 }
 
-function rrmdir($dir) {
+function rrmdir($dir, $keepRoot = false) {
     if (is_dir ( $dir )) {
         $objects = scandir ( $dir );
         foreach ( $objects as $object ) {
@@ -437,6 +489,7 @@ function rrmdir($dir) {
                     unlink ( $dir . "/" . $object );
             }
         }
-        rmdir ( $dir );
+        if(!$keepRoot)
+            rmdir ( $dir );
     }
 }

@@ -19,6 +19,9 @@ extends ESRender_Module_ContentNode_Abstract {
     const FORMAT_VIDEO_WEBM_EXT = 'webm';
     const FORMAT_AUDIO_MP3 = 'FORMAT_AUDIO_MP3';
     const FORMAT_AUDIO_MP3_EXT = 'mp3';
+    const FORMAT_VIDEO_RESOLUTIONS_S = '144';
+    const FORMAT_VIDEO_RESOLUTIONS_M = '360';
+    const FORMAT_VIDEO_RESOLUTIONS_L = '720';
 
     /**
      *
@@ -28,7 +31,7 @@ extends ESRender_Module_ContentNode_Abstract {
      *
      * @return string
      */
-    abstract protected function getOutputFilename($ext);
+    abstract protected function getOutputFilename($ext, $resolution = NULL);
    
     protected function getVideoFormats() {  
     	    	
@@ -55,8 +58,8 @@ extends ESRender_Module_ContentNode_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_ContentNode_Abstract::createInstance()
      */
-    final public function createInstance(array $requestData) {
-        if (!parent::createInstance($requestData)) {
+    final public function createInstance() {
+        if (!parent::createInstance()) {
             return false;
         }
         return true;
@@ -69,57 +72,64 @@ extends ESRender_Module_ContentNode_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_Base::process()
      */
-    public function process($p_kind, array $requestData, $objectLocked = false) {
+    public function process($p_kind, $objectLocked = false) {
 
     	global $CC_RENDER_PATH;
-    	
+
         if ($objectLocked) {
-            return parent::process(ESRender_Application_Interface::DISPLAY_MODE_LOCKED, $requestData);
+            return parent::process(ESRender_Application_Interface::DISPLAY_MODE_LOCKED);
         }
         
         if ($p_kind == ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD) {
-            return parent::process($p_kind, $requestData);
+            return parent::process($p_kind);
         }
         
-        $arr = explode("/", $this -> _ESOBJECT -> getMimeType(), 2);
+        $arr = explode("/", $this -> esObject -> getMimeType(), 2);
         $type = $arr[0];
-        
+
         switch($type) {
             case 'audio':
                 $formats = array(self::FORMAT_AUDIO_MP3);
-            break;
-            default:
-                $formats = $this->getVideoFormats();    
-        }
-
-        
-       	if(empty($formats))
-        	return parent::process($p_kind, $requestData);
-
-        foreach ($formats as $format) {
-            $output_filename = $this -> getOutputFilename($this->getExtensionByFormat($format));
-
-            /*
-             * Throw an exception if conversion to the requested format failed earlier
-             * */
-            if ($formats[0] == $format && $this -> _ESOBJECT -> conversionFailed($format))
-                throw new ESRender_Exception_Conversion('Could not convert Object ' . $this -> _ESOBJECT ->getId() . ' to ' . $format);
-
-            /*
-             * if there is no output file add object to conversion queue if needed
-             * for failed conversions skip this
-             * */
-            if (!file_exists($output_filename) && !$this -> _ESOBJECT -> conversionFailed($format)) {
-                if (!$this -> _ESOBJECT -> inConversionQueue($format)) {
-                    $this -> _ESOBJECT -> addToConversionQueue($format, DIRECTORY_SEPARATOR, $this -> getCacheFileName(), $this -> getOutputFilename($this->getExtensionByFormat($format)), $CC_RENDER_PATH, $this -> _ESOBJECT -> getMimeType());
+                foreach ($formats as $format) {
+                    /*
+                     * if there is no output file add object to conversion queue if needed
+                     * for failed conversions skip this
+                     * */
+                    $outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($format));
+                    if (!file_exists($outputFilename) && !$this->esObject->conversionFailed($format)) {
+                        if (!$this->esObject->inConversionQueue($format)) {
+                            $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $this->esObject->getMimeType());
+                        }
+                        //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
+                        if ($formats[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED))
+                            $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
+                    }
                 }
-                //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
-                if ($formats[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_WINDOW && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC))
-                    $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
-            }
+            break;
+            case 'video':
+                $formats = $this->getVideoFormats();
+                foreach ($formats as $format) {
+                    /*
+                     * if there is no output file add object to conversion queue if needed
+                     * for failed conversions skip this
+                     * */
+                    foreach (array(self::FORMAT_VIDEO_RESOLUTIONS_S, self::FORMAT_VIDEO_RESOLUTIONS_M, self::FORMAT_VIDEO_RESOLUTIONS_L) as $resolution) {
+                        $outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($format), $resolution);
+                        if (!file_exists($outputFilename) && !$this->esObject->conversionFailed($format)) {
+                            if (!$this->esObject->inConversionQueue($format, $resolution)) {
+                                $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $this->esObject->getMimeType(),$resolution);
+                            }
+                            //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
+                            if ($formats[0] == $format && $resolution == ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED))
+                                $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
+                        }
+                    }
+                }
         }
+
         exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
-        return parent::process($p_kind, $requestData);
+
+        return parent::process($p_kind);
     }
 
 

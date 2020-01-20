@@ -42,7 +42,7 @@ extends ESRender_Module_ContentNode_Abstract
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_Base::display()
 	 */
-	final protected function display(array $requestData)
+	final protected function display()
 	{
 	    
         global $LanguageCode;
@@ -50,7 +50,7 @@ extends ESRender_Module_ContentNode_Abstract
 		$Logger = $this->getLogger();
 
         if (!file_exists(dirname(__FILE__).'/config.php')) {
-            echo parent::display($requestData);
+            echo parent::display();
             return true;
             $Logger -> error('Error opening ' . dirname(__FILE__).'/config.php');
         }
@@ -58,8 +58,8 @@ extends ESRender_Module_ContentNode_Abstract
 
 		try {
             include_once __DIR__ . '/config.php';
-			$m_path = $this->_ESOBJECT->getFilePath();
-			$m_name = $this->_ESOBJECT->getTitle();
+			$m_path = $this -> esObject->getFilePath();
+			$m_name = $this -> esObject->getTitle();
 
 			$SoapClientParams = array();
 			if ( defined('USE_HTTP_PROXY') && USE_HTTP_PROXY )
@@ -87,9 +87,12 @@ extends ESRender_Module_ContentNode_Abstract
 			}
 
 			$wrappedParams = new stdClass();
-			$wrappedParams->uniqueId = $requestData["rep_id"]."-".$requestData["app_id"]."-".$requestData["course_id"]."-".$requestData["user_id"]."-".$requestData["tracking_id"]."-".$requestData['object_id'];
+			$wrappedParams->uniqueId = $this -> esObject -> getNode() -> ref -> repo . "-" .
+                mc_Request::fetch('app_id', 'CHAR') . "-" . mc_Request::fetch('course_id', 'CHAR') . "-" .
+                $this -> esObject -> getData() -> user -> authorityName . "-" .
+                $this -> esObject -> getData() -> user -> authorityName;
 
-            $wrappedParams->uniqueId .= '-' . $requestData['user_name'];
+            $wrappedParams->uniqueId .= '-' . $this -> esobject -> getData() -> user -> authorityName;
 
 			$wrappedParams->contentPackage = $contents;
 			$wrappedParams->language = $LanguageCode;
@@ -118,16 +121,12 @@ extends ESRender_Module_ContentNode_Abstract
 			$Template = $this->getTemplate();
 			if($this->p_kind == ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC) {
 			    if(Config::get('showMetadata'))
-					$metadata = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
-				
-				echo $Template->render('/module/qti21/dynamic', array('oru' => $oru, 'title' => $m_name, 'metadata' => $metadata, 'previewUrl' => $this->_ESOBJECT->getPreviewUrl()));
-				
-			}else if ( $_SESSION['esrender']['display_kind']=='inline')
- 			{
+					$metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+				echo $Template->render('/module/qti21/dynamic', array('oru' => $oru, 'title' => $m_name, 'metadata' => $metadata, 'previewUrl' => $this -> esObject->getPreviewUrl()));
+			} else if($this->p_kind == ESRender_Application_Interface::DISPLAY_MODE_EMBED) {
+                echo $Template->render('/module/qti21/embed', array('oru' => $oru, 'title' => $m_name, 'previewUrl' => $this -> esObject->getPreviewUrl()));
+            } else if ( $_SESSION['esrender']['display_kind']=='inline') {
                      echo $Template->render('/module/qti21/inline', array('oru' => $oru, 'title' => $m_name));
-
-			}else {
-                     echo $Template->render('/module/qti21/display', array('oru' => $oru, 'title' => $m_name));
 			}
 
 
@@ -141,19 +140,17 @@ extends ESRender_Module_ContentNode_Abstract
 	}
 
 
-	protected function inline(array $requestData)
+	protected function inline()
 	{
         $Logger = $this->getLogger();
 
         if (!file_exists(dirname(__FILE__).'/config.php')) {
-            echo parent::inline($requestData);
+            echo parent::inline();
             $Logger -> error('Error opening QTI config');
             return true;
         }
 
-		echo $this->renderTemplate(
-			$requestData,
-			'/module/qti21/inline');
+		echo $this->renderTemplate('/module/qti21/inline');
 		return true;
 	}
 
@@ -162,9 +159,9 @@ extends ESRender_Module_ContentNode_Abstract
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_Base::createInstance()
 	 */
-	final public function createInstance(array $requestData)
+	final public function createInstance()
 	{
-		if ( ! parent::createInstance($requestData) )
+		if ( ! parent::createInstance() )
 		{
 			return false;
 		}
@@ -178,8 +175,8 @@ extends ESRender_Module_ContentNode_Abstract
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_Base::process()
 	 */
-	final public function process($p_kind, array $requestData) {
-		$obj_module = $this -> _ESOBJECT -> getModule();
+	final public function process($p_kind) {
+		$obj_module = $this -> esObject -> getModule();
 		if(empty($p_kind))
 		  $p_kind = $obj_module -> getConf('defaultdisplay', $p_kind);
 
@@ -188,13 +185,13 @@ extends ESRender_Module_ContentNode_Abstract
 		switch($p_kind)
 		{
 			case ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD:
-                $this -> download($requestData);
+                $this -> download();
 			break;
 
             case ESRender_Application_Interface::DISPLAY_MODE_INLINE:
-			case ESRender_Application_Interface::DISPLAY_MODE_WINDOW:
 			case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC:
-				return $this -> display($requestData);
+			case ESRender_Application_Interface::DISPLAY_MODE_EMBED:
+				return $this -> display();
 			break;
 
 

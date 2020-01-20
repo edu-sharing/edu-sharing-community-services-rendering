@@ -32,7 +32,6 @@ extends ESRender_Plugin_Abstract
 	 */
 	public function postLoadRepository(
 		EsApplication &$remote_rep,
-		&$app_id,
 		&$object_id,
 		&$course_id,
 		&$resource_id,

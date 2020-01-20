@@ -12,8 +12,8 @@ $msg['seqenceViewChildren'] = new Phools_Message_Default('seqenceViewChildren');
 </span><ul style="display:none">
     <?php
 foreach($children as $child) {
-    echo '<li><a target="_blank" href="'.$parentUrl.'&childobject_id='.$child['{http://www.alfresco.org/model/system/1.0}node-uuid'].'" style="overflow:hidden;">
-            <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.$child['{http://www.alfresco.org/model/content/1.0}name'].
+    echo '<li><a target="_blank" href="'.$parentUrl.'&childobject_id='.$child['NodeID'].'">
+            <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.$child['name'].
          '</a></li>';
 }
 echo '<a class="edusharing_rendering_content_footer_sequence_showall" target="_blank" href="'.$parentUrl.'">'.htmlentities($msg['seqenceViewChildren']->localize($Locale, $Translate)).'<i style="margin-left: 10px;" class="material-icons">open_in_new</i></a>';

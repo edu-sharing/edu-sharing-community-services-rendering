@@ -39,7 +39,7 @@ class mod_scenario
 	/**
 	 *
 	 */
-	final protected function display(array $requestData)
+	final protected function display()
 	{
 		include_once('config.php');
 /*
@@ -59,10 +59,10 @@ class mod_scenario
 */
 		try
 		{
-			$m_mimeType = $this->_ESOBJECT->getMimeType();
-			$m_path = $this->_ESOBJECT->getFilePath();
-			$m_name = $this->_ESOBJECT->getTitle();
-			$m_objectID = $this->_ESOBJECT->getObjectID();
+			$m_mimeType = $this -> esObject->getMimeType();
+			$m_path = $this -> esObject->getFilePath();
+			$m_name = $this -> esObject->getTitle();
+			$m_objectID = $this -> esObject->getObjectID();
 
 			$SoapClientParams = array(
 					'trace' => 1,
@@ -79,7 +79,7 @@ class mod_scenario
 			unset($wrappedParams);
 			global $user_data;
 			global $hc;
-
+            $wrappedParams = new stdClass();
 			//$wrappedParams->courseid = $COURSE->id;
 			$wrappedParams->applicationId = $hc->prop_array['appid'];
 			$wrappedParams->username   = (empty($user_data->authenticateByAppReturn->userid) ? $user_data->authenticateByAppReturn->username : $user_data->authenticateByAppReturn->userid);
@@ -102,7 +102,7 @@ class mod_scenario
 			die();
 		}
 
-		header('Location: '.$this->_ESOBJECT->getPath().'&SID='.$virt_sess);
+		header('Location: '.$this -> esObject->getPath().'&SID='.$virt_sess);
 
 		return true;
 	} // end method display
@@ -112,9 +112,9 @@ class mod_scenario
 	/**
 	 *
 	 */
-	final public function createInstance(array $requestData)
+	final public function createInstance()
 	{
-		if ( ! parent::createInstance($requestData) )
+		if ( ! parent::createInstance() )
 		{
 			return false;
 		}
@@ -122,7 +122,7 @@ class mod_scenario
 		// pfad lesen
 		// verzeichniss anlegen /jahr/monat/tag/minute/sek
 		// kopieren
-		//	 echo $this->_ESOBJECT->ESModule->getTmpFilepath();
+		//	 echo $this -> esObject->ESModule->getTmpFilepath();
 		$date = date('Y:m:d:H:i:s');
 		$date2 = date('Y:m:d:H:i');
 		$datepath = explode(':',$date);
@@ -132,19 +132,19 @@ class mod_scenario
 
 		foreach ($datepath as $path)
 		{
-			$l_path = getenv("DOCUMENT_ROOT").'/esrender/'.$this->_ESOBJECT->ESModule->getTmpFilepath().$l_add;
+			$l_path = getenv("DOCUMENT_ROOT").'/esrender/'.$this -> esObject->module->getTmpFilepath().$l_add;
 			@mkdir($l_path);
 			$l_add .= '/'.$path;
 		}
 
-		$content = $this->_ESOBJECT->AlfrescoNode->properties['{http://www.alfresco.org/model/content/1.0}content'];
-		$content->readContentToFile($l_path.'/'.$this->_ESOBJECT->AlfrescoNode->properties['{http://www.alfresco.org/model/system/1.0}node-uuid']);
+		$content = $this -> esObject -> getNodeProperty('cm:content');
+		$content->readContentToFile($l_path.'/'.$this -> esObject -> getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid'));
 
-		$this->filename = $this->_ESOBJECT->AlfrescoNode->properties['{http://www.alfresco.org/model/system/1.0}node-uuid'];
+		$this->filename = $this -> esObject -> getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid');
 
-		$DataArray['ESOBJECT_FILE_PATH']  = $l_path.'/'.$this->_ESOBJECT->AlfrescoNode->properties['{http://www.alfresco.org/model/system/1.0}node-uuid'];
-//		$DataArray['ESOBJECT_PATH']	   = MC_ROOT_URI.$this->_ESOBJECT->ESModule->getTmpFilepath().'/'.implode('/',$datepath2).'/'.$this->filename;
-		$DataArray['ESOBJECT_ESMODULE_ID']=  $this->_ESOBJECT->ESModule->getModuleId();
+		$DataArray['ESOBJECT_FILE_PATH']  = $l_path.'/'.$this -> esObject -> getNodeProperty('{http://www.alfresco.org/model/system/1.0}node-uuid');
+//		$DataArray['ESOBJECT_PATH']	   = MC_ROOT_URI.$this -> esObject->ESModule->getTmpFilepath().'/'.implode('/',$datepath2).'/'.$this->filename;
+		$DataArray['ESOBJECT_ESMODULE_ID']=  $this -> esObject -> module -> getModuleId();
 
 		// get virt. session
 		try
@@ -164,7 +164,7 @@ class mod_scenario
 			unset($wrappedParams);
 			global $user_data;
 			global $hc;
-
+            $wrappedParams = new stdClass();
 			//$wrappedParams->courseid = $COURSE->id;
 			$wrappedParams->applicationId = $hc->prop_array['appid'];
 			$wrappedParams->username   = (empty($user_data->authenticateByAppReturn->userid) ? $user_data->authenticateByAppReturn->username : $user_data->authenticateByAppReturn->userid);
@@ -210,6 +210,7 @@ class mod_scenario
 				return false;
 			}
 
+            $u = new stdClass();
 			$u->content   = fread($fh, filesize($DataArray['ESOBJECT_FILE_PATH']));
 			$u->courseid  = $user_data->authenticateByAppReturn->username;
 			$u->sessionid = $result->authenticateByAppReturn->sessionid;
@@ -233,31 +234,30 @@ class mod_scenario
 			die();
 		}
 
-		$this->_ESOBJECT->setData($DataArray);
+		$this -> esObject->setData($DataArray);
 
 		return true;
 	}
 
 
 	final public function process(
-		$p_kind,
-		array $requestData)
+		$p_kind)
 	{
-		$m_mimeType = $this->_ESOBJECT->getMimeType();
-		$m_path = $this->_ESOBJECT->getPath();
-		$m_name = $this->_ESOBJECT->getTitle();
+		$m_mimeType = $this -> esObject->getMimeType();
+		$m_path = $this -> esObject->getPath();
+		$m_name = $this -> esObject->getTitle();
 
-		$obj_module = $this->_ESOBJECT->getModule();
+		$obj_module = $this -> esObject->getModule();
 		$p_kind = $obj_module->getConf('defaultdisplay', $p_kind);
 
 		switch( strtolower($p_kind) )
 		{
 			case ESRender_Application_Interface::DISPLAY_MODE_INLINE:
-				return $this->inline($requestData);
+				return $this->inline();
 			break;
 
-			case ESRender_Application_Interface::DISPLAY_MODE_WINDOW:
-				return $this->display($requestData);
+			case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC:
+				return $this->display();
 			break;
 
 			case ESRender_Application_Interface::DISPLAY_MODE_DOWNLOAD:
@@ -274,14 +274,5 @@ class mod_scenario
 		return true;
 	}
 
-
-
-	/**
-	 *
-	 */
-	final public function setCache()
-	{
-		return true;
-	}
 
 }

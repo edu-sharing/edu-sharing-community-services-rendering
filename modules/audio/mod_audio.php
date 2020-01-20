@@ -40,23 +40,23 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_AudioVideo_Abstract::getOutputFilename()
      */
-    protected function getOutputFilename($format = self::FORMAT_AUDIO_MP3) {
+    protected function getOutputFilename($format = self::FORMAT_AUDIO_MP3, $resolution = NULL) {
         $filename = $this->getCacheFileName();
         return $filename .= '.' . $this->getExtensionByFormat($format);
     }
 
-    protected function getExtensionByFormat($format = self::FORMAT_AUDIO_MP3) {
+    protected function getExtensionByFormat($format = self::FORMAT_AUDIO_MP3, $resolution = NULL) {
         return self::FORMAT_AUDIO_MP3_EXT;
     }
 
-    protected function prepareRenderData(array $requestData, $getDefaultData = true) {
+    protected function prepareRenderData($getDefaultData = true, $showMetadata = true) {
     	
     	$data = array();
     	
     	if($getDefaultData)
-        	$data = parent::prepareRenderData($requestData);
+        	$data = parent::prepareRenderData($showMetadata);
         
-        $object_url = dirname($this->_ESOBJECT->getPath()) . '/' . basename($this->getOutputFilename($this)) . '?' . session_name() . '=' . session_id(). '&token=' . $requestData['token'];
+        $object_url = dirname($this -> esObject->getPath()) . '/' . basename($this->getOutputFilename($this)) . '?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         $data['audio_url'] = $object_url;
         return $data;
     }
@@ -75,60 +75,69 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
 
     /**
      * (non-PHPdoc)
-     * @see ESRender_Module_Base::display()
+     * @see ESRender_Module_Base::dynamic()
      */
-    final public function display(
-        array $requestData)
+    final public function dynamic()
     {
         global $Locale, $ROOT_URI;
-        $data = $this->prepareRenderData($requestData);
-        //$data['inline'] = $this->renderInlineTemplate($data);
-        $data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='.$requestData['app_id']
-            .'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
-            .$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
-            .'&display=inline&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-        $data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
-        //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-        $Template = $this->getTemplate();
-        echo $Template->render('/module/audio/display', $data);
+        $template_data = $this->prepareRenderData( false);
 
+        $template_data['ajax_url'] =
+            $ROOT_URI . 'application/esmain/index.php?'.
+            'app_id=' . mc_Request::fetch('app_id', 'CHAR') .
+            '&rep_id=' . mc_Request::fetch('app_id', 'CHAR').
+            '&resource_id='. mc_Request::fetch('resource_id', 'CHAR').
+            '&course_id='.mc_Request::fetch('course_id', 'CHAR') .
+            '&display=inline' .
+            '&displayoption=min' .
+            '&language='.$Locale->getLanguageTwoLetters().
+            '&antiCache=' . mt_rand();
+        //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
+
+        $template_data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
+
+        if(Config::get('showMetadata'))
+            $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+        $template_data['title'] = $this -> esObject->getTitle();
+        echo $this->getTemplate()->render('/module/audio/dynamic', $template_data);
         return true;
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see ESRender_Module_Base::dynamic()
      */
-    final public function dynamic(
-    		array $requestData)
+    final public function embed()
     {
-    	global $Locale, $ROOT_URI;
-    	$data = $this->prepareRenderData($requestData);
-    	//$data['inline'] = $this->renderInlineTemplate($data);
-    	$data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='.$requestData['app_id']
-    			.'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
-    					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
-    					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-    					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-    	$data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
-    	if(Config::get('showMetadata'))
-            $data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+        global $Locale, $ROOT_URI;
+        $template_data = $this->prepareRenderData(true, false);
+        $template_data['ajax_url'] =
+            $ROOT_URI . 'application/esmain/index.php?'.
+            'app_id=' . mc_Request::fetch('app_id', 'CHAR') .
+            '&rep_id=' . mc_Request::fetch('app_id', 'CHAR').
+            '&resource_id='. mc_Request::fetch('resource_id', 'CHAR').
+            '&course_id='.mc_Request::fetch('course_id', 'CHAR') .
+            '&display=inline' .
+            '&displayoption=min' .
+            '&language='.$Locale->getLanguageTwoLetters().
+            '&antiCache=' . mt_rand();
+        //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
 
-        $data['title'] = $this->_ESOBJECT->getTitle();
-    	echo $this->getTemplate()->render('/module/audio/dynamic', $data);
-    	
-    	return true;
+        $template_data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
+
+        echo $this->getTemplate()->render('/module/audio/embed', $template_data);
+        return true;
     }
 
     /**
      * (non-PHPdoc)
      * @see ESRender_Module_Base::inline()
      */
-    protected function inline(array $requestData) {
+    protected function inline() {
     	if($_REQUEST['displayoption'] == 'min') {
-    		$data = $this->prepareRenderData($requestData, false);
+    		$data = $this->prepareRenderData(false);
     	} else {
-    		$data = $this->prepareRenderData($requestData);
+    		$data = $this->prepareRenderData();
     	}
 
     	echo $this->renderInlineTemplate($data);
@@ -140,15 +149,15 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
      * @see ESRender_Module_Base::locked()
      * 
      */
-    final public function locked(array $requestData) {
+    final public function locked() {
         $template = $this->getTemplate();
-        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> _ESOBJECT -> getObjectID() . $this->_ESOBJECT->getObjectVersion() . self::FORMAT_AUDIO_MP3 .'.log';
+        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion() . self::FORMAT_AUDIO_MP3 .'.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput, self::FORMAT_AUDIO_MP3);
-        $positionInConversionQueue = $this->_ESOBJECT->getPositionInConversionQueue(self::FORMAT_AUDIO_MP3);
+        $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue(self::FORMAT_AUDIO_MP3);
         if(empty($progress) || is_array($progress))
             $progress = '0';
-        echo $template->render('/module/audio/lock', array('callback' => $requestData['callback'],
-        											'authString' => 'token='.$requestData['token'].'&'.session_name().'='.session_id(),
+        echo $template->render('/module/audio/lock', array('callback' => mc_Request::fetch('callback', 'CHAR'),
+        											'authString' => 'token='.Config::get('token').'&'.session_name().'='.session_id(),
         											'progress' => $progress,
         											'positionInConversionQueue' => $positionInConversionQueue));
         return true;

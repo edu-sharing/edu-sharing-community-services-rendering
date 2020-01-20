@@ -22,10 +22,10 @@ class RsPDO extends PDO {
     public function querylimit($query, $limit, $offset) {       
         switch($this -> driver) {
             case 'pgsql':
-                return $query . 'LIMIT ' . $limit . 'OFFSET ' . $offset;
+                return $query . ' LIMIT ' . $limit . 'OFFSET ' . $offset;
             break;
             case 'mysql':
-                return $query . 'LIMIT ' . $offset  . ', '. $limit;
+                return $query . ' LIMIT ' . $offset  . ', '. $limit;
             break;
         }    
     }

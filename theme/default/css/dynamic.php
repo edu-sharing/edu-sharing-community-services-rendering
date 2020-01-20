@@ -179,10 +179,6 @@ a.dataProtectionRegulationsButton {
 	line-height: initial;
 }
 
-div.h5p-container {
-    margin-bottom: 30px;
-}
-
 @media (max-width: 900px) {
 
     .edusharing_rendering_content_wrapper{

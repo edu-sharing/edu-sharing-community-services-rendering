@@ -85,14 +85,6 @@ class ESUsage extends Plattform
 	{
 	}
 
-	/**
-	 *
-	 */
-	final public function setCache()
-	{
-	    return true;
-	}
-
 
 	final public function setObjectData($p_DataArray)
 	{

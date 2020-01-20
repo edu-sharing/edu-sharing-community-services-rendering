@@ -30,7 +30,7 @@ implements ESRender_Application_Interface {
      * @see ESRender_Application_Interface::getDefaultDisplayMode()
      */
     public function getDefaultDisplayMode() {
-        return ESRender_Application_Interface::DISPLAY_MODE_WINDOW;
+        return ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC;
     }
 
     /**

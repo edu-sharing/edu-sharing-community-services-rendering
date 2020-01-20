@@ -13,39 +13,26 @@ interface ESRender_Module_Interface
 	 * false otherwise.
 	 *
 	 * @param ESObject $ESObject
-	 * @param array $requestData
+	 * @param ESObject $ESObject
 	 * @param string $contentHash
 	 *
 	 * @return bool
 	 */
-	public function instanceExists(
-		ESObject $ESObject,
-		array $requestData,
-        $contentHash);
+	public function instanceExists();
 
 	/**
 	 * Create an object-instance. Return true on success, false on failure.
 	 *
 	 * @return bool
 	 */
-	public function createInstance(
-		array $requestData);
+	public function createInstance();
 
 	/**
 	 * Process (display/download) a rendered object-instance.
 	 *
 	 * @return bool
 	 */
-	public function process(
-		$p_kind,
-		array $requestData);
-
-	/**
-	 * Get the application this module belongs to.
-	 *
-	 * @return ESRender_Application_Interface
-	 */
-	public function getRenderApplication();
+	public function process($p_kind);
 
 	/**
 	 *

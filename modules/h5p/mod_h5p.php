@@ -72,7 +72,7 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
 
-	protected function renderTemplate(array $requestData, $TemplateName, $getDefaultData = true) {
+	protected function renderTemplate($TemplateName, $getDefaultData = true, $showMetadata = true) {
 
         global $db;
 
@@ -118,16 +118,16 @@ extends ESRender_Module_ContentNode_Abstract {
 
             $template_data = array();
 
-            $filename = $this->_ESOBJECT->getFilePath() . '.html';
+            $filename = $this->esObject->getFilePath() . '.html';
             file_put_contents($filename, $this->render($content['id']));
 
-            $m_path = $this -> _ESOBJECT -> getPath();
+            $m_path = $this -> esObject -> getPath();
 
             if($getDefaultData)
-                $template_data = parent::prepareRenderData($requestData);
+                $template_data = parent::prepareRenderData($showMetadata);
 
             if(Config::get('showMetadata'))
-                $template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
+                $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
 
             $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
             $template_data['title'] = $this->_ESOBJECT->getTitle();
@@ -243,7 +243,7 @@ extends ESRender_Module_ContentNode_Abstract {
         self::$settings['loadedCss'] = array();
         $cache_buster = '?ver=' . time();
 
-        // Use relative URL to support both http and https.
+        // Use relative URL to support both http and https.basename($MC_URL)
         $lib_url =  DOMAIN . DIR .'/vendor/lib/h5p-core/';
         $rel_path = '/' . preg_replace('/^[^:]+:\/\/[^\/]+\//', '', $lib_url);
         // Add core stylesheets
@@ -372,8 +372,8 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::inline()
 	 */
-	protected function inline(array $requestData) {
-		echo $this -> renderTemplate($requestData, '/module/h5p/inline');
+	protected function inline() {
+		echo $this -> renderTemplate('/module/h5p/inline');
 		return true;
 	}
 
@@ -381,8 +381,8 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_ContentNode_Abstract::dynamic()
 	 */
-	protected function dynamic(array $requestData) {
-        echo $this -> renderTemplate($requestData, '/module/h5p/dynamic');
+	protected function dynamic() {
+        echo $this -> renderTemplate('/module/h5p/dynamic');
         return true;
 	}
 

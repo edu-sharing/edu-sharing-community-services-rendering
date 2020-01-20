@@ -41,26 +41,29 @@ extends ESRender_Module_AudioVideo_Abstract
 
     protected $filename;
 
-    protected function prepareRenderData(
-        array $requestData, $getDefaultData = true)
+    protected function prepareRenderData($getDefaultData = true, $showMetadata = true)
     {
     	global $MC_URL;
 
-    	
     	$template_data = array();
     	if($getDefaultData)
-            $template_data = parent::prepareRenderData($requestData);
-    	
+            $template_data = parent::prepareRenderData($showMetadata);
+
         $ext = $this -> getExtensionByFormat($this->getVideoFormatByRequestingDevice());
-        $object_url = dirname($this -> _ESOBJECT->getPath()) . '/' . basename($this -> getOutputFilename($ext)) . '?' . session_name() . '=' . session_id().'&token='.$requestData['token'];
         $template_data['ext'] = $ext;
-        $template_data['url'] = $object_url;
-        if(!empty($requestData['width']))
-            $template_data['width'] = 'width: ' . $requestData['width'] . 'px';
+        $template_data['url'] = array();
+        foreach(array(ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S, ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_M, ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_L) as $resolution) {
+            $link = '';
+            if(file_exists($outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($ext), $resolution)))
+                $link = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext, $resolution)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
+            $template_data['url'][$resolution] = $link;
+        }
+
+        $template_data['width'] = 'width: ' . mc_Request::fetch('width', 'INT', 600) . 'px';
         $template_data['videoObjectIdentifier'] = uniqid('v_');
         $template_data['logger'] = $MC_URL . '/log/scr/clientlog.php';
         $template_data['cachePath'] = urlencode($this -> getOutputFilename($ext));
-        $template_data['previewUrl'] = $this->_ESOBJECT->getPreviewUrl();
+        $template_data['previewUrl'] = $this -> esObject->getPreviewUrl();
         return $template_data;
     }
 
@@ -68,11 +71,10 @@ extends ESRender_Module_AudioVideo_Abstract
      * (non-PHPdoc)
      * @see ESRender_Module_AudioVideo_Abstract::getOutputFilename()
      */
-    protected function getOutputFilename($ext) {
-        $Logger = $this->getLogger();
-        $filename = $this->getCacheFileName();
+    protected function getOutputFilename($ext, $resolution = NULL) {
+        $filename = $this -> getCacheFileName();
         $filename = str_replace('\\','/', $filename);
-        $filename .= '.' . $ext;
+        $filename .= '_'.$resolution.'.' . $ext;
         $filename = str_replace('/',DIRECTORY_SEPARATOR, $filename);
         return $filename;
     }
@@ -98,9 +100,7 @@ extends ESRender_Module_AudioVideo_Abstract
      */
     protected function renderInlineTemplate(array $template_data)
     {
-
         $inline_template = 'module/video/inline';
-
         $Template = $this->getTemplate();
         return $Template->render($inline_template, $template_data);
     }
@@ -110,26 +110,58 @@ extends ESRender_Module_AudioVideo_Abstract
      * (non-PHPdoc)
      * @see ESRender_Module_Base::dynamic()
      */
-    final public function dynamic(
-    		array $requestData)
+    final public function dynamic()
     {
     	global $Locale, $ROOT_URI;
-    	$template_data = $this->prepareRenderData($requestData, false);
-    
-    	//load resource asynchr. with display mode inline!
-    	$template_data['ajax_url'] = $ROOT_URI . 'application/esmain/index.php?'.'app_id='
-    			.$requestData['app_id']
-    			.'&rep_id='.$requestData['rep_id'].'&obj_id='.$requestData['object_id'].'&resource_id='
-    					.$requestData['resource_id'].'&course_id='.$requestData['course_id'].'&version='.$requestData['version']
-    					.'&display=inline&displayoption=min&language='.$Locale->getLanguageTwoLetters().'&u='.urlencode($requestData['user_name_encr']).'&antiCache=' . mt_rand();
-    					//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
-            $template_data['authString'] = 'token='.$requestData['token'].'&'.session_name().'='.session_id();
+    	$template_data = $this->prepareRenderData( false);
+
+    	$template_data['ajax_url'] =
+            $ROOT_URI . 'application/esmain/index.php?'.
+            'app_id=' . mc_Request::fetch('app_id', 'CHAR') .
+    		'&rep_id=' . mc_Request::fetch('app_id', 'CHAR').
+            '&resource_id='. mc_Request::fetch('resource_id', 'CHAR').
+            '&course_id='.mc_Request::fetch('course_id', 'CHAR') .
+            '&display=inline' .
+            '&displayoption=min' .
+            '&language='.$Locale->getLanguageTwoLetters().
+            '&width=640'.
+            '&antiCache=' . mt_rand();
+    		//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
+
+        $template_data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
+
         if(Config::get('showMetadata'))
-    		$template_data['metadata'] = $this -> _ESOBJECT -> metadatahandler -> render($this -> getTemplate(), '/metadata/dynamic');
-    	$template_data['title'] = $this->_ESOBJECT->getTitle();
+    		$template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+    	$template_data['title'] = $this -> esObject->getTitle();
     	echo $this->getTemplate()->render('/module/video/dynamic', $template_data);
-    
     	return true;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see ESRender_Module_Base::dynamic()
+     */
+    final public function embed()
+    {
+        global $Locale, $ROOT_URI;
+        $template_data = $this->prepareRenderData(true, false);
+        $template_data['ajax_url'] =
+            $ROOT_URI . 'application/esmain/index.php?'.
+            'app_id=' . mc_Request::fetch('app_id', 'CHAR') .
+            '&rep_id=' . mc_Request::fetch('app_id', 'CHAR').
+            '&resource_id='. mc_Request::fetch('resource_id', 'CHAR').
+            '&course_id='.mc_Request::fetch('course_id', 'CHAR') .
+            '&display=inline' .
+            '&displayoption=min' .
+            '&language='.$Locale->getLanguageTwoLetters().
+            '&width=640'.
+            '&antiCache=' . mt_rand();
+        //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
+
+        $template_data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
+
+        echo $this->getTemplate()->render('/module/video/embed', $template_data);
+        return true;
     }
     
 
@@ -137,18 +169,15 @@ extends ESRender_Module_AudioVideo_Abstract
      * (non-PHPdoc)
      * @see ESRender_Module_Base::inline()
      */
-    final public function inline(
-        array $requestData)
+    final public function inline()
     {
-    	
     	if($_REQUEST['displayoption'] == 'min') {
-    		$template_data = $this->prepareRenderData($requestData, false);
+    		$template_data = $this->prepareRenderData( false);
     	} else {
-    		$template_data = $this->prepareRenderData($requestData);
+    		$template_data = $this->prepareRenderData();
     	}
     	
     	echo $this->renderInlineTemplate($template_data);
-
         return true;
     }
     
@@ -157,16 +186,16 @@ extends ESRender_Module_AudioVideo_Abstract
      * @see ESRender_Module_Base::locked()
      * 
      */
-    final public function locked(array $requestData) {
+    final public function locked() {
     	    	
         $template = $this->getTemplate();
-        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> _ESOBJECT -> getObjectID() . $this->_ESOBJECT->getObjectVersion()  . '_' . $this->_ESOBJECT->getId() . '_' . $this-> getVideoFormatByRequestingDevice(). '.log';
+        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion()  . '_' . $this -> esObject->getId() . '_' . $this-> getVideoFormatByRequestingDevice() . '_' . ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S . '.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
-        $positionInConversionQueue = $this->_ESOBJECT->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice());
+        $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice(), ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S);
         if(empty($progress) || is_array($progress))
             $progress = '0';
-        echo $template->render('/module/video/lock', array('callback' => $requestData['callback'],
-        												'authString' => 'token='.$requestData['token'].'&'.session_name().'='.session_id(),
+        echo $template->render('/module/video/lock', array('callback' => mc_Request::fetch('callback', 'CHAR'),
+        												'authString' => 'token='.Config::get('token').'&'.session_name().'='.session_id(),
         												'progress' => $progress,
         												'positionInConversionQueue' => $positionInConversionQueue));
         return true;

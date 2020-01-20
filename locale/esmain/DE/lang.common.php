@@ -84,5 +84,6 @@ $Translate
     ->addTranslation('de', 'seqenceViewChildren', 'Alle ansehen und herunterladen')
     ->addTranslation('de', 'directoryOpen', 'Ordner öffnen und herunterladen')
     ->addTranslation('de', 'createdBy', 'Erstellt von')
-    ->addTranslation('de', 'goToCourse', 'Zum Kurs springen');
+    ->addTranslation('de', 'goToCourse', 'Zum Kurs springen')
+    ->addTranslation('de', 'inConversionQueue', 'Format wird konvertiert.');
 

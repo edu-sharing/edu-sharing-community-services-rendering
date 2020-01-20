@@ -3,25 +3,26 @@
 
 class ESContentNode {
 
-    private $properties = array();
+    private $data;
 
-    public function __construct() {
-
+    public function __construct($data) {
+        $this -> data = $data;
     }
-    
-    public function setProperties($properties) {
-        foreach($properties as $prop) {
-            $this -> properties[$prop->key] = $prop -> value;
+
+    public function getData() {
+        return $this -> data;
+    }
+
+    public function getNode() {
+        return $this -> data -> node;
+    }
+
+    public function getNodeProperty($key) {
+        if(property_exists ($this -> data -> node -> properties, $key)) {
+            if (is_array($this->data->node -> properties->$key) && count($this->data->node->properties->$key) == 1)
+                return $this->data->node -> properties->$key[0];
+            return $this->data->node -> properties->$key;
         }
-    }
-    
-    public function getProperties() {
-        return $this -> properties;
-    }
-    
-    public function getProperty($key) {
-        if(array_key_exists($key, $this -> properties))
-            return $this -> properties[$key];
         return false;
     }
     

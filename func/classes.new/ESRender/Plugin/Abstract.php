@@ -31,7 +31,6 @@ implements ESRender_Plugin_Interface
      */
     public function preLoadRepository(
         &$rep_id,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,
@@ -48,7 +47,6 @@ implements ESRender_Plugin_Interface
      */
     public function postLoadRepository(
         EsApplication &$remote_rep,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,
@@ -62,7 +60,6 @@ implements ESRender_Plugin_Interface
      */
     public function preCheckTicket(
         EsApplication &$remote_rep,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,
@@ -76,7 +73,6 @@ implements ESRender_Plugin_Interface
      */
     public function postCheckTicket(
         EsApplication &$remote_rep,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,
@@ -93,7 +89,6 @@ implements ESRender_Plugin_Interface
      */
     public function preRetrieveUserData(
         EsApplication &$remote_rep,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,
@@ -110,7 +105,6 @@ implements ESRender_Plugin_Interface
      */
     public function postRetrieveUserData(
         EsApplication &$remote_rep,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,
@@ -127,7 +121,6 @@ implements ESRender_Plugin_Interface
      */
     public function preCheckPermission(
         EsApplication &$remote_rep,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,
@@ -144,7 +137,6 @@ implements ESRender_Plugin_Interface
      */
     public function postCheckPermission(
         EsApplication &$remote_rep,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,
@@ -161,7 +153,6 @@ implements ESRender_Plugin_Interface
      */
     public function preRetrieveObjectProperties(
         EsApplication &$remote_rep,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,
@@ -178,8 +169,7 @@ implements ESRender_Plugin_Interface
      */
     public function postRetrieveObjectProperties(
         EsApplication &$remote_rep,
-        &$app_id,
-        ESContentNode &$contentNode,
+        ESContentNode &$ESObject,
         &$course_id,
         &$resource_id,
         &$username)
@@ -192,7 +182,6 @@ implements ESRender_Plugin_Interface
      */
     public function preCheckUsage(
         EsApplication &$remote_rep,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,
@@ -206,7 +195,6 @@ implements ESRender_Plugin_Interface
      */
     public function postCheckUsage(
         EsApplication &$remote_rep,
-        &$app_id,
         stdClass &$usage,
         &$course_id,
         &$resource_id,
@@ -221,7 +209,6 @@ implements ESRender_Plugin_Interface
      */
     public function preSslVerification(
         EsApplication &$remote_rep,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,
@@ -236,7 +223,6 @@ implements ESRender_Plugin_Interface
      */
     public function postSslVerification(
         EsApplication &$remote_rep,
-        &$app_id,
         &$object_id,
         &$course_id,
         &$resource_id,

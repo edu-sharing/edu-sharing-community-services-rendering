@@ -25,7 +25,7 @@ $unid = uniqid();
         }
     </script>
     <?php
-    if(false === Config::get('renderInfoLMSReturn')->hasContentLicense) {
+    if(false === Config::get('hasContentLicense')) {
         echo '<span class="edusharing_warning">'.htmlentities($msg['hasNoContentLicense']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8').'</span>';
     } else {
         echo '<div class="edusharing_rendering_content_footer_directory">
@@ -35,7 +35,7 @@ $unid = uniqid();
                     <img class="edusharing_rendering_content_footer_directory_img" height="100%" src="'.$MC_URL.'/theme/default/img/edufolder.svg">
                     <div style="display: inline-block">' . $title .
                         '<span class="edusharing_rendering_content_footer_directory_creator">';
-                        if(!empty($creator))
+                        if(!empty(trim($creator)))
                             echo htmlentities($msg['createdBy']->localize($Locale, $Translate)) . ' ' . $creator;
                         echo '</span>
                     </div>
@@ -47,7 +47,7 @@ $unid = uniqid();
             echo '<ul style="display:none">';
                 foreach($children as $child) {
                     echo '<li><a target="_blank" href="'.$parentUrl.'&childobject_id='.$child['NodeID'].'">
-                    <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.htmlentities($child['{http://www.alfresco.org/model/content/1.0}name']).
+                    <img style="width:20px; height: 20px" src="'.$child['iconUrl'].'">'.htmlentities($child['name']).
                         '</a></li>';
                 }
             echo '</ul>';

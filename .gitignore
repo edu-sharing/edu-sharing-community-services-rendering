@@ -2,6 +2,8 @@
 .buildpath
 .project
 .settings
+target
+git.properties
 conf/db.conf.php
 conf/de.metaventis.esrender.log4php.cachecleaner.properties
 conf/esmain

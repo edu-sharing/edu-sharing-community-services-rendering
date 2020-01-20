@@ -16,10 +16,6 @@ class cacheCleaner {
 
     public function __construct() {
         $this -> initLogger();
-        if (!ENABLE_TRACK_OBJECT) {
-            $this -> logger -> info('ENABLE_TRACK_OBJECT is disabled. Enable to use this script.');
-            exit(0);
-        }
         $this -> logger -> info('######## cacheCleaner initialized ########');
     }
 
@@ -81,12 +77,10 @@ class cacheCleaner {
             $esobject = new ESObject(0);
             $esobject -> setInstanceData($result);
 
-            //delete from db
-            if (!$esobject -> deleteFromDb())
-                $this -> logger -> info('could not delete db record with id ' . $esobject -> ESOBJECT_ID);
-            else {
-                $this -> logger -> info('deleted db record with id ' . $esobject -> ESOBJECT_ID);
-            }
+        //delete from db
+        if (!$esobject -> deleteFromDb())
+            $this -> logger -> info('could not delete db record with id ' . $esobject -> getId());
+            $this -> logger -> info('deleted db record with id ' . $esobject -> getId());
 
             $module = $esobject -> getModule();
 

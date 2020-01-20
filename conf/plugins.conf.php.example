@@ -9,16 +9,16 @@
  /*
 	$Plugin = new ESRender_Plugin_Redirect();
 	$Plugin
-		->setPropertyLocation('{http://www.campuscontent.de/model/lom/1.0}location')
-		->whereEquals('{http://www.campuscontent.de/model/1.0}replicationsource', 'DE.EDU-SHARING');
+		->setPropertyLocation('cclom:location')
+		->whereEquals('ccm:replicationsource', 'DE.EDU-SHARING');
 	$Plugins[] = $Plugin; 
 */
 
 /*
 	$Plugin = new ESRender_Plugin_Redirect();
 	$Plugin
-		->setPropertyLocation('{http://www.campuscontent.de/model/lom/1.0}location')
-		->whereEquals('{http://www.campuscontent.de/model/1.0}replicationsource', 'DE.FWU');
+		->setPropertyLocation('cclom:location')
+		->whereEquals('ccm:replicationsource', 'DE.FWU');
 	$Plugins[] = $Plugin;
 */
 

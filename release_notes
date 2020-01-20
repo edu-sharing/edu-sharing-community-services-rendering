@@ -1,3 +1,19 @@
+v5.1
+- simplified communications with repository
+- video/audio conversion triggered directly by upload
+- multiple video resolutions to choose from
+- images are prerendered in several resolutions
+- support for svg images
+- support for webp images
+- support for animated gifs
+- apps share objects
+- only build new cache object if content has changed
+
+@todo
+- cleanup database
+- updater
+    - delete unused columns
+
 v4.2
 - IMS Common Cartridge packages rendering
 - Plugin for "Deutsche Digitale Bibliothek"

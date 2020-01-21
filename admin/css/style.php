@@ -33,17 +33,15 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 	url('<?php echo $MC_URL?>/vendor/fonts/opensans/open-sans-v15-latin-600.svg#OpenSans') format('svg'); /* Legacy iOS */
 }
 body {
-	padding: 40px;
+	padding: 0;
+    margin: 0;
 	font-family: 'Open Sans', sans-serif;
 	background-color: #e4f3f9;
-	background-image: url('../img/edulogo.svg');
-	background-position: right 20px top 20px;
-	background-size: 200px auto;
-	background-repeat: no-repeat;
 }
 
 h1, h2 {
-	font-size: 1.3em;
+	font-size: 1.5em;
+    fot-weight: bold;
 	margin-bottom: 40px;
 }
 
@@ -97,7 +95,7 @@ body.execute {
 }
 
 div {
-	padding: 5px 15px 5px 5px;
+	padding: 0;
 }
 
 div button {
@@ -268,6 +266,31 @@ input, select {
 	font-size: 0.9em;
 }
 
+.header{
+    width: 100%;
+    display: flex;
+    align-content: baseline;
+    color: #fff;
+    background: #383838;
+    background-image: url('../img/edulogo-white-text.svg');
+    background-position: right 20px top 20px;
+    background-size: 120px auto;
+    background-repeat: no-repeat;
+    margin-bottom: 24px;
+    border-bottom: 6px solid #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+}
+
+.header h1{
+    padding-left: 40px;
+    margin: 26px 0;
+    text-transform: capitalize;
+}
+
+.wrap{
+    padding: 10px 40px;
+}
+
 .login {
 
 }
@@ -292,4 +315,47 @@ input, select {
 
 #version_running {
 	color: #555;
+}
+
+.rs-admin{
+
+}
+
+.file-upload{
+    padding: 8px;
+    padding-left: 0;
+    margin-top: 24px;
+}
+
+.file-upload h3{
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.choose-core{
+    padding: 8px;
+    background: white;
+
+}
+
+.btn {
+    display: inline-block;
+    margin: 12px 4px;
+    padding: 12px 24px;
+    overflow: hidden;
+    border-width: 0;
+    outline: none;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .4);
+    background-color: #48708e;
+    color: #ecf0f1;
+    transition: ease-in-out 0.2s;
+}
+
+.btn:hover, .btn:focus {
+    background-color: #183f5c;
+transform:scale(1.02);
 }

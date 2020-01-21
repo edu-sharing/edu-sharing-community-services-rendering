@@ -1,0 +1,187 @@
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #e4f3f9;
+
+    margin: 0;
+}
+
+a, a:hover, a:visited, a:active {
+    text-decoration: none;
+}
+h3{
+    display: inline;
+}
+
+input{
+    padding: 12px 24px;
+}
+
+.login{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background: #fff;
+    width: 400px;
+    padding: 40px 20px;
+    margin: 40px auto;
+    text-align: center;
+    border-radius: 4px;
+    border: 2px solid darkred;
+}
+
+.btn, .h5p-admin-upgrade-button {
+    display: inline-block;
+    margin: 12px 4px;
+    padding: 12px 24px;
+    overflow: hidden;
+    border-width: 0;
+    outline: none;
+    font-weight: bolder;
+    cursor: pointer;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+    background-color: #48708e;
+    color: #ecf0f1;
+    transition: background-color .3s;
+}
+
+.btn:hover, .btn:focus {
+    background-color: #183f5c;
+}
+
+.version-wrap{
+    color: #fff;
+    background: #505050;
+    font-weight: 400;
+    padding: 12px;
+    border: 1px solid #aaa;
+}
+
+.version{
+    font-weight: 800;
+}
+
+.h5p-header{
+    width: 100%;
+    display: flex;
+    align-content: baseline;
+    color: #fff;
+    background: #383838;
+    background-image: url('../../img/edulogo-white-text.svg');
+    background-position: right 20px top 20px;
+    background-size: 120px auto;
+    background-repeat: no-repeat;
+    margin-bottom: 24px;
+    border-bottom: 6px solid #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+}
+
+.h5p-header h1{
+    padding-left: 40px;
+}
+
+.menu{
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    list-style: none;
+    margin-left: 16px;
+    padding-right: 20px;
+    background: #505050;
+    border-radius: 2px;
+}
+
+ul{
+    padding-inline-start: 0;
+}
+
+.menu li{
+    margin-left: 20px;
+}
+
+.menu li a{
+    color: #ddd;
+    transition: ease-in-out 0.5s;
+}
+
+.menu li a:hover{
+    color: #00a0d2;
+}
+
+.h5p-search{
+    width: 85%;
+    margin: 12px auto;
+}
+
+.update-core{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: baseline;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #aaa;
+}
+
+.choose-core{
+    border: 1px solid #eee;
+    margin: 0 5px;
+}
+
+.file-upload{
+    background: white;
+    padding: 8px;
+    border: 1px solid #bbb;
+}
+
+.h5p-content{
+    width: 85%;
+    margin: 0 auto;
+    text-align: left;
+    background: white;
+    padding: 5px;
+    border-collapse: collapse;
+}
+
+.detail-header{
+    padding-left: 40px;
+}
+
+.library-link{
+    font-weight: bold;
+    color: #00a0d2;
+    text-decoration: underline;
+    transition: ease-in-out 0.5s;
+}
+
+td, th {
+    border: 1px solid #eee;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #eee;
+}
+
+.pagination{
+    display: flex;
+    justify-content: center;
+    list-style: none;
+}
+
+.pagination a{
+    margin: 5px 15px;
+}
+
+.wrap{
+    width: 90%;
+    margin: 0 auto;
+}
+
+select{
+    text-align: right;
+    padding: 10px 20px;
+    margin-right: 6px;
+    cursor: pointer;
+    border-radius: 2px;
+}

@@ -93,7 +93,11 @@ extends ESRender_Module_ContentNode_Abstract {
 
                 if($this->H5PValidator->isValidPackage()){
                     $this->H5PStorage->savePackage(array('title' => $this->esObject->getObjectID()."-v".$this->esObject->getObjectVersion(), 'disable' => 0));
-                    error_log('h5p saved');
+
+                    $query = "UPDATE h5p_contents SET description='".$this->_ESOBJECT->getTitle()."' WHERE id=".$this->H5PCore->loadContent($this->H5PFramework->id)['id'];
+                    $statement = $db -> query($query);
+                    $results = $statement->execute();
+                    error_log('h5p saved: '.$this->_ESOBJECT->getTitle());
                 }else{
                     $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
                     error_log('There was a problem with the H5P-file: '.$h5p_error->code);

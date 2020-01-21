@@ -76,7 +76,7 @@ if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST[
     $mimetype = mime_content_type($src_file);
     if(strpos($src_file, '.css')){
         $mimetype = 'text/css';
-    }elseif (strpos($src_file, '.js')){
+    }elseif(strpos($src_file, '.js')){
         $mimetype = 'text/javascript';
     }
 
@@ -142,7 +142,7 @@ if(!$skipToken) {
     if (empty($_REQUEST['token'])) {
         error_log('Missing token (request)');
         cc_rd_debug('Missing token (request)');
-        header('HTTP/1.0 500 Internal Server Error');
+        header('HTTP/1.0 500 I nternal Server Error');
     }
     if (($_SESSION['esrender']['token'] !== $_REQUEST['token']) && ($_SESSION['esrender']['token']) !== $_COOKIE['ESSEC']) {
         cc_rd_debug('Invalid token');

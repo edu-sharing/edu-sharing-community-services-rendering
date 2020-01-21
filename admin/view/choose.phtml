@@ -1,10 +1,79 @@
 
-	<?php include dirname(__FILE__) . '/head.phtml' ?>
+	<?php
+    include dirname(__FILE__) . '/head.phtml';
+    require_once dirname(__FILE__) . '/../../conf.inc.php';
+    ?>
+
+    <?php
+    global $ROOT_PATH;
+
+    $target_dir = $ROOT_PATH."admin".DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR;
+    $file_name = basename($_FILES["fileToUpload"]["name"]);
+    $target_file = $target_dir . $file_name;
+    $uploadOk = 1;
+    $upload_error = '';
+    $fileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+    if(isset($_POST["upload_file"])) {
+        $check = is_file ($_FILES["fileToUpload"]["tmp_name"]);
+        if($check !== false) {
+            //echo "File is valid - " . $check["mime"] . ".";
+            $uploadOk = 1;
+        } else {
+            $upload_error .= 'File is not valid.</br>';
+            $uploadOk = 0;
+        }
+
+        // Check if file already exists
+        if (file_exists($target_file) && $uploadOk === 1) {
+            $upload_error .= "Sorry, file already exists.</br>";
+            $uploadOk = 0;
+        }
+        // Check file size
+        if ($_FILES["fileToUpload"]["size"] > 500000 && $uploadOk === 1) {
+            $upload_error .= "Sorry, your file is too large.</br>";
+            $uploadOk = 0;
+        }
+        // Allow certain file formats
+        /*
+         * if($fileType != "zip"  && $uploadOk === 1) {
+            $upload_error .= "Sorry, only ZIP files are allowed.</br>";
+            $uploadOk = 0;
+        }
+        */
+        // Check if $uploadOk is set to 0 by an error
+        if ($uploadOk == 0) {
+            $upload_error .= "Sorry, your file was not uploaded.</br>";
+            echo $upload_error;
+
+            // if everything is ok, try to upload file
+        } else {
+            if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                $uploadOk = 1;
+                echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded to '".$target_dir."''.";
+            } else {
+                echo "Sorry, there was an error uploading your file.";
+                $uploadOk = 0;
+            }
+        }
+    }
+    ?>
 	
-	<body>
-		<h1><?php echo LANG_IMPORTHEADING ?></h1>
+
+
+        <div class="rs-admin">
+
+
 		
-<?php 
-echo '<a class="updateButton" href="?action=update">'.LANG_CHOOSE_UPDATE.'</a><a style="margin-left: 20px;" class="updateButton" href="?action=dbtool">'.LANG_CHOOSE_DBTOOL.'</a>';
-?>
+    <?php
+        echo '<a class="btn" href="?action=update">'.LANG_CHOOSE_UPDATE.'</a>';
+        echo '<a style="margin-left: 20px;" class="btn" href="?action=dbtool">'.LANG_CHOOSE_DBTOOL.'</a>';
+        echo '<a style="margin-left: 20px;" class="btn" href="?action=h5ptool">'.LANG_CHOOSE_H5P.'</a>';
+    ?>
+        <form class="file-upload" action="../admin/index.php" method="post" enctype="multipart/form-data">
+            <h3>Upload a file to the renderingservice:</h3>
+            <input class="choose-core" type="file" name="fileToUpload" id="fileToUpload">
+            <input class="btn" type="submit" value="Upload File" name="upload_file">
+        </form>
+
+        </div>
 <?php include dirname(__FILE__) . '/foot.phtml' ?>

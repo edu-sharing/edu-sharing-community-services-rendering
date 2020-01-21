@@ -142,7 +142,7 @@ if(!$skipToken) {
     if (empty($_REQUEST['token'])) {
         error_log('Missing token (request)');
         cc_rd_debug('Missing token (request)');
-        header('HTTP/1.0 500 I nternal Server Error');
+        header('HTTP/1.0 500 Internal Server Error');
     }
     if (($_SESSION['esrender']['token'] !== $_REQUEST['token']) && ($_SESSION['esrender']['token']) !== $_COOKIE['ESSEC']) {
         cc_rd_debug('Invalid token');

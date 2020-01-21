@@ -77,7 +77,7 @@ extends ESRender_Module_ContentNode_Abstract {
         global $db;
 
         //check if Content already exists in db & cache
-        $query = "SELECT id FROM h5p_contents WHERE title='".$this->_ESOBJECT->getObjectID()."-v".$this->_ESOBJECT->getObjectVersion()."'";
+        $query = "SELECT id FROM h5p_contents WHERE title='".$this->esObject->getObjectID()."-v".$this->esObject->getObjectVersion()."'";
         $statement = $db -> query($query);
         $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
@@ -85,14 +85,14 @@ extends ESRender_Module_ContentNode_Abstract {
             @mkdir($this->H5PFramework->get_h5p_path());
 
             //if dir exits -> somebody else is building the h5p-object. Abort and let the user try again.
-            if(@mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) )){
-                copy($this->_ESOBJECT->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p');
-                $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID());
-                $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->_ESOBJECT->getObjectID()) . DIRECTORY_SEPARATOR . $this->_ESOBJECT->getObjectID() . '.h5p';
+            if(@mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()) )){
+                copy($this->esObject->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()) . DIRECTORY_SEPARATOR . $this->esObject->getObjectID() . '.h5p');
+                $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID());
+                $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()) . DIRECTORY_SEPARATOR . $this->esObject->getObjectID() . '.h5p';
                 $this->H5PCore->disableFileCheck = true;
 
                 if($this->H5PValidator->isValidPackage()){
-                    $this->H5PStorage->savePackage(array('title' => $this->_ESOBJECT->getObjectID()."-v".$this->_ESOBJECT->getObjectVersion(), 'disable' => 0));
+                    $this->H5PStorage->savePackage(array('title' => $this->esObject->getObjectID()."-v".$this->esObject->getObjectVersion(), 'disable' => 0));
                     error_log('h5p saved');
                 }else{
                     $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
@@ -130,7 +130,7 @@ extends ESRender_Module_ContentNode_Abstract {
                 $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
 
             $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
-            $template_data['title'] = $this->_ESOBJECT->getTitle();
+            $template_data['title'] = $this->esObject->getTitle();
             $template_data['h5pId'] = $content['id'];
             $template_data['h5pApi'] = $content['id'];
             echo $this -> getTemplate() -> render($TemplateName, $template_data);
@@ -198,9 +198,9 @@ extends ESRender_Module_ContentNode_Abstract {
                             };
                 data.statement = JSON.stringify(event.data.statement);
                 //console.log("Sending xApi-Event to Repo");
-                event.data.statement.object.id = "'.$this -> _ESOBJECT -> getPath().'";
-                event.data.statement.object.definition.name = {"en-US": "'.$this->_ESOBJECT->getTitle().'"};
-                const nodeID = "'.$this->_ESOBJECT->getObjectID().'";
+                event.data.statement.object.id = "'.$this -> esObject -> getPath().'";
+                event.data.statement.object.definition.name = {"en-US": "'.$this->esObject->getTitle().'"};
+                const nodeID = "'.$this->esObject->getObjectID().'";
                 let xhr = new XMLHttpRequest();
                 xhr.open("POST", "'.Config::get('baseUrl').'/rest/node/v1/nodes/-home-/"+nodeID+"/xapi", true);
                 xhr.setRequestHeader("Content-type", "application/json");
@@ -396,25 +396,29 @@ extends ESRender_Module_ContentNode_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_Interface::instanceExists()
      */
-    public function instanceExists(ESObject $ESObject, array $requestData, $contentHash) {
+    public function instanceExists() {
         $Logger = $this -> getLogger();
 
         $pdo = RsPDO::getInstance();
+
+        error_log('instanceExists()?');
+        error_log($this -> esObject -> getRepId());
+        error_log($this -> esObject -> getObjectID());
 
         try {
             $sql = 'SELECT * FROM `ESOBJECT` ' . 'WHERE `ESOBJECT_REP_ID` = :repid ' . 'AND `ESOBJECT_CONTENT_HASH` = :contenthash ' . 'AND `ESOBJECT_OBJECT_ID` = :objectid ';
 
             $stmt = $pdo -> prepare($pdo->formatQuery($sql));
-            $stmt -> bindValue(':repid', $requestData['rep_id']);
-            $stmt -> bindValue(':contenthash', $contentHash);
-            $stmt -> bindValue(':objectid', $ESObject -> getObjectID());
+            $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
+            $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
+            $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
             $stmt -> execute();
 
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
 
             if ($result) {
                 $Logger -> debug('Instance exists.');
-                $ESObject -> setInstanceData($result);
+                $this -> esObject -> setInstanceData($result);
                 return true;
             }
 

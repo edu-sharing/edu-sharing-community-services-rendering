@@ -127,7 +127,17 @@ extends ESRender_Module_ContentNode_Abstract {
                 }
         }
 
-        exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
+
+        //make it possible to start the converter in background in windows
+        $cmd = "php " . dirname(__FILE__) . "/Converter.php";
+        if (substr(php_uname(), 0, 7) == "Windows"){
+            pclose(popen("start /B ". $cmd, "r"));
+        }
+        else {
+            exec($cmd . " > /dev/null 2>/dev/null &");
+        }
+        //exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
+
 
         return parent::process($p_kind);
     }

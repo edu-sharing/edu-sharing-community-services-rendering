@@ -401,7 +401,7 @@ function run($installedVersion) {
             }
         }
 
-        if(version_compare ( '4.2.0.RC1', $installedVersion ) > 0) {
+        if(version_compare ( '4.2.0', $installedVersion ) > 0) {
             $pdo = RsPDO::getInstance();
 
             $sql = $pdo -> formatQuery( 'SELECT max(`REL_ESMODULE_MIMETYPE_ID`) as max FROM `REL_ESMODULE_MIMETYPE`' );

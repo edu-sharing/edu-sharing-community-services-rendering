@@ -138,7 +138,6 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
     }
 
     public function instanceLocked() {
-        
         $Logger = $this -> getLogger();
         $pdo = RsPDO::getInstance();
         
@@ -154,7 +153,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
             $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
             $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
             $stmt -> bindValue(':version', $this -> esObject -> getObjectVersion());
-    
+
             $stmt -> execute();
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
             
@@ -166,7 +165,6 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
             $Logger -> debug('Instance locked.');
             return true;
         }
-        
         return false;
     }
 
@@ -270,8 +268,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
      * (non-PHPdoc)
      * @see ESRender_Module_Interface::process()
      */
-    public function process($p_kind) {
-
+    public function process($p_kind, $locked=null) {
         $Logger = $this -> getLogger();
 
         switch( strtolower($p_kind) ) {

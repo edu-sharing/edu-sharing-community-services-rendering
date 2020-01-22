@@ -80,4 +80,6 @@ $Translate
     ->addTranslation('en', 'directoryOpen', 'Open directory and download')
     ->addTranslation('en', 'createdBy', 'Created by')
     ->addTranslation('en', 'goToCourse', 'Go to course')
-    ->addTranslation('en', 'inConversionQueue', 'Format is being converted.');
+    ->addTranslation('en', 'inConversionQueue', 'Format is being converted.')
+    ->addTranslation('en', 'Postition in queue', 'Postition in queue')
+    ->addTranslation('en', 'Resource is waiting for conversion.', 'Resource is waiting for conversion.');

@@ -175,10 +175,13 @@ class ESObject {
     }
 
     public function getNodeProperty($key) {
-        if(property_exists ($this -> data -> node -> properties, $key)) {
-            if (is_array($this->data->node -> properties->$key) && count($this->data->node->properties->$key) == 1)
-                return $this->data->node -> properties->$key[0];
-            return $this->data->node -> properties->$key;
+        if ( !empty ($this -> data -> node)){
+            if(property_exists ($this -> data -> node -> properties, $key)) {
+                if (is_array($this->data->node -> properties->$key) && count($this->data->node->properties->$key) == 1){
+                    return $this->data->node -> properties->$key[0];
+                }
+                return $this->data->node -> properties->$key;
+            }
         }
         return false;
     }

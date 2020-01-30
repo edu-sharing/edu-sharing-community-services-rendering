@@ -5,7 +5,7 @@
 <div id="edusharing_rendering_metadata" role="contentinfo">
     <div class="edusharing_rendering_metadata_header">
         <img tabindex="0" class="edusharing_rendering_metadata_header_icon" src="<?php echo $previewUrl; empty(Config::get('base64Preview'))? '&crop=true&width=68&height=51':''?>">
-        <h1 property="name" title="<?php echo $title ?>" class="edusharing_rendering_metadata_header_title"><?php echo $title ?></h1>
+        <h1 property="name" title="<?php echo htmlspecialchars($title) ?>" class="edusharing_rendering_metadata_header_title"><?php echo $title ?></h1>
     </div>
     <div class="edusharing_rendering_metadata_body">
         <?php echo $metadataHtml; ?>

@@ -198,7 +198,7 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
 
-    public function process($p_kind) {
+    public function process($p_kind, $locked=null) {
         global $requestingDevice;
         $Logger = $this -> getLogger();
         if (($p_kind == ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC || $p_kind == ESRender_Application_Interface::DISPLAY_MODE_EMBED) && !$this->requestingDeviceCanRenderContent()) {

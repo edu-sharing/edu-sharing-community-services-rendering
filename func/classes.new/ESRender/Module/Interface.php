@@ -32,7 +32,7 @@ interface ESRender_Module_Interface
 	 *
 	 * @return bool
 	 */
-	public function process($p_kind);
+	public function process($p_kind, $locked=null);
 
 	/**
 	 *

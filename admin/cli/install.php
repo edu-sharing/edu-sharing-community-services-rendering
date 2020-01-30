@@ -5,7 +5,7 @@ error_reporting(E_ERROR);
 function recurse_copy($src,$dst) {
     $dir = opendir($src);
     @mkdir($dst);
-    while(false !== ( $file = readdir($dir)) ) {
+    while( $dir && ($file = readdir($dir) ) !== false) {
         if (( $file != '.' ) && ( $file != '..' )) {
             if ( is_dir($src . DIRECTORY_SEPARATOR . $file) ) {
                 recurse_copy($src . DIRECTORY_SEPARATOR . $file,$dst . DIRECTORY_SEPARATOR . $file);

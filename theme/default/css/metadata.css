@@ -22,6 +22,10 @@
     margin: 15px 0 0 15px;
     line-height: 1.5;
 }
+.edusharing_rendering_metadata_body .mdsWidgetCaptionChild{
+    padding-top: 5px;
+    font-weight: bold;
+}
 
 .edusharing_rendering_metadata_body .mdsWidgetContent{
     white-space: pre-line;

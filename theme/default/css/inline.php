@@ -109,7 +109,11 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
     cursor:pointer;
     padding-top: 3px;
     color: #4D799A;
+    transition: ease-in-out 0.3s;
+}
 
+.edusharing_metadata_toggle_button:hover {
+    color: #00a0d2;
 }
 
 .edusharing_metadata {
@@ -122,16 +126,19 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
 }
 
 .edusharing_metadata_inner {
-    padding: 0 0 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
     background-color: #f6f6f6;
-    border: 1px solid #ccc;
-    -webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
-    -moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
-    box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.5);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
     max-height:500px;
     overflow-y: auto;
     font-size: .9em;
     line-height: 1;
+    transition: ease-in-out 0.3s;
 }
 
 .edusharing_metadata_inner img {
@@ -142,10 +149,11 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
     font-size: 1.5em;
     height: auto;
     padding-bottom: 10px;
+    margin: 0;
 }
 
 .edusharing_metadata:before {
-    border-bottom: 15px solid #ccc;
+    border-bottom: 15px solid #ddd;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
     top: -4px;
@@ -168,14 +176,36 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
     height: 0;
 }
 
-
-
 .mdsGroup {
-    padding: 0;
+    background: #fff;
+    margin: 8px;
+    padding: 12px 0;
+    border: 1px solid #ddd;
+}
+
+.mdsGroup .mdsWidget {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+
+.mdsGroup .mdsWidget .mdsWidgetCaption {
+    color: #aaa;
+    font-weight: 500;
+}
+
+.edusharing_rendering_metadata_body .mdsGroup{
+    width: 94%;
+    padding: 12px 0;
+    border-radius: 4px;
+}
+
+.edusharing_rendering_metadata_body .licenseName {
+    margin-top: 8px;
 }
 
 .mdsGroup:first-child {
-    margin-top: -30px;
+
 }
 
 .edusharing_warning {
@@ -365,10 +395,4 @@ a.edusharing_rendering_content {
     margin-right: 10px;
 }
 
-.edusharing_rendering_metadata_body .mdsGroup{
-    padding: 0;
-}
 
-.edusharing_rendering_metadata_body .licenseName {
-    margin-top: 8px;
-}

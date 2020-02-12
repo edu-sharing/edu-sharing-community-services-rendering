@@ -45,9 +45,9 @@ try {
     session_name($ESRENDER_SESSION_NAME);
 
     $sessid = mc_Request::fetch($ESRENDER_SESSION_NAME, 'CHAR', '');
-    if(!empty($sessid))
-    	session_id($sessid);
- 
+    if(!empty($sessid)){
+        session_id($sessid);
+    }
     
     if (!session_start()) {
         throw new Exception('Could not start session.');
@@ -58,8 +58,6 @@ try {
         throw new Exception('Could not get current session_id().');
     }
 
-
-
     // init PROXY
     $ProxyConfig = '../../conf/proxy.conf.php';
     if (file_exists($ProxyConfig)) {
@@ -69,10 +67,8 @@ try {
     require_once (MC_LIB_PATH . 'ESApp.php');
     require_once (MC_LIB_PATH . 'EsApplications.php');
     require_once (MC_LIB_PATH . 'EsApplication.php');
-
     require_once (MC_LIB_PATH . 'ESModule.php');
     require_once (MC_LIB_PATH . 'ESObject.php');
-
 
     // init PLUGINS
     $Plugins = array();
@@ -89,10 +85,11 @@ try {
         $Plugin -> setDefaultLogger($Logger);
     }
 
-    $data = json_decode(file_get_contents('php://input'));
+    $data = json_decode(file_get_contents('php://input'));;
 
-    if(empty($data))
+    if(empty($data)){
         $data = $_SESSION['esrender']['data'];
+    }
 
     // init translate
     global $Translate, $LanguageCode;

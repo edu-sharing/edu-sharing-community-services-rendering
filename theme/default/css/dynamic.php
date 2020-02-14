@@ -217,7 +217,7 @@ a.dataProtectionRegulationsButton {
 
 /*to override inline style (brought by video dynamic)*/
 .edusharing_rendering_metadata_body .mdsGroup {
-	padding: 0 20px !important;
+	padding: 0 20px 20px 20px !important;
 }
 .edusharing_rendering_metadata_body .mdsGroup:first-child {
 	margin-top: 0 !important;

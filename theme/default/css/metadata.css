@@ -30,6 +30,10 @@
     margin: 3px 0 0 15px;
     line-height: 1.5;
 }
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue{
+    padding-top: 5px;
+    padding-left: 8px;
+}
 .edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue{
     background-color: #DDDDDD;
     border-radius: 18px;

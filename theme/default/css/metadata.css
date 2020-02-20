@@ -26,7 +26,7 @@
 }
 
 .edusharing_rendering_metadata_body .mdsWidgetContent .mdsValue{
-    display: inline-block;
+    display: inline-flex;
     margin: 3px 0 0 15px;
     line-height: 1.5;
 }
@@ -35,14 +35,12 @@
     padding-left: 8px;
 }
 .edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue{
-    font-style: normal;
-    background-color: #F4F4F4;
     color: #383838;
-    border-radius: 18px;
-    padding: 0px 10px;
+    background-color: #F4F4F4;
+    border-radius: 16px;
+    padding: 3px 10px;
     margin-left: 10px;
-    line-height: 32px;
-    height: 32px;
+    min-height: 32px;
 }
 
 .edusharing_rendering_metadata_body .mds_ccm_lifecyclecontributer_author .mdsValue {
@@ -52,11 +50,13 @@
 
 .edusharing_rendering_metadata_body .mdsWidgetContent .mdsValue > i {
     font-size: 18px;
-    line-height: 0.8;
     margin-right: 5px;
     vertical-align: middle;
 }
 
+.edusharing_rendering_metadata_body .mdsWidgetContent .mdsValue > * {
+    margin: auto;
+}
 
 .edusharing_rendering_metadata_body .mdsContributorTitle {
     font-weight: 600;

@@ -296,6 +296,11 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
                 return $this -> embed();
                 break;
 
+            case ESRender_Application_Interface::DISPLAY_MODE_PRERENDER :
+                $Logger -> debug('Calling Module::prerender()');
+                return $this -> prerender();
+                break;
+
             case ESRender_Application_Interface::DISPLAY_MODE_LOCKED :
                 //this method is only implemented in video and audio module
                 Config::set('locked', true);

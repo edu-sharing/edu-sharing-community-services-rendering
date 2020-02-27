@@ -42,11 +42,13 @@ class converter {
      */
     public function convert() {
         
-        if($this->converterIsOccupied())
+        if($this->converterIsOccupied()){
             return;
+        }
 
-        if (!$conv = $this -> getNextFromConversionQueue())
+        if (!$conv = $this -> getNextFromConversionQueue()){
             return;
+        }
 
         $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
         $object -> setConversionStateProcessing($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $conv -> ESOBJECT_CONVERSION_RESOLUTION);
@@ -75,14 +77,7 @@ class converter {
                 $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode(DIRECTORY_SEPARATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . ESRender_Module_AudioVideo_Abstract::FORMAT_AUDIO_MP3 . '.log';
                 $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid() . '.mp3';
                 exec($this -> timeout  . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-f mp3 -y" . " " . $tmpName . " " ."2>>" . $logfile, $whatever, $code);
-                $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
-                if($code > 0) {
-                    unlink($tmpName);
-                    $object -> setConversionStateError($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $conv -> ESOBJECT_CONVERSION_RESOLUTION, $code);
-                } else {
-                    rename($tmpName, $conv -> ESOBJECT_CONVERSION_OUTPUT_FILENAME);
-                    $object -> setConversionStateProcessed($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $conv -> ESOBJECT_CONVERSION_RESOLUTION);
-                }
+                $this->setConversionStatus($code, $conv, $tmpName);
                 break; 
             case 'video' :
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), DIRECTORY_SEPARATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
@@ -91,26 +86,12 @@ class converter {
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_MP4 :
                         $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.mp4';
                         exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-filter:v scale=-2:" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . " " . "-f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(1080\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a copy" . " " . $tmpName . " " ."2>>" . $logfile, $whatever, $code);
-                        $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
-                        if($code > 0) {
-                            unlink($tmpName);
-                            $object -> setConversionStateError($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $conv -> ESOBJECT_CONVERSION_RESOLUTION, $code);
-                        } else {
-                            rename($tmpName, $conv -> ESOBJECT_CONVERSION_OUTPUT_FILENAME);
-                            $object -> setConversionStateProcessed($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $conv -> ESOBJECT_CONVERSION_RESOLUTION);
-                        }
-                        break;                       
+                        $this->setConversionStatus($code, $conv, $tmpName);
+                        break;
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_WEBM :
                         $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.webm';                        
                         exec($this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-filter:v scale=-2:". $conv -> ESOBJECT_CONVERSION_RESOLUTION . " " ."-vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(1080,ih)'\"" . " " . $tmpName . " " . "2>>" . $logfile, $whatever, $code);
-                        $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
-                        if($code > 0) {
-                            unlink($tmpName);
-                            $object -> setConversionStateError($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $conv -> ESOBJECT_CONVERSION_RESOLUTION, $code);
-                        } else {
-                            rename($tmpName, $conv -> ESOBJECT_CONVERSION_OUTPUT_FILENAME);
-                            $object -> setConversionStateProcessed($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $conv -> ESOBJECT_CONVERSION_RESOLUTION);
-                        }
+                        $this->setConversionStatus($code, $conv, $tmpName);
                         break; 
                     default :
                     	var_dump($conv -> ESOBJECT_CONVERSION_FORMAT);
@@ -124,6 +105,18 @@ class converter {
 
         return true;
 
+    }
+
+    protected function setConversionStatus($code, $conv, $tmpName){
+        error_log('conversionStatus: '.$code);
+        $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
+        if($code > 0) {
+            unlink($tmpName);
+            $object -> setConversionStateError($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $conv -> ESOBJECT_CONVERSION_RESOLUTION, $code);
+        } else {
+            rename($tmpName, $conv -> ESOBJECT_CONVERSION_OUTPUT_FILENAME);
+            $object -> setConversionStateProcessed($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $conv -> ESOBJECT_CONVERSION_RESOLUTION);
+        }
     }
 
     /*

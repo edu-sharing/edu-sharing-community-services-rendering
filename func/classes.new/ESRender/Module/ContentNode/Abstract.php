@@ -173,5 +173,11 @@ extends ESRender_Module_Base
         return true;
     }
 
+    protected function prerender() {
+        $Logger = $this->getLogger();
+        $Logger->debug('ESRender_Module_Base::prerender');
+        return true;
+    }
+
 
 }

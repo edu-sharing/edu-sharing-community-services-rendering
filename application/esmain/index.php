@@ -155,7 +155,7 @@ try {
     // load repository-config
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preLoadRepository()');
-        $Plugin -> preLoadRepository($data->node->ref->repo, $data->node->ref->id, $data->user->authorityName);
+        $Plugin -> preLoadRepository($data);
     }
 
     $Logger -> debug('Successfully loaded repository by id "' . $data->node->ref->repo . '".');
@@ -175,12 +175,12 @@ try {
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postLoadRepository()');
-        $Plugin -> postLoadRepository($data->node->ref->repo, $data->node->ref->id, $data->user->authorityName);
+        $Plugin -> postLoadRepository($data);
     }
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preSslVerification()');
-        $Plugin -> preSslVerification($data->node->ref->repo, $data->node->ref->id, $data->user->authorityName, $homeRep);
+        $Plugin -> preSslVerification($data, $homeRep);
     }    
 
     $skipSslVerification = false;
@@ -238,12 +238,12 @@ try {
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postSslVerification()');
-        $Plugin -> postSslVerification($homeRep, $data->node->ref->id, $data->user->authorityName, $homeRep);
+        $Plugin -> postSslVerification($data, $homeRep);
     }
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::preRetrieveObjectProperties()');
-        $Plugin -> preRetrieveObjectProperties($homeRep, $data->node->ref->id, $data->user->authorityName);
+        $Plugin -> preRetrieveObjectProperties($data);
     }
 
     $ESObject = new ESObject($data);
@@ -261,7 +261,7 @@ try {
 
     foreach ($Plugins as $name => $Plugin) {
         $Logger -> debug('Running plugin ' . get_class($Plugin) . '::postRetrieveObjectProperties()');
-        $Plugin -> postRetrieveObjectProperties($data->node->ref->repo, $ESObject, $data->user->authorityName);
+        $Plugin -> postRetrieveObjectProperties($data);
     }
 
     $Logger -> info('Successfully initialized instance.');

@@ -35,38 +35,18 @@ interface ESRender_Plugin_Interface
     /**
      * To be called before loading the requested repository.
      *
-     * @param string $rep_id
-     * @param string $object_id
-     * @param string $course_id
-     * @param string $resource_id
-     * @param string $username
-     *
      * @throws ESRender_Plugin_Exception_Abstract
      */
     public function preLoadRepository(
-        &$rep_id,
-        &$object_id,
-        &$course_id,
-        &$resource_id,
-        &$username);
+        &$data);
 
     /**
      * To be called after loading the requested repository.
      *
-     * @param EsApplication $remote_rep
-     * @param string $object_id
-     * @param string $course_id
-     * @param string $resource_id
-     * @param string $username
-     *
      * @throws ESRender_Plugin_Exception_Abstract
      */
     public function postLoadRepository(
-        EsApplication &$remote_rep,
-        &$object_id,
-        &$course_id,
-        &$resource_id,
-        &$username);
+        &$data);
 
 
 
@@ -148,20 +128,10 @@ interface ESRender_Plugin_Interface
      * Method to be called before retrieving an objects properties from the
      * repository.
      *
-     * @param EsApplication $remote_rep
-     * @param string $object_id
-     * @param string $course_id
-     * @param string $resource_id
-     * @param string $username
-     *
      * @throws ESRender_Plugin_Exception_Abstract
      */
     public function preRetrieveObjectProperties(
-        EsApplication &$remote_rep,
-        &$object_id,
-        &$course_id,
-        &$resource_id,
-        &$username);
+        &$data);
 
     /**
      * Called after retrieving the object's properties from repository.
@@ -175,11 +145,7 @@ interface ESRender_Plugin_Interface
      * @throws ESRender_Plugin_Exception_Abstract
      */
     public function postRetrieveObjectProperties(
-        EsApplication &$remote_rep,
-        ESContentNode &$contentNode,
-        &$course_id,
-        &$resource_id,
-        &$username);
+        &$data);
 
     /**
      * Method to be called before retrieving an objects usage-information
@@ -223,42 +189,20 @@ interface ESRender_Plugin_Interface
     /**
      * Method to be called before ssl verification.
      *
-     * @param EsApplication $remote_rep
-     * @param string $object_id
-     * @param string $course_id
-     * @param string $resource_id
-     * @param string $username
-     * @param EsApplication $homeRep
-     *
      * @throws ESRender_Plugin_Exception_Abstract
      */
     public function preSslVerification(
-        EsApplication &$remote_rep,
-        &$object_id,
-        &$course_id,
-        &$resource_id,
-        &$username,
+        &$data,
         &$homeRep);
 
         
     /**
      * Method to be called after ssl verification.
      *
-     * @param EsApplication $remote_rep
-     * @param string $object_id
-     * @param string $course_id
-     * @param string $resource_id
-     * @param string $username
-     * @param EsApplication $homeRep
-     *
      * @throws ESRender_Plugin_Exception_Abstract
      */
     public function postSslVerification(
-        EsApplication &$remote_rep,
-        &$object_id,
-        &$course_id,
-        &$resource_id,
-        &$username,
+        &$data,
         &$homeRep);
 
     /**

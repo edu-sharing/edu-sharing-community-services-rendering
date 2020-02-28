@@ -31,13 +31,9 @@ extends ESRender_Plugin_Abstract
 	 * @see ESRender_Plugin_Abstract::postLoadRepository()
 	 */
 	public function postLoadRepository(
-		EsApplication &$remote_rep,
-		&$object_id,
-		&$course_id,
-		&$resource_id,
-		&$username)
+		&$data)
 	{
-		$username = $this->username;
+        $data->user->authorityName = $this->username;
 	}
 
 }

@@ -30,11 +30,7 @@ implements ESRender_Plugin_Interface
      * @see ESRender_Plugin_Interface::preLoadRepository()
      */
     public function preLoadRepository(
-        &$rep_id,
-        &$object_id,
-        &$course_id,
-        &$resource_id,
-        &$username)
+        &$data)
     {
     }
 
@@ -46,11 +42,7 @@ implements ESRender_Plugin_Interface
      * @see ESRender_Plugin_Interface::postLoadRepository()
      */
     public function postLoadRepository(
-        EsApplication &$remote_rep,
-        &$object_id,
-        &$course_id,
-        &$resource_id,
-        &$username)
+        &$data)
     {
     }
 
@@ -152,11 +144,7 @@ implements ESRender_Plugin_Interface
      * @see ESRender_Plugin_Interface::preRetrieveObjectProperties()
      */
     public function preRetrieveObjectProperties(
-        EsApplication &$remote_rep,
-        &$object_id,
-        &$course_id,
-        &$resource_id,
-        &$username)
+       &$data)
     {
     }
 
@@ -168,11 +156,7 @@ implements ESRender_Plugin_Interface
      * @see ESRender_Plugin_Interface::postRetrieveObjectProperties()
      */
     public function postRetrieveObjectProperties(
-        EsApplication &$remote_rep,
-        ESContentNode &$ESObject,
-        &$course_id,
-        &$resource_id,
-        &$username)
+        &$data)
     {
     }
 
@@ -208,11 +192,7 @@ implements ESRender_Plugin_Interface
      * @see ESRender_Plugin_Interface::preSslVerification()
      */
     public function preSslVerification(
-        EsApplication &$remote_rep,
-        &$object_id,
-        &$course_id,
-        &$resource_id,
-        &$username,
+        &$data,
         &$homeRep)
     {
     }
@@ -222,11 +202,7 @@ implements ESRender_Plugin_Interface
      * @see ESRender_Plugin_Interface::postSslVerification()
      */
     public function postSslVerification(
-        EsApplication &$remote_rep,
-        &$object_id,
-        &$course_id,
-        &$resource_id,
-        &$username,
+        &$data,
         &$homeRep)
     {
     }

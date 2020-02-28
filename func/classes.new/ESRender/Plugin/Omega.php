@@ -25,19 +25,19 @@ class ESRender_Plugin_Omega
      * (non-PHPdoc)
      * @see ESRender_Plugin_Abstract::postRetrieveObjectProperties()
      */
-    public function postRetrieveObjectProperties(EsApplication &$remote_rep, ESContentNode &$contentNode, &$course_id, &$resource_id, &$username) {
+    public function postRetrieveObjectProperties(&$data) {
         $logger = $this->getLogger();
-        $logger->info('Replicationsource: ' . $contentNode->getNodeProperty('ccm:replicationsource') . ', format: ' .
-            $contentNode->getNodeProperty('cclom:format') .', replicationsourceid: ' . $contentNode->getNodeProperty('ccm:replicationsourceid'));
+        $esObject = new ESObject($data);
+        $logger->info('Replicationsource: ' . $esObject->getNodeProperty('ccm:replicationsource') . ', format: ' .
+            $esObject->getNodeProperty('cclom:format') .', replicationsourceid: ' . $esObject->getNodeProperty('ccm:replicationsourceid'));
 
         //check!
         //if(Config::get('renderInfoLMSReturn') -> hasContentLicense === false) {
         //    $logger->info('hasContentLicense is false');
         //    return;
         //}
-
-        if(Config::get('renderInfoLMSReturn') -> contentHash !== -1) {
-            $logger->info('contentHash !== -1 handle as local object');
+        if($esObject -> getContentHash() !== 0) {
+            $logger->info('contentHash '.$esObject->getContentHash().' !== 0 handle as local object');
             return;
         }
 
@@ -46,17 +46,21 @@ class ESRender_Plugin_Omega
             $role = 'teacher';
         }
 
-        if ($contentNode->getNodeProperty('ccm:replicationsource') == 'DE.FWU')  {
+        if ($esObject->getNodeProperty('ccm:replicationsource') == 'DE.FWU')  {
 
-            if($contentNode->getNodeProperty('cclom:format') == '')
+            if($esObject->getNodeProperty('cclom:format') == '')
                 $logger->info('Format is empty!');
 
-            $response = $this->callAPI($contentNode, $role);
-            $response = $this->evaluateResponse($response, $contentNode);
+            $response = $this->callAPI($esObject, $role);
+            $response = $this->evaluateResponse($response, $esObject);
+            $logger->info('url is '.urldecode($response -> get -> streamURL));
+            $data->node->properties->{'ccm:wwwurl'} =  urldecode($response -> get -> streamURL);
+            /*
             $prop = new stdClass();
             $prop -> key = 'ccm:wwwurl';
-            $prop -> value = urldecode($response -> get -> streamURL);
-            $contentNode -> setProperties(array($prop));
+            $prop -> value =;
+            $esObject -> setProperties(array($prop));
+            */
         }
     }
 
@@ -75,14 +79,14 @@ class ESRender_Plugin_Omega
         return $response;
     }
 
-    protected function evaluateResponse($response = null, $contentNode) {
+    protected function evaluateResponse($response = null, $esObject) {
 
         if(empty($response))
             throw new ESRender_Exception_Omega('API respsonse is empty');
 
         $response = json_decode($response);
 
-        if($response->get->identifier !== $contentNode->getNodeProperty('ccm:replicationsourceid'))
+        if($response->get->identifier !== $esObject->getNodeProperty('ccm:replicationsourceid'))
             throw new ESRender_Exception_Omega('Wrong identifier');
 
         if(!empty($response->get->error)) {
@@ -107,9 +111,9 @@ class ESRender_Plugin_Omega
         return $response;
     }
 
-    protected function callAPI($contentNode, $role) {
+    protected function callAPI($esObject, $role) {
         $logger = $this->getLogger();
-        $replicationSourceId = $contentNode->getNodeProperty('ccm:replicationsourceid');
+        $replicationSourceId = $esObject->getNodeProperty('ccm:replicationsourceid');
         if(empty($replicationSourceId)) {
             throw new ESRender_Exception_Omega('Property replicationsourceid is empty');
         }
@@ -128,7 +132,7 @@ class ESRender_Plugin_Omega
 		$postExec = microtime(true);
 		$diff = $postExec - $preExec;
 		$logger->debug('API request took '. $diff .' seconds');
-        $logger->debug('Called ' . $url . ' got ' . $resp);
+        $logger->info('Called ' . $url . ' got ' . $resp);
         return $resp;
     }
 }

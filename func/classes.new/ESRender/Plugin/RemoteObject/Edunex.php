@@ -286,9 +286,11 @@ extends ESRender_Plugin_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Plugin_Interface::postLoadRepository()
      */
-    public function postLoadRepository(EsApplication &$remote_rep, &$app_id, &$object_id, &$course_id, &$resource_id, &$username) {
+    public function postLoadRepository(&$data) {
 
         return;
+
+        $remote_rep = $data->node->ref->repo;
         
         $Logger = $this -> getLogger();
 
@@ -337,17 +339,19 @@ extends ESRender_Plugin_Abstract {
     }
     
     
-    
+    /*
     public function preSslVerification(EsApplication &$remote_rep, &$app_id, &$object_id, &$course_id, &$resource_id, &$username, &$homeRep) {
         //set home repo's public key for ssl verification
-        /*if($remote_app -> prop_array['type'] == 'edunex')
-            $remote_app -> prop_array['public_key'] = $homeRep -> prop_array['public_key'];*/
+        //if($remote_app -> prop_array['type'] == 'edunex')
+        //    $remote_app -> prop_array['public_key'] = $homeRep -> prop_array['public_key'];
     }
+    */
     
     
-     public function postSslVerification(EsApplication &$remote_rep, &$app_id, &$object_id, &$course_id, &$resource_id, &$username, &$homeRep) {
+     public function postSslVerification(&$data, &$homeRep) {
 
         $Logger = $this -> getLogger();
+        $remote_rep = $data->node->ref->repo;
 
         if (!$remote_rep) {
             return false;
@@ -369,7 +373,7 @@ extends ESRender_Plugin_Abstract {
             $Logger -> debug('Handling EDUNEX object postSslVerification().');
         }
 
-        $this -> doTheEdmondStuff($object_id, $username);
+        $this -> doTheEdmondStuff($data->node->ref->id, $data->user->authorityName);
     }
     
 

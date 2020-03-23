@@ -1,8 +1,8 @@
 <?php
 
-require_once ('../conf.inc.php');
-require_once ('model/Version.php');
-require_once ('../func/classes.new/RsPDO.php');
+require_once('../../conf.inc.php');
+require_once('../model/Version.php');
+require_once('../../func/classes.new/RsPDO.php');
 
 header('Content-Type: application/json');
 

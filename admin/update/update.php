@@ -420,6 +420,12 @@ function run($installedVersion) {
 
         if(version_compare ( '5.1', $installedVersion ) > 0) {
 
+            // sqlite extension needed for H5P
+            if ( !extension_loaded('sqlite') ) {
+                error_log('rendering-service update error: Missing php sqlite extension! Please install and retry the update.');
+                return false;
+            }
+
             $pdo = RsPDO::getInstance();
 
             $sql = $pdo -> formatQuery( 'SELECT max(`REL_ESMODULE_MIMETYPE_ID`) as max FROM `REL_ESMODULE_MIMETYPE`' );
@@ -448,6 +454,10 @@ function run($installedVersion) {
             $stmt->bindValue ( ':modid', '10' );
             $stmt->bindValue ( ':mime', 'image/webp' );
             $stmt->execute ();
+
+            $sql = $pdo->formatQuery('ALTER TABLE `ESOBJECT_CONVERSION` ADD `ESOBJECT_CONVERSION_RESOLUTION` TYPE int(11);');
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
 
             /*
              * Because content management as well as image and video processing has massively changed in this release it is not wrong to clear cache

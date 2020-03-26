@@ -44,10 +44,13 @@ class Updater {
 	
 	public function update() {
 		$sucesss = run($this -> installedVersion);
-		if($sucesss)
-			$success = $this -> setUpdateVersion();
-		if($success)
-			return true;
+		if($sucesss){
+            $success = $this -> setUpdateVersion();
+        }
+		if($success){
+           return true;
+        }
+
 		return false;
 	}
 	

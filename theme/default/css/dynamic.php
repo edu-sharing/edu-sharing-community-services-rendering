@@ -21,6 +21,85 @@ body {
     padding-bottom: 1px;
 }
 
+div.edusharing_rendering_content_video_options {
+position: absolute;
+top: 2%;
+right: 2%;
+color: #fff;
+margin: 0;
+padding: 5px;
+text-align: right;
+}
+
+div.edusharing_rendering_content_video_options i {
+opacity: 0.8;
+cursor: pointer;
+}
+
+div.edusharing_rendering_content_video_options_content {
+display: none;
+}
+
+div.edusharing_rendering_content_video_wrapper {
+display: inline-block;
+position: relative;
+}
+
+div.edusharing_rendering_content_video_wrapper:hover div.edusharing_rendering_content_video_options {
+display: block;
+}
+
+ul.edusharing_rendering_content_video_options_resolutions {
+padding: 0;
+margin: 0;
+font-size: 18px !important;
+}
+
+ul.edusharing_rendering_content_video_options_resolutions i {
+vertical-align: middle;
+margin-right: 10px;
+font-size: 18px !important;
+}
+
+i.edusharing_rendering_content_video_options_toggle {
+text-shadow: 0px 0px 4px #333;
+}
+
+ul.edusharing_rendering_content_video_options_resolutions > li {
+cursor: pointer;
+padding: 4px 0;
+list-style: none;
+}
+
+ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_rendering_content_video_options_resolutions_converting {
+color: #999999
+}
+
+.material-icons {
+font-family: 'Material Icons';
+font-weight: normal;
+font-style: normal;
+font-size: 24px;  /* Preferred icon size */
+display: inline-block;
+line-height: 1;
+text-transform: none;
+letter-spacing: normal;
+word-wrap: normal;
+white-space: nowrap;
+direction: ltr;
+
+/* Support for all WebKit browsers. */
+-webkit-font-smoothing: antialiased;
+/* Support for Safari and Chrome. */
+text-rendering: optimizeLegibility;
+
+/* Support for Firefox. */
+-moz-osx-font-smoothing: grayscale;
+
+/* Support for IE. */
+font-feature-settings: 'liga';
+}
+
 #edusharing_rendering_metadata {
 	background-color: #fff;
 	padding-bottom: 30px;

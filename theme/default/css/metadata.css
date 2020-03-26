@@ -5,11 +5,12 @@
     min-width: 25%;
 }
 .edusharing_rendering_metadata_body .mdsCaption{
-    border-bottom: 1px solid #777;
-    color: #777;
-    padding: 0 12px;
+    border-bottom: 1px solid #6f6f6f;
+    color: #6f6f6f;
+    padding: 8px 15px;
     font-size: 130%;
     height: auto;
+    margin-top: 30px;
     font-weight: normal;
     text-transform: uppercase;
 }
@@ -61,7 +62,7 @@
 .edusharing_rendering_metadata_body .mdsContributorTitle {
     font-weight: 600;
     font-style: normal;
-    margin-top: 25px;
+    margin: 25px 0 -10px 0;
     color: #000;
 }
 

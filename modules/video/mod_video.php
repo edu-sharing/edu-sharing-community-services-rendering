@@ -46,8 +46,12 @@ extends ESRender_Module_AudioVideo_Abstract
     	global $MC_URL;
 
     	$template_data = array();
-    	if($getDefaultData)
+    	if($getDefaultData){
             $template_data = parent::prepareRenderData($showMetadata);
+            $template_data['css'] = true;
+        }else{
+            $template_data['css'] = false;
+        }
 
         $ext = $this -> getExtensionByFormat($this->getVideoFormatByRequestingDevice());
         $template_data['ext'] = $ext;

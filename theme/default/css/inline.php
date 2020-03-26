@@ -152,6 +152,13 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
     margin: 0;
 }
 
+.edusharing_rendering_metadata_body .mdsCaption{
+    border-bottom: 1px solid #777 !important;
+    color: #777 !important;
+    padding: 0 12px !important;
+    margin-top: 0 !important;
+}
+
 .edusharing_metadata:before {
     border-bottom: 15px solid #ddd;
     border-left: 15px solid transparent;
@@ -202,6 +209,11 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
 
 .edusharing_rendering_metadata_body .licenseName {
     margin-top: 8px;
+}
+
+.edusharing_rendering_metadata_body .mdsContributorTitle {
+    margin: 0 !important;
+    margin-top: 25px !important;
 }
 
 .mdsGroup:first-child {

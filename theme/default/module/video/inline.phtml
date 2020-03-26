@@ -8,8 +8,13 @@
         $styleVideo .= 'width:'.(int)$_REQUEST['width'] . 'px';
 ?>
 <style>
-    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
-    <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
+
+    <?php
+        if ($css){
+            include(dirname(__FILE__) . '/../../css/metadata.css');
+            include(dirname(__FILE__) . '/../../css/inline.php');
+        }
+    ?>
 </style>
     <div class="edusharing_rendering_content_video_wrapper">
         <video src="<?php echo $url[ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S]?>" style="<?php echo $styleVideo?>" data-tap-disabled="true" id="<?php echo $videoObjectIdentifier?>" data-licid="<?php echo $licid;?>" controls controlsList="nodownload" oncontextmenu="return false;"></video>

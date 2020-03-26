@@ -209,7 +209,7 @@ try {
             $pubkeyid = openssl_get_publickey($homeRep -> prop_array['public_key']);
             $signature = rawurldecode($_GET['sig']);
             $signature = base64_decode($signature);
-            $ok = openssl_verify($data->node->ref->repo . $data->node->ref->id  . $ts, $signature, $pubkeyid);
+            $ok = openssl_verify($data->node->ref->repo . $data->node->ref->id  . $ts, $signature, $pubkeyid, 'sha1WithRSAEncryption');
         } catch (Exception $e) {
             throw new ESRender_Exception_SslVerification('Error checking signature');
         }

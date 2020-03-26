@@ -151,6 +151,7 @@ extends ESRender_Module_ContentNode_Abstract {
                 switch ($type) {
                     case IMAGETYPE_JPEG:
                         $conversionSuccess = imagejpeg($newImage, $DestinationFile . '_' . $l . '.' . $this -> getFileExtension($type));
+                        $conversionSuccess = imagepng($newImage, $DestinationFile . '_' . $l . '.' . self::EXTENSION_PNG);
                         break;
                     default :
                         $conversionSuccess = imagepng($newImage, $DestinationFile . '_' . $l . '.' . $this -> getFileExtension($type));
@@ -222,6 +223,10 @@ extends ESRender_Module_ContentNode_Abstract {
 
         $f_path = $this -> esObject -> getFilePath();
         $ObjectFilename = str_replace('\\', '/', $f_path);
+
+        if ($this -> esObject -> getNode() -> remote -> repository -> repositoryType == 'PIXABAY' && filesize($ObjectFilename) == 0) {
+            $ObjectFilename = $this -> esObject -> getNode() -> preview -> url;
+        }
         return $this -> convertImage($ObjectFilename, $this -> getImageFilename());
     }
 

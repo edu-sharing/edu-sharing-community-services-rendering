@@ -225,7 +225,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $ObjectFilename = str_replace('\\', '/', $f_path);
 
         if ($this -> esObject -> getNode() -> remote -> repository -> repositoryType == 'PIXABAY' && filesize($ObjectFilename) == 0) {
-            $ObjectFilename = $this -> esObject -> getNode() -> preview -> url;
+            $ObjectFilename = $this -> esObject -> getNode() -> properties -> {'ccm:thumbnailurl'}[0];
         }
         return $this -> convertImage($ObjectFilename, $this -> getImageFilename());
     }

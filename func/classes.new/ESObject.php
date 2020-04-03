@@ -570,7 +570,7 @@ class ESObject {
         return true;
     }
 
-    public function addToConversionQueue($format, $filename, $outputFilename, $mimeType, $resolution = null) {
+    public function addToConversionQueue($format, $filename, $outputFilename, $mimeType, $resolution = 0) {
         $arr = array(
             'ESOBJECT_CONVERSION_OBJECT_ID' => $this -> id,
             'ESOBJECT_CONVERSION_FORMAT' => $format,

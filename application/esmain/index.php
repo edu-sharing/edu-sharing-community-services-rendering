@@ -634,7 +634,8 @@ try {
 
     // create new object instance if not existent
     if (!$Module -> instanceExists($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash)
-        && !$Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash)) {
+        && !$Module -> instanceLocked($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash)
+        && Config::get('renderInfoLMSReturn')->hasContentLicense === true) {
 
         //ensure that instance is not created several times
         $Module -> instanceLock($ESObject, $instanceParams, $renderInfoLMSReturn->getRenderInfoLMSReturn->contentHash);

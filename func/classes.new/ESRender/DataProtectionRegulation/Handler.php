@@ -2,8 +2,16 @@
 
 class ESRender_DataProtectionRegulation_Handler {
 
-    public function getApplyDataProtectionRegulationsDialog($uniqueId, $providerName, $providerUrlTermsOfUse, $url = null, $type = null) {
+    public function getApplyDataProtectionRegulationsDialog($uniqueId, $providerName, $providerUrlTermsOfUse, $target, $type = null) {
         global $Locale, $Translate;
+
+        if(defined('DISABLE_DATAPROTECTIONREGULATIONHANDLER_FOR') && !empty(DISABLE_DATAPROTECTIONREGULATIONHANDLER_FOR)) {
+            $arr = explode(',', DISABLE_DATAPROTECTIONREGULATIONHANDLER_FOR);
+            foreach($arr as $value) {
+                if(strpos($target, $value) !== false)
+                    return '';
+            }
+        }
 
         $msg = array();
         $msg['dataProtectionRegulations1'] = new Phools_Message_Default('dataProtectionRegulations1 :providerName', array(new Phools_Message_Param_String(':providerName', $providerName)));

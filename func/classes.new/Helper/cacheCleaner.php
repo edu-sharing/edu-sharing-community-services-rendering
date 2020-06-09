@@ -78,8 +78,9 @@ class cacheCleaner {
             $esobject -> setInstanceData($result);
 
         //delete from db
-        if (!$esobject -> deleteFromDb())
+        if (!$esobject -> deleteFromDb()){
             $this -> logger -> info('could not delete db record with id ' . $esobject -> getId());
+        }
             $this -> logger -> info('deleted db record with id ' . $esobject -> getId());
 
             $module = $esobject -> getModule();
@@ -92,26 +93,38 @@ class cacheCleaner {
                     $h5p_db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
                     //get h5p-ID for the directory name
-                    $query = "SELECT id FROM h5p_contents WHERE title='".$esobject->getObjectID()."'";
-                    $statement = $h5p_db -> query($query);
-                    $h5pID = $statement->fetchAll(\PDO::FETCH_OBJ)[0]->id;
+                    try {
+                        $query = "SELECT id FROM h5p_contents WHERE title='".$esobject->getObjectID()."-v".$esobject->getObjectVersion()."'";
+                        $statement = $h5p_db -> query($query);
+                        $h5pID = $statement->fetchAll(\PDO::FETCH_OBJ)[0]->id;
+                    } catch(PDOException $e) {
+                        $this -> logger -> info($e -> getMessage());
+                    }
+
+                    $this -> logger -> info('h5pID: '.$h5pID);
 
                     //delete h5p sqlite entry
-                    $query_libraries = "DELETE FROM h5p_contents_libraries WHERE content_id = ".$_POST['delete_h5p'];
-                    $statement_libraries = $h5p_db -> query($query_libraries);
-                    $results_libraries = $statement_libraries->execute();
+                    try {
+                        $query_libraries = "DELETE FROM h5p_contents_libraries WHERE content_id = ".$h5pID;
+                        $statement_libraries = $h5p_db -> query($query_libraries);
+                        $results_libraries = $statement_libraries->execute();
 
-                    $query = "DELETE FROM h5p_contents WHERE title='".$esobject->getObjectID()."'";
-                    $statement = $h5p_db -> query($query);
-                    $result = $statement->execute();
-                    $this -> logger -> info('deleted h5p-'.$h5pID.' from sqlite.');
+                        $query = "DELETE FROM h5p_contents WHERE title='".$esobject->getObjectID()."-v".$esobject->getObjectVersion()."'";
+                        $statement = $h5p_db -> query($query);
+                        $result = $statement->execute();
+                        $this -> logger -> info('deleted h5p-'.$h5pID.' from sqlite.');
+                    } catch(PDOException $e) {
+                        $this -> logger -> info($e -> getMessage());
+                    }
 
                     //delete cache folder
-                    $dirPath = $this->renderPath . DIRECTORY_SEPARATOR . $module -> getName() . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $h5pID;
-                    if (!$this -> removeDir($dirPath)){
-                        $this -> logger -> info('could not delete ' . $dirPath);
-                    }else{
-                        $this -> logger -> info('deleted ' . $dirPath );
+                    if ($h5pID){
+                        $dirPath = $this->renderPath . DIRECTORY_SEPARATOR . $module -> getName() . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $h5pID;
+                        if (!$this -> removeDir($dirPath)){
+                            $this -> logger -> info('could not delete ' . $dirPath);
+                        }else{
+                            $this -> logger -> info('deleted ' . $dirPath );
+                        }
                     }
 
                 }else{
@@ -121,11 +134,13 @@ class cacheCleaner {
             }
 
             //delete cache folder
-            $dirPath = $this->renderPath . DIRECTORY_SEPARATOR . $module -> getName() . DIRECTORY_SEPARATOR . $esobject -> getSubUri_file();
-            if (!$this -> removeDir($dirPath)){
-                $this -> logger -> info('could not delete ' . $dirPath);
-            }else{
-                $this -> logger -> info('deleted ' . $dirPath . ' ########### ' . $esobject -> getFilename());
+            if ($esobject -> getSubUri_file()){
+                $dirPath = $this->renderPath . DIRECTORY_SEPARATOR . $module -> getName() . DIRECTORY_SEPARATOR . $esobject -> getSubUri_file();
+                if (!$this -> removeDir($dirPath)){
+                    $this -> logger -> info('could not delete ' . $dirPath);
+                }else{
+                    $this -> logger -> info('deleted ' . $dirPath . ' ########### ' . $esobject -> getFilename());
+                }
             }
 
             if(!empty($this->renderPathSave)) {
@@ -142,19 +157,24 @@ class cacheCleaner {
     }
 
     private function removeDir($dirPath) {
-
-        if ($dirPath == '/' || empty($dirPath) || $dirPath == './')
-            return false;
-        if (!is_dir($dirPath))
-            return false;
-        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/')
-            $dirPath .= '/';
-        $files = glob($dirPath . '*', GLOB_MARK);
-        foreach ($files as $file) {
-            unlink($file);
+        try {
+            $it = new RecursiveDirectoryIterator($dirPath, RecursiveDirectoryIterator::SKIP_DOTS);
+            $files = new RecursiveIteratorIterator($it,
+                RecursiveIteratorIterator::CHILD_FIRST);
+            foreach($files as $file) {
+                if ($file->isDir()){
+                    rmdir($file->getPathname());
+                } else {
+                    unlink($file->getPathname());
+                }
+            }
+        }catch(Exception $e) {
+            $this -> logger -> info('deleting error');
         }
-        if (!rmdir($dirPath))
+
+        if (!rmdir($dirPath)){
             return false;
+        }
         return true;
     }
 

@@ -85,12 +85,12 @@ class converter {
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_MP4 :
                         $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.mp4';
-                        exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-filter:v scale=-2:" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . " " . "-f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(1080\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a copy" . " " . $tmpName . " " ."2>>" . $logfile, $whatever, $code);
+                        exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-filter:v scale=-2:" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . " " . "-f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf -c:a copy" . " " . $tmpName . " " ."2>>" . $logfile, $whatever, $code);
                         $this->setConversionStatus($code, $conv, $tmpName);
                         break;
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_WEBM :
                         $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.webm';                        
-                        exec($this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-filter:v scale=-2:". $conv -> ESOBJECT_CONVERSION_RESOLUTION . " " ."-vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(1080,ih)'\"" . " " . $tmpName . " " . "2>>" . $logfile, $whatever, $code);
+                        exec($this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-filter:v scale=-2:". $conv -> ESOBJECT_CONVERSION_RESOLUTION . " " ."-vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf" . " " . $tmpName . " " . "2>>" . $logfile, $whatever, $code);
                         $this->setConversionStatus($code, $conv, $tmpName);
                         break; 
                     default :

@@ -81,13 +81,15 @@ class ESRender_Plugin_Omega
 
     protected function evaluateResponse($response = null, $esObject) {
 
-        if(empty($response))
+        if(empty($response)){
             throw new ESRender_Exception_Omega('API respsonse is empty');
+        }
 
         $response = json_decode($response);
 
-        if($response->get->identifier !== $esObject->getNodeProperty('ccm:replicationsourceid'))
+        if($response->get->identifier !== $esObject->getNodeProperty('ccm:replicationsourceid')){
             throw new ESRender_Exception_Omega('Wrong identifier');
+        }
 
         if(!empty($response->get->error)) {
             throw new ESRender_Exception_Omega($response->get->error);

@@ -421,7 +421,7 @@ function run($installedVersion) {
         if(version_compare ( '5.1', $installedVersion ) > 0) {
 
             // sqlite extension needed for H5P
-            if ( !extension_loaded('sqlite') ) {
+            if ( !extension_loaded('sqlite3') ) {
                 error_log('rendering-service update error: Missing php sqlite extension! Please install and retry the update.');
                 return false;
             }

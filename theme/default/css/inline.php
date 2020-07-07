@@ -383,6 +383,7 @@ video, audio {
 
 .edu_audio_wrapper{
     display: inline-block;
+    min-width: 70%;
 }
 
 .dataProtectionRegulations, .dataProtectionRegulationsDialog {

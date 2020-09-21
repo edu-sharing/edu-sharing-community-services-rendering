@@ -1,2 +1,2 @@
 INSERT INTO "VERSION" ("VERSION_VNUMBER", "VERSION_TYPE") VALUES
-('6.0.99', 'install');
+('${git.closest.tag.name}', 'install');

@@ -1,22 +1,14 @@
-.idea
-.buildpath
-.project
-.settings
-target
-git.properties
-conf/db.conf.php
-conf/de.metaventis.esrender.log4php.cachecleaner.properties
-conf/esmain
-conf/system.conf.php
-conf/plugins.conf.php
-func/extern/htmlpurifier/standalone/HTMLPurifier/DefinitionCache/Serializer/*
-install/_tmpl/log.php
-log/conversion/*
-!log/conversion/.gitignore
-log/debug/*
-log/scr/*
-log/cacheCleaner.log
-log/esrender.log
-log/redirect.log
-modules/*/config.php
-vendor/lib/h5p
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.git-versioned-pom.xml
+# IntelliJ
+.idea/
+*.iml

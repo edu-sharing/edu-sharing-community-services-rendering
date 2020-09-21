@@ -36,10 +36,12 @@ class ESRender_Plugin_Omega
         //    $logger->info('hasContentLicense is false');
         //    return;
         //}
+        /*
         if($esObject -> getContentHash() !== 0) {
             $logger->info('contentHash '.$esObject->getContentHash().' !== 0 handle as local object');
             return;
         }
+        */
 
         $role = 'learner';
         if(Config::get('renderInfoLMSReturn') -> eduSchoolPrimaryAffiliation === 'teacher') {
@@ -102,7 +104,7 @@ class ESRender_Plugin_Omega
         if(empty($response->get->streamURL) && !empty($response -> get -> downloadURL))
             $response->get->streamURL = $response->get->downloadURL;
 
-        $status = $this->checkStatus($response->get->streamURL);
+        $status = $this->checkStatus(urlencode($response->get->streamURL));
         if($status > 299)
             throw new ESRender_Exception_Omega('given streamURL is invalid', $status);
 

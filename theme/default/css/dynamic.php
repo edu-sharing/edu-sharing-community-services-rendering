@@ -134,6 +134,10 @@ h1.edusharing_rendering_metadata_header_title {
 	flex-wrap: wrap;
 }
 
+.edusharing_rendering_metadata_body .mdsContent {
+    overflow: hidden;
+}
+
 .edusharing_rendering_content_wrapper {
 	text-align: center;
 	margin: 30px 20px;

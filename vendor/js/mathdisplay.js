@@ -15,6 +15,7 @@ H5P.MathDisplay = (function () {
     this.mathjax = undefined;
     this.observer = undefined;
     this.updating = null;
+    this.mathHasBeenAdded = false;
 
     // Initialize event inheritance
     H5P.EventDispatcher.call(that);
@@ -47,9 +48,9 @@ H5P.MathDisplay = (function () {
       if (!that.settings.observers || that.settings.observers.length === 0) {
         that.settings = that.extend({
           observers: [
-            //{name: 'mutationObserver', params: {cooldown: 500}},
+            {name: 'mutationObserver', params: {cooldown: 500}},
             {name: 'domChangedListener'},
-            //{name: 'interval', params: {time: 2000}},
+            //{name: 'interval', params: {time: 1000}},
           ]
         }, that.settings);
       }
@@ -65,7 +66,6 @@ H5P.MathDisplay = (function () {
                 extensions: ['tex2jax.js'],
                 showMathMenu: false,
                 jax: ['input/TeX','output/HTML-CSS'],
-                //jax: ['input/TeX','output/SVG'],
                 tex2jax: {
                   // Important, otherwise MathJax will be rendered inside CKEditor
                   ignoreClass: "ckeditor"
@@ -83,7 +83,9 @@ H5P.MathDisplay = (function () {
         }, that.settings);
       }
 
-      that.parent = that.settings.parent;
+      if (that.settings.parent !== undefined) {
+        console.error('Beep bop! This was disabled since no one knew what it was actually used for @ H5P.MathDisplay');
+      }
 
       // If h5p-container is not set, we're in an editor that may still be loading, hence document
       that.container = that.settings.container || document.getElementsByClassName('h5p-container')[0] || document;
@@ -96,7 +98,7 @@ H5P.MathDisplay = (function () {
             return;
           }
 
-          that.mathjax = mathjax;
+          that.mathjax = mathjax; // TODO: How do we know this is the right one? Is this there any reason for having this? AFAIK there can only be one loaded and used per page.
           startObservers(that.settings.observers);
 
           // MathDisplay is ready
@@ -226,7 +228,16 @@ H5P.MathDisplay = (function () {
     this.mutationCoolingPeriod = params.cooldown;
 
     this.observer = new MutationObserver(function (mutations) {
+      if (includesMathJaxAdded(mutations)) {
+        // We are only resize the content if MathJax was actually added as
+        // constant resizing of the entire content is quite expensive.
+        that.mathHasBeenAdded = true;
+      }
+
       // Filter out elements that have nothing to do with the inner HTML.
+      // TODO: There is probably a more efficient way of filtering out only
+      // the relevant elements. E.g. Sometime we are actually processing the
+      // <span> elements added as part of the MathJax formula here...
       mutations
         .filter(function (mutation) {
           return mutation.target.id.indexOf('MathJax') !== 0 &&
@@ -247,91 +258,28 @@ H5P.MathDisplay = (function () {
    * Update the DOM by MathJax.
    *
    * @param {object[]} [elements] - DOM elements to be updated.
-   * @param {object} [callback] - Callback function.
    */
-  MathDisplay.prototype.update = function (elements, callback) {
-    var that = this;
-
+  MathDisplay.prototype.update = function (elements) {
+    const self = this;
     if (!this.isReady) {
       return;
     }
 
-    // Update was triggered by resize triggered by MathJax, no update needed
-    if (this.mathJaxTriggeredResize === true) {
-      this.mathJaxTriggeredResize = false;
-      return;
-    }
+    // TODO: There is really no need to call update() until the H5P instance's
+    // attach() has finished running.(MathJax should probably attach on an
+    // instance level instead of the entire page?)
+    // There seems to be a bit of redundant processing going on.
 
-    // Default resize after MathJax has finished
-    if (typeof callback === 'undefined') {
-      callback = function () {
-        // Resize interaction after there are no more DOM changes to expect by MathJax
-        function triggerResize() {
-          try {
-            if (H5P && H5P.instances && H5P.instances.length !== 0 && document.querySelectorAll('.MathJax').length > 0) {
-              H5P.instances[0].trigger('resize');
-            }
-          }
-          catch (e) {
-            // Do nothing if it fails
-          }
-        }
+    /**
+     * Triggered when MathJax has finished rendering
+     */
+    const callback = function () {
+      if (self.mathHasBeenAdded) {
+        self.mathHasBeenAdded = false;
+        resizeH5PContent();
+      }
+    };
 
-        /**
-         * Wait until MathJax has finished rendering.
-         * By default, will wait 10 seconds and check every 100ms if MathJax
-         * has finished
-         *
-         * @param {number} [counter=100] - Maximum number of retries.
-         * @param {number} [interval=100] - Wait time per poll in ms.
-         */
-        function waitForMathJaxDone(counter, interval) {
-          counter = counter || 100;
-          interval = interval || 100;
-
-          if (that.mathjax.Hub.queue.running + that.mathjax.Hub.queue.pending === 0 || counter === 0) {
-            that.mathJaxTriggeredResize = true;
-
-            console.log('waitForMathJaxDone mathJaxTriggeredResize: '+that.resized);
-            that.resized = true;
-
-
-            if (that.parent) {
-              that.parent.trigger('resize');
-            }
-            else {
-              // Trigger a resize
-              triggerResize();
-
-              var h5pContent = document.querySelector('.h5p-content');
-              if (h5pContent) {
-                // There might be other animations going on when the math symbols
-                // have been rendered. Below, we therefore have check changes in height
-                // for a second, a trigger resize when needed.
-                var resizeCounter = 0;
-                var intervaller = setInterval(function () {
-                  // Invoke resize if h5p content need more room
-                  if (h5pContent && h5pContent.offsetHeight > document.body.offsetHeight) {
-                    triggerResize();
-                  }
-                  if ((resizeCounter++) >= 25 ) {
-                    clearInterval(intervaller);
-                  }
-                }, 40);
-              }
-            }
-          }
-          else {
-            counter--;
-            setTimeout(waitForMathJaxDone, interval, counter);
-          }
-        }
-
-        waitForMathJaxDone();
-      };
-    }
-
-    // The callback will be forwarded to MathJax
     if (this.observer) {
       /*
        * For speed reasons, we only add the elements to MathJax's queue that
@@ -344,19 +292,27 @@ H5P.MathDisplay = (function () {
       if (!this.updating) {
         this.mathjax.Hub.Queue(["Typeset", this.mathjax.Hub, elements], callback);
         this.updating = setTimeout(function () {
-          that.updating = null;
-          if (that.missedUpdates) {
-            that.missedUpdates = false;
-            that.mathjax.Hub.Queue(["Typeset", that.mathjax.Hub, document], callback);
+          self.updating = null;
+          if (self.missedUpdates) {
+            self.missedUpdates = false;
+            self.mathjax.Hub.Queue(["Typeset", self.mathjax.Hub, document], callback); // TODO: Do we need to specify document? I believe the entire pages is the default
           }
         }, this.mutationCoolingPeriod);
       }
       else {
         this.missedUpdates = true;
+        // TODO: Should we have kept track of the elements that was missed
+        // instead of running the whole document again?
+        // Alternatively, always determine the common parent? Could be relevant
+        // for the foreach in the MutationObserver callback as well to reduce
+        // processing time.
       }
     }
     else {
-      this.mathjax.Hub.Queue(["Typeset", that.mathjax.Hub, elements], callback);
+      // TODO: Determine if this is really needed or used? Most likely it has
+      // not been tested in a while and has no way of actually detecting if
+      // MathJax did add something and trigger a resize on the content.
+      this.mathjax.Hub.Queue(["Typeset", self.mathjax.Hub, elements], callback);
     }
   };
 
@@ -380,6 +336,40 @@ H5P.MathDisplay = (function () {
       }
     }
     return arguments[0];
+  };
+
+  /**
+   * Help determine if the observed mutations contained any insertion of
+   * MathJax formulas.
+   *
+   * @param {MutationRecord[]} mutations
+   * @return {Boolean}
+   */
+  const includesMathJaxAdded = function (mutations) {
+    for (let i = 0; i < mutations.length; i++) {
+      for (let j = 0; j < mutations[i].addedNodes.length; j++) {
+        const node = mutations[i].addedNodes[j];
+        if (node instanceof HTMLElement && node.classList.contains('MathJax_Display')) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
+  /**
+   * Trigger resize of the first H5P content on the page.
+   *
+   * TODO: Should only resize the content that had MathJax added.
+   */
+  const resizeH5PContent = function () {
+    try {
+      H5P.instances[0].trigger('resize');
+    }
+    catch (e) {
+      // Do nothing if it fails
+    }
   };
 
   return MathDisplay;

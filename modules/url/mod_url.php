@@ -194,7 +194,7 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function getAudioEmbedding($footer = '')
     {
-        return '<div><video style="max-width:100%" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls" oncontextmenu="return false;"></video>' . $footer . '</div>';
+        return '<div><video style="max-width:100%; box-shadow: none;" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls" oncontextmenu="return false;" poster="' . $this->esObject->getPreviewUrl() . '"></video>' . $footer . '</div>';
     }
 
     protected function getImageEmbedding($footer = '')

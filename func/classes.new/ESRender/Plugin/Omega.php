@@ -56,7 +56,11 @@ class ESRender_Plugin_Omega
             $response = $this->callAPI($esObject, $role);
             $response = $this->evaluateResponse($response, $esObject);
             $logger->info('url is '.urldecode($response -> get -> streamURL));
+
+            Config::set('omega', $data->node->properties->{'ccm:wwwurl'}[0]); // used for button if hasContentLicence == false
+
             $data->node->properties->{'ccm:wwwurl'} =  urldecode($response -> get -> streamURL);
+
             /*
             $prop = new stdClass();
             $prop -> key = 'ccm:wwwurl';

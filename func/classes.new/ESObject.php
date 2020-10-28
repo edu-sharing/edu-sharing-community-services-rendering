@@ -166,6 +166,10 @@ class ESObject {
         return true;
     }
 
+    public function getUser() {
+        return $this -> data -> user;
+    }
+
     public function getData() {
         return $this -> data;
     }

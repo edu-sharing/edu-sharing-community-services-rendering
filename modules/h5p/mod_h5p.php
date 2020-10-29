@@ -102,9 +102,14 @@ extends ESRender_Module_ContentNode_Abstract {
                     $Logger -> debug('h5p saved: '.$this->esObject->getTitle());
                 }else{
                     $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
-                    $Logger -> debug('There was a problem with the H5P-file: '.$h5p_error->code);
+                    $Logger -> debug('There was a problem with the H5P-file ('.$this->esObject->getObjectID().'): '.$h5p_error->code);
                     $template_data['h5p_new'] = 'There was a problem with the H5P-file: '.$h5p_error->code.'<br>'.$h5p_error->message;
                     echo $this -> getTemplate() -> render($TemplateName, $template_data);
+
+                    $query = "DELETE FROM h5p_contents WHERE title='".$this->esObject->getObjectID()."-".$contentHash."'";
+                    $statement = $db -> query($query);
+                    $results = $statement->execute();
+
                     return;
                 }
 

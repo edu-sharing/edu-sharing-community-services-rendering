@@ -105,15 +105,12 @@ extends ESRender_Module_ContentNode_Abstract {
                     $Logger -> debug('There was a problem with the H5P-file ('.$this->esObject->getObjectID().'): '.$h5p_error->code);
                     $template_data['h5p_new'] = 'There was a problem with the H5P-file: '.$h5p_error->code.'<br>'.$h5p_error->message;
                     echo $this -> getTemplate() -> render($TemplateName, $template_data);
-
-                    $query = "DELETE FROM h5p_contents WHERE title='".$this->esObject->getObjectID()."-".$contentHash."'";
-                    $statement = $db -> query($query);
-                    $results = $statement->execute();
-
+                    @rmdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
                     return;
                 }
 
             }else{
+                $Logger -> debug('This file is being worked on: '.$this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
                 $template_data['h5p_new'] = 'This file is being worked on. Please try again in a few moments.';
                 echo $this -> getTemplate() -> render($TemplateName, $template_data);
                 return;

@@ -36,12 +36,12 @@
     padding-left: 8px;
 }
 .edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue{
+    display: inline-block;
     color: #383838;
     background-color: #F4F4F4;
     border-radius: 16px;
-    padding: 3px 10px;
+    padding: 5px 10px;
     margin-left: 10px;
-    min-height: 32px;
 }
 
 .edusharing_rendering_metadata_body .mds_ccm_lifecyclecontributer_author .mdsValue {

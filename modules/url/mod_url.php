@@ -220,10 +220,14 @@ extends ESRender_Module_NonContentNode_Abstract {
     if($this -> isYoutubeRemoteObject()){
         $vidId = $this -> esObject -> getNode() -> remote -> id;
         $applyDataProtectionRegulationsDialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
+        $src = '';
+        if (empty($applyDataProtectionRegulationsDialog)){
+            $src = 'www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1';
+        }
         return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
                     <div class="videoWrapperInner" style="'.($applyDataProtectionRegulationsDialog?'':$videoWrapperInnerStyle).'">
                         '.$applyDataProtectionRegulationsDialog.'
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video"></iframe>
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="'.$src.'" frameborder="0" allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';

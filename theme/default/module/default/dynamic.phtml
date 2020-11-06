@@ -5,6 +5,7 @@ $msg['toDownload'] = new Phools_Message_Default('toDownload');
 $msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
 $msg['cannotOpenObject'] = new Phools_Message_Default('cannotOpenObject');
 $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText');
+$msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 
 ?>
 
@@ -24,6 +25,12 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
         ?>
 		<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
 		<img class="edusharing_rendering_content_preview" src="<?php echo $previewUrl?>">
+
+        <?php if(!empty(Config::get('omega'))){
+            echo '<a href="' .  Config::get('omega') . '" class="edusharing_rendering_content" target="_blank" id="edusharing_rendering_content_href">' .  $msg['goToOrigin']->localize($Locale, $Translate) . '</a>';
+        }
+        ?>
+
         <?php if(Config::get('showDownloadButton') && Config::get('renderInfoLMSReturn')->hasContentLicense === true){
             echo '<a href="' .  $url . '" download="'.$title.'" class="edusharing_rendering_content" id="edusharing_rendering_content_href">' .  $msg['toDownload']->localize($Locale, $Translate) . '</a>';
         }

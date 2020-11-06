@@ -44,7 +44,7 @@ class ESRender_Plugin_Omega
         */
 
         $role = 'learner';
-        if(Config::get('renderInfoLMSReturn') -> eduSchoolPrimaryAffiliation === 'teacher') {
+        if($esObject->getUser()->primaryAffiliation === 'teacher') {
             $role = 'teacher';
         }
 
@@ -56,7 +56,11 @@ class ESRender_Plugin_Omega
             $response = $this->callAPI($esObject, $role);
             $response = $this->evaluateResponse($response, $esObject);
             $logger->info('url is '.urldecode($response -> get -> streamURL));
+
+            Config::set('omega', $esObject->getNodeProperty('ccm:wwwurl')); // used for button if hasContentLicence == false
+
             $data->node->properties->{'ccm:wwwurl'} =  urldecode($response -> get -> streamURL);
+
             /*
             $prop = new stdClass();
             $prop -> key = 'ccm:wwwurl';

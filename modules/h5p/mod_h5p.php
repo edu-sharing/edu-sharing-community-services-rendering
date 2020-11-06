@@ -75,9 +75,11 @@ extends ESRender_Module_ContentNode_Abstract {
 	protected function renderTemplate($TemplateName, $getDefaultData = true, $showMetadata = true) {
 
         global $db;
+        $Logger = $this -> getLogger();
+        $contentHash = Config::get('renderInfoLMSReturn')->contentHash;
 
         //check if Content already exists in db & cache
-        $query = "SELECT id FROM h5p_contents WHERE title='".$this->esObject->getObjectID()."-v".$this->esObject->getObjectVersion()."'";
+        $query = "SELECT id FROM h5p_contents WHERE title='".$this->esObject->getObjectID()."-".$contentHash."'";
         $statement = $db -> query($query);
         $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
@@ -92,21 +94,23 @@ extends ESRender_Module_ContentNode_Abstract {
                 $this->H5PCore->disableFileCheck = true;
 
                 if($this->H5PValidator->isValidPackage()){
-                    $this->H5PStorage->savePackage(array('title' => $this->esObject->getObjectID()."-v".$this->esObject->getObjectVersion(), 'disable' => 0));
+                    $this->H5PStorage->savePackage(array('title' => $this->esObject->getObjectID()."-".$contentHash, 'disable' => 0));
 
                     $query = "UPDATE h5p_contents SET description='".$this->esObject->getTitle()."' WHERE id=".$this->H5PCore->loadContent($this->H5PFramework->id)['id'];
                     $statement = $db -> query($query);
                     $results = $statement->execute();
-                    error_log('h5p saved: '.$this->esObject->getTitle());
+                    $Logger -> debug('h5p saved: '.$this->esObject->getTitle());
                 }else{
                     $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
-                    error_log('There was a problem with the H5P-file: '.$h5p_error->code);
+                    $Logger -> debug('There was a problem with the H5P-file ('.$this->esObject->getObjectID().'): '.$h5p_error->code);
                     $template_data['h5p_new'] = 'There was a problem with the H5P-file: '.$h5p_error->code.'<br>'.$h5p_error->message;
                     echo $this -> getTemplate() -> render($TemplateName, $template_data);
+                    @rmdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
                     return;
                 }
 
             }else{
+                $Logger -> debug('This file is being worked on: '.$this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
                 $template_data['h5p_new'] = 'This file is being worked on. Please try again in a few moments.';
                 echo $this -> getTemplate() -> render($TemplateName, $template_data);
                 return;

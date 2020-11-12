@@ -135,8 +135,17 @@ try {
         Config::set('forcePreview', true);
 
     Config::set('hasContentLicense', false);
-    if(in_array('ReadAll', $data -> node -> access))
-        Config::set('hasContentLicense', true);
+    if (in_array('ccm:collection_io_reference', $data -> node -> aspects)) {
+        //Has the user alf permissions on the node? -> check if he also has read_all permissions
+        if(in_array('Read', $data -> node -> accessOriginal)){
+            Config::set('hasContentLicense', in_array('ReadAll', $data->node->accessOriginal));
+        } else {
+            // otherwise, the collection concept allows access so we give the user access simply depending on the collection entry
+            Config::set('hasContentLicense', in_array('ReadAll', $data->node->access));
+        }
+    } else {
+        Config::set('hasContentLicense', in_array('ReadAll', $data->node->access));
+    }
 
     $CurrentDirectoryName = basename(dirname(__FILE__));
     $application = new ESApp();

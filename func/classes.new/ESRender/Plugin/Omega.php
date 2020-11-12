@@ -121,6 +121,7 @@ class ESRender_Plugin_Omega
         if(empty($replicationSourceId)) {
             throw new ESRender_Exception_Omega('Property replicationsourceid is empty');
         }
+        // @TODO: The user variable is not always the same and must be configurable!
         $url = $this->url . '?token_id=' . $replicationSourceId . '&role=' . $role . '&user=dabiplus';
 
 		$curlhandle = curl_init($url);

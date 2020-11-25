@@ -57,6 +57,18 @@ function cc_rd_debug($err_msg) {
         cc_rd_log_die($err_msg);
     }
 }
+function addContentHeaders($src_file){
+    $filesize = filesize($src_file);
+    $mimetype = mime_content_type($src_file);
+    if(strpos($src_file, '.css')){
+        $mimetype = 'text/css';
+    }elseif(strpos($src_file, '.js')){
+        $mimetype = 'text/javascript';
+    }
+    header("Content-type: ".$mimetype);
+    header("Content-length: " . $filesize);
+    header('Access-Control-Allow-Origin: *');
+}
 
 
 /*
@@ -73,16 +85,7 @@ if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST[
 
     $path_parts = pathinfo($src_file);
 
-    $mimetype = mime_content_type($src_file);
-    if(strpos($src_file, '.css')){
-        $mimetype = 'text/css';
-    }elseif(strpos($src_file, '.js')){
-        $mimetype = 'text/javascript';
-    }
-
-    header("Content-type: ".$mimetype);
-    header("Content-length: " . $filesize);
-    header('Access-Control-Allow-Origin: *');
+    addContentHeaders($src_file);
 
     if($filesize <= 2048) {
         @readfile($src_file);
@@ -227,9 +230,7 @@ if(isset($_SERVER['HTTP_RANGE'])) {
     //serveFilePartial($src_file, $file_name);
     partialContent($src_file);
 }
-
-header("Content-length: " . $filesize);
-header('Access-Control-Allow-Origin: *');
+addContentHeaders($src_file);
 
 if($filesize <= 2048) {
     @readfile($src_file);

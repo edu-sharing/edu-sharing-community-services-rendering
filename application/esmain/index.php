@@ -136,8 +136,12 @@ try {
 
     Config::set('hasContentLicense', false);
     if (in_array('ccm:collection_io_reference', $data -> node -> aspects)) {
-        //Has the user alf permissions on the node? -> check if he also has read_all permissions
-        if(in_array('Read', $data -> node -> accessOriginal)){
+        // is it a licensed node? check the original for access (new since 5.1)
+        if($data -> node -> originalRestrictedAccess) {
+            Config::set('hasContentLicense', @in_array('ReadAll', $data->node->accessOriginal) === true);
+        } else if(@in_array('Read', $data -> node -> accessOriginal) === true){
+            //Has the user alf permissions on the node? -> check if he also has read_all permissions
+            // LEGACY! Remove this Behaviour in future releases, only included for back compat
             Config::set('hasContentLicense', in_array('ReadAll', $data->node->accessOriginal));
         } else {
             // otherwise, the collection concept allows access so we give the user access simply depending on the collection entry
@@ -146,7 +150,6 @@ try {
     } else {
         Config::set('hasContentLicense', in_array('ReadAll', $data->node->access));
     }
-
     $CurrentDirectoryName = basename(dirname(__FILE__));
     $application = new ESApp();
     $application -> getApp($CurrentDirectoryName);

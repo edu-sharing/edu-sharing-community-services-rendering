@@ -44,8 +44,8 @@
     margin-left: 10px;
 }
 
-.edusharing_rendering_metadata_body .mds_ccm_lifecyclecontributer_author .mdsValue {
-    display: inline-block;
+.edusharing_rendering_metadata_body .mdsWidget_vcard .mdsValue {
+    display: inline-flex;
     font-style: italic;
 }
 

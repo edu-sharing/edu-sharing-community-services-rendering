@@ -122,7 +122,7 @@ extends ESRender_Module_NonContentNode_Abstract {
         } else if($this -> detectAudio()) {
             $embedding = $this->getAudioEmbedding($footer);
         } else if($this -> isPixabayRemoteObject()) {
-            $embedding = $this->getPixabayEmbedding();
+            $embedding = $this->getPixabayEmbedding($footer, mc_Request::fetch('width', 'INT', 600));
         } else if($this -> detectImage()) {
             $embedding = $this -> getImageEmbedding($footer);
         } else if($this -> detectH5P()) {
@@ -187,8 +187,11 @@ extends ESRender_Module_NonContentNode_Abstract {
         return $htm;
     }
 
-    protected function getPixabayEmbedding() {
-        $htm = '<div><img src="'. $this->esObject->getPreviewUrl() .'" ></div>';
+    protected function getPixabayEmbedding($footer = '', $width='auto') {
+        if ($width != 'auto'){
+            $width .= 'px';
+        }
+        $htm = '<div style="min-width: 350px; width:'.$width.';"><img class="edusharing_rendering_content" title="' . $this -> esObject->getTitle() . '" alt="' . $this -> esObject->getTitle() . '" src="'. $this->esObject->getPreviewUrl() .'" style="max-width: 100%; width:'.$width.';">' . $footer . '</div>';
         return $htm;
     }
 

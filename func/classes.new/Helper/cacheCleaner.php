@@ -94,7 +94,7 @@ class cacheCleaner {
 
                     //get h5p-ID for the directory name
                     try {
-                        $query = "SELECT id FROM h5p_contents WHERE title='".$esobject->getObjectID()."-v".$esobject->getObjectVersion()."'";
+                        $query = "SELECT id FROM h5p_contents WHERE title='".$esobject->getObjectID()."-v".$esobject->getContentHash()."'";
                         $statement = $h5p_db -> query($query);
                         $h5pID = $statement->fetchAll(\PDO::FETCH_OBJ)[0]->id;
                     } catch(PDOException $e) {
@@ -109,7 +109,7 @@ class cacheCleaner {
                         $statement_libraries = $h5p_db -> query($query_libraries);
                         $results_libraries = $statement_libraries->execute();
 
-                        $query = "DELETE FROM h5p_contents WHERE title='".$esobject->getObjectID()."-v".$esobject->getObjectVersion()."'";
+                        $query = "DELETE FROM h5p_contents WHERE title='".$esobject->getObjectID()."-v".$esobject->getContentHash()."'";
                         $statement = $h5p_db -> query($query);
                         $result = $statement->execute();
                         $this -> logger -> info('deleted h5p-'.$h5pID.' from sqlite.');

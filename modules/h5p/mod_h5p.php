@@ -76,7 +76,7 @@ extends ESRender_Module_ContentNode_Abstract {
 
         global $db;
         $Logger = $this -> getLogger();
-        $contentHash = Config::get('renderInfoLMSReturn')->contentHash;
+        $contentHash = $this->esObject->getContentHash();
 
         //check if Content already exists in db & cache
         $query = "SELECT id FROM h5p_contents WHERE title='".$this->esObject->getObjectID()."-".$contentHash."'";
@@ -117,6 +117,7 @@ extends ESRender_Module_ContentNode_Abstract {
             }
 
         }else{
+            $Logger -> info('H5P found: '.$this->esObject->getObjectID()."-".$contentHash);
             $this->H5PFramework->id = $results[0]->id;
         }
 

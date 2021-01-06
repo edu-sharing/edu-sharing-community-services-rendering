@@ -134,11 +134,7 @@ H5P.init = function (target) {
     });
 
     // Create new instance.
-    if (library['library'].includes("InteractiveBook")){
-      var instance = H5P.newRunnable(library, contentId, $container, true, {standalone: true, metadata: {title: ''}});
-    }else {
-      var instance = H5P.newRunnable(library, contentId, $container, true, {standalone: true});
-    }
+    var instance = H5P.newRunnable(library, contentId, $container, true, {standalone: true});
 
     H5P.offlineRequestQueue = new H5P.OfflineRequestQueue({instance: instance});
 
@@ -927,7 +923,6 @@ H5P.newRunnable = function (library, contentId, $attachTo, skipResize, extras) {
     instance = new constructor(library.params, contentId);
   }
   else {
-    //console.log(extras);
     instance = new constructor(library.params, contentId, extras);
   }
 

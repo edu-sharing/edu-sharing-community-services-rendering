@@ -1623,7 +1623,7 @@ class H5PStorage {
     }
 
     // Go through the libraries again to save dependencies.
-    $library_ids = [];
+    $library_ids = array();
     foreach ($this->h5pC->librariesJsonData as &$library) {
       if (!$library['saveDependencies']) {
         continue;
@@ -2432,7 +2432,7 @@ class H5PCore {
     // Using content dependencies
     foreach ($dependencies as $dependency) {
       if (isset($dependency['path']) === FALSE) {
-        $dependency['path'] = 'libraries/' . H5PCore::libraryToString($dependency, TRUE);
+        $dependency['path'] = $this->getDependencyPath($dependency);
         $dependency['preloadedJs'] = explode(',', $dependency['preloadedJs']);
         $dependency['preloadedCss'] = explode(',', $dependency['preloadedCss']);
       }
@@ -2450,6 +2450,16 @@ class H5PCore {
     }
 
     return $files;
+  }
+
+  /**
+   * Get the path to the dependency.
+   *
+   * @param array $dependency
+   * @return string
+   */
+  protected function getDependencyPath(array $dependency) {
+    return 'libraries/' . H5PCore::libraryToString($dependency, TRUE);
   }
 
   private static function getDependenciesHash(&$dependencies) {
@@ -4026,20 +4036,6 @@ class H5PContentValidator {
         }
       }
     }
-    if (!(isset($semantics->optional) && $semantics->optional)) {
-      if ($group === NULL) {
-        // Error no value. Errors aren't printed...
-        return;
-      }
-      foreach ($semantics->fields as $field) {
-        if (!(isset($field->optional) && $field->optional)) {
-          // Check if field is in group.
-          if (! property_exists($group, $field->name)) {
-            //$this->h5pF->setErrorMessage($this->h5pF->t('No value given for mandatory field ' . $field->name));
-          }
-        }
-      }
-    }
   }
 
   /**
@@ -4522,6 +4518,12 @@ class H5PContentValidator {
         'type' => 'text',
         'label' => $this->h5pF->t('Title'),
         'placeholder' => 'La Gioconda'
+      ),
+      (object) array(
+        'name' => 'a11yTitle',
+        'type' => 'text',
+        'label' => $this->h5pF->t('Assistive Technologies label'),
+        'optional' => TRUE,
       ),
       (object) array(
         'name' => 'license',

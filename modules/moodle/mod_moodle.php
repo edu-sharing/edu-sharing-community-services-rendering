@@ -122,7 +122,12 @@ extends ESRender_Module_ContentNode_Abstract {
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
-		$params = array('user_name' => htmlentities($this -> esObject -> getData() -> user->authorityName), 'user_givenname' => htmlentities($this -> esObject->getData()->user->user_givenname), 'user_surname' => htmlentities($this -> esObject->getData()->user->profile->lastName), 'user_email' => htmlentities($this -> esObject->getData()->user->profile->email) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
+		$params = array('user_name' => htmlentities($this -> esObject -> getData() -> user->authorityName),
+                        'user_givenname' => htmlentities($this -> esObject->getData()->user->user_givenname),
+                        'user_surname' => htmlentities($this -> esObject->getData()->user->profile->lastName),
+                        'user_email' => htmlentities($this -> esObject->getData()->user->profile->email),
+                        'courseid' => $this->getCourseId(),
+                        'role' => 'student'); // or role 'editingteacher'
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
@@ -136,7 +141,6 @@ extends ESRender_Module_ContentNode_Abstract {
 			$logger->error(json_decode($resp));
 			return json_decode($resp);
 		}
-		
 		$logger->error('Error retrieving user token - ' . $httpcode . ' ' . json_decode($resp)->exception);
 		return false;
 	}
@@ -189,7 +193,7 @@ extends ESRender_Module_ContentNode_Abstract {
 	}
 	
 	protected function getForwardUrl() {
-		return MOODLE_BASE_DIR . '/local/edusharing/forwardUser.php?token=' . urlencode($this-> getUserToken());
+		return MOODLE_BASE_DIR . '/local/edusharing_webservice/forwardUser.php?token=' . urlencode($this-> getUserToken());
 	}
 	
 	

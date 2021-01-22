@@ -134,12 +134,18 @@ if (empty($_SESSION['esrender'])) {
 
 if(!$skipToken) {
 
+    if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+        session_unset();     // unset $_SESSION variable for the run-time
+        session_destroy();   // destroy session data in storage
+        error_log('Session to old');
+    }
+
     if (empty($_SESSION['esrender']['token'])) {
         error_log('Missing token (session)');
         cc_rd_debug('Missing token (session)');
         header('HTTP/1.0 500 Internal Server Error');
     }
-    if (empty($_REQUEST['token'])) {
+    if (empty($_REQUEST['token']) && empty($_COOKIE['ESSEC'])) {
         error_log('Missing token (request)');
         cc_rd_debug('Missing token (request)');
         header('HTTP/1.0 500 Internal Server Error');
@@ -151,8 +157,8 @@ if(!$skipToken) {
         //$token = md5(uniqid());
         $token = $_SESSION['esrender']['token'];
         setcookie('ESSEC', $token, time() + 300);
+        $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
     }
-
 }
 
 session_write_close();

@@ -134,7 +134,8 @@ if (empty($_SESSION['esrender'])) {
 
 if(!$skipToken) {
 
-    if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 3600)) {
+        setcookie("ESSEC", "", time()-3600); // remoce ESSEC-cookie
         session_unset();     // unset $_SESSION variable for the run-time
         session_destroy();   // destroy session data in storage
         error_log('Session to old');
@@ -150,11 +151,10 @@ if(!$skipToken) {
         cc_rd_debug('Missing token (request)');
         header('HTTP/1.0 500 Internal Server Error');
     }
-    if (($_SESSION['esrender']['token'] !== $_REQUEST['token']) && ($_SESSION['esrender']['token']) !== $_COOKIE['ESSEC']) {
+    if ( ( isset($_REQUEST['token']) && $_SESSION['esrender']['token'] !== $_REQUEST['token']) || ( isset($_COOKIE['ESSEC']) && ($_SESSION['esrender']['token']) !== $_COOKIE['ESSEC'] ) ) {
         cc_rd_debug('Invalid token');
         header('HTTP/1.0 500 Internal Server Error');
     } else {
-        //$token = md5(uniqid());
         $token = $_SESSION['esrender']['token'];
         setcookie('ESSEC', $token, time() + 300);
         $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp

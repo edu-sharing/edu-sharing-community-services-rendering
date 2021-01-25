@@ -138,7 +138,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 		if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
-			$logger->error(json_decode($resp));
+			$logger->info('retrieved user token');
 			return json_decode($resp);
 		}
 		$logger->error('Error retrieving user token - ' . $httpcode . ' ' . json_decode($resp)->exception);

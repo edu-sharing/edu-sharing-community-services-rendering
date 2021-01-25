@@ -11,14 +11,16 @@ class ESRender_Plugin_Omega
 
     private $url = '';
     private $proxy = '';
+    private $user = '';
 
     /**
      *
      * @param string $Url
      */
-    public function __construct($url, $proxy = '') {
+    public function __construct($url, $proxy = '', $user = 'dabiplus') {
         $this->url = $url;
         $this->proxy = $proxy;
+        $this->user = $user;
     }
 
     /**
@@ -125,7 +127,7 @@ class ESRender_Plugin_Omega
         if(empty($replicationSourceId)) {
             throw new ESRender_Exception_Omega('Property replicationsourceid is empty');
         }
-        $url = $this->url . '?token_id=' . $replicationSourceId . '&role=' . $role . '&user=dabiplus';
+        $url = $this->url . '?token_id=' . $replicationSourceId . '&role=' . $role . '&user=' . $this->user;
 
 		$curlhandle = curl_init($url);
         curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);

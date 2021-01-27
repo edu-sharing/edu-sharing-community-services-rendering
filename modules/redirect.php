@@ -91,10 +91,12 @@ if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST[
         @readfile($src_file);
     } else {
         $fd = fopen($src_file, 'rb');
-        while(!feof($fd)) {
-            $buffer = fread($fd, 2048);
-            echo $buffer;
-            flush();
+        if($fd != false){
+            while(!feof($fd)) {
+                $buffer = fread($fd, 2048);
+                echo $buffer;
+                flush();
+            }
         }
         fclose($fd);
     }

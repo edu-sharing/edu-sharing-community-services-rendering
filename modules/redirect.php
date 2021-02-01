@@ -137,7 +137,7 @@ if (empty($_SESSION['esrender'])) {
 if(!$skipToken) {
 
     if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 3600)) {
-        setcookie("ESSEC", "", time()-3600); // remoce ESSEC-cookie
+        setcookie("ESSEC", "", time()-3600); // remove ESSEC-cookie
         session_unset();     // unset $_SESSION variable for the run-time
         session_destroy();   // destroy session data in storage
         error_log('Session to old');
@@ -146,20 +146,21 @@ if(!$skipToken) {
     if (empty($_SESSION['esrender']['token'])) {
         error_log('Missing token (session)');
         cc_rd_debug('Missing token (session)');
-        header('HTTP/1.0 500 Internal Server Error');
+        header('HTTP/1.0 401 Unauthorized');
     }
     if (empty($_REQUEST['token']) && empty($_COOKIE['ESSEC'])) {
         error_log('Missing token (request)');
         cc_rd_debug('Missing token (request)');
-        header('HTTP/1.0 500 Internal Server Error');
+        header('HTTP/1.0 401 Unauthorized');
     }
-    if ( ( isset($_REQUEST['token']) && $_SESSION['esrender']['token'] !== $_REQUEST['token']) || ( isset($_COOKIE['ESSEC']) && ($_SESSION['esrender']['token']) !== $_COOKIE['ESSEC'] ) ) {
-        cc_rd_debug('Invalid token');
-        header('HTTP/1.0 500 Internal Server Error');
-    } else {
+    if ( (isset($_REQUEST['token']) && $_SESSION['esrender']['token'] == $_REQUEST['token']) ||
+        ( isset($_COOKIE['ESSEC'] ) && $_SESSION['esrender']['token'] == $_COOKIE['ESSEC'] ) ) {
         $token = $_SESSION['esrender']['token'];
         setcookie('ESSEC', $token, time() + 300);
         $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
+    } else {
+        cc_rd_debug('Invalid token');
+        header('HTTP/1.0 401 Unauthorized');
     }
 }
 

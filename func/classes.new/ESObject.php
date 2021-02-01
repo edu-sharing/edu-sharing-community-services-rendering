@@ -163,7 +163,6 @@ class ESObject {
         $this -> data = $data;
         $this -> module = new ESModule();
         $this -> setDataByNode();
-        return true;
     }
 
     public function getUser() {
@@ -209,20 +208,20 @@ class ESObject {
 
         try {
             $pdo = RsPDO::getInstance();
-            $sql = 'DELETE FROM `ESOBJECT` WHERE `ESOBJECT_ID` = ? AND `ESOBJECT_REP_ID` = ?';
+            $sql = 'DELETE FROM "ESOBJECT" WHERE "ESOBJECT_ID" = ? AND "ESOBJECT_REP_ID" = ?';
             $values = array((int)$this -> id, $this -> repId);
-            
+
             if (!empty($this -> version)) {
-                $sql .= ' AND `ESOBJECT_OBJECT_VERSION` = ?';
+                $sql .= ' AND "ESOBJECT_OBJECT_VERSION" = ?';
                 $values[] = $this -> version;
             }
-            
+
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $result = $stmt -> execute($values);
-            
+
             if (!$result)
                 throw new Exception('Error deleting entry from lock table. PDO error info ' . print_r($stmt -> errorInfo(), true));
-            
+
         } catch(PDOException $e) {
             throw new Exception($e -> getMessage());
             return false;
@@ -522,7 +521,7 @@ class ESObject {
         $ressourceversion = $this -> getNodeProperty('ccm:ccressourceversion');
         if (!empty($ressourceversion))
             $this -> resourceVersion = $ressourceversion;
-        
+
         $commonlicense_key = $this -> getNodeProperty('ccm:commonlicense_key');
         if(!empty($commonlicense_key))
         	$this -> license = new ESRender_License($this);
@@ -548,17 +547,17 @@ class ESObject {
            'ESOBJECT_ALF_FILENAME' => $this -> name,
            'ESOBJECT_CONTENT_HASH' => $this -> hash
         );
-        
+
         $pdo = RsPDO::getInstance();
         try {
-            $sql = 'INSERT INTO `ESOBJECT` (`';
-            $sql .= implode('`,`', array_keys($arrFields));
-            $sql .= '`) VALUES (:';
+            $sql = "INSERT INTO \"ESOBJECT\" (\"";
+            $sql .= implode('","', array_keys($arrFields));
+            $sql .= "\") VALUES (:";
             $sql .= implode(',:', array_keys($arrFields));
-            $sql .= ')';
+            $sql .= ")";
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             foreach($arrFields as $key => $value) {
-                if($key == 'ESOBJECT_ESAPPLICATION_ID' || $key == 'ESOBJECT_ESMODULE_ID')
+                if($key === 'ESOBJECT_ESAPPLICATION_ID' || $key === 'ESOBJECT_ESMODULE_ID')
                     $type = PDO::PARAM_INT;
                 else
                     $type = PDO::PARAM_STR;
@@ -585,18 +584,18 @@ class ESObject {
             'ESOBJECT_CONVERSION_MIMETYPE' => $mimeType,
             'ESOBJECT_CONVERSION_RESOLUTION' => $resolution
         );
-    
+
         $pdo = RsPDO::getInstance();
-        
+
         try {
-            $sql = 'INSERT INTO `ESOBJECT_CONVERSION` (`';
-            $sql .= implode('`,`', array_keys($arr));
-            $sql .= '`) VALUES (:';
+            $sql = "INSERT INTO \"ESOBJECT_CONVERSION\" (\"";
+            $sql .= implode('","',array_keys($arr));
+            $sql .= "\") VALUES (:";
             $sql .= implode(',:', array_keys($arr));
-            $sql .= ')';
+            $sql .= ")";
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             foreach($arr as $key => $value) {
-                if($key == 'ESOBJECT_CONVERSION_OBJECT_ID')
+                if($key === 'ESOBJECT_CONVERSION_OBJECT_ID')
                     $type = PDO::PARAM_INT;
                 else
                     $type = PDO::PARAM_STR;
@@ -618,11 +617,11 @@ class ESObject {
     public function setConversionStateProcessing($objId, $format, $resolution = null) {
         $this -> setConversionState($objId, $format, $resolution, self::CONVERSION_STATUS_PROCESSING);
     }
-    
+
     public function setConversionStateError($objId, $format, $errorcode, $resolution = null) {
         $this -> setConversionState($objId, $format, $resolution, self::CONVERSION_STATUS_ERROR . ' ' . $errorcode);
     }
-    
+
     public function setConversionStateStuck($objId, $format, $resolution = null) {
         $this -> setConversionState($objId, $format, $resolution, self::CONVERSION_STATUS_STUCK);
     }
@@ -631,11 +630,11 @@ class ESObject {
 
         $pdo = RsPDO::getInstance();
         try {
-            $sql = 'UPDATE `ESOBJECT_CONVERSION` set `ESOBJECT_CONVERSION_STATUS` = :convstatus, `ESOBJECT_CONVERSION_TIME` = :time ' .
-                'WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format';
+            $sql = 'UPDATE "ESOBJECT_CONVERSION" set "ESOBJECT_CONVERSION_STATUS" = :convstatus, "ESOBJECT_CONVERSION_TIME" = :time ' .
+                'WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format';
 
             if($resolution)
-                $sql .= '  AND `ESOBJECT_CONVERSION_RESOLUTION` = :resolution';
+                $sql .= '  AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution';
 
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':convstatus', $state);
@@ -658,9 +657,9 @@ class ESObject {
 
         $pdo = RsPDO::getInstance();
         try {
-            $sql = 'SELECT `ESOBJECT_CONVERSION_OBJECT_ID` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format';
+            $sql = 'SELECT "ESOBJECT_CONVERSION_OBJECT_ID" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format';
             if($resolution)
-                $sql .= ' AND `ESOBJECT_CONVERSION_RESOLUTION` = :resolution';
+                $sql .= ' AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution';
 
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':objectid', $this -> id, PDO::PARAM_INT);
@@ -675,25 +674,25 @@ class ESObject {
                 return false;
             else
                 return true;
-                
+
         } catch(PDOException $e) {
             throw new Exception($e -> getMessage());
         }
     }
-    
+
     public function conversionFailed($format, $resolution = null) {
 
         $pdo = RsPDO::getInstance();
         try {
-            $sql = 'SELECT `ESOBJECT_CONVERSION_OBJECT_ID` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format AND `ESOBJECT_CONVERSION_STATUS` like :error';
+            $sql = 'SELECT "ESOBJECT_CONVERSION_OBJECT_ID" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format AND "ESOBJECT_CONVERSION_STATUS" like :error';
             if($resolution)
-                $sql .= ' AND `ESOBJECT_CONVERSION_RESOLUTION` = :resolution';
+                $sql .= ' AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution';
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':objectid', $this -> id, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);
             $stmt -> bindValue(':error', '%ERROR%');
             if($resolution)
-                $stmt -> bindValue(':resolution', $resolution);            
+                $stmt -> bindValue(':resolution', $resolution);
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
             if(!$result){
                 return false;
@@ -713,20 +712,20 @@ class ESObject {
     final public function getSubUri_file() {
         return $this -> path;
     }
-    
+
     public function getPositionInConversionQueue($format, $resolution = null) {
         $pdo = RsPDO::getInstance();
         try {
-            $sql = 'SELECT COUNT(`ESOBJECT_CONVERSION_OBJECT_ID`) AS `SUM` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_STATUS` = :state';
+            $sql = 'SELECT COUNT("ESOBJECT_CONVERSION_OBJECT_ID") AS "SUM" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_STATUS" = :state';
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':state', self::CONVERSION_STATUS_WAIT);
             $stmt -> execute();
-            $sum = $stmt -> fetchObject() -> SUM;     
-    
-            $sql = 'SELECT COUNT(`ESOBJECT_CONVERSION_ID`) AS `POS` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_ID` < (SELECT `ESOBJECT_CONVERSION_ID` FROM `ESOBJECT_CONVERSION` WHERE `ESOBJECT_CONVERSION_OBJECT_ID` = :objectid AND `ESOBJECT_CONVERSION_FORMAT` = :format';
+            $sum = $stmt -> fetchObject() -> SUM;
+
+            $sql = 'SELECT COUNT("ESOBJECT_CONVERSION_ID") AS "POS" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_ID" < (SELECT "ESOBJECT_CONVERSION_ID" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format';
             if($resolution)
-                $sql .= ' AND `ESOBJECT_CONVERSION_RESOLUTION` = :resolution';
-            $sql .= ') AND `ESOBJECT_CONVERSION_STATUS` = :status';
+                $sql .= ' AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution';
+            $sql .= ') AND "ESOBJECT_CONVERSION_STATUS" = :status';
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':objectid', $this->id, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);
@@ -741,7 +740,7 @@ class ESObject {
         $pos = $pos + 1;
         if($sum < $pos)
             $sum = $pos;
-        
+
         return $pos . ' / ' . $sum;
     }
 
@@ -772,7 +771,7 @@ class ESObject {
         if($this->getTitle() !== $this->title) {
             try {
                 $pdo = RsPDO::getInstance();
-                $sql = 'UPDATE `ESOBJECT` SET `ESOBJECT_TITLE` = :title WHERE `ESOBJECT_ID` = :id';
+                $sql = 'UPDATE "ESOBJECT" SET "ESOBJECT_TITLE" = :title WHERE "ESOBJECT_ID" = :id';
                 $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
                 $stmt -> bindValue(':title', $this->getTitle());
                 $stmt -> bindValue(':id', $this->id, PDO::PARAM_INT);
@@ -788,7 +787,7 @@ class ESObject {
         if($this -> getNodeProperty('cm:name') !== $this->name) {
             try {
                 $pdo = RsPDO::getInstance();
-                $sql = 'UPDATE `ESOBJECT` SET `ESOBJECT_ALF_FILENAME` = :name WHERE `ESOBJECT_ID` = :id';
+                $sql = 'UPDATE "ESOBJECT" SET "ESOBJECT_ALF_FILENAME" = :name WHERE "ESOBJECT_ID" = :id';
                 $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
                 $stmt -> bindValue(':name', $this -> getNodeProperty('cm:name'));
                 $stmt -> bindValue(':id', $this->id, PDO::PARAM_INT);

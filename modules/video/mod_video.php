@@ -221,7 +221,7 @@ extends ESRender_Module_AudioVideo_Abstract
         $pdo = RsPDO::getInstance();
 
         try {
-            $sql = 'SELECT * FROM `ESOBJECT` ' . 'WHERE `ESOBJECT_REP_ID` = :repid ' . 'AND `ESOBJECT_CONTENT_HASH` = :contenthash ' . 'AND `ESOBJECT_OBJECT_ID` = :objectid ';
+            $sql = 'SELECT * FROM "ESOBJECT" ' . 'WHERE "ESOBJECT_REP_ID" = :repid ' . 'AND "ESOBJECT_CONTENT_HASH" = :contenthash ' . 'AND "ESOBJECT_OBJECT_ID" = :objectid ';
 
             $stmt = $pdo -> prepare($pdo->formatQuery($sql));
             $stmt -> bindValue(':repid', $this -> esObject -> getRepId());

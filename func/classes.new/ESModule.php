@@ -65,7 +65,7 @@ class ESModule {
 		$pdo = RsPDO::getInstance();
         
         try {
-    		$sql = $pdo -> formatQuery('SELECT `ESMODULE_ID`,`ESMODULE_NAME` FROM `ESMODULE` WHERE `ESMODULE_ID` = :modid');
+    		$sql = $pdo -> formatQuery('SELECT "ESMODULE_ID","ESMODULE_NAME" FROM "ESMODULE" WHERE "ESMODULE_ID" = :modid');
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':modid', $p_id, PDO::PARAM_INT);
             $stmt -> execute();
@@ -100,7 +100,7 @@ class ESModule {
 
         try {
             $pdo = RsPDO::getInstance();
-            $sql = $pdo -> formatQuery('SELECT `ESMODULE_ID` FROM `ESMODULE` WHERE `ESMODULE_NAME` = :modulename');
+            $sql = $pdo -> formatQuery('SELECT "ESMODULE_ID" FROM "ESMODULE" WHERE "ESMODULE_NAME" = :modulename');
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':modulename', $this->ESMODULE_NAME);
             $stmt -> execute();
@@ -136,7 +136,7 @@ class ESModule {
 		$MimeType = $MimeTypeParts[0];
         try {
             $pdo = RsPDO::getInstance();
-            $sql = $pdo -> formatQuery('SELECT `ESMODULE_NAME` FROM `ESMODULE`, `REL_ESMODULE_MIMETYPE` WHERE `ESMODULE_ID` = `REL_ESMODULE_MIMETYPE_ESMODULE_ID` AND `REL_ESMODULE_MIMETYPE_TYPE` = :mimetype');
+            $sql = $pdo -> formatQuery('SELECT "ESMODULE_NAME" FROM "ESMODULE", "REL_ESMODULE_MIMETYPE" WHERE "ESMODULE_ID" = "REL_ESMODULE_MIMETYPE_ESMODULE_ID" AND "REL_ESMODULE_MIMETYPE_TYPE" = :mimetype');
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':mimetype', $MimeType);
             $stmt -> execute();
@@ -239,7 +239,7 @@ class ESModule {
 	public function setModuleIdByModuleName() {	
 		try {
 			$pdo = RsPDO::getInstance();
-			$sql = $pdo -> formatQuery('SELECT `ESMODULE_ID` FROM `ESMODULE` WHERE `ESMODULE_NAME` = :name');
+			$sql = $pdo -> formatQuery('SELECT "ESMODULE_ID" FROM "ESMODULE" WHERE "ESMODULE_NAME" = :name');
 			$stmt = $pdo -> prepare($sql);
 			$stmt -> bindValue(':name', $this -> ESMODULE_NAME);
 			$stmt -> execute();

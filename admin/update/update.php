@@ -39,83 +39,83 @@ function run($installedVersion) {
             $pdo = RsPDO::getInstance ();
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $sql = $pdo->formatQuery ( 'SELECT `REL_ESMODULE_MIMETYPE_TYPE` FROM `REL_ESMODULE_MIMETYPE` WHERE `REL_ESMODULE_MIMETYPE_TYPE` = :mime' );
+            $sql = $pdo->formatQuery ( 'SELECT "REL_ESMODULE_MIMETYPE_TYPE" FROM "REL_ESMODULE_MIMETYPE" WHERE "REL_ESMODULE_MIMETYPE_TYPE" = :mime' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':mime', 'video/webm' );
             $stmt->execute ();
             $result = $stmt->fetchObject ();
             if (! $result) {
-                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+                $sql = $pdo->formatQuery ( 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:modid, :mime)' );
                 $stmt = $pdo->prepare ( $sql );
                 $stmt->bindValue ( ':modid', '9' );
                 $stmt->bindValue ( ':mime', 'video/webm' );
                 $stmt->execute ();
             }
 
-            $sql = $pdo->formatQuery ( 'SELECT `REL_ESMODULE_MIMETYPE_TYPE` FROM `REL_ESMODULE_MIMETYPE` WHERE `REL_ESMODULE_MIMETYPE_TYPE` = :mime' );
+            $sql = $pdo->formatQuery ( 'SELECT "REL_ESMODULE_MIMETYPE_TYPE" FROM "REL_ESMODULE_MIMETYPE" WHERE "REL_ESMODULE_MIMETYPE_TYPE" = :mime' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':mime', 'video/3gpp' );
             $stmt->execute ();
             $result = $stmt->fetchObject ();
             if (! $result) {
-                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+                $sql = $pdo->formatQuery ( 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:modid, :mime)' );
                 $stmt = $pdo->prepare ( $sql );
                 $stmt->bindValue ( ':modid', '9' );
                 $stmt->bindValue ( ':mime', 'video/3gpp' );
                 $stmt->execute ();
             }
 
-            $sql = $pdo->formatQuery ( 'SELECT `REL_ESMODULE_MIMETYPE_TYPE` FROM `REL_ESMODULE_MIMETYPE` WHERE `REL_ESMODULE_MIMETYPE_TYPE` = :mime' );
+            $sql = $pdo->formatQuery ( 'SELECT "REL_ESMODULE_MIMETYPE_TYPE" FROM "REL_ESMODULE_MIMETYPE" WHERE "REL_ESMODULE_MIMETYPE_TYPE" = :mime' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':mime', 'video/3gpp2' );
             $stmt->execute ();
             $result = $stmt->fetchObject ();
             if (! $result) {
-                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+                $sql = $pdo->formatQuery ( 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:modid, :mime)' );
                 $stmt = $pdo->prepare ( $sql );
                 $stmt->bindValue ( ':modid', '9' );
                 $stmt->bindValue ( ':mime', 'video/3gpp2' );
                 $stmt->execute ();
             }
 
-            $sql = $pdo->formatQuery ( 'ALTER TABLE `ESTRACK` CHANGE `ESTRACK_PARENT_ID` `ESTRACK_ESOBJECT_ID` int(11)' );
+            $sql = $pdo->formatQuery ( 'ALTER TABLE "ESTRACK" CHANGE "ESTRACK_PARENT_ID" "ESTRACK_ESOBJECT_ID" INTEGER' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'DELETE FROM `REL_ESMODULE_MIMETYPE` WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :tif' );
+            $sql = $pdo->formatQuery ( 'DELETE FROM "REL_ESMODULE_MIMETYPE" WHERE "REL_ESMODULE_MIMETYPE_TYPE" LIKE :tif' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':tif', '%image/tif%' );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS `MIMETYPE`' );
+            $sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS "MIMETYPE"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS `ESVOTE`' );
+            $sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS "ESVOTE"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS `ESRESULT`' );
+            $sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS "ESRESULT"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS `ESAPPLICATION`' );
+            $sql = $pdo->formatQuery ( 'DROP TABLE IF EXISTS "ESAPPLICATION"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'ALTER TABLE `ESMODULE` DROP COLUMN `ESMODULE_TYPE`, DROP COLUMN `ESMODULE_URI`, DROP COLUMN `ESMODULE_DISPATCHER_URI`, DROP COLUMN `ESMODULE_TMP_FILEPATH`, DROP COLUMN `ESMODULE_CONF`' );
+            $sql = $pdo->formatQuery ( 'ALTER TABLE "ESMODULE" DROP COLUMN "ESMODULE_TYPE", DROP COLUMN "ESMODULE_URI", DROP COLUMN "ESMODULE_DISPATCHER_URI", DROP COLUMN "ESMODULE_TMP_FILEPATH", DROP COLUMN "ESMODULE_CONF"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'ALTER TABLE `REL_ESMODULE_MIMETYPE` DROP COLUMN `REL_ESMODULE_MIMETYPE_MIMETYPE_IDENT`' );
+            $sql = $pdo->formatQuery ( 'ALTER TABLE "REL_ESMODULE_MIMETYPE" DROP COLUMN "REL_ESMODULE_MIMETYPE_MIMETYPE_IDENT"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'ALTER TABLE `ESOBJECT` DROP COLUMN `ESOBJECT_ALF_TIMESTAMP`' );
+            $sql = $pdo->formatQuery ( 'ALTER TABLE "ESOBJECT" DROP COLUMN "ESOBJECT_ALF_TIMESTAMP"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'ALTER TABLE `ESOBJECT` DROP COLUMN `ESOBJECT_TIMESTAMP`' );
+            $sql = $pdo->formatQuery ( 'ALTER TABLE "ESOBJECT" DROP COLUMN "ESOBJECT_TIMESTAMP"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
         }
@@ -140,21 +140,21 @@ function run($installedVersion) {
 
             if($pdo -> getDriver() == 'pgsql') {
 
-                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` ALTER COLUMN `ESTRACK_ESOBJECT_ID` TYPE varchar(40);');
+                $sql = $pdo->formatQuery ('ALTER TABLE "ESTRACK" ALTER COLUMN "ESTRACK_ESOBJECT_ID" TYPE varchar(40);');
                 $stmt = $pdo->prepare ( $sql );
                 $stmt->execute ();
 
-                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` ALTER COLUMN `ESTRACK_MODUL_ID` TYPE varchar(40);');
+                $sql = $pdo->formatQuery ('ALTER TABLE "ESTRACK" ALTER COLUMN "ESTRACK_MODUL_ID" TYPE varchar(40);');
                 $stmt = $pdo->prepare ( $sql );
                 $stmt->execute ();
 
             } else if ($pdo -> getDriver() == 'mysql') {
 
-                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` MODIFY `ESTRACK_ESOBJECT_ID` varchar(40);');
+                $sql = $pdo->formatQuery ('ALTER TABLE "ESTRACK" MODIFY "ESTRACK_ESOBJECT_ID" varchar(40);');
                 $stmt = $pdo->prepare ( $sql );
                 $stmt->execute ();
 
-                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` MODIFY `ESTRACK_MODUL_ID` varchar(40);');
+                $sql = $pdo->formatQuery ('ALTER TABLE "ESTRACK" MODIFY "ESTRACK_MODUL_ID" varchar(40);');
                 $stmt = $pdo->prepare ( $sql );
                 $stmt->execute ();
             }
@@ -165,25 +165,25 @@ function run($installedVersion) {
 
             $pdo = RsPDO::getInstance();
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+            $sql = $pdo->formatQuery ( 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:modid, :mime)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', '9' );
             $stmt->bindValue ( ':mime', 'video/x-ms-asf' );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+            $sql = $pdo->formatQuery ( 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:modid, :mime)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', '9' );
             $stmt->bindValue ( ':mime', 'video/x-matroska' );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+            $sql = $pdo->formatQuery ( 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:modid, :mime)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', '9' );
             $stmt->bindValue ( ':mime', 'video/x-ogm' );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+            $sql = $pdo->formatQuery ( 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:modid, :mime)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', '9' );
             $stmt->bindValue ( ':mime', 'video/ogg' );
@@ -195,13 +195,13 @@ function run($installedVersion) {
 
             $pdo = RsPDO::getInstance();
 
-            $sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
+            $sql = $pdo->formatQuery ( 'UPDATE "REL_ESMODULE_MIMETYPE" SET "REL_ESMODULE_MIMETYPE_ESMODULE_ID" = :modid WHERE "REL_ESMODULE_MIMETYPE_TYPE" LIKE :mime' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', '8' );
             $stmt->bindValue ( ':mime', 'audio/vorbis' );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
+            $sql = $pdo->formatQuery ( 'UPDATE "REL_ESMODULE_MIMETYPE" SET "REL_ESMODULE_MIMETYPE_ESMODULE_ID" = :modid WHERE "REL_ESMODULE_MIMETYPE_TYPE" LIKE :mime' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', '8' );
             $stmt->bindValue ( ':mime', 'audio/x-aiff' );
@@ -237,7 +237,7 @@ function run($installedVersion) {
                 unlink ( MC_ROOT_PATH . "/func/classes.new/ESRender/Module/MoodleBase.php");
 
             $pdo = RsPDO::getInstance();
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:modid, :mime)' );
+            $sql = $pdo->formatQuery ( 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:modid, :mime)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', '8' );
             $stmt->bindValue ( ':mime', 'audio/mp3' );
@@ -287,19 +287,19 @@ function run($installedVersion) {
 
             $pdo = RsPDO::getInstance();
 
-            $sql = $pdo->formatQuery ( 'UPDATE `REL_ESMODULE_MIMETYPE` SET `REL_ESMODULE_MIMETYPE_ESMODULE_ID` = :modid WHERE `REL_ESMODULE_MIMETYPE_TYPE` LIKE :mime' );
+            $sql = $pdo->formatQuery ( 'UPDATE "REL_ESMODULE_MIMETYPE" SET "REL_ESMODULE_MIMETYPE_ESMODULE_ID" = :modid WHERE "REL_ESMODULE_MIMETYPE_TYPE" LIKE :mime' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', '3' );
             $stmt->bindValue ( ':mime', 'text/plain' );
             $stmt->execute ();
 
-            $sql = $pdo -> formatQuery( 'SELECT max(`ESMODULE_ID`) FROM `ESMODULE`' );
+            $sql = $pdo -> formatQuery( 'SELECT max("ESMODULE_ID") FROM "ESMODULE"' );
             $stmt = $pdo -> prepare ( $sql );
             $stmt -> execute();
             $result = $stmt -> fetchObject();
             $maxPrimaryKey = $result->max;
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_ID`, `ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modid, :modname, :moddesc)' );
+            $sql = $pdo->formatQuery ( 'INSERT IGNORE INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':modname', 'learningapps' );
@@ -310,11 +310,11 @@ function run($installedVersion) {
         if (version_compare ( '4.0.10', $installedVersion ) > 0) {
             $pdo = RsPDO::getInstance();
             if($pdo -> getDriver() == 'pgsql') {
-                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` ALTER COLUMN `ESTRACK_NAME` TYPE varchar(512);');
+                $sql = $pdo->formatQuery ('ALTER TABLE "ESTRACK" ALTER COLUMN "ESTRACK_NAME" TYPE varchar(512);');
                 $stmt = $pdo->prepare ( $sql );
                 $stmt->execute ();
             } else if ($pdo -> getDriver() == 'mysql') {
-                $sql = $pdo->formatQuery ('ALTER TABLE `ESTRACK` MODIFY `ESTRACK_NAME` varchar(512);');
+                $sql = $pdo->formatQuery ('ALTER TABLE "ESTRACK" MODIFY "ESTRACK_NAME" varchar(512);');
                 $stmt = $pdo->prepare ( $sql );
                 $stmt->execute ();
             }
@@ -325,27 +325,27 @@ function run($installedVersion) {
 
             $pdo = RsPDO::getInstance();
 
-            $sql = $pdo -> formatQuery( 'SELECT max(`ESMODULE_ID`) as max FROM `ESMODULE`' );
+            $sql = $pdo -> formatQuery( 'SELECT max("ESMODULE_ID") as max FROM "ESMODULE"' );
             $stmt = $pdo -> prepare ( $sql );
             $stmt -> execute();
             $result = $stmt -> fetchObject();
             $maxPrimaryKey = $result->max;
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_ID`, `ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modid, :modname, :moddesc)' );
+            $sql = $pdo->formatQuery ( 'INSERT IGNORE INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':modname', 'h5p' );
             $stmt->bindValue ( ':moddesc', 'h5p' );
             $stmt->execute ();
 
-            $sql = $pdo -> formatQuery( 'SELECT max(`ESMODULE_ID`) as max FROM `ESMODULE`' );
+            $sql = $pdo -> formatQuery( 'SELECT max("ESMODULE_ID") as max FROM "ESMODULE"' );
             $stmt = $pdo -> prepare ( $sql );
             $stmt -> execute();
             $result = $stmt -> fetchObject();
             $maxPrimaryKey = $result->max;
 
             $pdo = RsPDO::getInstance();
-            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_ID`, `ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modid, :modname, :moddesc)' );
+            $sql = $pdo->formatQuery ( 'INSERT IGNORE INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':modname', 'lti' );
@@ -357,23 +357,23 @@ function run($installedVersion) {
 
             $pdo = RsPDO::getInstance();
 
-            $sql = $pdo->formatQuery ( 'DELETE FROM `ESMODULE` WHERE `ESMODULE_NAME` = :name' );
+            $sql = $pdo->formatQuery ( 'DELETE FROM "ESMODULE" WHERE "ESMODULE_NAME" = :name' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':name', 'scorm12' );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'DELETE FROM `ESMODULE` WHERE `ESMODULE_NAME` = :name' );
+            $sql = $pdo->formatQuery ( 'DELETE FROM "ESMODULE" WHERE "ESMODULE_NAME" = :name' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':name', 'scorm2004' );
             $stmt->execute ();
 
-            $sql = $pdo -> formatQuery( 'SELECT max(`ESMODULE_ID`) as max FROM `ESMODULE`' );
+            $sql = $pdo -> formatQuery( 'SELECT max("ESMODULE_ID") as max FROM "ESMODULE"' );
             $stmt = $pdo -> prepare ( $sql );
             $stmt -> execute();
             $result = $stmt -> fetchObject();
             $maxPrimaryKey = $result->max;
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `ESMODULE` (`ESMODULE_ID`, `ESMODULE_NAME`, `ESMODULE_DESC`) VALUES (:modid, :modname, :moddesc)' );
+            $sql = $pdo->formatQuery ( 'INSERT IGNORE INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':modname', 'scorm' );
@@ -385,17 +385,17 @@ function run($installedVersion) {
             //fix 4.0.12
             $pdo = RsPDO::getInstance();
             if ($pdo->getDriver() == 'pgsql') {
-                $sql = $pdo->formatQuery('ALTER TABLE `ESOBJECT` ALTER COLUMN `ESOBJECT_TITLE` TYPE varchar(512);');
+                $sql = $pdo->formatQuery('ALTER TABLE "ESOBJECT" ALTER COLUMN "ESOBJECT_TITLE" TYPE TEXT;');
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute();
-                $sql = $pdo->formatQuery('ALTER TABLE `ESOBJECT` ALTER COLUMN `ESOBJECT_ALF_FILENAME` TYPE varchar(512);');
+                $sql = $pdo->formatQuery('ALTER TABLE "ESOBJECT" ALTER COLUMN "ESOBJECT_ALF_FILENAME" TYPE TEXT;');
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute();
             } else if ($pdo->getDriver() == 'mysql') {
-                $sql = $pdo->formatQuery('ALTER TABLE `ESOBJECT` MODIFY `ESOBJECT_TITLE` varchar(512);');
+                $sql = $pdo->formatQuery('ALTER TABLE "ESOBJECT" MODIFY "ESOBJECT_TITLE" varchar(512);');
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute();
-                $sql = $pdo->formatQuery('ALTER TABLE `ESOBJECT` MODIFY `ESOBJECT_ALF_FILENAME` varchar(512);');
+                $sql = $pdo->formatQuery('ALTER TABLE "ESOBJECT" MODIFY "ESOBJECT_ALF_FILENAME" varchar(512);');
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute();
             }
@@ -404,13 +404,13 @@ function run($installedVersion) {
         if(version_compare ( '4.2.0', $installedVersion ) > 0) {
             $pdo = RsPDO::getInstance();
 
-            $sql = $pdo -> formatQuery( 'SELECT max(`REL_ESMODULE_MIMETYPE_ID`) as max FROM `REL_ESMODULE_MIMETYPE`' );
+            $sql = $pdo -> formatQuery( 'SELECT max("REL_ESMODULE_MIMETYPE_ID") as max FROM "REL_ESMODULE_MIMETYPE"' );
             $stmt = $pdo -> prepare ( $sql );
             $stmt -> execute();
             $result = $stmt -> fetchObject();
             $maxPrimaryKey = $result->max;
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :mod, :mimetype)' );
+            $sql = $pdo->formatQuery ( 'INSERT IGNORE INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :mod, :mimetype)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':id', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':mod', 9);
@@ -428,50 +428,50 @@ function run($installedVersion) {
 
             $pdo = RsPDO::getInstance();
 
-            $sql = $pdo -> formatQuery( 'SELECT max(`REL_ESMODULE_MIMETYPE_ID`) as max FROM `REL_ESMODULE_MIMETYPE`' );
+            $sql = $pdo -> formatQuery( 'SELECT max("REL_ESMODULE_MIMETYPE_ID") as max FROM "REL_ESMODULE_MIMETYPE"' );
             $stmt = $pdo -> prepare ( $sql );
             $stmt -> execute();
             $result = $stmt -> fetchObject();
             $maxPrimaryKey = $result->max;
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
+            $sql = $pdo->formatQuery ( 'INSERT IGNORE INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :modid, :mime)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':id', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':modid', '10' );
             $stmt->bindValue ( ':mime', 'image/svg' );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
+            $sql = $pdo->formatQuery ( 'INSERT IGNORE INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :modid, :mime)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':id', $maxPrimaryKey + 2 );
             $stmt->bindValue ( ':modid', '10' );
             $stmt->bindValue ( ':mime', 'image/svg+xml' );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
+            $sql = $pdo->formatQuery ( 'INSERT IGNORE INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :modid, :mime)' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':id', $maxPrimaryKey + 3 );
             $stmt->bindValue ( ':modid', '10' );
             $stmt->bindValue ( ':mime', 'image/webp' );
             $stmt->execute ();
 
-            $sql = $pdo->formatQuery('ALTER TABLE `ESOBJECT_CONVERSION` ADD `ESOBJECT_CONVERSION_RESOLUTION` TYPE int(11);');
+            $sql = $pdo->formatQuery('ALTER TABLE "ESOBJECT_CONVERSION" ADD "ESOBJECT_CONVERSION_RESOLUTION" INTEGER;');
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
 
             /*
              * Because content management as well as image and video processing has massively changed in this release it is not wrong to clear cache
              */
-            $sql = $pdo->formatQuery ( 'DELETE FROM `ESOBJECT`' );
+            $sql = $pdo->formatQuery ( 'DELETE FROM "ESOBJECT"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
-            $sql = $pdo->formatQuery ( 'DELETE FROM `ESOBJECT_LOCK`' );
+            $sql = $pdo->formatQuery ( 'DELETE FROM "ESOBJECT_LOCK"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
-            $sql = $pdo->formatQuery ( 'DELETE FROM `ESTRACK`' );
+            $sql = $pdo->formatQuery ( 'DELETE FROM "ESTRACK"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
-            $sql = $pdo->formatQuery ( 'DELETE FROM `ESOBJECT_CONVERSION`' );
+            $sql = $pdo->formatQuery ( 'DELETE FROM "ESOBJECT_CONVERSION"' );
             $stmt = $pdo->prepare ( $sql );
             $stmt->execute ();
 

@@ -15,7 +15,7 @@ class Version {
 		}
 
 		$pdo = RsPDO::getInstance();
-		$sql = $pdo -> formatQuery('SELECT `VERSION_VNUMBER` FROM `VERSION` ORDER BY `VERSION_ID` DESC ');
+		$sql = $pdo -> formatQuery('SELECT "VERSION_VNUMBER" FROM "VERSION" ORDER BY "VERSION_ID" DESC ');
 		$sql = $pdo -> queryLimit($sql, 1, 0);
 
 		$stmt = $pdo -> prepare($sql);

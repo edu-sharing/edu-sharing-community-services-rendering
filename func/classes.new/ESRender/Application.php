@@ -46,9 +46,9 @@ extends ESRender_Application_Abstract {
                 'ESTRACK_ESOBJECT_ID' => (string)$esObjId
                );
 
-            $sql = 'INSERT INTO `ESTRACK` (`';
-            $sql .= implode('`,`', array_keys($arr));
-            $sql .= '`) VALUES (:';
+            $sql = 'INSERT INTO "ESTRACK" ("';
+            $sql .= implode('","', array_keys($arr));
+            $sql .= '") VALUES (:';
             $sql .= implode(',:', array_keys($arr));
             $sql .= ')';
     

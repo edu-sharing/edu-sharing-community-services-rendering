@@ -134,8 +134,10 @@ extends ESRender_Module_ContentNode_Abstract {
             pclose(popen("start /B ". $cmd, "r"));
         }
         else {
-            exec($cmd . " > /dev/null 2>/dev/null &");
+            exec($cmd,$output);
+            error_log(print_r($output, TRUE));
         }
+
         //exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
 
 

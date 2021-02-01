@@ -38,7 +38,7 @@ class cacheCleaner {
         try {
             $pdo = RsPDO::getInstance();
             if ($pdo -> getDriver() == 'pgsql') {
-                $sql = 'SELECT `ESTRACK_ESOBJECT_ID`, MAX(`ESTRACK_TIME`) FROM `ESTRACK` WHERE `STATE` = :state GROUP BY `ESTRACK_ESOBJECT_ID` ORDER BY MAX(`ESTRACK_TIME`) ASC LIMIT 1 OFFSET 0';
+                $sql = 'SELECT "ESTRACK_ESOBJECT_ID", MAX("ESTRACK_TIME") FROM "ESTRACK" WHERE "STATE" = :state GROUP BY "ESTRACK_ESOBJECT_ID" ORDER BY MAX("ESTRACK_TIME") ASC LIMIT 1 OFFSET 0';
             } else if ($pdo -> getDriver() == 'mysql') {
                 $sql = 'SELECT ESTRACK_ESOBJECT_ID, MAX(ESTRACK_TIME) AS TIME FROM ESTRACK WHERE STATE = :state GROUP BY ESTRACK_OBJECT_ID ORDER BY TIME ASC LIMIT 0,1';
             } else {
@@ -57,13 +57,13 @@ class cacheCleaner {
                 return false;
             }
             
-            $sql = 'UPDATE `ESTRACK` set `STATE` = :state WHERE `ESTRACK_ESOBJECT_ID` = :esobjectid';
+            $sql = 'UPDATE "ESTRACK" set "STATE" = :state WHERE "ESTRACK_ESOBJECT_ID" = :esobjectid';
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':state', 'N');
             $stmt -> bindValue(':esobjectid', $esObjectId);
             $result = $stmt -> execute();
 
-            $sql = "SELECT * FROM `ESOBJECT` WHERE `ESOBJECT_ID` = :esobject_id";
+            $sql ='SELECT * FROM "ESOBJECT" WHERE "ESOBJECT_ID" = :esobject_id';
             $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
             $stmt -> bindValue(':esobject_id', $esObjectId);
             $stmt -> execute();

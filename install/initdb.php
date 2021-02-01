@@ -203,7 +203,7 @@ extends Step {
         try {
             foreach ($this -> all_tables as $name => $definition) {
                 //drop all tables then create new
-                $stm = $this -> pdo -> prepare('DROP TABLE IF EXISTS `' . $name . '`');
+                $stm = $this -> pdo -> prepare('DROP TABLE IF EXISTS "' . $name . '"');
                 $stm -> execute();
                 $stm = $this -> pdo -> prepare($definition);
                 $stm -> execute();

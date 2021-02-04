@@ -134,7 +134,7 @@ class converter {
         try {
             $sql = 'SELECT * FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_STATUS" = :status ORDER BY "ESOBJECT_CONVERSION_RESOLUTION" ASC';
             $sql = $pdo -> queryLimit($sql, 1, 0);
-            $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
+            $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':status', ESObject::CONVERSION_STATUS_WAIT);
             $stmt -> execute();
             $result = $stmt -> fetchObject();
@@ -158,7 +158,7 @@ class converter {
         $pdo = RsPDO::getInstance();
         try {
             $sql = 'SELECT "ESOBJECT_CONVERSION_ID" from "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_STATUS" = :status';
-            $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
+            $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':status', ESObject::CONVERSION_STATUS_PROCESSING);
             $stmt -> execute();
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
@@ -179,7 +179,7 @@ class converter {
 
         $sql = 'SELECT "ESOBJECT_CONVERSION_OBJECT_ID", "ESOBJECT_CONVERSION_FORMAT", "ESOBJECT_CONVERSION_RESOLUTION" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_STATUS" = :status AND "ESOBJECT_CONVERSION_TIME" <= :threshold';
         $pdo = RsPDO::getInstance();
-        $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
+        $stmt = $pdo -> prepare($sql);
         $stmt -> bindValue(':status', ESObject::CONVERSION_STATUS_PROCESSING);
         $stmt -> bindValue(':threshold', $timeoutThreshold);
         $stmt -> execute();

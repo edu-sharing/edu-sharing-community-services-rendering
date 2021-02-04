@@ -57,9 +57,9 @@ class mod_qti
 				throw new Exception('Required resource- or course-identifier NOT found.');
 			}
 
-			$Sql .= ' AND `ESOBJECT_LMS_ID` = \'' . mc_Request::fetch('app_id', 'CHAR') . '\'';
-			$Sql .= ' AND `ESOBJECT_COURSE_ID` = \'' . mc_Request::fetch('course_id', 'CHAR') . '\'';
-			$Sql .= ' AND `ESOBJECT_RESOURCE_ID` = \'' . mc_Request::fetch('resource_id', 'CHAR') . '\'';
+			$Sql .= ' AND "ESOBJECT_LMS_ID" = \'' . mc_Request::fetch('app_id', 'CHAR') . '\'';
+			$Sql .= ' AND "ESOBJECT_COURSE_ID" = \'' . mc_Request::fetch('course_id', 'CHAR') . '\'';
+			$Sql .= ' AND "ESOBJECT_RESOURCE_ID" = \'' . mc_Request::fetch('resource_id', 'CHAR') . '\'';
 		}
 
 		return $Sql;

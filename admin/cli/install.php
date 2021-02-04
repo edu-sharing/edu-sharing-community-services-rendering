@@ -4,7 +4,9 @@ error_reporting(E_ERROR);
 
 function recurse_copy($src,$dst) {
     $dir = opendir($src);
-    @mkdir($dst);
+    if (!mkdir($dst) && !is_dir($dst)) {
+        throw new \RuntimeException(sprintf('Directory "%s" was not created', $dst));
+    }
     while( $dir && ($file = readdir($dir) ) !== false) {
         if (( $file != '.' ) && ( $file != '..' )) {
             if ( is_dir($src . DIRECTORY_SEPARATOR . $file) ) {

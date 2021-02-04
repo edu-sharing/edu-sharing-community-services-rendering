@@ -44,7 +44,6 @@ class cacheCleaner {
             } else {
                 throw new Exception('Query not implemented for current db driver');
             }
-            $sql = $pdo -> formatQuery($sql);
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':state', 'Y');
             $stmt -> execute();
@@ -58,13 +57,13 @@ class cacheCleaner {
             }
             
             $sql = 'UPDATE "ESTRACK" set "STATE" = :state WHERE "ESTRACK_ESOBJECT_ID" = :esobjectid';
-            $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
+            $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':state', 'N');
             $stmt -> bindValue(':esobjectid', $esObjectId);
             $result = $stmt -> execute();
 
             $sql ='SELECT * FROM "ESOBJECT" WHERE "ESOBJECT_ID" = :esobject_id';
-            $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
+            $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':esobject_id', $esObjectId);
             $stmt -> execute();
             $result = $stmt -> fetch();

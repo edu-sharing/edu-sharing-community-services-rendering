@@ -75,7 +75,9 @@ extends Step {
         $this -> lang_id = empty($post['DEF_LANG']) ? 1 : intval($_REQUEST['DEF_LANG']);
 
         try {
-            $this -> pdo = new PDO($this -> db_drvr . ':host=' . $this -> db_host . ';port=' . $this -> db_port . ';dbname=' . $this -> db_name, $this -> db_user, $this -> db_pass);
+            $this -> pdo = new PDO(
+                $this -> db_drvr . ':host=' . $this -> db_host . ';port=' . $this -> db_port  . ';dbname=' . $this -> db_name, $this -> db_user, $this -> db_pass,
+                (db_drv === 'mysql') ? array(PDO::ATTR_EMULATE_PREPARES, true,PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode="PIPES_AS_CONCAT, ANSI_QUOTES, IGNORE_SPACE, NO_KEY_OPTIONS, NO_TABLE_OPTIONS, NO_FIELD_OPTIONS"') : array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION));
         } catch (PDOException $e) {
             return $this -> error(sprintf($e -> getMessage(), MC_BASE_DIR));
         }
@@ -201,12 +203,12 @@ extends Step {
     function createTables() {
         $created = 0;
         try {
+            $this->pdo ->beginTransaction();
             foreach ($this -> all_tables as $name => $definition) {
                 //drop all tables then create new
                 $stm = $this -> pdo -> prepare('DROP TABLE IF EXISTS "' . $name . '"');
                 $stm -> execute();
-                $stm = $this -> pdo -> prepare($definition);
-                $stm -> execute();
+                $stm = $this -> pdo -> exec($definition);
                 $created++;
             }
             if (!empty($created)) {
@@ -215,9 +217,11 @@ extends Step {
                 else
                     $this -> info(sprintf(install_msg_table_count_create, $created));
             }
+            $this->pdo->commit();
             $this -> writeLog('tables_created', $created);
         } catch (PDOException $e) {
-            echo $e -> getMessage();
+            $this->pdo->rollBack();
+            $this->error(sprintf($e -> getMessage()));
         }
 
         return true;
@@ -229,34 +233,35 @@ extends Step {
     function loadTableContent() {
         $loaded = 0;
         
-        $srcPath = INST_PATH_TMPL . 'sql' . DIRECTORY_SEPARATOR . $this -> getDbDrvr() . DIRECTORY_SEPARATOR;
+        $srcPath = INST_PATH_TMPL . 'sql' . DIRECTORY_SEPARATOR;
 
-        foreach ($this -> all_tables as $name => $content) {
-            $src = $srcPath . $name . '.sql';
-            
-            if (!is_file($src)) {
-                continue;
-            }
+        try {
+            $this->pdo->beginTransaction();
+            foreach ($this->all_tables as $name => $content) {
+                $src = $srcPath . $name . '.sql';
 
-            $insert = file_get_contents($src);
+                if (!is_file($src)) {
+                    continue;
+                }
 
-            try {
-                $stm = $this -> pdo -> prepare($insert);
-                $stm -> execute();
+                $insert = file_get_contents($src);
+                $stm = $this->pdo->exec($insert);
                 $loaded++;
-            } catch (Exception $e) {
-                if(defined('CLI_MODE') && CLI_MODE)
-                    echo 'Error on filling DB.' . PHP_EOL;
-                else
-                    SysMsg::showError("Error on filling DB.");
             }
+            $this->pdo->commit();
+
+        } catch (Exception $e) {
+            if (defined('CLI_MODE') && CLI_MODE)
+                echo 'Error on filling DB.' . PHP_EOL;
+            else
+                SysMsg::showError("Error on filling DB.");
         }
 
         if ($loaded) {
-            if(defined('CLI_MODE') && CLI_MODE)
+            if (defined('CLI_MODE') && CLI_MODE)
                 echo '[OK] Fill ' . $loaded . ' tables' . PHP_EOL;
             else
-                $this -> info(sprintf(install_msg_table_count_load_succeed, $loaded));
+                $this->info(sprintf(install_msg_table_count_load_succeed, $loaded));
         }
 
         return true;
@@ -266,7 +271,7 @@ extends Step {
      *
      */
     function getAllTables() {
-        $srcPath = INST_PATH_TMPL . 'sql' . DIRECTORY_SEPARATOR . $this -> getDbDrvr() . DIRECTORY_SEPARATOR;
+        $srcPath = INST_PATH_TMPL . 'sql' . DIRECTORY_SEPARATOR;
 
         $handle = opendir($srcPath);
 

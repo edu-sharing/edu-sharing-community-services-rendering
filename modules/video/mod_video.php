@@ -223,7 +223,7 @@ extends ESRender_Module_AudioVideo_Abstract
         try {
             $sql = 'SELECT * FROM "ESOBJECT" ' . 'WHERE "ESOBJECT_REP_ID" = :repid ' . 'AND "ESOBJECT_CONTENT_HASH" = :contenthash ' . 'AND "ESOBJECT_OBJECT_ID" = :objectid ';
 
-            $stmt = $pdo -> prepare($pdo->formatQuery($sql));
+            $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
             $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
             $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());

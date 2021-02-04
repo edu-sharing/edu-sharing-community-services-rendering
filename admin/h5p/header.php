@@ -24,8 +24,7 @@ $H5PStorage = new H5PStorage($H5PFramework, $H5PCore);
 
 global $MC_URL;
 global $db;
-$db = new PDO('sqlite:' . $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR . 'db');
-$db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+$db = RsPDO::getInstance();
 ?>
 
 <!DOCTYPE html>

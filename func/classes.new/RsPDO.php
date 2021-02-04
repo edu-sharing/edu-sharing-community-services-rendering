@@ -1,6 +1,6 @@
 <?php
 
-define("IMPLEMENTED_DRIVERS", serialize(array("pgsql", "mysql")));
+define("IMPLEMENTED_DRIVERS", array("pgsql", "mysql"));
 
 class RsPDO extends PDO {
 
@@ -15,31 +15,11 @@ class RsPDO extends PDO {
         if (null === self::$instance) {
             self::$instance = new self;
         }
-        self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return self::$instance;
     }
     
-    public function querylimit($query, $limit, $offset) {       
-        switch($this -> driver) {
-            case 'pgsql':
-                return $query . ' LIMIT ' . $limit . 'OFFSET ' . $offset;
-            break;
-            case 'mysql':
-                return $query . ' LIMIT ' . $offset  . ', '. $limit;
-            break;
-        }    
-    }
-    
-    
-    public function formatQuery($query) {
-        switch($this -> driver) {
-            case 'pgsql':
-                return str_replace('`', '"', $query);
-            break;
-            case 'mysql':
-                return $query;
-            break;
-        }        
+    public function querylimit($query, $limit, $offset) {
+                return $query . ' LIMIT ' . $limit . ' OFFSET ' . $offset;
     }
 
     public function __construct() {
@@ -48,9 +28,10 @@ class RsPDO extends PDO {
         $this -> dbuser = $dbuser;
         $this -> pwd = $pwd;
         $this -> driver = substr($dsn, 0, strpos($dsn, ':'));
-        if(!in_array($this -> driver, unserialize(IMPLEMENTED_DRIVERS)))
+        if(!in_array($this -> driver, IMPLEMENTED_DRIVERS))
             throw new Exception('DB driver invalid or not implemented yet.');
-        parent::__construct($dsn, $dbuser, $pwd);
+        parent::__construct($dsn, $dbuser, $pwd,
+            ($this -> driver === 'mysql') ? array(PDO::ATTR_EMULATE_PREPARES, true, PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode="ANSI,NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS"') : array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION));
     }
     
     public function getDriver() {

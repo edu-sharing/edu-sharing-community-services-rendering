@@ -142,11 +142,11 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         $pdo = RsPDO::getInstance();
         
         try {
-            $sql = $pdo -> formatQuery('SELECT "ESOBJECT_LOCK_OBJECT_ID" FROM "ESOBJECT_LOCK" '.
+            $sql = 'SELECT "ESOBJECT_LOCK_OBJECT_ID" FROM "ESOBJECT_LOCK" '.
                 'WHERE "ESOBJECT_LOCK_REP_ID" = :repid '.
                 'AND "ESOBJECT_LOCK_CONTENT_HASH" = :contenthash '
                 .'AND "ESOBJECT_LOCK_OBJECT_ID" = :objectid '.
-                'AND "ESOBJECT_LOCK_OBJECT_VERSION" = :version');
+                'AND "ESOBJECT_LOCK_OBJECT_VERSION" = :version';
                 
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
@@ -173,7 +173,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
 
         $pdo = RsPDO::getInstance();
         try {
-            $sql = $pdo -> formatQuery('DELETE FROM "ESOBJECT_LOCK" WHERE "ESOBJECT_LOCK_REP_ID" = :repid AND "ESOBJECT_LOCK_OBJECT_ID" = :objectid AND "ESOBJECT_LOCK_OBJECT_VERSION" = :version');
+            $sql = 'DELETE FROM "ESOBJECT_LOCK" WHERE "ESOBJECT_LOCK_REP_ID" = :repid AND "ESOBJECT_LOCK_OBJECT_ID" = :objectid AND "ESOBJECT_LOCK_OBJECT_VERSION" = :version';
     
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
@@ -196,7 +196,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
 
         $pdo = RsPDO::getInstance();
         try {
-            $sql = $pdo -> formatQuery('INSERT INTO "ESOBJECT_LOCK" ("ESOBJECT_LOCK_REP_ID","ESOBJECT_LOCK_OBJECT_ID","ESOBJECT_LOCK_OBJECT_VERSION","ESOBJECT_LOCK_CONTENT_HASH") VALUES (:repid, :objectid, :objectversion, :contenthash)');
+            $sql = 'INSERT INTO "ESOBJECT_LOCK" ("ESOBJECT_LOCK_REP_ID","ESOBJECT_LOCK_OBJECT_ID","ESOBJECT_LOCK_OBJECT_VERSION","ESOBJECT_LOCK_CONTENT_HASH") VALUES (:repid, :objectid, :objectversion, :contenthash)';
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
             $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
@@ -235,7 +235,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         try {
             $sql = 'SELECT * FROM "ESOBJECT" ' . 'WHERE "ESOBJECT_REP_ID" = :repid ' . 'AND "ESOBJECT_CONTENT_HASH" = :contenthash ' . 'AND "ESOBJECT_OBJECT_ID" = :objectid ';
 
-            $stmt = $pdo -> prepare($pdo->formatQuery($sql));
+            $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
             $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
             $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());

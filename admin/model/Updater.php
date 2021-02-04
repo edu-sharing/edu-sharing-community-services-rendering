@@ -57,13 +57,13 @@ class Updater {
 	private function setUpdateVersion() {
 		$pdo = RsPDO::getInstance();
 
-        $sql = $pdo -> formatQuery( 'SELECT max("VERSION_ID") as max FROM "VERSION"' );
+        $sql = 'SELECT max("VERSION_ID") as max FROM "VERSION"';
         $stmt = $pdo -> prepare ( $sql );
         $stmt -> execute();
         $result = $stmt -> fetchObject();
         $maxPrimaryKey = $result->max;
 
-        $sql = $pdo -> formatQuery('INSERT INTO "VERSION" ("VERSION_ID", "VERSION_VNUMBER", "VERSION_TYPE") VALUES (:versionid, :version, :type)');
+        $sql = 'INSERT INTO "VERSION" ("VERSION_ID", "VERSION_VNUMBER", "VERSION_TYPE") VALUES (:versionid, :version, :type)';
 		$stmt = $pdo -> prepare($sql);
         $stmt -> bindValue(':versionid', $maxPrimaryKey + 1);
 		$stmt -> bindValue(':version', $this -> updateVersion);

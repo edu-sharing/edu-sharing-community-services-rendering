@@ -1,7 +1,0 @@
-CREATE TABLE `VERSION` (
-  `VERSION_ID` int(11) NOT NULL auto_increment,
-  `VERSION_VNUMBER` varchar(50) default NULL,
-  `VERSION_TYPE` varchar(30) default NULL,
-  `LASTCHANGE` timestamp NULL default CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`VERSION_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8

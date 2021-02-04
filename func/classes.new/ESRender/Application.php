@@ -52,7 +52,7 @@ extends ESRender_Application_Abstract {
             $sql .= implode(',:', array_keys($arr));
             $sql .= ')';
     
-            $stmt = $pdo -> prepare($pdo -> formatQuery($sql));
+            $stmt = $pdo -> prepare($sql);
             foreach($arr as $key => $value) {
                 $stmt -> bindvalue(':'.$key, $value);
             }

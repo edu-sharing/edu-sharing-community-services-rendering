@@ -7,7 +7,7 @@ try {
      * get h5p module id
      */
     $pdo = RsPDO::getInstance();
-    $sql = $pdo->formatQuery('SELECT "ESMODULE_ID" FROM "ESMODULE" WHERE "ESMODULE_NAME" = :name');
+    $sql = 'SELECT "ESMODULE_ID" FROM "ESMODULE" WHERE "ESMODULE_NAME" = :name';
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':name', 'h5p');
     $stmt->execute();
@@ -17,7 +17,7 @@ try {
     /*
      * delete h5p objects from esobject
      */
-    $sql = $pdo->formatQuery('DELETE FROM "ESOBJECT" WHERE "ESOBJECT_ESMODULE_ID" = :modid');
+    $sql = 'DELETE FROM "ESOBJECT" WHERE "ESOBJECT_ESMODULE_ID" = :modid';
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':modid', $h5pId);
     $stmt->execute();
@@ -25,7 +25,7 @@ try {
     /*
      * delete h5p objects from estrack
      */
-    $sql = $pdo->formatQuery('DELETE FROM "ESTRACK" WHERE "ESTRACK_MODUL_ID" = :modid');
+    $sql = 'DELETE FROM "ESTRACK" WHERE "ESTRACK_MODUL_ID" = :modid';
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':modid', $h5pId);
     $stmt->execute();

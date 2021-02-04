@@ -86,17 +86,26 @@ extends ESRender_Module_Base
                 return false;
             }
 
-            $content = $this->getContent($url);
+            $remotehandle = fopen($url, "rb");
+            if($remotehandle === false) {
+                fclose($handle);
+                $Logger->error('Cannot open ' . $url);
+                return false;
+            }
 
-            if($content === false) {
-                fclose($handle);    
+            $transferedBytes = stream_copy_to_stream($remotehandle,$handle);
+
+            if($transferedBytes === false) {
+                fclose($handle);
+                fclose($remotehandle);
                 $Logger->error('Error fetching content from ' . $url);
                 return false;
             }
-            
-            fwrite($handle, $content);
-            fclose($handle);    
-            $Logger->info('Stored content in file "'.$cacheFile.'".');
+
+            fclose($remotehandle);
+            fclose($handle);
+
+            $Logger->info('Stored content in file "'.$cacheFile.'". ');
 
         } catch (Exception $e) {
             $Logger->error('Error storing content in file "'.$cacheFile.'".');
@@ -104,20 +113,6 @@ extends ESRender_Module_Base
         }
         
         return true;
-    }
-    
-    protected function getContent($url) {
-        $Logger = $this->getLogger();
-
-        $handle = fopen($url, "rb");
-        if($handle === false) {
-            $Logger->error('Cannot open ' . $url);
-            return false;
-        }
-
-        $result = stream_get_contents($handle);
-        fclose($handle);
-        return $result;
     }
 
     /**

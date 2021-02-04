@@ -137,6 +137,7 @@ define("install_msg_table_count_drop",   '%s tables dropped (requested by user i
 define("install_msg_table_count_create", '%s tables created.'); // createcount
 define("install_msg_table_count_load_skip", '%s tables skipped (not created by current configuration process.'); // skipcount
 define("install_msg_table_count_load_succeed", 'Content of %s tables loaded.'); // loadcount
+
 define("db_driver_label", 'Database');
 
 // step form

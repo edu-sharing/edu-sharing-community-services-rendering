@@ -120,8 +120,7 @@ Wert	Konstante		Beschreibung			Bemerkung
 		$this->debug_msg = $p_debug_msg;
 		$this->user_msg  = $p_user_msg;
 
-		return;
-	} // end constructor
+    } // end constructor
 
 	function setLevel($p_lvl)
 	{

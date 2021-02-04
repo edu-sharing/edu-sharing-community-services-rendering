@@ -42,12 +42,12 @@ class Log
 
 	function fileExists()
 	{
-		return ((file_exists($this->getLogFullPath())) ? true : false);
+		return file_exists($this->getLogFullPath());
 	} //  end method getLogFullPath
 
 	function isWritable()
 	{
-		return ((is_writable($this->getLogFullPath())) ? true : false);
+		return is_writable($this->getLogFullPath());
 	} //  end method getLogFullPath
 
 	function write($p_log_text)

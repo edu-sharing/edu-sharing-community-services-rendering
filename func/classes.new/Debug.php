@@ -256,7 +256,7 @@ function initTimer($name) { $GLOBALS['mc_timer_'.$name] = microtime(); }
 function getTimer($name) {
 	$t_start = split(' ', $GLOBALS['mc_timer_'.$name]);
 	$t_end   = split(' ', microtime());
-	$t_sec  = intval($t_end[1]) - intval($t_start[1]);
+	$t_sec  = (int)$t_end[1] - (int)$t_start[1];
 	$t_msec = $t_end[0] - $t_start[0];
 	return $name.' : '.($t_sec + $t_msec).'<br>from file '.__FILE__.'<br>';
 }

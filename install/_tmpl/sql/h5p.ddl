@@ -66,8 +66,10 @@ CREATE TABLE h5p_libraries_hub_cache (
     is_recommended integer NOT NULL,
     example varchar(511) NOT NULL );
 CREATE TABLE h5p_contents_libraries (
+    id SERIAL,
     library_id integer NOT NULL,
     drop_css integer NOT NULL,
     content_id integer NOT NULL,
     weight integer NOT NULL  DEFAULT '0' ,
-    dependency_type varchar(31) NOT NULL );
+    dependency_type varchar(31) NOT NULL,
+    PRIMARY KEY (id));

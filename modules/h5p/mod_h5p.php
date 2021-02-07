@@ -285,7 +285,6 @@ extends ESRender_Module_ContentNode_Abstract {
                                     "export"=> false, // Display download button
                                     "embed"=> false, // Display embed button
                                     "copyright"=> true, // Display copyright button
-                                    "copyright"=> true, // Display copyright button
                                     "icon"=> true // Display H5P icon
                                 ],
             'contentUserData' => array(

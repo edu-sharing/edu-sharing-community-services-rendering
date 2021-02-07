@@ -20,7 +20,7 @@ if ($_GET['libraryId']){
         $total_rows =  $total_pages_sql->fetchColumn();
         $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-        $query = $db -> prepare("SELECT content_id FROM h5p_contents_libraries WHERE library_id = :librayId LIMIT :offset, :no_of_records_per_page");
+        $query = $db -> prepare("SELECT content_id FROM h5p_contents_libraries WHERE library_id = :librayId OFFSET :offset LIMIT :no_of_records_per_page");
         $query->bindParam(':librayId', $librayId);
         $query->bindParam(':offset', $offset);
         $query->bindParam(':no_of_records_per_page', $no_of_records_per_page);

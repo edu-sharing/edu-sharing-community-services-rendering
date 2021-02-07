@@ -140,7 +140,7 @@ class File
 					}
 
 					if ($this->OUCH == true) {
-						// geänderte dateien dürfen überschrieben werden
+						// geï¿½nderte dateien dï¿½rfen ï¿½berschrieben werden
 						if ( !$check_for_permissions_only) {
 							if ($exists == true) {
 								SysMsg::showMsg("backup file: ".$to_path.$file);
@@ -440,7 +440,7 @@ class File
 		$p_new_content = $p_old_content;
 
 		$match = array();
-		// ermitteln des vollständigen bereiches zwischen zwei sektions-namen
+		// ermitteln des vollstï¿½ndigen bereiches zwischen zwei sektions-namen
 		// (erfasst kommentar der sektion sowie alle nachfolgenden parameter, kommentare und leerzeilen)
 		// ACHTUNG : kann NICHT auf die letzte sektion zugreifen!
 		preg_match("/# ".$p_section_name."(.*)?[\s]*# [A-Z_\x20\t]/Us", $p_old_content, $match);
@@ -461,7 +461,7 @@ class File
 	{
 
 		$match = array();
-		// ermitteln des vollständigen bereiches zwischen zwei sektions-namen
+		// ermitteln des vollstï¿½ndigen bereiches zwischen zwei sektions-namen
 		// (erfasst kommentar der sektion sowie alle nachfolgenden parameter, kommentare und leerzeilen)
 		// ACHTUNG : kann NICHT auf die letzte sektion zugreifen!
 		if (is_array($p_content))

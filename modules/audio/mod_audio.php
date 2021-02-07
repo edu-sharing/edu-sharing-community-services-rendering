@@ -152,7 +152,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     final public function locked() {
         $template = $this->getTemplate();
         $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion() . self::FORMAT_AUDIO_MP3 .'.log';
-        $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput, self::FORMAT_AUDIO_MP3);
+        $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
         $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue(self::FORMAT_AUDIO_MP3);
         if(empty($progress) || is_array($progress))
             $progress = '0';

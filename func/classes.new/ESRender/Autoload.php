@@ -1,6 +1,6 @@
 <?php
 
-ESRender_Autoload::addDirectory(dirname(__FILE__).'/..');
+ESRender_Autoload::addDirectory(__DIR__ .'/..');
 
 /**
  * Provide auto-loading capabilities for the "ESRender"-project. Include this
@@ -25,7 +25,7 @@ abstract class ESRender_Autoload
 	 *
 	 * @throws Exception
 	 */
-	public function addDirectory($Directory)
+	public static function addDirectory($Directory)
 	{
 		if ( !file_exists($Directory) )
 		{
@@ -70,7 +70,7 @@ abstract class ESRender_Autoload
 
 			if ( file_exists($Filename) )
 			{
-				return include_once($Filename);
+				return include($Filename);
 			}
 		}
 

@@ -25,7 +25,7 @@ try {
     /*
      * delete h5p objects from estrack
      */
-    $sql = 'DELETE FROM "ESTRACK" WHERE "ESTRACK_MODUL_ID" = :modid';
+    $sql = 'DELETE FROM "ESTRACK" WHERE "ESTRACK_MODULE_ID" = :modid';
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':modid', $h5pId);
     $stmt->execute();

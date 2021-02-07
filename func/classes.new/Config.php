@@ -8,7 +8,7 @@ class Config {
         if(is_null(self::$values)){
             self::$values = array();
         }
-        return isset(self::$values[$key])?self::$values[$key]:$default;
+        return self::$values[$key] ?? $default;
     }
 
     public static function set($key, $value){

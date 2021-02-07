@@ -1,14 +1,14 @@
 <?php
 
-require_once (dirname(__FILE__) . '/../../conf.inc.php');
-require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p.classes.php');
-require_once (dirname(__FILE__) . '/../../modules/h5p/H5PFramework.php');
-require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-file-storage.interface.php');
-require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-default-storage.class.php');
-require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-development.class.php');
-require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-event-base.class.php');
-require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-metadata.class.php');
-require_once dirname(__FILE__) . '/../locale/lang.php';
+require_once (__DIR__ . '/../../conf.inc.php');
+require_once (__DIR__ . '/../../vendor/lib/h5p-core/h5p.classes.php');
+require_once (__DIR__ . '/../../modules/h5p/H5PFramework.php');
+require_once (__DIR__ . '/../../vendor/lib/h5p-core/h5p-file-storage.interface.php');
+require_once (__DIR__ . '/../../vendor/lib/h5p-core/h5p-default-storage.class.php');
+require_once (__DIR__ . '/../../vendor/lib/h5p-core/h5p-development.class.php');
+require_once (__DIR__ . '/../../vendor/lib/h5p-core/h5p-event-base.class.php');
+require_once (__DIR__ . '/../../vendor/lib/h5p-core/h5p-metadata.class.php');
+require_once (__DIR__ . '/../locale/lang.php');
 
 session_start();
 if ($_SESSION['loggedin'] !== 1){
@@ -117,8 +117,8 @@ function ajax_upgrade_progress() {
 
         //remove duplicates from h5p_contents_libraries
         $db->query( " DELETE FROM h5p_contents_libraries
-                                WHERE rowid NOT IN (
-                                  SELECT MIN(rowid)  
+                                WHERE id NOT IN (
+                                  SELECT MIN(id)  
                                   FROM h5p_contents_libraries 
                                   GROUP BY library_id, drop_css, content_id, dependency_type
                                 )" );

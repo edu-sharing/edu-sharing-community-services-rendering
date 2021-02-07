@@ -130,7 +130,7 @@ Wert	Konstante		Beschreibung			Bemerkung
 
 		foreach ($l_backtrace as $l_stage)
 		{
-			if ($l_stage['function'] == 'handleError')
+			if ($l_stage['function'] === 'handleError')
 			{
 				continue;
 			}

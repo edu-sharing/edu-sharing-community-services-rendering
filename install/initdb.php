@@ -77,7 +77,7 @@ extends Step {
         try {
             $this -> pdo = new PDO(
                 $this -> db_drvr . ':host=' . $this -> db_host . ';port=' . $this -> db_port  . ';dbname=' . $this -> db_name, $this -> db_user, $this -> db_pass,
-                (db_drv === 'mysql') ? array(PDO::ATTR_EMULATE_PREPARES, true,PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode="PIPES_AS_CONCAT, ANSI_QUOTES, IGNORE_SPACE, NO_KEY_OPTIONS, NO_TABLE_OPTIONS, NO_FIELD_OPTIONS"') : array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION));
+                (db_drv === 'mysql') ? array(PDO::ATTR_EMULATE_PREPARES, true,PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode="ANSI,NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS"') : array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION));
         } catch (PDOException $e) {
             return $this -> error(sprintf($e -> getMessage(), MC_BASE_DIR));
         }

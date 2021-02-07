@@ -143,13 +143,13 @@ class OAuthSignatureMethod_RSA_SHA1 extends OAuthSignatureMethod {
     $cert = $this->fetch_private_cert($request);
 
     // Pull the private key ID from the certificate
-    $privatekeyid = openssl_get_privatekey($cert);
+    $privatekeyid = openssl_pkey_get_private($cert);
 
     // Sign using the key
     $ok = openssl_sign($base_string, $signature, $privatekeyid);
 
     // Release the key resource
-    openssl_free_key($privatekeyid);
+    openssl_pkey_free($privatekeyid);
 
     return base64_encode($signature);
   }
@@ -169,7 +169,7 @@ class OAuthSignatureMethod_RSA_SHA1 extends OAuthSignatureMethod {
     $ok = openssl_verify($base_string, $decoded_sig, $publickeyid);
 
     // Release the key resource
-    openssl_free_key($publickeyid);
+    openssl_pkey_free($publickeyid);
 
     return $ok == 1;
   }
@@ -748,11 +748,11 @@ class OAuthUtil {
   public static function parse_parameters( $input ) {
     if (!isset($input) || !$input) return array();
 
-    $pairs = split('&', $input);
+    $pairs = preg_split('&', $input);
 
     $parsed_parameters = array();
     foreach ($pairs as $pair) {
-      $split = split('=', $pair, 2);
+      $split = preg_split('=', $pair, 2);
       $parameter = OAuthUtil::urldecode_rfc3986($split[0]);
       $value = isset($split[1]) ? OAuthUtil::urldecode_rfc3986($split[1]) : '';
 

@@ -71,7 +71,7 @@ extends ESRender_Module_Base
             $pkeyid = openssl_get_privatekey(Config::get('homeConfig')->prop_array['private_key']);
             openssl_sign($signData, $signature, $pkeyid);
             $signature = urlencode(base64_encode($signature));
-            openssl_free_key($pkeyid); 
+            openssl_pkey_free($pkeyid);
             $cacheFile = $this->getCacheFileName();
             $url =  current(explode("/services/", Config::get('homeRepository')->prop_array['authenticationwebservice']));
             $path = '/content?';

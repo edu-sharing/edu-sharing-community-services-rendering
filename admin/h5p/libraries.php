@@ -1,6 +1,6 @@
 <?php
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'header.php';
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'update_core.php';
+include_once __DIR__ . DIRECTORY_SEPARATOR.'header.php';
+include_once __DIR__ . DIRECTORY_SEPARATOR.'update_core.php';
 ?>
 
 <div class="update-core">

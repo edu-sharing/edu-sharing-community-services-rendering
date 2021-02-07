@@ -76,13 +76,8 @@ class ESApp
 	 */
 	public function getAppByID($app_id)
 	{
-		if (isset($this->Conf['app-'.$app_id.'.properties.xml']))
-		{
-			return $this->Conf['app-'.$app_id.'.properties.xml'];
-		}
-
-		return false;
-	}
+        return $this->Conf['app-' . $app_id . '.properties.xml'] ?? false;
+    }
 
 	/**
 	 *
@@ -90,13 +85,8 @@ class ESApp
 	 */
 	public function getHomeConf()
 	{
-		if (isset($this->Conf['homeApplication.properties.xml']))
-		{
-			return $this->Conf['homeApplication.properties.xml'];
-		}
-
-		return false;
-	}
+        return $this->Conf['homeApplication.properties.xml'] ?? false;
+    }
 
 	public function setApp2Cache()
 	{

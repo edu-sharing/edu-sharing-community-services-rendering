@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__).'/config.php');
+require_once(__DIR__ .'/config.php');
 
 class H5PFramework implements H5PFrameworkInterface {
 
@@ -274,7 +274,7 @@ class H5PFramework implements H5PFrameworkInterface {
         // Get the lastest version which matches the input parameters
         $statement = $db -> query('SELECT id FROM h5p_libraries ' . $sql_where . ' ORDER BY major_version DESC, minor_version DESC, patch_version DESC LIMIT 1');
         $row= $statement->fetch();
-        return $row['id'] === NULL ? FALSE : $row['id'];
+        return $row['id'] ?? FALSE;
     }
 
     /**
@@ -568,7 +568,7 @@ class H5PFramework implements H5PFrameworkInterface {
     public function copyLibraryUsage($contentId, $copyFromId, $contentMainId = NULL)
     {
       global $db;
-        $db->query('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, weight, drop_css)
+        $db->exec('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, weight, drop_css)
         SELECT '.$contentId.', hcl.library_id, hcl.dependency_type, hcl.weight, hcl.drop_css
           FROM h5p_contents_libraries hcl
           WHERE hcl.content_id ='.$copyFromId);

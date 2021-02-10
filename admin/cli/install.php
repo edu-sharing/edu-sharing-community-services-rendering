@@ -80,8 +80,8 @@ if (empty($options['c'])) {
 
     //database
     $file = $confDir . DIRECTORY_SEPARATOR . 'db.conf.php';
-    $needle = array('[[[TOKEN_DBDRIVER]]]', '[[[TOKEN_DBHOST]]]', '[[[TOKEN_DBPORT]]]', '[[[TOKEN_DBNAME]]]', '[[[TOKEN_DBUSER]]]', '[[[TOKEN_DBPASS]]]');
-    $replace = array($config['db_driver'], $config['db_host'], $config['db_port'], $config['db_name'], $config['db_user'], $config['db_password']);
+    $needle = array('[[[TOKEN_DBDRIVER]]]', '[[[TOKEN_DBHOST]]]', '[[[TOKEN_DBPORT]]]', '[[[TOKEN_DBNAME]]]', '[[[TOKEN_DBUSER]]]', '[[[TOKEN_DBPASS]]]', '[[[TOKEN_PREPARE]]]');
+    $replace = array($config['db_driver'], $config['db_host'], $config['db_port'], $config['db_name'], $config['db_user'], $config['db_password'], $config['db_prepare']);
     replaceValuesInFile($file, $needle, $replace);
 
     //database
@@ -93,6 +93,7 @@ if (empty($options['c'])) {
     $dbInstaller = new initdb();
     $dbInstaller -> setPdo(RsPDO::getInstance());
     $dbInstaller -> setDbDrvr($config['db_driver']);
+    $dbInstaller -> setDbPrepare($config['db_prepare']);
     $dbInstaller -> all_tables = $dbInstaller -> getAllTables();
     $dbInstaller -> createTables();
     $dbInstaller -> loadTableContent();

@@ -57,14 +57,8 @@ extends ESRender_Module_ContentNode_Abstract {
             mkdir($CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR, 0755);
         }
 
-        $this ->dbFile = $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p'.DIRECTORY_SEPARATOR . 'db';
-        if(!file_exists($this ->dbFile))
-            copy(__DIR__ . DIRECTORY_SEPARATOR . 'empty.sqlite', $this ->dbFile);
-
         global $db;
-        $db = new PDO('sqlite:' . $this ->dbFile);
-        $db -> setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-
+        $db = rsPDO::getInstance();
         $this->H5PFramework = new H5PFramework();
         $this->H5PCore = new H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), mc_Request::fetch('language', 'CHAR', 'de'), false);
         $this->H5PValidator = new H5PValidator($this->H5PFramework, $this->H5PCore);

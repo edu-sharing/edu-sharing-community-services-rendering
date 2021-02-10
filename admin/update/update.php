@@ -1,5 +1,5 @@
 <?php
-define ( 'UPDATEVERSION', '6.0.0' );
+define ( 'UPDATEVERSION', '6.0.99' );
 set_time_limit(18000);
 ini_set('memory_limit', '2048M');
 
@@ -37,7 +37,6 @@ function run($installedVersion) {
             file_put_contents ( MC_ROOT_PATH . 'conf/esmain/app-' . $hc->prop_array ['homerepid'] . '.properties.xml', $homeRepConf );
 
             $pdo = RsPDO::getInstance ();
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $sql = 'SELECT "REL_ESMODULE_MIMETYPE_TYPE" FROM "REL_ESMODULE_MIMETYPE" WHERE "REL_ESMODULE_MIMETYPE_TYPE" = :mime';
             $stmt = $pdo->prepare ( $sql );
@@ -296,15 +295,9 @@ function run($installedVersion) {
 
         if (version_compare ( '4.0.10', $installedVersion ) > 0) {
             $pdo = RsPDO::getInstance();
-            if($pdo -> getDriver() == 'pgsql') {
-                $sql ='ALTER TABLE "ESTRACK" ALTER COLUMN "ESTRACK_NAME" TYPE varchar(512)';
-                $stmt = $pdo->prepare ( $sql );
-                $stmt->execute ();
-            } else if ($pdo -> getDriver() == 'mysql') {
-                $sql ='ALTER TABLE "ESTRACK" MODIFY "ESTRACK_NAME" varchar(512)';
-                $stmt = $pdo->prepare ( $sql );
-                $stmt->execute ();
-            }
+            $sql ='ALTER TABLE "ESTRACK" ALTER COLUMN "ESTRACK_NAME" TYPE varchar(512)';
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->execute ();
         }
 
         if(version_compare ( '4.1.0', $installedVersion ) > 0) {
@@ -398,12 +391,6 @@ function run($installedVersion) {
 
         if(version_compare ( '5.1', $installedVersion ) > 0) {
 
-            // sqlite extension needed for H5P
-            if ( !extension_loaded('sqlite3') ) {
-                error_log('rendering-service update error: Missing php sqlite extension! Please install and retry the update.');
-                return false;
-            }
-
             $pdo = RsPDO::getInstance();
 
             $sql = 'SELECT max("REL_ESMODULE_MIMETYPE_ID") as max FROM "REL_ESMODULE_MIMETYPE"';
@@ -456,6 +443,13 @@ function run($installedVersion) {
             rrmdir(CC_RENDER_PATH, true);
             if(!empty(CC_RENDER_PATH_SAFE))
                 rrmdir(CC_RENDER_PATH_SAFE, true);
+        }
+
+        // 6.0.99 migrates h5p to database
+        if(version_compare ( '6.0', $installedVersion ) > 0) {
+            $h5p_ddl = file_get_contents(INST_PATH_TMPL . 'sql' . DIRECTORY_SEPARATOR . 'h5p.ddl');
+            $stmt = $pdo->exec($h5p_ddl);
+
         }
 
     } catch ( Exception $e ) {

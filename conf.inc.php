@@ -46,8 +46,8 @@ require_once ($ROOT_PATH."conf/defines.conf.php");
 require_once ($ROOT_PATH."conf/custom.conf.php");
 require_once ($ROOT_PATH."conf/extlib.conf.php");
 
-if (@phpversion() < '5.3.0') {
-	die('This version of edu-sharing only supports PHP 5.3 or higher.');
+if (@phpversion() < '7.1.0') {
+	die('This version of edu-sharing only supports PHP 7.1.0 or higher.');
 }
 
 $GLOBALS['_MCFORM'] = array_merge($_GET, $_POST);

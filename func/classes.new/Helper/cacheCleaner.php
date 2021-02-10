@@ -90,7 +90,7 @@ class cacheCleaner
 
                 $this->logger->info('h5pID: ' . $h5pID);
 
-                //delete h5p sqlite entry
+                //delete h5p entry
                 try {
                     $query_libraries = "DELETE FROM h5p_contents_libraries WHERE content_id = " . $h5pID;
                     $statement_libraries = $this->pdo->query($query_libraries);
@@ -99,7 +99,7 @@ class cacheCleaner
                     $query = "DELETE FROM h5p_contents WHERE title='" . $esobject->getObjectID() . "-v" . $esobject->getContentHash() . "'";
                     $statement = $this->pdo->query($query);
                     $result = $statement->execute();
-                    $this->logger->info('deleted h5p-' . $h5pID . ' from sqlite.');
+                    $this->logger->info('deleted h5p-' . $h5pID . ' from db.');
                 } catch (PDOException $e) {
                     $this->logger->info($e->getMessage());
                 }

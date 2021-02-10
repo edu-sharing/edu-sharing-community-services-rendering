@@ -28,6 +28,7 @@ class TemplateFile
         $TOKEN_DBPASS = $Obj->getDbPass();
         $TOKEN_DBNAME = $Obj->getDbName();
         $TOKEN_DBDRIVER = $Obj -> getDbDrvr();
+        $TOKEN_PREPARE = $Obj -> getPrepare();
         $TOKEN_URL = $Obj->getUrl();
         $TOKEN_BASE_DIR = $Obj->getBaseDir();
         $TOKEN_DEFAULT_LANG = $Obj->getLangId();

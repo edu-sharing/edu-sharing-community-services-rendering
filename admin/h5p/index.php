@@ -98,7 +98,7 @@ if ($_POST['search_h5p']){
         $total_rows =  $total_pages_sql->fetchColumn();
         $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-        $query = $db -> prepare("SELECT id, title, updated_at, description FROM h5p_contents ".$query_condition." OFFSET :offset LIMIT :no_of_records_per_page");
+        $query = $db -> prepare("SELECT id, title, updated_at, description FROM h5p_contents ".$query_condition." LIMIT :no_of_records_per_page OFFSET :offset");
         $params[':offset'] = $offset;
         $params[':no_of_records_per_page'] = $no_of_records_per_page;
         $query->execute($params);
@@ -126,7 +126,7 @@ if ($_POST['search_h5p']){
     $total_pages = ceil($total_rows / $no_of_records_per_page);
 
     $query = $db -> prepare("SELECT id, title, updated_at, description  FROM h5p_contents OFFSET :offset LIMIT :no_of_records_per_page");
-    $query->bindParam(':offset', $offset);
+    $query->bindParam(':offset', $offset, PDO::PARAM_INT);
     $query->bindParam(':no_of_records_per_page', $no_of_records_per_page);
     $query->execute();
     $results = $query->fetchAll(\PDO::FETCH_OBJ);

@@ -20,7 +20,7 @@ $arrToken2Values = array(
 	'[[[TOKEN_DBNAME]]]' => $TOKEN_DBNAME,
 	'[[[TOKEN_DBPORT]]]' => $TOKEN_DBPORT,
 	'[[[TOKEN_DBDRIVER]]]' => $TOKEN_DBDRIVER,
-
+    '[[[TOKEN_PREPARE]]]' => $TOKEN_PREPARE,
 	// e.g. for ./_tmpl/conf/system.conf.tpl => ../conf/system.conf.php
 	'[[[TOKEN_URL]]]'          => $TOKEN_URL,          // "http[s]://<host>/<base_uri>"
 	'[[[TOKEN_BASE_DIR]]]'     => $TOKEN_BASE_DIR,     // e.g. /srv/www/htdocs/elearning/mc/
@@ -49,6 +49,7 @@ $arrValues2Token = array(
 	$TOKEN_DBNAME        => '[[[TOKEN_DBNAME]]]',
 	$TOKEN_DBDRIVER      => '[[[TOKEN_DBDRIVER]]]',
 	$TOKEN_DBPORT        => '[[[TOKEN_DBPORT]]]',
+    $TOKEN_PREPARE       => '[[[TOKEN_PREPARE]]]',
 	$TOKEN_FFMPEG_EXEC   => '[[[TOKEN_SBASE_DIR]]]' . 'vendor/lib/converter/ffmpeg',
 	);
 

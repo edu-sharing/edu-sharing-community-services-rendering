@@ -40,7 +40,7 @@ class form
             // required extensions (space separated)
             'session dom soap sockets iconv gd mbstring fileinfo openssl zip curl exif',
             // optional extensions (space separated)
-            'mysqli pgsql zlib wddx sqlite'
+            'mysqli pgsql zlib'
         ) )
         {
             return false;

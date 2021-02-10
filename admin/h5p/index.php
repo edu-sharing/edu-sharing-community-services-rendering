@@ -83,31 +83,38 @@ if ($_POST['search_h5p']){
     try{
         $like_id = '%' . $_POST['search_h5p']. '%';
         $params = array(
-            ':like_id'    =>  $like_id
+            'like_id'    =>  $like_id
         );
+        $searchId = is_numeric($_POST['search_h5p']);
 
-        if(is_numeric($_POST['search_h5p'])){
-            $query_condition = "WHERE id=:id OR title LIKE :like_id OR description LIKE :like_id";
-            $params[':id'] = $_POST['search_h5p'];
+        if($searchId){
+            $query_condition = "WHERE id=:id";
+            $params['id'] = (int)($_POST['search_h5p']);
         }else{
             $query_condition = "WHERE title LIKE :like_id OR description LIKE :like_id";
         }
 
         $total_pages_sql = $db -> prepare("SELECT COUNT(*) FROM h5p_contents ".$query_condition);
-        $total_pages_sql->execute($params);
+        $total_pages_sql->bindParam(':id',$params['id'],PDO::PARAM_INT);
+        $total_pages_sql->bindParam(':like_id',$params['like_id'],PDO::PARAM_INT);
+        $total_pages_sql->execute();
         $total_rows =  $total_pages_sql->fetchColumn();
         $total_pages = ceil($total_rows / $no_of_records_per_page);
 
         $query = $db -> prepare("SELECT id, title, updated_at, description FROM h5p_contents ".$query_condition." LIMIT :no_of_records_per_page OFFSET :offset");
-        $params[':offset'] = $offset;
-        $params[':no_of_records_per_page'] = $no_of_records_per_page;
+        if ($searchId) {
+            $query->bindParam(':id',$params['id'],PDO::PARAM_INT);
+        }
+        $query->bindParam(':like_id',$params['like_id']);
+        $query->bindParam(':offset',$offset,PDO::PARAM_INT);
+        $query->bindParam(':no_of_records_per_page',$no_of_records_per_page,PDO::PARAM_INT);
         $query->execute($params);
         $results = $query->fetchAll(\PDO::FETCH_OBJ);
         if(empty($results)){
             echo "
             <script>
                 Swal.fire({
-                    text: 'Nothing found for: ".$_POST['search_h5p']."',
+                    text: 'Nothing found for: ". htmlentities($_POST['search_h5p'],ENT_QUOTES,'UTF-8')."',
                     position: 'top',
                     icon: 'warning'
                 })
@@ -125,9 +132,9 @@ if ($_POST['search_h5p']){
     $total_rows =  $statement->fetchColumn();
     $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-    $query = $db -> prepare("SELECT id, title, updated_at, description  FROM h5p_contents OFFSET :offset LIMIT :no_of_records_per_page");
+    $query = $db -> prepare("SELECT id, title, updated_at, description  FROM h5p_contents LIMIT :no_of_records_per_page OFFSET :offset ");
+    $query->bindParam(':no_of_records_per_page', $no_of_records_per_page, PDO::PARAM_INT);
     $query->bindParam(':offset', $offset, PDO::PARAM_INT);
-    $query->bindParam(':no_of_records_per_page', $no_of_records_per_page);
     $query->execute();
     $results = $query->fetchAll(\PDO::FETCH_OBJ);
 }
@@ -146,7 +153,7 @@ if ($_POST['search_h5p']){
             echo '<td>'.$result->id.'</td>';
             echo '<td>'.$result->title.'</td>';
             echo '<td>'.$result->description.'</td>';
-            echo '<td>'.date('H:i:s - d.m.Y', intval($result->updated_at)).'</td>';
+            echo '<td>'.$result->updated_at.'</td>';
             echo '<td><form action="index.php" method=post class=delete-h5p>
                     <input type=hidden value="'.$result->id.'"name=delete_h5p />
                     <input class="btn" type=submit value="delete" />

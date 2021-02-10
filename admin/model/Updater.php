@@ -6,7 +6,7 @@ class Updater {
     public $updateVersion = '';
 	
 	public function __construct($do = null) {
-		include dirname(__FILE__) . '/../update/update.php';
+		include __DIR__ . '/../update/update.php';
 		$this -> installedVersion = $this -> getinstalledversion();
 		$this -> updateVersion = UPDATEVERSION;
 		if($do) {

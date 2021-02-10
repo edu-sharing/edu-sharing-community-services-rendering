@@ -1,4 +1,7 @@
 <?php
+
+require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'install/sweepH5P.php';
+
 define ( 'UPDATEVERSION', '6.0.99' );
 set_time_limit(18000);
 ini_set('memory_limit', '2048M');
@@ -449,6 +452,9 @@ function run($installedVersion) {
         if(version_compare ( '6.0', $installedVersion ) > 0) {
             $h5p_ddl = file_get_contents(INST_PATH_TMPL . 'sql' . DIRECTORY_SEPARATOR . 'h5p.ddl');
             $stmt = $pdo->exec($h5p_ddl);
+
+            // clear h5p cache
+            \h5p_install\sweep_h5p();
 
         }
 

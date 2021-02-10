@@ -499,14 +499,14 @@ class H5PFramework implements H5PFrameworkInterface {
         global $db;
 
         if (!isset($content['id'])) {
-            $db -> query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,user_id,slug,filtered,disable)'.
-                'values ('.time().','.$db->quote($content['title']).','.$db->quote($content['params']).', \'iframe\' ,'.$db->quote($content['library']['libraryId']).','.$db->quote('').','.$db->quote('').','.$db->quote('').','.$db->quote($content['disable']).')');
+            $db -> exec('INSERT INTO h5p_contents (created_at, updated_at,title,parameters,embed_type,library_id,user_id,slug,filtered,disable)'.
+                'values (now(), now(),'.$db->quote($content['title']).','.$db->quote($content['params']).', \'iframe\' ,'.$db->quote($content['library']['libraryId']).','.$db->quote('').','.$db->quote('').','.$db->quote('').','.$db->quote($content['disable']).')');
 
             $content['id'] = $this->id =  $db->lastInsertId();
 
         }
         else {
-            $db -> query('UPDATE h5p_contents set updated_at='.time().' , title='.$db->quote($content['title']).', parameters='.$db->quote($content['params']).' ,embed_type=\'iframe\' ,library_id='.$content['library']['libraryId'].' ,filtered=\'\' ,disable='.$db->quote($content['disable']).' WHERE id='.$content['id']);
+            $db -> query('UPDATE h5p_contents set updated_at=now() , title='.$db->quote($content['title']).', parameters='.$db->quote($content['params']).' ,embed_type=\'iframe\' ,library_id='.$content['library']['libraryId'].' ,filtered=\'\' ,disable='.$db->quote($content['disable']).' WHERE id='.$content['id']);
         }
 
         return $content['id'];
@@ -582,7 +582,7 @@ class H5PFramework implements H5PFrameworkInterface {
      */
     public function deleteContentData($contentId)
     {      global $db;
-        $db->query('DELETE FROM h5p_contents WHERE id = ' . $contentId);
+        $db->query('DELETE FROM h5p_contents WHERE id = ' . (int)$contentId);
     }
 
     /**
@@ -594,7 +594,7 @@ class H5PFramework implements H5PFrameworkInterface {
     public function deleteLibraryUsage($contentId)
     {
         global $db;
-        $db->query('DELETE FROM h5p_contents_libraries WHERE content_id = ' . $contentId);
+        $db->query('DELETE FROM h5p_contents_libraries WHERE content_id = ' . (int)$contentId);
     }
 
     /**
@@ -654,13 +654,13 @@ class H5PFramework implements H5PFrameworkInterface {
               FROM h5p_libraries l
               JOIN h5p_contents_libraries cl ON l.id = cl.library_id
               JOIN h5p_contents c ON cl.content_id = c.id
-              WHERE l.id = ".$libraryId);
+              WHERE l.id = ".(int)$libraryId);
 
             $content = $statement->fetch();
 
             $statement = $db -> query("SELECT COUNT(*)
               FROM h5p_libraries_libraries
-              WHERE required_library_id = ".$libraryId);
+              WHERE required_library_id = ".(int)$libraryId);
 
             $libraries = $statement->fetch();
 
@@ -728,7 +728,7 @@ class H5PFramework implements H5PFrameworkInterface {
         $result = $db -> query ('SELECT hl.name as machineName, hl.major_version as majorVersion, hl.minor_version as minorVersion, hll.dependency_type as dependencyType
         FROM h5p_libraries_libraries hll
         JOIN h5p_libraries hl ON hll.required_library_id = hl.id
-        WHERE hll.library_id = '.$library['libraryId']);
+        WHERE hll.library_id = '.(int)$library['libraryId']);
 
         $dependencies = $result->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -789,7 +789,7 @@ class H5PFramework implements H5PFrameworkInterface {
     public function deleteLibraryDependencies($libraryId)
     {
         global $db;
-        $db->query('DELETE FROM h5p_libraries_libraries WHERE library_id = ' . $libraryId);
+        $db->query('DELETE FROM h5p_libraries_libraries WHERE library_id = ' . (int)$libraryId);
     }
 
     /**
@@ -859,7 +859,7 @@ class H5PFramework implements H5PFrameworkInterface {
               , hl.fullscreen AS libraryFullscreen
         FROM h5p_contents hc
         JOIN h5p_libraries hl ON hl.id = hc.library_id
-        WHERE hc.id =".$id);
+        WHERE hc.id =".(int)$id);
 
         $prep->execute();
         $content = $prep->fetch();
@@ -902,7 +902,7 @@ class H5PFramework implements H5PFrameworkInterface {
               , hcl.dependency_type AS dependencyType
         FROM h5p_contents_libraries hcl
         JOIN h5p_libraries hl ON hcl.library_id = hl.id
-        WHERE hcl.content_id ='. $id;
+        WHERE hcl.content_id ='. (int)$id;
 
         if ($type !== NULL) {
             $query .= ' AND hcl.dependency_type = \''. $type . '\'';
@@ -985,7 +985,7 @@ class H5PFramework implements H5PFrameworkInterface {
         $statement = $db -> query( "SELECT COUNT(id)
                                                 FROM h5p_contents
                                                 WHERE filtered = ''");
-        return intval($statement->fetchColumn());
+        return (int)($statement->fetchColumn());
     }
 
     /**
@@ -999,10 +999,10 @@ class H5PFramework implements H5PFrameworkInterface {
         global $db;
         //$skip_query = empty($skip) ? '' : " AND id NOT IN ($skip)";
 
-        $statement = $db -> prepare( "SELECT COUNT(id)
+        $statement = $db -> prepare( "SELECT COUNT(library_id)
                                                 FROM h5p_contents
                                                 WHERE library_id = :libId");
-        $statement->bindParam(':libId', $libraryId);
+        $statement->bindParam(':libId', $libraryId, PDO::PARAM_INT);
         $statement->execute();
         return $statement->fetchColumn();
 

@@ -92,7 +92,7 @@ function ajax_upgrade_progress() {
             $current_time = $datetime->format( 'Y-m-d H:i:s' );
 
             $db->query( "UPDATE h5p_contents SET
-                                updated_at = " . $db->quote($current_time) . ",
+                                updated_at = now(),
                                 parameters = " . $db->quote(json_encode($upgraded->params)) . ",
                                 library_id = " . $db->quote($to_library->id) . ",
                                 filtered = " . $db->quote('') . "

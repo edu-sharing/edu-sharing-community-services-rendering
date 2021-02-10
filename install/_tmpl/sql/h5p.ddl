@@ -1,7 +1,8 @@
 CREATE TABLE h5p_libraries_languages (
     library_id integer NOT NULL,
     translation text NOT NULL,
-    language_code varchar(31) NOT NULL );
+    language_code varchar(31) NOT NULL);
+
 CREATE TABLE h5p_libraries (
     id SERIAL,
     fullscreen integer NOT NULL,
@@ -22,10 +23,15 @@ CREATE TABLE h5p_libraries (
     tutorial_url varchar(1023) NOT NULL,
     semantics text NOT NULL,
     PRIMARY KEY (id));
+
+CREATE INDEX idx_h5p_libraries_name
+    ON h5p_libraries (name, title);
+
 CREATE TABLE h5p_libraries_libraries (
     library_id integer NOT NULL,
     required_library_id integer NOT NULL,
-    dependency_type varchar(31) NOT NULL );
+    dependency_type varchar(31) NOT NULL);
+
 CREATE TABLE h5p_contents (
     id SERIAL,
     library_id integer NOT NULL,
@@ -44,6 +50,16 @@ CREATE TABLE h5p_contents (
     filtered text NOT NULL,
     description text NULL,
     PRIMARY KEY (id));
+
+CREATE TABLE h5p_contents_libraries (
+    id SERIAL,
+    library_id integer NOT NULL,
+    drop_css integer NOT NULL,
+    content_id integer NOT NULL,
+    weight integer NOT NULL  DEFAULT '0' ,
+    dependency_type varchar(31) NOT NULL,
+    PRIMARY KEY (id));
+
 CREATE TABLE h5p_libraries_hub_cache (
     id SERIAL,
     machine_name varchar(127) NOT NULL,
@@ -67,12 +83,4 @@ CREATE TABLE h5p_libraries_hub_cache (
     patch_version integer NOT NULL,
     is_recommended integer NOT NULL,
     example varchar(511) NOT NULL,
-    PRIMARY KEY (id));
-CREATE TABLE h5p_contents_libraries (
-    id SERIAL,
-    library_id integer NOT NULL,
-    drop_css integer NOT NULL,
-    content_id integer NOT NULL,
-    weight integer NOT NULL  DEFAULT '0' ,
-    dependency_type varchar(31) NOT NULL,
     PRIMARY KEY (id));

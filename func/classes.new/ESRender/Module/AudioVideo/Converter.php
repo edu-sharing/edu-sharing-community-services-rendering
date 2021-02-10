@@ -1,8 +1,8 @@
 <?php
 error_reporting(E_ERROR);
-require_once (dirname(__FILE__) . '/../../../../../conf.inc.php');
-require_once (dirname(__FILE__) . '/../../../../../modules/video/config.php');
-require_once (dirname(__FILE__) . '/../../../../../modules/video/mod_video.php');
+require_once (__DIR__ . '/../../../../../conf.inc.php');
+require_once (__DIR__ . '/../../../../../modules/video/config.php');
+require_once (__DIR__ . '/../../../../../modules/video/mod_video.php');
 
 
 /*
@@ -11,16 +11,34 @@ require_once (dirname(__FILE__) . '/../../../../../modules/video/mod_video.php')
  *
  *
  * */
-class converter {
+class Converter {
 
     private $timeout = '';
     private $threads = '';
+    private $logger;
 
     public function __construct() {
+        $this -> initLogger();
         $this -> setTimeout();
         $this -> setThreads();
+
+        $tmp_path = CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'tmp_conversion';
+
+        if (!file_exists($tmp_path)) {
+            if (!mkdir($tmp_path, 0770, true) && !is_dir($tmp_path)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $tmp_path));
+            }
+        }
+
     }
 
+    private function initLogger() {
+        // init LOGGER
+        require_once (__DIR__ . '/../../../../../func/extern/apache-log4php-2.0.0-incubating/src/main/php/Logger.php');
+        Logger::configure(__DIR__ . '/../../../../../conf/de.metaventis.esrender.log4php.properties');
+        $this -> logger = Logger::getLogger('de.metaventis.esrender.converter');
+        $this -> logger -> info('Converter: Starting up.');
+    }
     private function setThreads() {
         if(defined('OPTION_THREADS'))
             $this -> threads = "-threads " . OPTION_THREADS;
@@ -74,37 +92,34 @@ class converter {
         switch($type) {
             case 'audio' :
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), DIRECTORY_SEPARATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
-                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode(DIRECTORY_SEPARATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . ESRender_Module_AudioVideo_Abstract::FORMAT_AUDIO_MP3 . '.log';
-                $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid() . '.mp3';
+                $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.mp3';
                 exec($this -> timeout  . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-f mp3 -y" . " " . $tmpName, $output, $code);
-                $this->setConversionStatus($code, $conv, $tmpName);
-                error_log(print_r($output, TRUE));
+                $this->setConversionStatus($code, $conv, $tmpName, $output);
+
                 break; 
             case 'video' :
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), DIRECTORY_SEPARATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
-                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end(explode(DIRECTORY_SEPARATOR, $conv -> ESOBJECT_CONVERSION_FILENAME)) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . $conv -> ESOBJECT_CONVERSION_FORMAT . '_' . $conv -> ESOBJECT_CONVERSION_RESOLUTION . '.log';
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_MP4 :
-                        $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.mp4';
+                        $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.mp4';
                         exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-filter:v scale=-2:" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . " " . "-f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(1080\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a copy" . " " . $tmpName, $output, $code);
                         //exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-filter:v scale=-2:" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . " " . "-f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -c:a copy" . " " . $tmpName . " " ."2>>" . $logfile, $whatever, $code);
-                        $this->setConversionStatus($code, $conv, $tmpName);
-                        error_log(print_r($output, TRUE));
+                        $this->setConversionStatus($code, $conv, $tmpName,$output);
                         break;
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_WEBM :
-                        $tmpName = dirname(__FILE__) . '/../../../../../log/conversion/' . uniqid(). '.webm';
+                        $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.webm';
                         exec($this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-filter:v scale=-2:". $conv -> ESOBJECT_CONVERSION_RESOLUTION . " " ."-vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(1080,ih)'\"" . " " . $tmpName, $output, $code);
                         //exec($this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-filter:v scale=-2:". $conv -> ESOBJECT_CONVERSION_RESOLUTION . " " ."-vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8" . " " . $tmpName . " " . "2>>" . $logfile, $whatever, $code);
-                        $this->setConversionStatus($code, $conv, $tmpName);
-                        error_log(print_r($output, TRUE));
+                        $this->setConversionStatus($code, $conv, $tmpName,$output);
                         break; 
                     default :
-                    	var_dump($conv -> ESOBJECT_CONVERSION_FORMAT);
+                    	$this->logger->error('Unhandled format: '.$conv -> ESOBJECT_CONVERSION_FORMAT);
                         throw new Exception('Unhandled format.');
                 }
 
                 break;
             default :
+                $this->logger->error('no valid mimetype specified: '.$conv -> ESOBJECT_CONVERSION_MIMETYPE);
                 echo 'no valid mimetype specified';
         }
 
@@ -112,7 +127,14 @@ class converter {
 
     }
 
-    protected function setConversionStatus($code, $conv, $tmpName){
+    protected function setConversionStatus($code, $conv, $tmpName, $output){
+        if ($code !== 0) {
+            $this->logger-> error("Error Converting ". $conv-> ESOBJECT_CONVERSION_OBJECT_ID . " (" . $conv -> ESOBJECT_CONVERSION_FILENAME .")" );
+            $this->logger-> error($output);
+        } else {
+            $this->logger-> debug("Conversion success: ". $conv-> ESOBJECT_CONVERSION_OBJECT_ID . " (" . $conv -> ESOBJECT_CONVERSION_FILENAME .")" );
+            $this->logger-> debug($output);
+        }
         $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
         if($code > 0) {
             unlink($tmpName);

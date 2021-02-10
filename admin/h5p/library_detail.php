@@ -12,18 +12,16 @@ $offset = ($pageno-1) * $no_of_records_per_page;
 if ($_GET['libraryId']){
     $librayId = $_GET['libraryId'];
     try{
-        $query_condition = "WHERE library_id = ".$librayId;
-
         $total_pages_sql = $db -> prepare("SELECT COUNT(*) FROM h5p_contents_libraries WHERE library_id = :librayId");
         $total_pages_sql->bindParam(':librayId', $librayId);
         $total_pages_sql->execute();
         $total_rows =  $total_pages_sql->fetchColumn();
         $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-        $query = $db -> prepare("SELECT content_id FROM h5p_contents_libraries WHERE library_id = :librayId OFFSET :offset LIMIT :no_of_records_per_page");
+        $query = $db -> prepare("SELECT content_id FROM h5p_contents_libraries WHERE library_id = :librayId LIMIT :no_of_records_per_page OFFSET :offset");
         $query->bindParam(':librayId', $librayId);
-        $query->bindParam(':offset', $offset);
-        $query->bindParam(':no_of_records_per_page', $no_of_records_per_page);
+        $query->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $query->bindParam(':no_of_records_per_page', $no_of_records_per_page, PDO::PARAM_INT);
         $query->execute();
         $results = $query->fetchAll(\PDO::FETCH_OBJ);
         if(empty($results)){
@@ -55,11 +53,7 @@ if ($_GET['libraryId']){
             $query->execute();
             $h5p_content = $query->fetchAll(\PDO::FETCH_OBJ);
 
-            if (isValidTimeStamp($h5p_content[0]->updated_at)){
-                $last_update = date('Y-m-d H:i:s', intval($h5p_content[0]->updated_at));
-            }else{
-                $last_update = $h5p_content[0]->updated_at;
-            }
+            $last_update = $h5p_content[0]->updated_at;
 
             echo '<tr>';
             echo '<td>'.$result->content_id.'</td>';
@@ -67,15 +61,6 @@ if ($_GET['libraryId']){
             echo '<td>'.$h5p_content[0]->description.'</td>';
             echo '<td>'.$last_update.'</td>';
             echo '</tr>';
-        }
-
-        function isValidTimeStamp($timestamp)
-        {
-            if (preg_match('/\D/', $timestamp)){
-                return false;
-            }else{
-                return true;
-            }
         }
 
         ?>

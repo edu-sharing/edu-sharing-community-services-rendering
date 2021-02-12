@@ -46,7 +46,6 @@ extends ESRender_Module_ContentNode_Abstract {
     private $H5PValidator;
     private $H5PStorage;
     private static $settings = array();
-    private $dbFile;
 
     public function __construct($Name, ESRender_Application_Interface $RenderApplication, ESObject $p_esobject, Logger $Logger, Phools_Template_Interface $Template) {
         global $CC_RENDER_PATH;
@@ -73,7 +72,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $contentHash = $this->esObject->getContentHash();
 
         //check if Content already exists in db & cache
-        $query = "SELECT id FROM h5p_contents WHERE title='".$this->esObject->getObjectID()."-".$contentHash."'";
+        $query = 'SELECT id FROM h5p_contents WHERE title = '.$db->quote($this->esObject->getObjectID().'-'.$contentHash);
         $statement = $db -> query($query);
         $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
@@ -89,10 +88,8 @@ extends ESRender_Module_ContentNode_Abstract {
 
                 if($this->H5PValidator->isValidPackage()){
                     $this->H5PStorage->savePackage(array('title' => $this->esObject->getObjectID()."-".$contentHash, 'disable' => 0));
-
-                    $query = "UPDATE h5p_contents SET description='".$this->esObject->getTitle()."' WHERE id=".$this->H5PCore->loadContent($this->H5PFramework->id)['id'];
-                    $statement = $db -> query($query);
-                    $results = $statement->execute();
+                    $query = 'UPDATE h5p_contents SET updated_at = CURRENT_TIMESTAMP, description = '.$db->quote($this->esObject->getTitle()).' WHERE id = '.$this->H5PCore->loadContent($this->H5PFramework->id)['id'];
+                    $results = $db -> query($query);
                     $Logger -> debug('h5p saved: '.$this->esObject->getTitle());
                 }else{
                     $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));

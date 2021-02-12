@@ -106,6 +106,7 @@ private $content = NULL;
         }
 
         // Get library
+        error_log("handle content creation: ".$_REQUEST['library']);
         $content['library'] = $this->H5PCore->libraryFromString($_REQUEST['library']);
         if (!$content['library']) {
            // $this->H5PCore->h5pF->setErrorMessage(__('Invalid library.', $this->plugin_slug));

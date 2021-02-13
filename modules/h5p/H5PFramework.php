@@ -257,7 +257,7 @@ class H5PFramework implements H5PFrameworkInterface {
      */
     public function getLibraryId($machineName, $majorVersion = NULL, $minorVersion = NULL)
     {
-        error_log('getLibraryID: '.$machineName);
+        ;; error_log('getLibraryID: '.$machineName);
         global $db;
 
         $sql_major = ($majorVersion !== null) ? (int)$majorVersion : ' ANY ';
@@ -267,7 +267,7 @@ class H5PFramework implements H5PFrameworkInterface {
         $statement = $db -> query('SELECT id FROM h5p_libraries WHERE name = '.$db->quote($machineName)
             . ' AND major_version = '. $sql_major .' AND minor_version = ' . $sql_minor . ' ORDER BY major_version DESC, minor_version DESC, patch_version DESC LIMIT 1');
         $row= $statement->fetch();
-        error_log(print_r($row,true));
+        ;; error_log(print_r($row,true));
         return $row['id'] ?? FALSE;
     }
 
@@ -400,7 +400,7 @@ class H5PFramework implements H5PFrameworkInterface {
             $library['hasIcon'] = 0;
         }
         $library['hasIcon'] ? $hasIcon = 1 : $hasIcon = 0;
-        error_log("before: ".print_r($library,true));
+        ;; error_log("before: ".print_r($library,true));
         if ($new) {
             $result = $db->exec('INSERT INTO h5p_libraries '.
                 '(name,title,major_version,minor_version,patch_version,runnable,fullscreen,embed_types,preloaded_js,preloaded_css,drop_library_css,semantics,tutorial_url,has_icon) '
@@ -409,11 +409,11 @@ class H5PFramework implements H5PFrameworkInterface {
             $library['libraryId'] = ($db->getDriver() === 'pgsql')
                     ? $db->lastInsertId('h5p_libraries_id_seq')
                     : $db->lastInsertId();
-               error_log("new == true: ".print_r($library,true));
+               ;; error_log("new == true: ".print_r($library,true));
 
         } else {
 
-            error_log("new == false: ".print_r($library,true));
+            ;; error_log("new == false: ".print_r($library,true));
 
 
             $db->query('UPDATE h5p_libraries SET '.
@@ -747,7 +747,7 @@ class H5PFramework implements H5PFrameworkInterface {
      */
     public function loadLibrarySemantics($machineName, $majorVersion, $minorVersion)
     {
-        error_log("loadlibrarysemantics: ".$machineName);
+        ;; error_log("loadlibrarysemantics: ".$machineName);
         global $db;
         $prep = $db->query('SELECT semantics FROM h5p_libraries WHERE name = '.$db->quote($machineName).' AND major_version = '.(int)$majorVersion.' AND minor_version = '.(int)$minorVersion);
         $semantics = $prep->fetchColumn();
@@ -852,7 +852,7 @@ class H5PFramework implements H5PFrameworkInterface {
        WHERE hc.id = '.(int)$id);
 
         $content = $prep->fetch();
-        error_log(print_r($content,true));
+        ;; error_log(print_r($content,true));
         $content['metadata'] = []; // @todo fetch this from content lib?
         return $content;
     }

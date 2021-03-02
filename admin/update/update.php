@@ -450,7 +450,7 @@ function run($installedVersion) {
 
         // 6.0.99 migrates h5p from sqlite to mysql/postgresql
         if(version_compare ( '6.0.99', $installedVersion ) > 0) {
-            $h5p_ddl = file_get_contents(INST_PATH_TMPL . 'sql' . DIRECTORY_SEPARATOR . 'h5p.ddl');
+            $h5p_ddl = file_get_contents(dirname(__FILE__) . '/../../' . 'install' . DIRECTORY_SEPARATOR . '_tmpl' . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR . 'h5p.ddl');
             $stmt = $pdo->exec($h5p_ddl);
 
             // clear h5p cache

@@ -13,7 +13,7 @@ $id = uniqid();
     <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
     <div class="edusharing_rendering_content_wrapper" role="main">
         <?php if(empty($h5p_new)){ ?>
-            <iframe src="<?php echo $iframeurl?>" style="max-width:1200px;border:none" allowfullscreen="allowfullscreen" frameBorder="0" scrolling="no"></iframe>
+            <iframe src="<?php echo $iframeurl?>" style="width:85%;border:none" allowfullscreen="allowfullscreen" allow="camera *;microphone *" frameBorder="0" scrolling="no"></iframe>
             <script src="<?php echo $MC_URL; ?>/modules/h5p/h5p-resizer.js" charset="UTF-8"></script>
         <?php }else{ ?>
             <h3><?php echo $h5p_new?></h3>

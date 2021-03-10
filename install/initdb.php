@@ -78,11 +78,17 @@ extends Step {
         $this -> lang_id = empty($post['DEF_LANG']) ? 1 : intval($_REQUEST['DEF_LANG']);
 
         try {
+            $this -> options = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            ];
+
+            if ($this->db_drvr === 'mysql') {
+                array_push($options, PDO::MYSQL_ATTR_INIT_COMMAND, 'SET sql_mode="ANSI,NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS"');
+            }
+
             $this -> pdo = new PDO(
-                $this -> db_drvr . ':host=' . $this -> db_host . ';port=' . $this -> db_port  . ';dbname=' . $this -> db_name, $this -> db_user, $this -> db_pass,
-                (db_drv === 'mysql')
-                    ? array(PDO::ATTR_EMULATE_PREPARES, (!$this->db_prepare) ?: false, PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode="ANSI,NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS"')
-                    : array(PDO::ATTR_EMULATE_PREPARES, (!$this->db_prepare) ?: false, PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION));
+                $this -> db_drvr . ':host=' . $this -> db_host . ';port=' . $this -> db_port  . ';dbname=' . $this -> db_name, $this -> db_user, $this -> db_pass, $this->options);
+
         } catch (PDOException $e) {
             return $this -> error(sprintf($e -> getMessage(), MC_BASE_DIR));
         }

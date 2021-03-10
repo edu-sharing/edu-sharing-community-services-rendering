@@ -93,6 +93,7 @@ class execute
     function getDbUser() { return $this->db_user; }
     function getDbPass() { return $this->db_pass; }
     function getDbName() { return $this->db_name; }
+    function getPrepare() { return true; }
     
 
 

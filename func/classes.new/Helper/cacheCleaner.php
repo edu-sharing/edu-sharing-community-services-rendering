@@ -2,7 +2,7 @@
 
 define('RATIO_MAX', 0.08);
 
-error_reporting(0);
+//error_reporting(0);
 
 require_once(__DIR__ . '/../../../conf.inc.php');
 require_once(__DIR__ . '/../RsPDO.php');

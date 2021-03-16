@@ -21,6 +21,7 @@ class Version {
 		$stmt = $pdo -> prepare($sql);
 		$stmt -> execute();
 		$result = $stmt -> fetchObject();
+		error_log($result->VERSION_VNUMBER);
 		return $result -> VERSION_VNUMBER;
 	}
 }

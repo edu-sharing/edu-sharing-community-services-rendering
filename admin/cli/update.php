@@ -1,6 +1,6 @@
 <?php
 define('CLI_MODE', true);
-error_reporting(E_ERROR);
+//error_reporting(E_ERROR);
 
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'conf.inc.php';
 

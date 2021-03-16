@@ -12,7 +12,7 @@ class RsPDO extends PDO {
     private $driver = '';
     private $emulate_prepares = false;
 
-    static public function getInstance() {
+    public static function getInstance() {
         if (null === self::$instance) {
             self::$instance = new self;
         }
@@ -33,14 +33,17 @@ class RsPDO extends PDO {
         if(!in_array($this -> driver, IMPLEMENTED_DRIVERS))
             throw new Exception('DB driver invalid or not implemented yet.');
 
-        $this -> options = [
-            PDO::ATTR_EMULATE_PREPARES => $this->emulate_prepares,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        ];
+        $options = [];
 
-        if ($this->driver === 'mysql') array_push($options, PDO::MYSQL_ATTR_INIT_COMMAND, 'SET sql_mode="ANSI,NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS"');
+        if ($this->db_drvr === 'mysql') {
+            $options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode="ANSI,NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS"',
+                             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+        }
+        if ($this->db_drvr === 'pgsql') {
+            $options = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+        }
 
-        parent::__construct($dsn, $dbuser, $pwd, $options);
+        parent::__construct($this->dsn, $this->dbuser, $this->pwd, $options);
     }
     
     public function getDriver() {

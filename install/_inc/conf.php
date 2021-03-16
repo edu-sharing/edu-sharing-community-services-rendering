@@ -7,8 +7,8 @@
 */
 
 
-ini_set('display_errors', 0);
-error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE);
+//ini_set('display_errors', 0);
+//error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE);
 $_REQUEST = array_merge($_GET, $_POST);
 
 $supported_lang  = array();

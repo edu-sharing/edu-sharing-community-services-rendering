@@ -6,6 +6,23 @@
 *
 */
 
+function getStep($_req)
+{
+    if (!isset($_req['step']))
+    {
+        return 0;
+    }
+
+    $step = intval($_req['step']) + 1;
+
+    if ($step < 0)
+    {
+        return 0;
+    }
+
+    return $step;
+} // end method getStep
+
 @set_time_limit(0);
 $localDir = '.' . DIRECTORY_SEPARATOR;
 
@@ -39,7 +56,8 @@ if ( @file_exists($localDir . 'install' . DIRECTORY_SEPARATOR . 'install.php') )
 require_once($localDir . '_inc' . DIRECTORY_SEPARATOR . 'conf.php');
 require_once(INST_PATH_LIB.'Step.php');
 
-$step = Step::getStep($_REQUEST);
+$step = getStep($_REQUEST);
+
 
 $list = array(
     'welcome',

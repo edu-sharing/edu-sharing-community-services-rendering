@@ -8,7 +8,7 @@
 
 
 define("install_logo",  "_img/edulogo.png");
-define("install_headline",  "edu-sharing Renderingservice ".$version_info . " Installation");
+define("install_headline",  "edu-sharing Renderingservice Installation");
 //define("install_intro", "Diese Version unterstützt PHP 5.x / MySQL 5.x.<br>");
 define("install_submit",      "Senden");
 define("install_save",      "Speichern");

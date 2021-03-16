@@ -11,23 +11,6 @@ class Step
 {
 	private $msg = array();
 
-	function getStep($_req)
-	{
-		if (!isset($_req['step']))
-		{
-			return 0;
-		}
-
-		$step = intval($_req['step']) + 1;
-
-		if ($step < 0)
-		{
-			return 0;
-		}
-
-		return $step;
-	} // end method getStep
-
 	function getMsg()         { return (implode('', $this->msg)); }
 
 	function msg($p_msg)      { ob_start(); SysMsg::showMsg($p_msg);     $this->msg[] = ob_get_clean(); return false; }

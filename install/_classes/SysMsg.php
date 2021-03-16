@@ -1,38 +1,11 @@
 <?php
-/*
-* $McLicense$
-*
-* $Id$
-*
-*/
 
-/**
- * SysMsg
- *
- * @author [Autor]
- * @version 1.0
- * @package core
- * @subpackage classes.new
- */
 class SysMsg
 {
 
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-  //                                                                                            //
-  //                   K O N S T R U K T O R  /  D E K O N S T R U K T O R                      //
-  //                                                                                            //
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-  /**
-  * Konstruktor
-  */
-  function SysMsg()
+  public function __construct()
   {
-		return true;
-  } // Ende Konstruktor
-
+  }
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +22,7 @@ class SysMsg
   *
   * @param	string	$msg	benutzerdefinierte Information
   */
-  function showMsg($p_msg, $p_send_header = false)
+  public static function showMsg($p_msg, $p_send_header = false)
   {
     return SysMsg::showMessage($p_msg, $p_send_header, false, 'msg');
   } // Ende Methode showMsg
@@ -63,7 +36,7 @@ class SysMsg
   *
   * @param	string	$msg	benutzerdefinierte Information
   */
-  function showInfo($p_msg, $p_send_header = false, $p_show_big = false)
+  public static function showInfo($p_msg, $p_send_header = false, $p_show_big = false)
   {
     return SysMsg::showMessage($p_msg, $p_send_header, $p_show_big, 'info');
   } // Ende Methode showInfo
@@ -77,7 +50,7 @@ class SysMsg
   *
   * @param	string	$msg	benutzerdefinierte Warnung
   */
-  function showWarning($p_msg, $p_send_header = false, $p_show_big = false)
+  public static function showWarning($p_msg, $p_send_header = false, $p_show_big = false)
   {
     return SysMsg::showMessage($p_msg, $p_send_header, $p_show_big, 'warning');
   } // Ende Methode showWarning
@@ -92,7 +65,7 @@ class SysMsg
   *
   * @param	string	$msg	benutzerdefinierte Warnung
   */
-  function showError($p_msg, $p_send_header = false, $p_show_big = false)
+  public static function showError($p_msg, $p_send_header = false, $p_show_big = false)
   {
     return SysMsg::showMessage($p_msg, $p_send_header, $p_show_big, 'error');
   } // Ende Methode showError
@@ -107,7 +80,7 @@ class SysMsg
   *
   * @param	string	$msg	benutzerdefinierte Warnung
   */
-  function showTask($p_msg, $p_send_header = false, $p_show_big = false)
+  public static function showTask($p_msg, $p_send_header = false, $p_show_big = false)
   {
     return SysMsg::showMessage($p_msg, $p_send_header, $p_show_big, 'task');
   } // Ende Methode showTask
@@ -122,7 +95,7 @@ class SysMsg
   *
   * @param	string	$msg	benutzerdefinierte Warnung
   */
-  function showNote($p_msg, $p_send_header = false, $p_show_big = false)
+  public static function showNote($p_msg, $p_send_header = false, $p_show_big = false)
   {
     return SysMsg::showMessage($p_msg, $p_send_header, $p_show_big, 'note');
   } // Ende Methode showTask
@@ -137,7 +110,7 @@ class SysMsg
   *
   * @param	string	$msg	benutzerdefinierte Warnung
   */
-  function showAction($p_msg, $p_send_header = false, $p_show_big = false)
+  public static function showAction($p_msg, $p_send_header = false, $p_show_big = false)
   {
     return SysMsg::showMessage($p_msg, $p_send_header, $p_show_big, 'action');
   } // Ende Methode showTask
@@ -152,7 +125,7 @@ class SysMsg
   *
   * @param	string	$msg	benutzerdefinierte Warnung
   */
-  function showHit($p_msg, $p_send_header = false, $p_show_big = false)
+  public static function showHit($p_msg, $p_send_header = false, $p_show_big = false)
   {
     return SysMsg::showMessage($p_msg, $p_send_header, $p_show_big, 'hit');
   } // Ende Methode showTask
@@ -162,7 +135,7 @@ class SysMsg
   /**
   *
   */
-  function showMessage($p_msg, $p_send_header, $p_show_big, $p_msg_type)
+  public static function showMessage($p_msg, $p_send_header, $p_show_big, $p_msg_type)
   {
 		//$icon_url  = null;
 		$class     = '';
@@ -225,7 +198,7 @@ class SysMsg
   *
   * @param	string	$msg	benutzerdefinierte Warnung
   */
-  function display($msg, $sendHeader = false)
+  public static function display($msg, $sendHeader = false)
   {
   	if ($sendHeader)
   	{
@@ -272,7 +245,7 @@ MSGHEADER;
   * @param string	$p_string nachricht
   * @author				Steffen Groß
   */
-	function stripHTML($p_string)
+	public static function stripHTML($p_string)
 	{
 		if (is_string($p_string) == false)
 		{

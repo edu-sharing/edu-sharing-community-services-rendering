@@ -43,7 +43,6 @@ extends Step {
             return false;
         }
 
-        $this -> writeLog('_REQUEST', $post);
 
        /* $this -> scheme = trim($post['URL_SCHEME']);
         $this -> host = trim($post['URL_HOST']);
@@ -77,17 +76,25 @@ extends Step {
 
         $this -> lang_id = empty($post['DEF_LANG']) ? 1 : intval($_REQUEST['DEF_LANG']);
 
+        if(!in_array($this -> db_drvr, array("pgsql", "mysql")))
+            return $this ->error('DB driver invalid or not implemented yet.');
+
+        $this -> writeLog('_REQUEST', $post);
+
+
         try {
-            $this -> options = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-            ];
+            $options = [];
 
             if ($this->db_drvr === 'mysql') {
-                array_push($options, PDO::MYSQL_ATTR_INIT_COMMAND, 'SET sql_mode="ANSI,NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS"');
+                $options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode="ANSI,NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS"',
+                                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+            }
+            if ($this->db_drvr === 'pgsql') {
+                $options = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
             }
 
-            $this -> pdo = new PDO(
-                $this -> db_drvr . ':host=' . $this -> db_host . ';port=' . $this -> db_port  . ';dbname=' . $this -> db_name, $this -> db_user, $this -> db_pass, $this->options);
+            $dsn = $this -> db_drvr . ':host=' . $this -> db_host . ';port=' . $this -> db_port  . ';dbname=' . $this -> db_name;
+            $this -> pdo = new PDO($dsn, $this -> db_user, $this -> db_pass, $options);
 
         } catch (PDOException $e) {
             return $this -> error(sprintf($e -> getMessage(), MC_BASE_DIR));
@@ -215,29 +222,28 @@ extends Step {
     /**
      *
      */
-    function createTables() {
+    function createTables()
+    {
         $created = 0;
-        try {
-            $this->pdo ->beginTransaction();
-            foreach ($this -> all_tables as $name => $definition) {
+
+        foreach ($this->all_tables as $name => $definition) {
+            try {
                 //drop all tables then create new
-                $stm = $this -> pdo -> prepare('DROP TABLE IF EXISTS "' . $name . '"');
-                $stm -> execute();
-                $stm = $this -> pdo -> exec($definition);
+                $stm = $this->pdo->exec('DROP TABLE IF EXISTS "' . $name . '"');
+                $stm = $this->pdo->exec($definition);
                 $created++;
+            } catch (PDOException $e) {
+                error_log($e);
+                $this->error(sprintf($e->getMessage()));
             }
-            if (!empty($created)) {
-                if(defined('CLI_MODE') && CLI_MODE)
-                    echo '[OK] Create ' . $created . ' Tables' . PHP_EOL;
-                else
-                    $this -> info(sprintf(install_msg_table_count_create, $created));
-            }
-            $this->pdo->commit();
-            $this -> writeLog('tables_created', $created);
-        } catch (PDOException $e) {
-            $this->pdo->rollBack();
-            $this->error(sprintf($e -> getMessage()));
         }
+        if (!empty($created)) {
+            if (defined('CLI_MODE') && CLI_MODE)
+                echo '[OK] Create ' . $created . ' Tables' . PHP_EOL;
+            else
+                $this->info(sprintf(install_msg_table_count_create, $created));
+        }
+        $this->writeLog('tables_created', $created);
 
         return true;
     }
@@ -251,7 +257,6 @@ extends Step {
         $srcPath = INST_PATH_TMPL . 'sql' . DIRECTORY_SEPARATOR;
 
         try {
-            $this->pdo->beginTransaction();
             foreach ($this->all_tables as $name => $content) {
                 $src = $srcPath . $name . '.sql';
 
@@ -263,7 +268,6 @@ extends Step {
                 $stm = $this->pdo->exec($insert);
                 $loaded++;
             }
-            $this->pdo->commit();
 
         } catch (Exception $e) {
             if (defined('CLI_MODE') && CLI_MODE)

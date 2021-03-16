@@ -20,8 +20,8 @@ class welcome
     {
         global $ilang, $supported_lang;
 
-        $phpVersionRequired = '5.3.0';
-        $phpVersionCurrent = phpversion();
+        $phpVersionRequired = '7.1.0';
+        $phpVersionCurrent = PHP_VERSION;
                 if (version_compare($phpVersionCurrent, $phpVersionRequired, '<'))
                 {
                         SysMsg::showError("Your php version {$phpVersionCurrent} is too low!<br>");
@@ -33,7 +33,7 @@ class welcome
         foreach ($supported_lang as $lang_id => $lang_iso)
         {
             $selected = ($lang_id == INST_LANG_ID) ? 'selected="selected"' : '';
-            if($lang_iso == EN)
+            if($lang_iso == 'EN')
                 $langStr = 'English';
             if($lang_iso == 'DE')
                 $langStr = 'deutsch';

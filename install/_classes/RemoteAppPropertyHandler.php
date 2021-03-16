@@ -49,7 +49,6 @@ class RemoteAppPropertyHandler {
 
         // save properties
         $fileName = 'app-' . $appId . '.properties.xml';
-        var_dump($this -> propertiesXml);
         if (!($this -> propertiesXml -> asXml(MC_BASE_DIR . 'conf' . DIRECTORY_SEPARATOR . 'esmain' . DIRECTORY_SEPARATOR . $fileName)))
             $this -> exc -> error(install_err_save_props_homerep);
        // else

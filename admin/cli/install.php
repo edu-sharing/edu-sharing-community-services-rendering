@@ -1,6 +1,6 @@
 <?php
 define('CLI_MODE', true);
-error_reporting(E_ERROR);
+//error_reporting(E_ERROR);
 
 function recurse_copy($src,$dst) {
     $dir = opendir($src);

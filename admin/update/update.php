@@ -454,7 +454,7 @@ function run($installedVersion) {
             $h5p_ddl = file_get_contents(dirname(__FILE__, 3). DIRECTORY_SEPARATOR. 'install' . DIRECTORY_SEPARATOR . '_tmpl' . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR . 'h5p.ddl');
             $stmt = $pdo->exec($h5p_ddl);
 
-            // clear h5p cache
+            // clear h5p cache !!!!!!!NOT WORKING YET
             \h5p_install\sweep_h5p();
 
         }

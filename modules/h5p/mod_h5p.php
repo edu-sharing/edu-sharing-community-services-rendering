@@ -92,7 +92,8 @@ extends ESRender_Module_ContentNode_Abstract {
                     $results = $db -> query($query);
                     $Logger -> debug('h5p saved: '.$this->esObject->getTitle());
                 }else{
-                    $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
+                    $messagesArray = array_values($this->H5PFramework->getMessages('error'));
+                    $h5p_error = end($messagesArray);
                     $Logger -> debug('There was a problem with the H5P-file ('.$this->esObject->getObjectID().'): '.$h5p_error->code);
                     $template_data['h5p_new'] = 'There was a problem with the H5P-file: '.$h5p_error->code.'<br>'.$h5p_error->message;
                     echo $this -> getTemplate() -> render($TemplateName, $template_data);
@@ -257,8 +258,7 @@ extends ESRender_Module_ContentNode_Abstract {
         }
     }
 
-    public function get_content_settings($content)
-    {
+    public function get_content_settings($content) {
         $core = $this->H5PCore;
         $safe_parameters = $core->filterParameters($content);
 
@@ -278,6 +278,7 @@ extends ESRender_Module_ContentNode_Abstract {
                                     "copyright"=> true, // Display copyright button
                                     "icon"=> true // Display H5P icon
                                 ],
+            'metadata' => $content['metadata'],
             'contentUserData' => array(
                 0 => array(
                     'state' => '{}'

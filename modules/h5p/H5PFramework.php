@@ -3,8 +3,6 @@ require_once(__DIR__ .'/config.php');
 
 class H5PFramework implements H5PFrameworkInterface {
 
-
-
     private $messages = array('error' => array(), 'info' => array());
     public $id;
 
@@ -18,8 +16,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *   - version: The version of the platform, for instance "4.0"
      *   - h5pVersion: The version of the H5P plugin/module
      */
-    public function getPlatformInfo()
-    {
+    public function getPlatformInfo() {
         return array('name' => 'edu-sharing', 'version' => '1.0', 'h5pVersion' => H5P_Version);
     }
 
@@ -54,8 +51,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param string $stream Path to where the file should be saved.
      * @return string The content (response body). NULL if something went wrong
      */
-    public function fetchExternalData($url, $data = NULL, $blocking = TRUE, $stream = NULL)
-    {
+    public function fetchExternalData($url, $data = NULL, $blocking = TRUE, $stream = NULL, $fullData = FALSE, $headers = array(), $files = array(), $method = 'POST'){
         @set_time_limit(0);
         if ($data !== NULL) {
             // Post
@@ -101,8 +97,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param string $machineName
      * @param string $tutorialUrl
      */
-    public function setLibraryTutorialUrl($machineName, $tutorialUrl)
-    {
+    public function setLibraryTutorialUrl($machineName, $tutorialUrl) {
         return '';
     }
 
@@ -112,8 +107,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param string $message The error message
      * @param string $code An optional code
      */
-    public function setErrorMessage($message, $code = NULL)
-    {
+    public function setErrorMessage($message, $code = NULL) {
         $this->messages['error'][] = (object)array(
             'code' => $code,
             'message' => $message
@@ -126,8 +120,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param string $message
      *  The error message
      */
-    public function setInfoMessage($message)
-    {
+    public function setInfoMessage($message) {
         $this->messages['info'][] = $message;
     }
 
@@ -137,8 +130,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param string $type 'info' or 'error'
      * @return string[]
      */
-    public function getMessages($type)
-    {
+    public function getMessages($type) {
         if (empty($this->messages[$type])) {
             return NULL;
         }
@@ -163,8 +155,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @return string Translated string
      * Translated string
      */
-    public function t($message, $replacements = array())
-    {
+    public function t($message, $replacements = array()) {
         $message = preg_replace('/(!|@|%)[a-z0-9-]+/i', '%s', $message);
         return vsprintf($message, $replacements);
     }
@@ -175,8 +166,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param string $fileName
      * @return string URL to file
      */
-    public function getLibraryFileUrl($libraryFolderName, $fileName)
-    {
+    public function getLibraryFileUrl($libraryFolderName, $fileName) {
         return __DIR__ . DIRECTORY_SEPARATOR . 'libraries' . DIRECTORY_SEPARATOR . $libraryFolderName . DIRECTORY_SEPARATOR . $fileName;
     }
 
@@ -208,8 +198,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *   Associative array containing one entry per machine name.
      *   For each machineName there is a list of libraries(with different versions)
      */
-    public function loadLibraries()
-    {
+    public function loadLibraries() {
         global $db;
 
         $query = "SELECT id, name, title, major_version, minor_version, patch_version, runnable, restricted
@@ -237,8 +226,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @return string
      *   URL to admin page
      */
-    public function getAdminUrl()
-    {
+    public function getAdminUrl() {
         return '';
     }
 
@@ -255,9 +243,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @return int
      *   The id of the specified library or FALSE
      */
-    public function getLibraryId($machineName, $majorVersion = NULL, $minorVersion = NULL)
-    {
-        ;; error_log('getLibraryID: '.$machineName);
+    public function getLibraryId($machineName, $majorVersion = NULL, $minorVersion = NULL) {
         global $db;
 
         $sql_major = ($majorVersion !== null) ? (int)$majorVersion : ' ANY ';
@@ -266,8 +252,7 @@ class H5PFramework implements H5PFrameworkInterface {
         // Get the lastest version which matches the input parameters
         $statement = $db -> query('SELECT id FROM h5p_libraries WHERE name = '.$db->quote($machineName)
             . ' AND major_version = '. $sql_major .' AND minor_version = ' . $sql_minor . ' ORDER BY major_version DESC, minor_version DESC, patch_version DESC LIMIT 1');
-        $row= $statement->fetch();
-        ;; error_log(print_r($row,true));
+        $row= $statement->fetch();;
         return $row['id'] ?? FALSE;
     }
 
@@ -302,8 +287,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *   TRUE if the library is a patched version of an existing library
      *   FALSE otherwise
      */
-    public function isPatchedLibrary($library)
-    {
+    public function isPatchedLibrary($library) {
         global $db;
 
         $query = 'SELECT id 
@@ -337,8 +321,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *  TRUE if the user is allowed to update libraries
      *  FALSE if the user is not allowed to update libraries
      */
-    public function mayUpdateLibraries()
-    {
+    public function mayUpdateLibraries() {
         return true;
     }
 
@@ -370,8 +353,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param bool $new
      * @return
      */
-    public function saveLibraryData(&$library, $new = TRUE)
-    {
+    public function saveLibraryData(&$library, $new = TRUE) {
         global $db;
 
         $preloadedJs = $this->pathsToCsv($library, 'preloadedJs');
@@ -400,7 +382,6 @@ class H5PFramework implements H5PFrameworkInterface {
             $library['hasIcon'] = 0;
         }
         $library['hasIcon'] ? $hasIcon = 1 : $hasIcon = 0;
-        ;; error_log("before: ".print_r($library,true));
         if ($new) {
             $result = $db->exec('INSERT INTO h5p_libraries '.
                 '(name,title,major_version,minor_version,patch_version,runnable,fullscreen,embed_types,preloaded_js,preloaded_css,drop_library_css,semantics,tutorial_url,has_icon) '
@@ -409,12 +390,7 @@ class H5PFramework implements H5PFrameworkInterface {
             $library['libraryId'] = ($db->getDriver() === 'pgsql')
                     ? $db->lastInsertId('h5p_libraries_id_seq')
                     : $db->lastInsertId();
-               ;; error_log("new == true: ".print_r($library,true));
-
         } else {
-
-            ;; error_log("new == false: ".print_r($library,true));
-
 
             $db->query('UPDATE h5p_libraries SET '.
                     'title = '. $db->quote($library['title']) .','.
@@ -467,8 +443,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param int $contentMainId
      *   Main id for the content if this is a system that supports versions
      */
-    public function insertContent($content, $contentMainId = NULL)
-    {
+    public function insertContent($content, $contentMainId = NULL) {
         return $this->updateContent($content);//as wordpress does
     }
 
@@ -484,8 +459,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param int $contentMainId
      *   Main id for the content if this is a system that supports versions
      */
-    public function updateContent($content, $contentMainId = NULL)
-    {
+    public function updateContent($content, $contentMainId = NULL) {
         global $db;
 
         if (!isset($content['id'])) {
@@ -527,8 +501,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *   - preloaded
      *   - dynamic
      */
-    public function saveLibraryDependencies($libraryId, $dependencies, $dependency_type)
-    {
+    public function saveLibraryDependencies($libraryId, $dependencies, $dependency_type) {
         global $db;
         $db->beginTransaction();
         foreach ($dependencies as $dependency) {
@@ -554,8 +527,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *   That supports versions. (In this case the content id will typically be
      *   the version id, and the contentMainId will be the frameworks content id
      */
-    public function copyLibraryUsage($contentId, $copyFromId, $contentMainId = NULL)
-    {
+    public function copyLibraryUsage($contentId, $copyFromId, $contentMainId = NULL) {
       global $db;
         $db->exec('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, weight, drop_css)
         SELECT '.(int)$contentId.', hcl.library_id, hcl.dependency_type, hcl.weight, hcl.drop_css
@@ -569,8 +541,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param int $contentId
      *   Id identifying the content
      */
-    public function deleteContentData($contentId)
-    {      global $db;
+    public function deleteContentData($contentId) {      global $db;
         $db->query('DELETE FROM h5p_contents WHERE id = ' . (int)$contentId);
     }
 
@@ -580,8 +551,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param int $contentId
      *   Content Id of the content we'll be deleting library usage for
      */
-    public function deleteLibraryUsage($contentId)
-    {
+    public function deleteLibraryUsage($contentId) {
         global $db;
         $db->query('DELETE FROM h5p_contents_libraries WHERE content_id = ' . (int)$contentId);
     }
@@ -602,8 +572,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *     - dynamic
      *     - preloaded
      */
-    public function saveLibraryUsage($contentId, $librariesInUse)
-    {
+    public function saveLibraryUsage($contentId, $librariesInUse) {
         global $db;
         $dropLibraryCssList = array();
         foreach ($librariesInUse as $dependency) {
@@ -634,8 +603,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *   - content: Number of content using the library
      *   - libraries: Number of libraries depending on the library
      */
-    public function getLibraryUsage($libraryId, $skipContent = FALSE)
-    {
+    public function getLibraryUsage($libraryId, $skipContent = FALSE) {
         global $db;
 
 
@@ -702,8 +670,7 @@ class H5PFramework implements H5PFrameworkInterface {
      *     - majorVersion: Major version for a library this library is depending on
      *     - minorVersion: Minor for a library this library is depending on
      */
-    public function loadLibrary($machineName, $majorVersion, $minorVersion)
-    {
+    public function loadLibrary($machineName, $majorVersion, $minorVersion) {
         global $db;
         $statement = $db->query('SELECT id as "libraryId", name as "machineName", title, major_version as "majorVersion", minor_version as "minorVersion", patch_version as "patchVersion",
           embed_types as "embedTypes", preloaded_js as "preloadedJs", preloaded_css as "preloadedCss", drop_library_css as "dropLibraryCss", fullscreen, runnable,
@@ -745,9 +712,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @return string
      *   The library's semantics as json
      */
-    public function loadLibrarySemantics($machineName, $majorVersion, $minorVersion)
-    {
-        ;; error_log("loadlibrarysemantics: ".$machineName);
+    public function loadLibrarySemantics($machineName, $majorVersion, $minorVersion) {
         global $db;
         $prep = $db->query('SELECT semantics FROM h5p_libraries WHERE name = '.$db->quote($machineName).' AND major_version = '.(int)$majorVersion.' AND minor_version = '.(int)$minorVersion);
         $semantics = $prep->fetchColumn();
@@ -766,8 +731,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param int $minorVersion
      *   The library's minor version
      */
-    public function alterLibrarySemantics(&$semantics, $machineName, $majorVersion, $minorVersion)
-    {
+    public function alterLibrarySemantics(&$semantics, $machineName, $majorVersion, $minorVersion) {
         // TODO: Implement alterLibrarySemantics() method.
     }
 
@@ -777,8 +741,7 @@ class H5PFramework implements H5PFrameworkInterface {
      * @param int $libraryId
      *   Library identifier
      */
-    public function deleteLibraryDependencies($libraryId)
-    {
+    public function deleteLibraryDependencies($libraryId) {
         global $db;
         $db->query('DELETE FROM h5p_libraries_libraries WHERE library_id = ' . (int)$libraryId);
     }
@@ -829,31 +792,50 @@ class H5PFramework implements H5PFrameworkInterface {
      *   - libraryEmbedTypes: CSV of the main library's embed types
      *   - libraryFullscreen: 1 if fullscreen is supported. 0 otherwise.
      */
-    public function loadContent($id)
-    {
+    public function loadContent($id) {
         global $db;
 
-        $prep = $db->query('SELECT hc.id,
-       hc.title,
-       hc.parameters AS "params",
-       hc.filtered,
-       hc.slug AS "slug",
-       hc.user_id,
-       hc.embed_type AS "embedType",
-       hc.disable,
-       hl.id AS "libraryId",
-       hl.name AS "libraryName",
-       hl.major_version AS "libraryMajorVersion",
-       hl.minor_version AS "libraryMinorVersion",
-       hl.embed_types AS "libraryEmbedTypes",
-       hl.fullscreen AS "libraryFullscreen"
-       FROM h5p_contents AS hc
-       JOIN h5p_libraries AS hl ON hl.id = hc.library_id
-       WHERE hc.id = '.(int)$id);
+        $prep = $db->query(
+            'SELECT hc.id,
+                           hc.title,
+                           hc.description,
+                           hc.parameters AS "params",
+                           hc.filtered,
+                           hc.slug AS "slug",
+                           hc.user_id,
+                           hc.embed_type AS "embedType",
+                           hc.disable,
+                           hl.id AS "libraryId",
+                           hl.name AS "libraryName",
+                           hl.major_version AS "libraryMajorVersion",
+                           hl.minor_version AS "libraryMinorVersion",
+                           hl.embed_types AS "libraryEmbedTypes",
+                           hl.fullscreen AS "libraryFullscreen"
+                       FROM h5p_contents AS hc
+                       JOIN h5p_libraries AS hl ON hl.id = hc.library_id
+                       WHERE hc.id = '.(int)$id);
 
         $content = $prep->fetch();
-        ;; error_log(print_r($content,true));
-        $content['metadata'] = []; // @todo fetch this from content lib?
+
+        if ($content !== NULL) {
+            $content['metadata'] = array();
+            $metadata_structure = array('title', 'authors', 'source', 'yearFrom', 'yearTo', 'license', 'licenseVersion', 'licenseExtras', 'authorComments', 'changes', 'defaultLanguage');
+            foreach ($metadata_structure as $property) {
+                if (!empty($content[$property])) {
+                    if ($property === 'authors' || $property === 'changes') {
+                        $content['metadata'][$property] = json_decode($content[$property]);
+                    }else if ($property === 'title'){ // since we use the title for nodeID, use description instead
+                        $content['metadata'][$property] = $content['description'];
+                    }else{
+                        $content['metadata'][$property] = $content[$property];
+                    }
+                    if ($property !== 'title') {
+                        unset($content[$property]); // Unset all except title
+                    }
+                }
+            }
+        }
+
         return $content;
     }
 
@@ -1152,5 +1134,25 @@ class H5PFramework implements H5PFrameworkInterface {
             $query .= '('.implode(',', $ks).') values ('.implode(',', $vs).')';
             $db -> query($query);
         }
+    }
+
+    public function replaceContentHubMetadataCache($metadata, $lang)
+    {
+        // TODO: Implement replaceContentHubMetadataCache() method.
+    }
+
+    public function getContentHubMetadataCache($lang = 'en')
+    {
+        // TODO: Implement getContentHubMetadataCache() method.
+    }
+
+    public function getContentHubMetadataChecked($lang = 'en')
+    {
+        // TODO: Implement getContentHubMetadataChecked() method.
+    }
+
+    public function setContentHubMetadataChecked($time, $lang = 'en')
+    {
+        // TODO: Implement setContentHubMetadataChecked() method.
     }
 }

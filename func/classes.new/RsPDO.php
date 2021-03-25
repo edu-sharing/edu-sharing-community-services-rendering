@@ -36,7 +36,7 @@ class RsPDO extends PDO {
         $options = [];
 
         if ($this->driver === 'mysql') {
-            $options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode="ANSI,NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS"',
+            $options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode="ANSI"',
                              PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
         }
         if ($this->driver === 'pgsql') {

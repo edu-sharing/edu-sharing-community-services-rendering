@@ -36,7 +36,7 @@
  	
  	private function initDbtool() {
  		global $MC_URL;
- 		header('Location: ' . $MC_URL . '/admin/vendor/adminer-4.7.1.php', TRUE, 302);
+ 		header('Location: ' . $MC_URL . '/admin/vendor/adminer-4.8.0.php', TRUE, 302);
  	}
 
      private function initH5ptool() {

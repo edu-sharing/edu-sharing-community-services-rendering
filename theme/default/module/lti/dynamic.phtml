@@ -13,7 +13,7 @@ $msg['ltiGotoProvider'] = new Phools_Message_Default('ltiGotoProvider');
 	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
 	<div class="edusharing_rendering_content_wrapper" role="main">
         <?php echo $applyDataProtectionRegulationsDialog?>
-		<iframe id="lti_frame_<?php echo $objectId?>" name="lti_frame_<?php echo $objectId?>" src="" style="display:none; border: none; width: 80%; min-height: 600px;margin: auto;"></iframe>
+		<iframe title="<?php echo $title?>" id="lti_frame_<?php echo $objectId?>" name="lti_frame_<?php echo $objectId?>" src="" style="display:none; border: none; width: 80%; min-height: 600px;margin: auto;"></iframe>
        <br/><a href="#" id="edusharing_rendering_content_href" class="edusharing_rendering_content"><?php echo $msg['ltiGotoProvider']->localize($Locale, $Translate)?></a>
 </div>
 	<?php echo $metadata; ?>

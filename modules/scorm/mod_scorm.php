@@ -99,42 +99,46 @@ extends ESRender_Module_ContentNode_Abstract {
 	 * enroll user
 	 * retrieve token for login
 	 * */
-	private function getUserToken() {
+    private function getUserToken() {
 
-		$logger = $this->getLogger();
-		
-		if(empty(MOODLE_BASE_DIR)) {
-			$logger->error('MOODLE_BASE_DIR not set');
-			return false;
-		}
-		
-		if(empty(MOODLE_TOKEN)) {
-			$logger->error('MOODLE_TOKEN not set');
-			return false;
-		}
-				
-		$url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_edusharing_handleuser&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
-		$ch = curl_init ();
-		curl_setopt ( $ch, CURLOPT_URL, $url );
-		curl_setopt ( $ch, CURLOPT_POST, true );
-		$params = array('user_name' => htmlentities($this -> esobject -> getData() -> user -> authorityName), 'user_givenname' => htmlentities($this -> esobject -> getData() -> user -> profile -> givenName), 'user_surname' => htmlentities($this -> esobject -> getData() -> user -> profile -> lastName), 'user_email' => htmlentities($this -> esobject -> getData() -> user -> profile -> email) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30 );
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		$resp = curl_exec($ch);
-		echo curl_error($ch);
-		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-		if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
-			$logger->error(json_decode($resp));
-			return json_decode($resp);
-		}
-		
-		$logger->error('Error retrieving user token - ' . $httpcode . ' ' . json_decode($resp)->exception);
-		return false;
-	}
+        $logger = $this->getLogger();
+
+        if(empty(MOODLE_BASE_DIR)) {
+            $logger->error('MOODLE_BASE_DIR not set');
+            return false;
+        }
+
+        if(empty(MOODLE_TOKEN)) {
+            $logger->error('MOODLE_TOKEN not set');
+            return false;
+        }
+
+        $url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_edusharing_handleuser&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
+        $ch = curl_init ();
+        curl_setopt ( $ch, CURLOPT_URL, $url );
+        curl_setopt ( $ch, CURLOPT_POST, true );
+        $params = array('user_name' => htmlentities($this -> esObject -> getData() -> user->authorityName),
+            'user_givenname' => htmlentities($this -> esObject->getData()->user->user_givenname),
+            'user_surname' => htmlentities($this -> esObject->getData()->user->profile->lastName),
+            'user_email' => htmlentities($this -> esObject->getData()->user->profile->email),
+            'courseid' => $this->getCourseId(),
+            'role' => 'student'); // or role 'editingteacher'
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 90 );
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $resp = curl_exec($ch);
+        echo curl_error($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
+            $logger->info('retrieved user token');
+            return json_decode($resp);
+        }
+        $logger->error('Error retrieving user token - ' . $httpcode . ' ' . json_decode($resp)->exception);
+        return false;
+    }
 
 	public function dynamic() {
 
@@ -186,7 +190,7 @@ extends ESRender_Module_ContentNode_Abstract {
 	}
 	
 	protected function getForwardUrl() {
-		return MOODLE_BASE_DIR . '/local/edusharing/forwardUser.php?token=' . urlencode($this-> getUserToken());
+		return MOODLE_BASE_DIR . '/local/edusharing_webservice/forwardUser.php?token=' . urlencode($this-> getUserToken());
 	}
 	
 	

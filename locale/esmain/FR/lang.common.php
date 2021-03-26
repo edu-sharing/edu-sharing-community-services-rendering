@@ -59,4 +59,5 @@ $Translate
 	->addTranslation('fr', 'goToOrigin', 'Aller à l`origine')
     ->addTranslation('fr', 'showDocument', 'Afficher le document')
 	->addTranslation('fr', 'showInLearningAppsOrg', 'Ouvert dans learningapps.org')
-    ->addTranslation('fr', 'hasNoContentLicense', 'Vous n\'êtes pas autorisé à utiliser le contenu en raison de restrictions de licence.');
+    ->addTranslation('fr', 'hasNoContentLicense', 'Vous n\'êtes pas autorisé à utiliser le contenu en raison de restrictions de licence.')
+    ->addTranslation('fr', 'imageDescriptionNotAvailable', 'An image description is not available.'); // not translated

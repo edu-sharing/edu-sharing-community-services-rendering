@@ -85,5 +85,6 @@ $Translate
     ->addTranslation('de', 'directoryOpen', 'Ordner öffnen und herunterladen')
     ->addTranslation('de', 'createdBy', 'Erstellt von')
     ->addTranslation('de', 'goToCourse', 'Zum Kurs springen')
-    ->addTranslation('de', 'inConversionQueue', 'Format wird konvertiert.');
+    ->addTranslation('de', 'inConversionQueue', 'Format wird konvertiert.')
+    ->addTranslation('de', 'imageDescriptionNotAvailable', 'Eine Beschreibung des Bildinhaltes ist leider nicht verfügbar.');
 

@@ -82,4 +82,5 @@ $Translate
     ->addTranslation('en', 'goToCourse', 'Go to course')
     ->addTranslation('en', 'inConversionQueue', 'Format is being converted.')
     ->addTranslation('en', 'Postition in queue', 'Postition in queue')
-    ->addTranslation('en', 'Resource is waiting for conversion.', 'Resource is waiting for conversion.');
+    ->addTranslation('en', 'Resource is waiting for conversion.', 'Resource is waiting for conversion.')
+    ->addTranslation('en', 'imageDescriptionNotAvailable', 'An image description is not available.');

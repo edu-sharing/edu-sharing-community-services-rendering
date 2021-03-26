@@ -49,4 +49,5 @@ $Translate
 	->addTranslation('zh', 'goToOrigin', 'Go to link location')
     ->addTranslation('zh', 'showDocument', 'Show document')
 	->addTranslation('zh', 'showInLearningAppsOrg', 'Open in learningapps.org')
-    ->addTranslation('zh', 'hasNoContentLicense', '由于许可限制，您不能使用这些内容.');
+    ->addTranslation('zh', 'hasNoContentLicense', '由于许可限制，您不能使用这些内容.')
+    ->addTranslation('zh', 'imageDescriptionNotAvailable', 'An image description is not available.'); // not translated

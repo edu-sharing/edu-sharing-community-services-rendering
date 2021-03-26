@@ -13,7 +13,7 @@ body {
 }
 
 .edusharing_rendering_wrapper {
-	background-color: #666;
+	background-color: #ebebeb;
 	padding: 0;
 	margin: 0;
 	font-size: 100%;
@@ -144,13 +144,13 @@ h1.edusharing_rendering_metadata_header_title {
 }
 
 .edusharing_rendering_content_wrapper h3, .edusharing_rendering_content_wrapper h4 {
-	color: #fff;
+	color: #585858;
 }
 
 .edusharing_rendering_content_wrapper h3 {
 	font-size: 120%;
 	font-weight: 600;
-	color: #ccc;
+	color: #585858;
 }
 
 .edusharing_rendering_content_wrapper h4 {
@@ -160,7 +160,7 @@ h1.edusharing_rendering_metadata_header_title {
 h1.edusharing_rendering_content_title {
 	font-size: 120%;
 	font-weight: 600;
-	color: #fff;
+	color: #585858;
 	text-align: center;
 }
 
@@ -221,7 +221,7 @@ img.edusharing_rendering_content_preview {
 }
 
 .renderservice_message {
-	color: #fff;
+	color: #585858;
 	font-size: 120%;
 }
 

@@ -127,8 +127,9 @@ extends ESRender_Module_ContentNode_Abstract {
             if($getDefaultData)
                 $template_data = parent::prepareRenderData($showMetadata);
 
-            if(Config::get('showMetadata'))
+            if(Config::get('showMetadata')){
                 $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+            }
 
             $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
             $template_data['title'] = $this->esObject->getTitle();

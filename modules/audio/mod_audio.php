@@ -52,9 +52,13 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     protected function prepareRenderData($getDefaultData = true, $showMetadata = true) {
     	
     	$data = array();
-    	
-    	if($getDefaultData)
-        	$data = parent::prepareRenderData($showMetadata);
+
+        if($getDefaultData){
+            $data = parent::prepareRenderData($showMetadata);
+            $data['css'] = true;
+        }else{
+            $data['css'] = false;
+        }
         
         $object_url = dirname($this -> esObject->getPath()) . '/' . basename($this->getOutputFilename($this)) . '?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         $data['audio_url'] = $object_url;

@@ -387,6 +387,15 @@ extends ESRender_Module_ContentNode_Abstract {
         return true;
 	}
 
+	/**
+	 * (non-PHPdoc)
+	 * @see ESRender_Module_ContentNode_Abstract::embed()
+	 */
+	protected function embed() {
+        echo $this -> renderTemplate('/module/h5p/embed');
+        return true;
+	}
+
 
     /**
      * Test if this object already exists for this module. This method

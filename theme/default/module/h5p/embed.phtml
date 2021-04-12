@@ -3,44 +3,19 @@ global $Locale, $Translate, $MC_URL;
 $msg = array();
 $msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
 ?>
+
 <style>
     <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
 </style>
-<script type="text/javascript"
-        src="<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-main.js"></script>
 
-<script type="text/javascript">
-    function waitForH5P(){
-        if(typeof H5P !== "undefined"){
-            (function($) {
-                $('.h5p-container').h5p({
-                    frameJs: '<?php echo $MC_URL?>/theme/default/module/h5p/dist/js/h5p-standalone-frame.min.js',
-                    frameCss: '<?php echo $MC_URL?>/theme/default/css/h5p.css',
-                    h5pContent: '<?php echo str_replace('cache/', '', $content)?>'
-                });
-            })(H5P.jQuery);
-        } else{
-            setTimeout(waitForH5P, 50);
-        }
-    }
-    waitForH5P();
-</script>
+<div>
+    <?php if(empty($h5p_new)){ ?>
+        <iframe src="<?php echo $iframeurl?>" style="width:85%;border:none" allowfullscreen="allowfullscreen" allow="camera *;microphone *" frameBorder="0" scrolling="no"></iframe>
+        <script src="<?php echo $MC_URL; ?>/modules/h5p/h5p-resizer.js" charset="UTF-8"></script>
+    <?php }else{ ?>
+        <h3><?php echo $h5p_new?></h3>
+    <?php } ?>
 
-
-<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-    <div class="edusharing_rendering_content_wrapper" role="main">
-        <h3 class="edusharing_rendering_content_ie_hint" style="display:none"><?php echo $msg['h5p_ie_hint']->localize($Locale, $Translate) ?></h3>
-        <div class="edusharing_rendering_content h5p-container" style="max-height: 100% !important"></div> <!-- style prevents overlapping with metadata - better fix iframe height -->
-    </div>
     <?php echo $footer?>
 </div>
-
-<script>
-    //for ie <= 11 show hint
-    if(window.navigator.userAgent.indexOf('MSIE ') > 0) {
-        var hints = document.getElementsByClassName('edusharing_rendering_content_ie_hint');
-        for (var i = 0; i < hints.length; i++) {
-            hints[i].style.display = 'block'
-        }
-    }
-</script>

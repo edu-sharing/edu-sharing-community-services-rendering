@@ -2,6 +2,11 @@
 global $MC_URL;
 ?>
 
+<style>
+    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
+</style>
+
 <div>
     <?php if(empty($h5p_new)){ ?>
         <iframe src="<?php echo $iframeurl?>" style="width:85%;border:none" allowfullscreen="allowfullscreen" allow="camera *;microphone *" frameBorder="0" scrolling="no"></iframe>
@@ -11,8 +16,4 @@ global $MC_URL;
     <?php } ?>
 
     <?php echo $footer?>
-    <style>
-        <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
-        <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
-    </style>
 </div>

@@ -29,6 +29,7 @@ switch( strtolower($display_kind) )
 
 	case ESRender_Application_Interface::DISPLAY_MODE_INLINE:
 	case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC:
+	case ESRender_Application_Interface::DISPLAY_MODE_EMBED:
 		header('Content-Disposition: inline; filename="' . $file_name . '"');
 		break;
 

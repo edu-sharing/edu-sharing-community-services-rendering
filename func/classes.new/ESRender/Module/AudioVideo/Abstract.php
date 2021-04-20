@@ -134,8 +134,10 @@ extends ESRender_Module_ContentNode_Abstract {
             pclose(popen("start /B ". $cmd, "r"));
         }
         else {
-            exec($cmd,$output);
-            error_log(print_r($output, TRUE));
+            exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
+            // this does not work! we want to open php asynchronous to not block the thread
+            //exec($cmd,$output);
+            //error_log(print_r($output, TRUE));
         }
 
         //exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");

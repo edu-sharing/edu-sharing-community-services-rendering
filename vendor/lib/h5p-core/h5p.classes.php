@@ -2043,9 +2043,9 @@ abstract class H5PContentStatus {
 abstract class H5PHubEndpoints {
   const CONTENT_TYPES = 'api.h5p.org/v1/content-types/';
   const SITES = 'api.h5p.org/v1/sites';
-  const METADATA = 'api-test.h5p.org/v1/metadata';
-  const CONTENT = 'api-test.h5p.org/v1/contents';
-  const REGISTER = 'api-test.h5p.org/v1/accounts';
+  const METADATA = 'hub-api.h5p.org/v1/metadata';
+  const CONTENT = 'hub-api.h5p.org/v1/contents';
+  const REGISTER = 'hub-api.h5p.org/v1/accounts';
 
   public static function createURL($endpoint) {
     $protocol = (extension_loaded('openssl') ? 'https' : 'http');
@@ -3670,7 +3670,7 @@ class H5PCore {
       'removeChip' => $this->h5pF->t('Remove :chip from the list'),
       'keywordsPlaceholder' => $this->h5pF->t('Add keywords'),
       'keywords' => $this->h5pF->t('Keywords'),
-      'keywordsDescription' => $this->h5pF->t('You can add multiple keywords. Press "Enter" to confirm each keyword'),
+      'keywordsDescription' => $this->h5pF->t('You can add multiple keywords separated by commas. Press "Enter" or "Add" to confirm keywords'),
       'altText' => $this->h5pF->t('Alt text'),
       'reviewMessage' => $this->h5pF->t('Please review the info below before you share'),
       'subContentWarning' => $this->h5pF->t('Sub-content (images, questions etc.) will be shared under :license unless otherwise specified in the authoring tool'),

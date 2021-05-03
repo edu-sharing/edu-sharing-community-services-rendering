@@ -427,6 +427,10 @@ function run($installedVersion) {
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
 
+            $sql ='ALTER TABLE "ESOBJECT" ALTER COLUMN "ESOBJECT_OBJECT_VERSION" TYPE varchar(40)';
+            $stmt = $pdo->prepare ( $sql );
+            $stmt->execute ();
+
             /*
              * Because content management as well as image and video processing has massively changed in this release it is not wrong to clear cache
              */

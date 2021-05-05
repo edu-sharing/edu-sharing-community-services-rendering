@@ -272,8 +272,9 @@ try {
 
     $Logger -> info('Successfully initialized instance.');
 
-    $originalDeleted = $ESObject -> getNodeProperty('{virtualproperty}originaldeleted');
-    if(!empty($originalDeleted)) {
+    // check if original is deleted
+    if($ESObject -> getNode() -> originalId == null && in_array("ccm:collection_io_reference", $ESObject -> getNode()->aspects)) {
+        $Logger -> info('The object to which this collection object refers is no longer present.');
         $ESObject -> renderOriginalDeleted(mc_Request::fetch('display', 'CHAR', 'dynamic'), $Template);
     }
 

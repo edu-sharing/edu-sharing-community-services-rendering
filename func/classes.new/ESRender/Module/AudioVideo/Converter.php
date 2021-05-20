@@ -137,8 +137,10 @@ class Converter {
         }
         $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
         if($code > 0) {
-            unlink($tmpName);
-            $object -> setConversionStateError($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $conv -> ESOBJECT_CONVERSION_RESOLUTION, $code);
+            if(file_exists($tmpName)){
+                unlink($tmpName);
+            }
+            $object -> setConversionStateError($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $code, $conv -> ESOBJECT_CONVERSION_RESOLUTION);
         } else {
             rename($tmpName, $conv -> ESOBJECT_CONVERSION_OUTPUT_FILENAME);
             $object -> setConversionStateProcessed($conv -> ESOBJECT_CONVERSION_OBJECT_ID, $conv -> ESOBJECT_CONVERSION_FORMAT, $conv -> ESOBJECT_CONVERSION_RESOLUTION);

@@ -114,6 +114,6 @@ H5P.xAPICompletedListener = function (event) {
     var score = event.getScore();
     var maxScore = event.getMaxScore();
     var contentId = event.getVerifiedStatementValue(['object', 'definition', 'extensions', 'http://h5p.org/x-api/h5p-local-content-id']);
-    H5P.setFinished(contentId, score, maxScore);
+    //H5P.setFinished(contentId, score, maxScore);
   }
 };

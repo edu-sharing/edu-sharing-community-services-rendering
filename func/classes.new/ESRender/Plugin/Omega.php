@@ -32,10 +32,11 @@ class ESRender_Plugin_Omega
             $esObject->getNodeProperty('cclom:format') .', replicationsourceid: ' . $esObject->getNodeProperty('ccm:replicationsourceid'));
 
         //check!
-        //if(Config::get('renderInfoLMSReturn') -> hasContentLicense === false) {
-        //    $logger->info('hasContentLicense is false');
-        //    return;
-        //}
+        if(Config::get('hasContentLicense') !== true) {
+            $logger->info('hasContentLicense is false');
+            return;
+        }
+
         /*
         if($esObject -> getContentHash() !== 0) {
             $logger->info('contentHash '.$esObject->getContentHash().' !== 0 handle as local object');
@@ -50,8 +51,9 @@ class ESRender_Plugin_Omega
 
         if ($esObject->getNodeProperty('ccm:replicationsource') == 'DE.FWU')  {
 
-            if($esObject->getNodeProperty('cclom:format') == '')
+            if($esObject->getNodeProperty('cclom:format') == ''){
                 $logger->info('Format is empty!');
+            }
 
             $response = $this->callAPI($esObject, $role);
             $response = $this->evaluateResponse($response, $esObject);

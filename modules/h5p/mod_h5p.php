@@ -411,10 +411,6 @@ extends ESRender_Module_ContentNode_Abstract {
 
         $pdo = RsPDO::getInstance();
 
-        ;; error_log('instanceExists()?');
-        ;; error_log($this -> esObject -> getRepId());
-        ;; error_log($this -> esObject -> getObjectID());
-
         try {
             $sql = 'SELECT * FROM "ESOBJECT" ' . 'WHERE "ESOBJECT_REP_ID" = :repid ' . 'AND "ESOBJECT_CONTENT_HASH" = :contenthash ' . 'AND "ESOBJECT_OBJECT_ID" = :objectid';
 

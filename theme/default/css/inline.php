@@ -220,6 +220,10 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
 
 }
 
+.edusharing_metadata_inner .mdsGroup .mdsContributorGroup {
+    margin-left: 15px;
+}
+
 .edusharing_warning {
     display: inline-block;
     background-color: #c6c6c6;

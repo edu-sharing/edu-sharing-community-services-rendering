@@ -913,7 +913,7 @@ class GIF_eXG {
         $str_img[$offset + 2] = $this->ar_frm[$gr_i]->off_xy[1];
         $str_img[$offset + 3] = $this->ar_frm[$gr_i]->off_xy[2];
         $str_img[$offset + 4] = $this->ar_frm[$gr_i]->off_xy[3];
-        $str_img[$offset + 9] = chr($str_img[$offset + 9] | 0x80 | (ord($str_img[10]) & 0x7));
+        @$str_img[$offset + 9] = chr($str_img[$offset + 9] | 0x80 | (ord($str_img[10]) & 0x7));
         $ms1 = substr($str_img, $hd, $i_hd + 10);
         if (!$this->ar_frm[$gr_i]->tr_frm) {
             $ms1 = $this->ar_frm[$gr_i]->gr_mod . $ms1;
@@ -938,7 +938,7 @@ class GIF_eXG {
         }for ($i = 0; $i < $this->lp_frm; $i++) {
             $f_buf.=$this->rm_fld($this->resize_img($this->cr_img($i), $i, $des), $i);
         }$gm = $this->gl_mn;
-        $gm[10] = $gm[10] & 0x7F;
+        @$gm[10] = $gm[10] & 0x7F;
         $bf_t = round($this->int_w * $des[0]);
         $t = $this->int_raw($bf_t ? $bf_t : 1);
         $gm[6] = $t[0];

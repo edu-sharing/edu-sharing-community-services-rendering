@@ -565,7 +565,7 @@ class ESObject {
             $result = $stmt -> execute();
             if(!$result)
                 throw new Exception('Error storing object in DB. ' . print_r($stmt -> errorInfo(), true));
-            $this -> id = ($pdo->getDriver() === 'pgsql') ? $pdo->lastInsertId('h5p_contents_id_seq') : $pdo->lastInsertId();
+            $this -> id = ($pdo->getDriver() === 'pgsql') ? $pdo->lastInsertId('h5p_contents_id_seq') : $pdo->lastInsertId();  //why?
         } catch(PDOException $e) {
             throw new Exception($e -> getMessage());
         }
@@ -721,7 +721,7 @@ class ESObject {
             $stmt -> execute();
             $sum = $stmt -> fetchObject() -> SUM;
 
-            $sql = 'SELECT COUNT("ESOBJECT_CONVERSION_ID") AS "POS" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_STATUS" = :status AND "ESOBJECT_CONVERSION_ID" < ( SELECT "ESOBJECT_CONVERSION_ID" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format' . (($resolution) ? ' AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution' : '') . ')';
+            $sql = 'SELECT COUNT("ESOBJECT_CONVERSION_ID") AS "POS" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_STATUS" = :status AND "ESOBJECT_CONVERSION_ID" < ( SELECT "ESOBJECT_CONVERSION_ID" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format' . (($resolution) ? ' AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution' : '') . ') ORDER BY "ESOBJECT_CONVERSION_RESOLUTION" ASC';
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':objectid', $this->id, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);

@@ -129,18 +129,17 @@ extends ESRender_Module_ContentNode_Abstract {
 
 
         //make it possible to start the converter in background in windows
-        $cmd = "php " . dirname(__FILE__) . "/Converter.php";
+        $cmd = "php -d display_errors=on " . dirname(__FILE__) . "/Converter.php";
+        $logfile = dirname(__FILE__) . '/../../../../../log/conversion/converter.log';
+
         if (substr(php_uname(), 0, 7) == "Windows"){
             pclose(popen("start /B ". $cmd, "r"));
         }
         else {
-            exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
-            // this does not work! we want to open php asynchronous to not block the thread
-            //exec($cmd,$output);
-            //error_log(print_r($output, TRUE));
+            exec($cmd . ">> ". $logfile . " 2>&1");
         }
-
         //exec("php " . dirname(__FILE__) . "/Converter.php > /dev/null 2>/dev/null &");
+
 
 
         return parent::process($p_kind);

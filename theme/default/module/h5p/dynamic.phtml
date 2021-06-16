@@ -22,6 +22,15 @@ $id = uniqid();
     <?php echo $metadata; ?>
 </div>
 
+<script>
+    $( document ).ready(function() {
+        setTimeout(
+            function() {
+                window.dispatchEvent(new Event('resize'));
+            }, 1500);
+    });
+</script>
+
 <?php
 $downloadUrl = Config::get('downloadUrl');
 if(!empty($downloadUrl))

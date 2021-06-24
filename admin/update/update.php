@@ -455,7 +455,7 @@ function run($installedVersion) {
                 $stmt->bindValue ( ':mime', 'image/webp' );
                 $stmt->execute ();
 
-                $sql = $pdo->formatQuery('ALTER TABLE `ESOBJECT_CONVERSION` ADD `ESOBJECT_CONVERSION_RESOLUTION` int(11);');
+                $sql = $pdo->formatQuery('ALTER TABLE `ESOBJECT_CONVERSION` ADD `ESOBJECT_CONVERSION_RESOLUTION` integer;');
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute();
 

@@ -83,7 +83,7 @@ INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_M
 (104, 9, 'video/x-ogm'),
 (105, 9, 'video/ogg'),
 (106, 8, 'audio/mp3'),
-(107, 9, 'video/avi');
+(107, 9, 'video/avi'),
 (107, 10, 'image/svg'),
 (108, 10, 'image/svg+xml'),
 (109, 10, 'image/webp');

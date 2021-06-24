@@ -427,37 +427,72 @@ function run($installedVersion) {
             }
 
             $pdo = RsPDO::getInstance();
+            if ($pdo->getDriver() == 'pgsql') {
+                $sql = $pdo -> formatQuery( 'SELECT max(`REL_ESMODULE_MIMETYPE_ID`) as max FROM `REL_ESMODULE_MIMETYPE`' );
+                $stmt = $pdo -> prepare ( $sql );
+                $stmt -> execute();
+                $result = $stmt -> fetchObject();
+                $maxPrimaryKey = $result->max;
 
-            $sql = $pdo -> formatQuery( 'SELECT max(`REL_ESMODULE_MIMETYPE_ID`) as max FROM `REL_ESMODULE_MIMETYPE`' );
-            $stmt = $pdo -> prepare ( $sql );
-            $stmt -> execute();
-            $result = $stmt -> fetchObject();
-            $maxPrimaryKey = $result->max;
+                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime) ON CONFLICT DO NOTHING' );
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->bindValue ( ':id', $maxPrimaryKey + 1 );
+                $stmt->bindValue ( ':modid', '10' );
+                $stmt->bindValue ( ':mime', 'image/svg' );
+                $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
-            $stmt = $pdo->prepare ( $sql );
-            $stmt->bindValue ( ':id', $maxPrimaryKey + 1 );
-            $stmt->bindValue ( ':modid', '10' );
-            $stmt->bindValue ( ':mime', 'image/svg' );
-            $stmt->execute ();
+                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime) ON CONFLICT DO NOTHING' );
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->bindValue ( ':id', $maxPrimaryKey + 2 );
+                $stmt->bindValue ( ':modid', '10' );
+                $stmt->bindValue ( ':mime', 'image/svg+xml' );
+                $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
-            $stmt = $pdo->prepare ( $sql );
-            $stmt->bindValue ( ':id', $maxPrimaryKey + 2 );
-            $stmt->bindValue ( ':modid', '10' );
-            $stmt->bindValue ( ':mime', 'image/svg+xml' );
-            $stmt->execute ();
+                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime) ON CONFLICT DO NOTHING' );
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->bindValue ( ':id', $maxPrimaryKey + 3 );
+                $stmt->bindValue ( ':modid', '10' );
+                $stmt->bindValue ( ':mime', 'image/webp' );
+                $stmt->execute ();
 
-            $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
-            $stmt = $pdo->prepare ( $sql );
-            $stmt->bindValue ( ':id', $maxPrimaryKey + 3 );
-            $stmt->bindValue ( ':modid', '10' );
-            $stmt->bindValue ( ':mime', 'image/webp' );
-            $stmt->execute ();
+                $sql = $pdo->formatQuery('ALTER TABLE `ESOBJECT_CONVERSION` ADD `ESOBJECT_CONVERSION_RESOLUTION` int(11);');
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
 
-            $sql = $pdo->formatQuery('ALTER TABLE `ESOBJECT_CONVERSION` ADD `ESOBJECT_CONVERSION_RESOLUTION` int(11);');
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute();
+            } else if ($pdo->getDriver() == 'mysql') {
+                $sql = $pdo -> formatQuery( 'SELECT max(`REL_ESMODULE_MIMETYPE_ID`) as max FROM `REL_ESMODULE_MIMETYPE`' );
+                $stmt = $pdo -> prepare ( $sql );
+                $stmt -> execute();
+                $result = $stmt -> fetchObject();
+                $maxPrimaryKey = $result->max;
+
+                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->bindValue ( ':id', $maxPrimaryKey + 1 );
+                $stmt->bindValue ( ':modid', '10' );
+                $stmt->bindValue ( ':mime', 'image/svg' );
+                $stmt->execute ();
+
+                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->bindValue ( ':id', $maxPrimaryKey + 2 );
+                $stmt->bindValue ( ':modid', '10' );
+                $stmt->bindValue ( ':mime', 'image/svg+xml' );
+                $stmt->execute ();
+
+                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime)' );
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->bindValue ( ':id', $maxPrimaryKey + 3 );
+                $stmt->bindValue ( ':modid', '10' );
+                $stmt->bindValue ( ':mime', 'image/webp' );
+                $stmt->execute ();
+
+                $sql = $pdo->formatQuery('ALTER TABLE `ESOBJECT_CONVERSION` ADD `ESOBJECT_CONVERSION_RESOLUTION` int(11);');
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+            }
+
+
 
             /*
              * Because content management as well as image and video processing has massively changed in this release it is not wrong to clear cache

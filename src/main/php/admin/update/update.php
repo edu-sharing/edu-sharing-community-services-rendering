@@ -457,7 +457,7 @@ function run($installedVersion) {
             $stmt = $pdo->exec($h5p_ddl);
 
             // clear h5p cache !!!!!!!NOT WORKING YET
-            \h5p_install\sweep_h5p();
+            //\h5p_install\sweep_h5p();
 
         }
 

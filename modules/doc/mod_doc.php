@@ -73,7 +73,7 @@ extends ESRender_Module_ContentNode_Abstract {
                 $urlFile=$this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
                 $template_data['title'] =$this->_ESOBJECT->getTitle();
                 $template_data['url'] = $urlFile;
-                $template_data['urlEmbeded'] = $MC_URL.DIRECTORY_SEPARATOR.VIEWER_JS_PATH.$urlFile."ssss";
+                $template_data['urlEmbeded'] = $MC_URL.DIRECTORY_SEPARATOR.VIEWER_JS_PATH.$urlFile;
                 $template_data['objectId'] = $this -> _ESOBJECT ->getObjectID();
             }
             if($this->getDoctype() == DOCTYPE_HTML) {

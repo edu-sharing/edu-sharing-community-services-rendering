@@ -76,7 +76,7 @@ extends ESRender_Module_ContentNode_Abstract {
 
         global $db;
         $Logger = $this -> getLogger();
-        $contentHash = Config::get('renderInfoLMSReturn')->contentHash;
+        $contentHash = $this->esObject->getContentHash();
 
         //check if Content already exists in db & cache
         $query = "SELECT id FROM h5p_contents WHERE title='".$this->esObject->getObjectID()."-".$contentHash."'";
@@ -101,14 +101,16 @@ extends ESRender_Module_ContentNode_Abstract {
                     $results = $statement->execute();
                     $Logger -> debug('h5p saved: '.$this->esObject->getTitle());
                 }else{
-                    $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
-                    $Logger -> debug('There was a problem with the H5P-file: '.$h5p_error->code);
+                    $messagesArray = array_values($this->H5PFramework->getMessages('error'));
+                    $h5p_error = end($messagesArray);
+                    $Logger -> debug('There was a problem with the H5P-file ('.$this->esObject->getObjectID().'): '.$h5p_error->code);
                     $template_data['h5p_new'] = 'There was a problem with the H5P-file: '.$h5p_error->code.'<br>'.$h5p_error->message;
                     echo $this -> getTemplate() -> render($TemplateName, $template_data);
                     return;
                 }
 
             }else{
+                $Logger -> debug('This file is being worked on: '.$this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
                 $template_data['h5p_new'] = 'This file is being worked on. Please try again in a few moments.';
                 echo $this -> getTemplate() -> render($TemplateName, $template_data);
                 return;
@@ -285,6 +287,7 @@ extends ESRender_Module_ContentNode_Abstract {
                                     "copyright"=> true, // Display copyright button
                                     "icon"=> true // Display H5P icon
                                 ],
+            'metadata' => $content['metadata'],
             'contentUserData' => array(
                 0 => array(
                     'state' => '{}'
@@ -392,6 +395,15 @@ extends ESRender_Module_ContentNode_Abstract {
         return true;
 	}
 
+    /**
+     * (non-PHPdoc)
+     * @see ESRender_Module_ContentNode_Abstract::embed()
+     */
+    protected function embed() {
+        echo $this -> renderTemplate('/module/h5p/embed');
+        return true;
+    }
+
 
     /**
      * Test if this object already exists for this module. This method
@@ -406,10 +418,6 @@ extends ESRender_Module_ContentNode_Abstract {
         $Logger = $this -> getLogger();
 
         $pdo = RsPDO::getInstance();
-
-        error_log('instanceExists()?');
-        error_log($this -> esObject -> getRepId());
-        error_log($this -> esObject -> getObjectID());
 
         try {
             $sql = 'SELECT * FROM `ESOBJECT` ' . 'WHERE `ESOBJECT_REP_ID` = :repid ' . 'AND `ESOBJECT_CONTENT_HASH` = :contenthash ' . 'AND `ESOBJECT_OBJECT_ID` = :objectid ';

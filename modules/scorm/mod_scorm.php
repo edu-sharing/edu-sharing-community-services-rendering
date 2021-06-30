@@ -117,7 +117,12 @@ extends ESRender_Module_ContentNode_Abstract {
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
-		$params = array('user_name' => htmlentities($this -> esobject -> getData() -> user -> authorityName), 'user_givenname' => htmlentities($this -> esobject -> getData() -> user -> profile -> givenName), 'user_surname' => htmlentities($this -> esobject -> getData() -> user -> profile -> lastName), 'user_email' => htmlentities($this -> esobject -> getData() -> user -> profile -> email) , 'courseid' => $this->getCourseId(), 'role' => 'student'); // or role 'editingteacher'
+        $params = array('user_name' => htmlentities($this -> esObject -> getData() -> user->authorityName),
+            'user_givenname' => htmlentities($this -> esObject->getData()->user->user_givenname),
+            'user_surname' => htmlentities($this -> esObject->getData()->user->profile->lastName),
+            'user_email' => htmlentities($this -> esObject->getData()->user->profile->email),
+            'courseid' => $this->getCourseId(),
+            'role' => 'student'); // or role 'editingteacher'
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
@@ -128,7 +133,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 		if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
-			$logger->error(json_decode($resp));
+            $logger->info('retrieved user token');
 			return json_decode($resp);
 		}
 		

@@ -85,6 +85,44 @@
     font-size: 90%;
 }
 
+.edusharing_rendering_metadata_body .mds_collection_feedback{
+    background: #4D799A;
+    width: 60%;
+    max-width: 220px;
+    margin: 16px auto 8px;
+    border-radius: 3px;
+    box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.25);
+    transition: 0.5s ease-in-out;
+}
+
+.edusharing_rendering_metadata_body .mds_collection_feedback:hover{
+    background: #679ac2;
+    transform: scale(1.05);
+}
+
+.edusharing_rendering_metadata_body .mds_collection_feedback .mdsValue{
+    width: 100%;
+    margin: 4px auto;
+}
+
+.edusharing_rendering_metadata_body .mds_collection_feedback a{
+    color: #fff;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    padding: 4px 0;
+}
+.edusharing_rendering_metadata_body .mds_collection_feedback a:hover,
+.edusharing_rendering_metadata_body .mds_collection_feedback a:visited{
+    color: #fff;
+    text-decoration: none;
+}
+
+.edusharing_rendering_metadata_body .mds_collection_feedback a i{
+    padding-right: 8px;
+}
+
+
 @media (max-width: 1400px) {
     .edusharing_rendering_metadata_body .mdsGroup{
         min-width:50%;

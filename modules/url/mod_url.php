@@ -269,7 +269,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             $type = 'video/' . pathinfo($this -> getUrl(), PATHINFO_EXTENSION);
         }
         $identifier = uniqid();
-        $applyDataProtectionRegulationsDialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, '', '', $this -> getUrl(),'VIDEO_DEFAULT');
+        $applyDataProtectionRegulationsDialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, defined('DEFAULT_DATAPROTECTIONREGULATION_NAME') ? DEFAULT_DATAPROTECTIONREGULATION_NAME : '', defined('DEFAULT_DATAPROTECTIONREGULATION_URL') ? DEFAULT_DATAPROTECTIONREGULATION_URL : '', $this -> getUrl(),'VIDEO_DEFAULT');
         return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
                     '.$applyDataProtectionRegulationsDialog.'
                 <div id="videoWrapperInner_'.$objId.'" class="videoWrapperInner" style="position: relative; padding-top: 25px;' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '">

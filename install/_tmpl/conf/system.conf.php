@@ -10,6 +10,8 @@ $MC_DOCROOT= '[[[TOKEN_DOCROOT]]]';
 $CC_RENDER_PATH = '[[[TOKEN_DATA_DIR]]]';
 
 DEFINE("ENABLE_METADATA_INLINE_RENDERING", true);
+# Default URL for any dataprotection dialog (if not set, only a generic message will appear)
+DEFINE("DEFAULT_DATAPROTECTIONREGULATION_URL", "");
 
 $ESRENDER_SESSION_NAME = 'ESSID';
 

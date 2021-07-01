@@ -36,7 +36,7 @@ CREATE TABLE h5p_contents (
     library_id integer NOT NULL,
     user_id integer NOT NULL,
     license varchar(7) NULL,
-    parameters longtext NOT NULL,
+    parameters text NOT NULL,
     title varchar(255) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
     author varchar(127) NULL,

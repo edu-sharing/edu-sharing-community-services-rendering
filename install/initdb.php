@@ -204,6 +204,12 @@ extends Step {
         $dbName = $this -> getDbName();
         $this -> createTables();
         $this -> loadTableContent();
+
+        if ($this -> db_drvr == 'mysql') {
+            $alterTable = 'ALTER TABLE h5p_contents MODIFY parameters longtext;';
+            $stm = $this->pdo->exec($alterTable);
+        }
+
         $this -> writeLog('_REQUEST', $post);
         return true;
     }

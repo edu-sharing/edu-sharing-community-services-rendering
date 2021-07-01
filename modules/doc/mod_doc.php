@@ -59,7 +59,7 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
     protected function renderTemplate($TemplateName, $showMetadata = true) {
-
+        global $MC_URL;
         $template_data = parent::prepareRenderData($showMetadata);
         $template_data['previewUrl'] = $this -> esObject->getPreviewUrl();
 
@@ -70,11 +70,11 @@ extends ESRender_Module_ContentNode_Abstract {
                 $template_data['url'] = $this -> esObject->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
             }
             if($this->getDoctype() == DOCTYPE_ODT || $this->getDoctype() == DOCTYPE_ODS || $this->getDoctype() == DOCTYPE_ODP) {
-                $urlFile=$this->_ESOBJECT->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . $requestData['token'];
-                $template_data['title'] =$this->_ESOBJECT->getTitle();
+                $urlFile= $this -> esObject->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
+                $template_data['title'] =$this->esObject->getTitle();
                 $template_data['url'] = $urlFile;
                 $template_data['urlEmbeded'] = $MC_URL.DIRECTORY_SEPARATOR.VIEWER_JS_PATH.$urlFile;
-                $template_data['objectId'] = $this -> _ESOBJECT ->getObjectID();
+                $template_data['objectId'] = $this -> esObject ->getObjectID();
             }
             if($this->getDoctype() == DOCTYPE_HTML) {
                 $template_data['content'] = file_get_contents($this->getCacheFileName() . '_purified.html');
@@ -134,12 +134,11 @@ extends ESRender_Module_ContentNode_Abstract {
             echo $this -> renderTemplate($this -> getThemeByDoctype().'dynamic');
             return true;
         }
-        else if($this->getDoctype() === DOCTYPE_ODT || $this->getDoctype() == DOCTYPE_ODS || $this->getDoctype() == DOCTYPE_ODP) {
-            echo $this -> renderTemplate($requestData, $this -> getThemeByDoctype().'dynamic');
+        else if($this->getDoctype() === DOCTYPE_ODT || $this->getDoctype() === DOCTYPE_ODS || $this->getDoctype() === DOCTYPE_ODP) {
+            echo $this -> renderTemplate($this -> getThemeByDoctype().'dynamic');
             return true;
-        }else {
-            return parent::dynamic();
         }
+        else return parent::dynamic();
     }
 
     final protected function embed() {
@@ -161,12 +160,15 @@ extends ESRender_Module_ContentNode_Abstract {
         if(Config::get('hasContentLicense') === false)
             return '/module/default/';
         switch($this->getDoctype()) {
-            case DOCTYPE_HTML :
+        	case DOCTYPE_HTML :
             case DOCTYPE_TEXT :
-                return '/module/doc/html/';
-                break;
+        		return '/module/doc/html/';
+        		break;
             case DOCTYPE_PDF :
                 return '/module/doc/pdf/';
+                break;
+            case DOCTYPE_ODF :
+                return '/module/doc/odf/';
                 break;
             case DOCTYPE_ODT :
                 return '/module/doc/odt/';
@@ -177,9 +179,6 @@ extends ESRender_Module_ContentNode_Abstract {
             case DOCTYPE_ODS :
                 return '/module/doc/ods/';
                 break;
-            case DOCTYPE_ODF :
-                return '/module/doc/odf/';
-                break;
             default :
                 return '';
         }
@@ -189,26 +188,25 @@ extends ESRender_Module_ContentNode_Abstract {
      * Set doctype
      */
     protected function setDoctype() {
-        
-        
-    	if (strpos($this -> _ESOBJECT -> getMimeType(), 'text/html') !== false)
+
+
+    	if (strpos($this -> esObject -> getMimeType(), 'text/html') !== false)
     		$this->doctype = DOCTYPE_HTML;
-    	else if(strpos($this -> _ESOBJECT -> getMimeType(), 'text/plain') !== false)
+    	else if(strpos($this -> esObject -> getMimeType(), 'text/plain') !== false)
             $this->doctype = DOCTYPE_TEXT;
-        else if(strpos($this -> _ESOBJECT -> getMimeType(), 'application/pdf') !== false)
+        else if(strpos($this -> esObject -> getMimeType(), 'application/pdf') !== false)
             $this->doctype = DOCTYPE_PDF;
-        else if(strpos($this -> _ESOBJECT -> getMimeType(), 'application/vnd.sun.xml.writer') !== false || 
-                strpos($this -> _ESOBJECT -> getMimeType(), 'application/vnd.oasis.opendocument.text') !== false)
+        else if(strpos($this -> esObject -> getMimeType(), 'application/vnd.sun.xml.writer') !== false || 
+                strpos($this -> esObject -> getMimeType(), 'application/vnd.oasis.opendocument.text') !== false)
             $this->doctype = DOCTYPE_ODT;
-         else if(strpos($this -> _ESOBJECT -> getMimeType(), 'application/vnd.sun.xml.impress') !== false || 
-                strpos($this -> _ESOBJECT -> getMimeType(), 'application/vnd.oasis.opendocument.presentation') !== false)
-             $this->doctype = DOCTYPE_ODP;
-        else if(strpos($this -> _ESOBJECT -> getMimeType(), 'application/vnd.sun.xml.calc') !== false || 
-                strpos($this -> _ESOBJECT -> getMimeType(), 'pplication/vnd.oasis.opendocument.spreadsheet') !== false)
+        else if(strpos($this -> esObject -> getMimeType(), 'application/vnd.sun.xml.impress') !== false || 
+                strpos($this -> esObject -> getMimeType(), 'application/vnd.oasis.opendocument.presentation') !== false)
+            $this->doctype = DOCTYPE_ODP;
+        else if(strpos($this -> esObject -> getMimeType(), 'application/vnd.sun.xml.calc') !== false || 
+                strpos($this -> esObject -> getMimeType(), 'pplication/vnd.oasis.opendocument.spreadsheet') !== false)
             $this->doctype = DOCTYPE_ODS;
         else
         	$this -> doctype = DOCTYPE_UNKNOWN;
-        
         return;
     }
 
@@ -235,23 +233,27 @@ extends ESRender_Module_ContentNode_Abstract {
     
     public function requestingDeviceCanRenderContent() {
         switch($this->getDoctype()) {
-            case DOCTYPE_PDF :
+            case DOCTYPE_PDF:
                 return true;
                 break;
-            case DOCTYPE_ODF :
+            case DOCTYPE_ODF:
                 return true;
                 break;
             case DOCTYPE_HTML:
             	return true;
             	break;
             case DOCTYPE_ODT:
+                return true;
+                break;
             case DOCTYPE_ODP:
+                return true;
+                break;
             case DOCTYPE_ODS:
                 return true;
                 break;
             default :
                 return false;
         }
-    }    
+    }
 
 }

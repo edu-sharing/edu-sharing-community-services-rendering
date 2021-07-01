@@ -1,13 +1,14 @@
 <?php
 
 class ESRender_DataProtectionRegulation_Handler {
-    private function getDetailsMessage($msg, $providerUrlTermsOfUse, $providerName){
+    private function getDataPrivacyMessage($msg, $providerUrlTermsOfUse, $providerName){
                 global $Locale, $Translate;
         $return = '<b>'.$msg['dataProtectionRegulations3']->localize($Locale, $Translate).'</b><br/>
                   <a href="'.$providerUrlTermsOfUse.'" target="_blank">'.$msg['dataProtectionRegulations']->localize($Locale, $Translate).'</a>';
         if(!empty($providerName)) {
-            $return .= ' '.$msg['of']->localize($Locale, $Translate).' '.$providerName.'<br/>';
+            $return .= ' '.$msg['of']->localize($Locale, $Translate).' '.$providerName;
         }
+        $return .= '<br/>';
         return $return;
     }
     public function getApplyDataProtectionRegulationsDialog($uniqueId, $providerName, $providerUrlTermsOfUse, $target, $type = null) {
@@ -46,7 +47,7 @@ class ESRender_DataProtectionRegulation_Handler {
                         if(empty($providerUrlTermsOfUse)) {
                             $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
                         } else {
-                            $return .= $this->getDetailsMessage($msg, $providerUrlTermsOfUse, $providerName);
+                            $return .= $this->getDataPrivacyMessage($msg, $providerUrlTermsOfUse, $providerName);
                         }
                 $return .= '<a href="#" class="edusharing_rendering_content btn btn-secondary" onclick="document.getElementById(\'dataProtectionRegulations_'.$uniqueId.'\').style.display=\'none\';return false;">'.$msg['abort']->localize($Locale, $Translate).'</a>'.$button;
                 $return .= '</p>
@@ -64,7 +65,7 @@ class ESRender_DataProtectionRegulation_Handler {
                     $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
 
                 } else {
-                    $return .= $this->getDetailsMessage($msg, $providerUrlTermsOfUse, $providerName);
+                    $return .= $this->getDataPrivacyMessage($msg, $providerUrlTermsOfUse, $providerName);
                 }
                 $return .= $button.'
                         </p>
@@ -82,7 +83,7 @@ class ESRender_DataProtectionRegulation_Handler {
                     $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
 
                 } else {
-                    $return .= $this->getDetailsMessage($msg, $providerUrlTermsOfUse, $providerName);
+                    $return .= $this->getDataPrivacyMessage($msg, $providerUrlTermsOfUse, $providerName);
                 }
                 $return .= $button.'
                         </p>
@@ -111,7 +112,7 @@ class ESRender_DataProtectionRegulation_Handler {
                             $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
 
                         } else {
-                            $return .= $this->getDetailsMessage($msg, $providerUrlTermsOfUse, $providerName);
+                            $return .= $this->getDataPrivacyMessage($msg, $providerUrlTermsOfUse, $providerName);
                         }
                             $return .= $button.'
                         </p>
@@ -132,7 +133,7 @@ class ESRender_DataProtectionRegulation_Handler {
                     $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
 
                 } else {
-                    $return .= $this->getDetailsMessage($msg, $providerUrlTermsOfUse, $providerName);
+                    $return .= $this->getDataPrivacyMessage($msg, $providerUrlTermsOfUse, $providerName);
                 }
                 $return .= $button.'
                         </p>
@@ -150,7 +151,7 @@ class ESRender_DataProtectionRegulation_Handler {
                     $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
 
                 } else {
-                    $return .= $this->getDetailsMessage($msg, $providerUrlTermsOfUse, $providerName);
+                    $return .= $this->getDataPrivacyMessage($msg, $providerUrlTermsOfUse, $providerName);
                 }
                 $return .= $button.'
                         </p>

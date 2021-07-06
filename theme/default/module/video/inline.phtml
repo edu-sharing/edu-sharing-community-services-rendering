@@ -4,11 +4,17 @@
     $conversionMsg = new Phools_Message_Default('inConversionQueue');
     $licid = uniqid();
     $styleVideo = 'max-width: 100%;';
-    if(isset($_REQUEST['width']) && !empty($_REQUEST['width']))
+    if(isset($_REQUEST['width']) && !empty($_REQUEST['width'])){
         $styleVideo .= 'width:'.(int)$_REQUEST['width'] . 'px';
+    }
+
+    $defaultRes = ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_M;
+    if ( empty($url[$defaultRes]) ){
+        $defaultRes = ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S;
+    }
+
 ?>
 <style>
-
     <?php
         if ($css){
             include(dirname(__FILE__) . '/../../css/metadata.css');
@@ -17,7 +23,7 @@
     ?>
 </style>
     <div class="edusharing_rendering_content_video_wrapper">
-        <video src="<?php echo $url[ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S]?>" style="<?php echo $styleVideo?>" data-tap-disabled="true" id="<?php echo $videoObjectIdentifier?>" data-licid="<?php echo $licid;?>" controls controlsList="nodownload" oncontextmenu="return false;"></video>
+        <video src="<?php echo $url[$defaultRes]?>" style="<?php echo $styleVideo?>" data-tap-disabled="true" id="<?php echo $videoObjectIdentifier?>" data-licid="<?php echo $licid;?>" controls controlsList="nodownload" oncontextmenu="return false;"></video>
         <div class="edusharing_rendering_content_video_options">
             <i class="material-icons edusharing_rendering_content_video_options_toggle">settings</i>
             <div class="edusharing_rendering_content_video_options_content">
@@ -25,7 +31,7 @@
                     <?php
                     foreach($url as $res => $u) {
                         if(!empty($u))
-                            echo '<li class="option_'.$videoObjectIdentifier.'" data-url="'.$u.'">' . ($res == ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S ? '<i class="material-icons">done</i>' : '') . $res . 'p</li>';
+                            echo '<li class="option_'.$videoObjectIdentifier.'" id="option_'.$videoObjectIdentifier.'-'.$res.'" data-url="'.$u.'">' . ($res == $defaultRes ? '<i class="material-icons">done</i>' : '') . $res . 'p</li>';
                         else
                             echo '<li class="edusharing_rendering_content_video_options_resolutions_converting" title="' . $conversionMsg -> localize($Locale, $Translate) . '">' . $res . 'p</li>';
                     }
@@ -43,7 +49,7 @@
             return;
         $(this).parent().find('i.material-icons').remove();
         $(this).prepend('<i class="material-icons">done</i>');
-        var video_<?php echo $videoObjectIdentifier ?> = document.getElementById('<?php echo $videoObjectIdentifier?>');
+        const video_<?php echo $videoObjectIdentifier ?> = document.getElementById('<?php echo $videoObjectIdentifier?>');
         video_<?php echo $videoObjectIdentifier ?>.pause();
         video_<?php echo $videoObjectIdentifier ?>.setAttribute('src', url + '#t=' + Math.ceil(video_<?php echo $videoObjectIdentifier ?>.currentTime)); /* ie not working */
         video_<?php echo $videoObjectIdentifier ?>.load();
@@ -58,6 +64,38 @@
             $(this).css('background', 'rgba(0,0,0,0.6)');
             $(this).find('.edusharing_rendering_content_video_options_content').css('display', 'block');
         }
+    });
+
+    function setResByConnection(){
+        // navigator.connection not yet supported by all browsers, so check it first
+        if (!navigator.connection) {
+            return;
+        }
+
+        const downLink = navigator.connection.downlink;
+
+        let resolution = '<?php echo ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S; ?>';
+        if (downLink >= 5){
+            resolution = '<?php echo ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_L; ?>';
+        }else if (downLink >= 2){
+            // FORMAT_VIDEO_RESOLUTIONS_M is already set as default, so we can skip the rest
+            return;
+        }
+
+        const option = '#<?php echo 'option_'.$videoObjectIdentifier.'-'; ?>' + resolution;
+        const url = $(option).attr('data-url');
+        if(url != undefined){
+            $(option).parent().find('i.material-icons').remove();
+            $(option).prepend('<i class="material-icons">done</i>');
+            var video_<?php echo $videoObjectIdentifier ?> = document.getElementById('<?php echo $videoObjectIdentifier?>');
+            video_<?php echo $videoObjectIdentifier ?>.pause();
+            video_<?php echo $videoObjectIdentifier ?>.setAttribute('src', url + '#t=' + Math.ceil(video_<?php echo $videoObjectIdentifier ?>.currentTime)); /* ie not working */
+            video_<?php echo $videoObjectIdentifier ?>.load();
+        }
+    }
+
+    $( document ).ready(function() {
+        setResByConnection();
     });
 
     document.getElementById('<?php echo $videoObjectIdentifier ?>').addEventListener('error', function(e) {

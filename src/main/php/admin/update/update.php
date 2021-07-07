@@ -288,7 +288,7 @@ function run($installedVersion) {
             $result = $stmt -> fetchObject();
             $maxPrimaryKey = $result->max;
 
-            $sql = 'INSERT IGNORE INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)';
+            $sql = 'INSERT INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)';
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':modname', 'learningapps' );
@@ -314,7 +314,7 @@ function run($installedVersion) {
             $result = $stmt -> fetchObject();
             $maxPrimaryKey = $result->max;
 
-            $sql = 'INSERT IGNORE INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)';
+            $sql = 'INSERT INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)';
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':modname', 'h5p' );
@@ -328,7 +328,7 @@ function run($installedVersion) {
             $maxPrimaryKey = $result->max;
 
             $pdo = RsPDO::getInstance();
-            $sql = 'INSERT IGNORE INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)';
+            $sql = 'INSERT INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)';
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':modname', 'lti' );
@@ -356,7 +356,7 @@ function run($installedVersion) {
             $result = $stmt -> fetchObject();
             $maxPrimaryKey = $result->max;
 
-            $sql = 'INSERT IGNORE INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)';
+            $sql = 'INSERT INTO "ESMODULE" ("ESMODULE_ID", "ESMODULE_NAME", "ESMODULE_DESC") VALUES (:modid, :modname, :moddesc)';
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':modid', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':modname', 'scorm' );
@@ -384,7 +384,7 @@ function run($installedVersion) {
             $result = $stmt -> fetchObject();
             $maxPrimaryKey = $result->max;
 
-            $sql = 'INSERT IGNORE INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :mod, :mimetype)';
+            $sql = 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :mod, :mimetype)';
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':id', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':mod', 9);
@@ -402,21 +402,21 @@ function run($installedVersion) {
             $result = $stmt -> fetchObject();
             $maxPrimaryKey = $result->max;
 
-            $sql = 'INSERT IGNORE INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :modid, :mime)';
+            $sql = 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :modid, :mime)';
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':id', $maxPrimaryKey + 1 );
             $stmt->bindValue ( ':modid', '10' );
             $stmt->bindValue ( ':mime', 'image/svg' );
             $stmt->execute ();
 
-            $sql = 'INSERT IGNORE INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :modid, :mime)';
+            $sql = 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :modid, :mime)';
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':id', $maxPrimaryKey + 2 );
             $stmt->bindValue ( ':modid', '10' );
             $stmt->bindValue ( ':mime', 'image/svg+xml' );
             $stmt->execute ();
 
-            $sql = 'INSERT IGNORE INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :modid, :mime)';
+            $sql = 'INSERT INTO "REL_ESMODULE_MIMETYPE" ("REL_ESMODULE_MIMETYPE_ID", "REL_ESMODULE_MIMETYPE_ESMODULE_ID", "REL_ESMODULE_MIMETYPE_TYPE") VALUES (:id, :modid, :mime)';
             $stmt = $pdo->prepare ( $sql );
             $stmt->bindValue ( ':id', $maxPrimaryKey + 3 );
             $stmt->bindValue ( ':modid', '10' );

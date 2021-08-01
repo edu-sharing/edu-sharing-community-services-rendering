@@ -45,7 +45,7 @@ class cacheCleaner
     {
         try {
             $sql = 'SELECT "ESTRACK_ESOBJECT_ID", MAX("ESTRACK_TIME") FROM "ESTRACK" GROUP BY "ESTRACK_ESOBJECT_ID" ORDER BY MAX("ESTRACK_TIME") ASC LIMIT 1 OFFSET 0';
-            $stmt = $this->pdo->exec($sql);
+            $stmt = $this->pdo->query($sql);
             $esObjectId = $stmt->fetchObject()->ESTRACK_ESOBJECT_ID;
 
             $this->logger->info('esObjectId: ' . $esObjectId);

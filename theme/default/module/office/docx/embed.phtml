@@ -1,0 +1,68 @@
+<?php 
+   /* DYNAMIC.phtml
+    *   by Edmond Kacaj <edmondikacaj@gmail.com>
+    *
+    * Created:
+    *   7/2/2021, 4:56:47 PM
+    * Last edited:
+    *   7/6/2021, 1:19:21 AM
+    * Auto updated?
+    *   Yes
+    *
+    * Description:
+    *   This file is used to render Microsoft Office DOC type
+   **/
+   
+   
+   global $MC_URL,$LanguageCode;
+?>
+	<style>
+	<?php include(dirname(__FILE__) . '/../../../css/dynamic.php');
+	include(dirname(__FILE__) . '/../../../css/metadata.css');
+	include(dirname(__FILE__) . '/../css/override.css');
+	?>
+	</style>
+	<script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
+	<script src="<?php echo $MC_URL?>/theme/default/module/office/js/getJS.php"></script>
+	<script type="text/javascript" src="<?php echo Config::get('onlyOfficeDocumentServerURL') ?>/web-apps/apps/api/documents/api.js"></script>
+	<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+		<h1 class="edusharing_rendering_content_title">
+      <?php echo $title ?>
+   </h1>
+		<div id="edusharing_rendering_content_wrapper" class="edusharing_rendering_content_wrapper" role="main">
+			<?php if(Config::get('onlyOfficeDocumentServerURL')!="" || null != Config::get('onlyOfficeDocumentServerURL')){ ?>
+				<div id="edusharing_rendering_content_embedded" class="edusharing_rendering_content edusharing_rendering_content_embedded">
+					<div id="placeholder" style="height: 100%"></div>
+					<script>
+					// we must wait untill the onlyoffice document-server api.js is loaded 
+					$.getScript("<?php echo Config::get('onlyOfficeDocumentServerURL')?>/web-apps/apps/api/documents/api.js").done(function(script, textStatus) {
+						DocsServer.docsURL = "<?php echo $url; ?>";
+						DocsServer.title = "<?php echo $title; ?>";
+						DocsServer.docsExt = "<?php echo $fileType; ?>";
+						DocsServer.docsKey = "<?php echo $objectId; ?>";
+						DocsServer.docsPlaceHolder = "placeholder";
+						DocsServer.docsType = "embedded";
+						DocsServer.docsEditorConfig.lang = "<?php echo $LanguageCode; ?>";
+						DocsServer.docsEditorConfig.customization.logo.image = "<?php echo $logoImageUrl; ?>";
+						DocsServer.docsEditorConfig.customization.logo.imageEmbedded = "<?php echo $logoImageUrl; ?>";
+						DocsServer.docsEditorConfig.customization.logo.url = "<?php echo $logoLinkUrl; ?>";
+						try {
+							DocsServer.DocsEditor.LoadDocuments();
+						} catch(e) {
+							console.log(e);
+							document.getElementById("edusharing_rendering_content_embedded").style.display = "none";
+							document.getElementById("edusharing_rendering_content_wrapper").innerHTML = ` <?php echo $downloadAdvice; ?>`;
+						}
+					}).fail(function(exception) {
+						console.log(exception);
+						document.getElementById("edusharing_rendering_content_embedded").style.display = "none";
+						document.getElementById("edusharing_rendering_content_wrapper").innerHTML = ` <?php echo $downloadAdvice; ?>`;
+					});
+					</script>
+				</div>
+				<?php } else {
+         echo $downloadAdvice;
+         } ?>
+		</div>
+		<?php echo $metadata; ?>
+	</div>

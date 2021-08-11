@@ -1,0 +1,23 @@
+<?php 
+/**
+ * ONLYOFFICE Document Server is an online office suite comprising viewers and editors for texts, spreadsheets and presentations, 
+ * fully compatible with Office Open XML formats: .docx, .xlsx, .pptx and enabling collaborative editing in real time.
+ * for more information see: 
+ *        https://github.com/ONLYOFFICE/DocumentServer  ===> General information
+ *        https://helpcenter.onlyoffice.com/installation/docs-community-index.aspx ===> Installation process
+ *        https://api.onlyoffice.com/editors/basic  ===> API documentation
+ * 
+ * We will use ONLYOFFICE document-server (community edition) for preview our microsoft documents.
+ * In order to activate the preview, we need to to give the URI of ONLYOFFICE document-server. 
+ * 
+ */
+
+// set the URL for access ONLYOFFICE API
+Config::set('onlyOfficeDocumentServerURL', "https://localhost/"); // if document-server is in same server as renderingservice
+
+// set the Logo image default will be edu-sharing logo 
+Config::set('logoImageUrl', $MC_URL."/admin/img/edulogo.svg"); 
+
+// set the Logo URL link default will be https://edu-sharing.com/
+Config::set('logoLinkUrl', "https://edu-sharing.com/"); 
+

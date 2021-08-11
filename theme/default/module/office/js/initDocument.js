@@ -1,5 +1,4 @@
 /* initDocument.js
- *   by Edmond Kacaj <edmondikacaj@gmail.com>
  *
  * Created:
  *   7/5/2021, 12:31:07 PM

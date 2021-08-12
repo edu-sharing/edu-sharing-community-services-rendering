@@ -28,7 +28,7 @@ class ESRender_Plugin_Serlo
     	    $logger = $this->getLogger();
             $unique = uniqid();
             $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
-            $dialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($unique, 'Serlo', 'https://de.serlo.org/datenschutz');
+            $dialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($data->node, $unique, 'Serlo', 'https://de.serlo.org/datenschutz');
             $replicationSourceId = $esObject->getNodeProperty('ccm:replicationsourceid');
             $url = $esObject->getNodeProperty('ccm:wwwurl');
             Config::set('urlEmbedding', $dialog.'<iframe id="'.$unique.'" style="display:none" src="https://de.serlo.org/'.$replicationSourceId.'?contentOnly&hideBreadcrumbs" width="100%" height="800px" border="0"></iframe>');

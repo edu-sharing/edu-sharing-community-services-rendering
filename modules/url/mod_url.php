@@ -12,7 +12,7 @@ define("VIDEO_TOKENS", serialize(array(VIDEO_TOKEN_YOUTUBE, VIDEO_TOKEN_VIMEO)))
 
 class mod_url
 extends ESRender_Module_NonContentNode_Abstract {
-
+    private $dataProtection;
     protected function dynamic() {
     	if (!$this -> validate()) {
     		return false;
@@ -37,7 +37,12 @@ extends ESRender_Module_NonContentNode_Abstract {
         }
 
     	$Template = $this -> getTemplate();
-    	$tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl());
+    	$tempArray = array(
+    	    'embedding' => $embedding,
+            'url' => $this->getUrl(),
+            'dataProtection' => $this->dataProtection,
+            'previewUrl' => $this -> esObject->getPreviewUrl()
+        );
     	if(Config::get('showMetadata'))
     		$tempArray['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
     	
@@ -222,15 +227,15 @@ extends ESRender_Module_NonContentNode_Abstract {
     //wrappers needed to handle max width
     if($this -> isYoutubeRemoteObject()){
         $vidId = $this -> esObject -> getNode() -> remote -> id;
-        $applyDataProtectionRegulationsDialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
+        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
         $src = '';
-        if (empty($applyDataProtectionRegulationsDialog)){
+        if (empty($this->dataProtection)){
             $src = 'www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1';
         }
         return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
-                    <div class="videoWrapperInner" style="'.($applyDataProtectionRegulationsDialog?'':$videoWrapperInnerStyle).'">
-                        '.$applyDataProtectionRegulationsDialog.'
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="'.$src.'" frameborder="0" allowfullscreen class="embedded_video"></iframe>
+                    <div class="videoWrapperInner" style="'.($this->dataProtection?'':$videoWrapperInnerStyle).'">
+                        '.$this->dataProtection.'
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($this->dataProtection?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="'.$src.'" frameborder="0" allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
@@ -243,11 +248,11 @@ extends ESRender_Module_NonContentNode_Abstract {
             $params[$item[0]] = $item[1];
         }
         $vidId = $params['v'];
-        $applyDataProtectionRegulationsDialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
+        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
         return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
-                    <div class="videoWrapperInner" style="'.($applyDataProtectionRegulationsDialog?'':$videoWrapperInnerStyle).'">
-                       '.$applyDataProtectionRegulationsDialog.'
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video"></iframe>
+                    <div class="videoWrapperInner" style="'.($this->dataProtection?'':$videoWrapperInnerStyle).'">
+                       '.$this->dataProtection.'
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($this->dataProtection?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
@@ -255,11 +260,11 @@ extends ESRender_Module_NonContentNode_Abstract {
     else if (strpos($this -> getUrl(), VIDEO_TOKEN_VIMEO) !== false) {
         $urlArr = explode('/', $this -> getUrl());
         $vidId = end($urlArr);
-        $applyDataProtectionRegulationsDialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, 'Vimeo', 'https://help.vimeo.com/hc/de/sections/203915088-Datenschutz', 'player.vimeo.com', 'VIMEO');
+        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Vimeo', 'https://help.vimeo.com/hc/de/sections/203915088-Datenschutz', 'player.vimeo.com', 'VIMEO');
         return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-                    <div class="videoWrapperInner" style="'.($applyDataProtectionRegulationsDialog?'':$videoWrapperInnerStyle).'">
-                        '.$applyDataProtectionRegulationsDialog.'
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '" id="' . $objId . '" data-src="//player.vimeo.com/video/' . $vidId . '" src="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video"></iframe>
+                    <div class="videoWrapperInner" style="'.($this->dataProtection?'':$videoWrapperInnerStyle).'">
+                        '.$this->dataProtection.'
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($this->dataProtection?'display:none':'') . '" id="' . $objId . '" data-src="//player.vimeo.com/video/' . $vidId . '" src="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
@@ -269,10 +274,19 @@ extends ESRender_Module_NonContentNode_Abstract {
             $type = 'video/' . pathinfo($this -> getUrl(), PATHINFO_EXTENSION);
         }
         $identifier = uniqid();
-        $applyDataProtectionRegulationsDialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($objId, defined('DEFAULT_DATAPROTECTIONREGULATION_NAME') ? DEFAULT_DATAPROTECTIONREGULATION_NAME : '', defined('DEFAULT_DATAPROTECTIONREGULATION_URL') ? DEFAULT_DATAPROTECTIONREGULATION_URL : '', $this -> getUrl(),'VIDEO_DEFAULT');
+        global $DATAPROTECTIONREGULATION_URL;
+        if(isset($DATAPROTECTIONREGULATION_URL)) {
+            foreach ($DATAPROTECTIONREGULATION_URL as $k => $v) {
+                if (preg_match($k, $this->getUrl())) {
+                    $privacy = $v;
+                    break;
+                }
+            }
+        }
+        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, $privacy ? $privacy["name"] : '', $privacy ? $privacy["url"] : '', $this -> getUrl(),'VIDEO_DEFAULT');
         return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-                    '.$applyDataProtectionRegulationsDialog.'
-                <div id="videoWrapperInner_'.$objId.'" class="videoWrapperInner" style="position: relative; padding-top: 25px;' . ($applyDataProtectionRegulationsDialog?'display:none':'') . '">
+                    '.$this->dataProtection.'
+                <div id="videoWrapperInner_'.$objId.'" class="videoWrapperInner" style="position: relative; padding-top: 25px;' . ($this->dataProtection?'display:none':'') . '">
                     <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;background: transparent url(\''.$this->esObject->getPreviewUrl().'\') 50% 50% / cover no-repeat;" oncontextmenu="return false;" controlsList="nodownload">
                         <source src="' . $this -> getUrl() . '" type="' . $type . '"></source>
                     </video>

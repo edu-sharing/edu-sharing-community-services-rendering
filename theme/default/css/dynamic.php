@@ -244,6 +244,7 @@ img.edusharing_rendering_content_preview {
 }
 
 .dataProtectionRegulations {
+    position: relative;
 	background: #fff;
 	padding: 20px;
 	border-radius: 5px;
@@ -251,11 +252,36 @@ img.edusharing_rendering_content_preview {
 	-moz-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 	box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 	max-width: 800px;
+    height: 450px;
 	margin: auto;
+}
+.dataProtectionRegulations .dataProtectionRegulationsContainer {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0,0,0,.5);
+    padding: 15px 20px;
+    backdrop-filter: blur(4px);
+    background-color: rgba(0,0,0,.6);
+    left: 0;
+    bottom: 0;
+}
+.dataProtectionRegulations .dataProtectionRegulationsContainer a:not(.btn) {
+    color: #B6D8FC;
+    text-decoration: underline;
+}
+.dataProtectionRegulations .dataProtectionVideoBg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
 
 .dataProtectionRegulationsHeading {
-	font-size: 1.8em;
+	font-size: 1.6em;
 }
 
 a.dataProtectionRegulationsButton {

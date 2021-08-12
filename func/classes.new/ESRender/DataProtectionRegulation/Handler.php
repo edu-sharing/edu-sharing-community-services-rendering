@@ -11,7 +11,7 @@ class ESRender_DataProtectionRegulation_Handler {
         $return .= '<br/>';
         return $return;
     }
-    public function getApplyDataProtectionRegulationsDialog($uniqueId, $providerName, $providerUrlTermsOfUse, $target, $type = null) {
+    public function getApplyDataProtectionRegulationsDialog($esObject, $uniqueId, $providerName, $providerUrlTermsOfUse, $target, $type = null) {
         global $Locale, $Translate;
 
         if(defined('DISABLE_DATAPROTECTIONREGULATIONHANDLER_FOR') && !empty(DISABLE_DATAPROTECTIONREGULATIONHANDLER_FOR)) {
@@ -36,15 +36,12 @@ class ESRender_DataProtectionRegulation_Handler {
         $msg['abort'] = new Phools_Message_Default('abort');
         $msg['of'] = new Phools_Message_Default('of');
 
+        $button = '<a href="#" onclick="'.$this->getClickEvent($uniqueId).'" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
+
         switch($type) {
             case 'LTI_INLINE':
-                $button = '<a href="#" onclick="document.getElementById(\'dataProtectionRegulations_'.$uniqueId.'\').style.display=\'none\';document.getElementById(\'ltiLaunchForm_'.$uniqueId.'\').submit();document.getElementById(\'ltiLaunchForm_'.$uniqueId.'\').target = \'_blank\';document.getElementById(\'lti_frame_'.$uniqueId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
-                $return = '
-                    <div id="dataProtectionRegulations_'.$uniqueId.'" class="dataProtectionRegulationsDialog" style="position:absolute; display:none;max-width:500px;">
-                        <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
-                        <p>'.$msg['dataProtectionRegulations2']->localize($Locale, $Translate).'</p>
-                        <p>';
-                        if(empty($providerUrlTermsOfUse)) {
+                $return = $this->getHeaderMessage($esObject, $msg);
+                if(empty($providerUrlTermsOfUse)) {
                             $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
                         } else {
                             $return .= $this->getDataPrivacyMessage($msg, $providerUrlTermsOfUse, $providerName);
@@ -52,15 +49,11 @@ class ESRender_DataProtectionRegulation_Handler {
                 $return .= '<a href="#" class="edusharing_rendering_content btn btn-secondary" onclick="document.getElementById(\'dataProtectionRegulations_'.$uniqueId.'\').style.display=\'none\';return false;">'.$msg['abort']->localize($Locale, $Translate).'</a>'.$button;
                 $return .= '</p>
                     </div>
+                </div>
                 ';
                 break;
             case 'LTI_DYNAMIC':
-                $button = '<a href="#" onclick="event.preventDefault();event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\'ltiLaunchForm_'.$uniqueId.'\').submit();document.getElementById(\'ltiLaunchForm_'.$uniqueId.'\').target = \'_blank\';document.getElementById(\'lti_frame_'.$uniqueId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
-                $return = '
-                    <div class="dataProtectionRegulations">
-                        <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
-                        <p>'.$msg['dataProtectionRegulations2']->localize($Locale, $Translate).'</p>
-                        <p>';
+                $return = $this->getHeaderMessage($esObject, $msg);
                 if(empty($providerUrlTermsOfUse)) {
                     $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
 
@@ -70,15 +63,11 @@ class ESRender_DataProtectionRegulation_Handler {
                 $return .= $button.'
                         </p>
                     </div>
+                </div>
                 ';
                 break;
             case 'VIDEO_DEFAULT':
-                $button = '<a href="#" onclick="event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\'videoWrapperInner_'.$uniqueId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
-                $return = '
-                    <div class="dataProtectionRegulations">
-                        <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
-                        <p>'.$msg['dataProtectionRegulations2']->localize($Locale, $Translate).'</p>
-                        <p>';
+                $return = $this->getHeaderMessage($esObject, $msg);
                 if(empty($providerUrlTermsOfUse)) {
                     $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
 
@@ -88,27 +77,13 @@ class ESRender_DataProtectionRegulation_Handler {
                 $return .= $button.'
                         </p>
                     </div>
+                </div>
                 ';
                 break;
             case 'YOUTUBE':
             case 'VIMEO':
-                $button = '<a href="#" onclick="event.preventDefault();';
-                $button .= 'var frame=document.getElementById(\''.$uniqueId.'\');';
-                $button .= 'this.parentElement.parentElement.style.display=\'none\';';
-                $button .= 'frame.src=frame.getAttribute(\'data-src\');';
-                $button .= 'frame.style.display=\'block\';';
-                $button .= 'frame.parentElement.style.position=\'\';';
-                $button .= 'frame.parentElement.style.position=\'relative\';';
-                $button .= 'frame.parentElement.style.paddingBottom=\'56.25%\';';
-                $button .= 'frame.parentElement.style.paddingTop=\'25px\';';
-                $button .= 'frame.parentElement.style.height=\'0\';"';
-                $button .= 'class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
-                $return = '
-                    <div class="dataProtectionRegulations">
-                        <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
-                        <p>'.$msg['dataProtectionRegulations2']->localize($Locale, $Translate).'</p>
-                        <p>';
-                        if(empty($providerUrlTermsOfUse)) {
+                $return = $this->getHeaderMessage($esObject, $msg);
+            if(empty($providerUrlTermsOfUse)) {
                             $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
 
                         } else {
@@ -117,18 +92,15 @@ class ESRender_DataProtectionRegulation_Handler {
                             $return .= $button.'
                         </p>
                     </div>
+                </div>
                 ';
                 break;
             case 'H5P':
             
                 echo "<script>console.log(".json_encode($Translate).")</script>";
 
-                $button = '<a href="#" onclick="event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\''.$uniqueId.'\').style.display=\'block\';window.dispatchEvent(new Event(\'resize\'));" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
-                $return = '
-                    <div class="dataProtectionRegulations">
-                        <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
-                        <p>'.$msg['dataProtectionRegulations2']->localize($Locale, $Translate).'</p>
-                        <p>';
+                $button = '<a href="#" onclick="'.$this->getClickEvent().'document.getElementById(\''.$uniqueId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
+                $return = $this->getHeaderMessage($esObject, $msg);
                 if(empty($providerUrlTermsOfUse)) {
                     $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
 
@@ -138,15 +110,12 @@ class ESRender_DataProtectionRegulation_Handler {
                 $return .= $button.'
                         </p>
                     </div>
+                </div>
                 ';
                 break;
             default:
-                $button = '<a href="#" onclick="event.preventDefault();this.parentElement.parentElement.style.display=\'none\';document.getElementById(\''.$uniqueId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
-                $return = '
-                    <div class="dataProtectionRegulations">
-                        <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
-                        <p>'.$msg['dataProtectionRegulations2']->localize($Locale, $Translate).'</p>
-                        <p>';
+                $button = '<a href="#" onclick="'.$this->getClickEvent().'document.getElementById(\''.$uniqueId.'\').style.display=\'block\';" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
+                $return = $this->getHeaderMessage($esObject, $msg);
                 if(empty($providerUrlTermsOfUse)) {
                     $return .= '<b>'.$msg['dataProtectionRegulationsHintDefault']->localize($Locale, $Translate).'</b><br/>';
 
@@ -156,8 +125,50 @@ class ESRender_DataProtectionRegulation_Handler {
                 $return .= $button.'
                         </p>
                     </div>
+                </div>
                 ';
         }
         return $return;
+    }
+
+    private function getHeaderMessage($esObject, $msg)
+    {
+        //return '<pre>'.print_r( $esObject->getNode(), true);
+        global $Locale, $Translate;
+        return '<div class="dataProtectionRegulations">
+                <img class="dataProtectionVideoBg" src="'. $esObject->getNode()->preview->url .'"></img>
+                <div class="dataProtectionRegulationsContainer">
+                    <span class="dataProtectionRegulationsHeading">'.$msg['dataProtectionRegulations1']->localize($Locale, $Translate).'</span>
+                    <p>'.$msg['dataProtectionRegulations2']->localize($Locale, $Translate).'</p>
+                    <p>';
+    }
+
+    private function getClickEvent($uniqueId)
+    {
+        return 'event.preventDefault();
+                jQuery(this.parentElement.parentElement.parentElement).fadeOut({
+                    complete: function() {
+                        var frame=document.getElementById(\''.$uniqueId.'\');
+                        console.log(frame);
+                        if(frame) {
+                            frame.src=frame.getAttribute(\'data-src\');
+                            jQuery(frame).fadeIn();
+                            frame.parentElement.style.position=\'\';
+                            frame.parentElement.style.position=\'relative\';
+                            frame.parentElement.style.paddingBottom=\'56.25%\';
+                            frame.parentElement.style.paddingTop=\'25px\';
+                            frame.parentElement.style.height=\'0\';
+                        }
+                        try {
+                            jQuery(\'#videoWrapperInner_'.$uniqueId.'\').fadeIn();
+                        } catch(e) { }
+                        try {
+                            jQuery(\'#'.$uniqueId.'\').fadeIn();
+                        } catch(e) { }
+                        window.dispatchEvent(new Event(\'resize\'));
+                    }
+                });
+                
+        ';
     }
 }

@@ -18,7 +18,12 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 		} else {
 			echo $embedding;
 		}?>
-		<a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
+        <?php
+        if(!$dataProtection) { ?>
+		    <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
+        <?php
+        }
+        ?>
 	</div>
 	<?php echo $metadata; ?>
 </div>

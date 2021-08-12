@@ -75,7 +75,7 @@ class ltiTool {
         $template_data['launchForm'] = $this->getLaunchForm();
         $template_data['objectId'] = $this->esObject ->getObjectID();
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
-        $template_data['applyDataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($template_data['objectId'], '', '', 'LTI_INLINE');
+        $template_data['applyDataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $template_data['objectId'], '', '', 'LTI_INLINE');
         echo $this -> template -> render('/module/lti/inline', $template_data);
         return true;
     }
@@ -87,7 +87,7 @@ class ltiTool {
         $template_data['launchForm'] = $this->getLaunchForm();
         $template_data['objectId'] = $this->esObject ->getObjectID();
         $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
-        $template_data['applyDataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler -> getApplyDataProtectionRegulationsDialog($template_data['objectId'], '', '', 'LTI_DYNAMIC');
+        $template_data['applyDataProtectionRegulationsDialog'] = $dataProtectionRegulationHandler -> getApplyDataProtectionRegulationsDialog($this->esObject, $template_data['objectId'], '', '', 'LTI_DYNAMIC');
         echo $this -> template -> render('/module/lti/dynamic', $template_data);
         return true;
     }

@@ -19,7 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-require_once (__DIR__ . '/config.php');
+include_once (__DIR__ . '/config.php');
 include_once ('../../conf.inc.php');
 define('DOCTYPE_DOCX', 'DOCTYPE_DOCX');
 define('DOCTYPE_XLSX', 'DOCTYPE_XLSX');
@@ -169,8 +169,8 @@ class mod_office extends ESRender_Module_ContentNode_Abstract
         $template_data['previewUrl'] = $this
             ->esObject
             ->getPreviewUrl();
-        $template_data['logoImageUrl'] = $this->getConfiguration('logoImageUrl', $MC_URL . "/admin/img/edulogo.svg");
-        $template_data['logoLinkUrl'] = $this->getConfiguration('logoLinkUrl', "https://edu-sharing.com/");
+        $template_data['logoImageUrl'] = $this->getConfiguration(constant('LOGO_IMAGE_URL'), $MC_URL . "/admin/img/edulogo.svg");
+        $template_data['logoLinkUrl'] = $this->getConfiguration(constant('LOGO_LINK_URL'), "https://edu-sharing.com/");
 
         if (Config::get('hasContentLicense') === true)
         {
@@ -214,7 +214,7 @@ class mod_office extends ESRender_Module_ContentNode_Abstract
      */
     private function getConfiguration($configName, $defaultValue)
     {
-        if (Config::get($configName) != "" || null != Config::get($configName)) return Config::get($configName);
+        if ($configName || $configName!="") return $configName;
         else return $defaultValue;
     }
 
@@ -241,4 +241,3 @@ class mod_office extends ESRender_Module_ContentNode_Abstract
     }
 
 }
-

@@ -24,18 +24,18 @@
 	</style>
 	<script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
 	<script src="<?php echo $MC_URL?>/theme/default/module/office/js/getJS.php"></script>
-	<script type="text/javascript" src="<?php echo Config::get('onlyOfficeDocumentServerURL') ?>/web-apps/apps/api/documents/api.js"></script>
+	<script type="text/javascript" src="<?php echo ONLYOFFICE_DOCUMENT_SERVER_URL ?>/web-apps/apps/api/documents/api.js"></script>
 	<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
 		<h1 class="edusharing_rendering_content_title">
 			<?php echo $title ?>
 		</h1>
 		<div id="edusharing_rendering_content_wrapper" class="edusharing_rendering_content_wrapper" role="main">
-			<?php if(Config::get('onlyOfficeDocumentServerURL')!="" || null != Config::get('onlyOfficeDocumentServerURL')){ ?>
+			<?php if(ONLYOFFICE_DOCUMENT_SERVER_URL!="" || defined("ONLYOFFICE_DOCUMENT_SERVER_URL")){ ?>
 				<div id="edusharing_rendering_content_embedded" class="edusharing_rendering_content edusharing_rendering_content_embedded">
 					<div id="placeholder" style="height: 100%"></div>
 					<script>
 						// we must wait untill the onlyoffice document-server api.js is loaded 
-						$.getScript("<?php echo Config::get('onlyOfficeDocumentServerURL')?>/web-apps/apps/api/documents/api.js").done(function(script, textStatus) {
+						$.getScript("<?php echo ONLYOFFICE_DOCUMENT_SERVER_URL?>/web-apps/apps/api/documents/api.js").done(function(script, textStatus) {
 							DocsServer.docsURL = "<?php echo $url; ?>";
 							DocsServer.title = "<?php echo $title; ?>";
 							DocsServer.docsExt = "<?php echo $fileType; ?>";

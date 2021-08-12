@@ -13,11 +13,10 @@
  */
 
 // set the URL for access ONLYOFFICE API
-Config::set('onlyOfficeDocumentServerURL', "https://localhost/"); // if document-server is in same server as renderingservice
+define('ONLYOFFICE_DOCUMENT_SERVER_URL',  "https://localhost/"); // example: if document-server is in same server as renderingservice
 
 // set the Logo image default will be edu-sharing logo 
-Config::set('logoImageUrl', $MC_URL."/admin/img/edulogo.svg"); 
+define('LOGO_IMAGE_URL', $MC_URL."/admin/img/edulogo.svg"); 
 
 // set the Logo URL link default will be https://edu-sharing.com/
-Config::set('logoLinkUrl', "https://edu-sharing.com/"); 
-
+define('LOGO_LINK_URL', "https://edu-sharing.com/"); 

@@ -175,7 +175,7 @@ extends ESRender_Module_ContentNode_Abstract
 	 * (non-PHPdoc)
 	 * @see ESRender_Module_Base::process()
 	 */
-	final public function process($p_kind) {
+	final public function process($p_kind, $locked = NULL) {
 		$obj_module = $this -> esObject -> getModule();
 		if(empty($p_kind))
 		  $p_kind = $obj_module -> getConf('defaultdisplay', $p_kind);

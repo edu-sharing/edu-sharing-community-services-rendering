@@ -42,10 +42,6 @@ class mod_office
         parent::__construct($Name, $RenderApplication, $p_esobject, $Logger, $Template);
         $this->doctype = DOCTYPE_PDF;
     }
-    public function instanceLocked() {
-        //@TODO
-        return false;
-    }
     public function instanceExists() {
         return file_exists($this -> esObject -> getPath(). mod_office::$CONVERTED_POSTFIX_PDF) || file_exists($this -> esObject -> getPath(). mod_office::$CONVERTED_POSTFIX_ODP);
     }
@@ -64,7 +60,7 @@ class mod_office
             $mimetype == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
         ) {
             $this->convertPresentation($this->getCacheFileName(), $this->getCacheFileName() . mod_office::$CONVERTED_POSTFIX_ODP);
-            $this->convertedPath = $this -> esObject -> getPath() . mod_office::$CONVERTED_POSTFIX_ODD;
+            $this->convertedPath = $this -> esObject -> getPath() . mod_office::$CONVERTED_POSTFIX_ODP;
         } else if (
             $mimetype == 'application/vnd.ms-powerpoint'
         ) {
@@ -128,7 +124,7 @@ class mod_office
 
     public static function canProcess($esObject)
     {
-        echo $esObject->getMimetype();
+        // echo $esObject->getMimetype();
         $supported = [
             'application/vnd.oasis.opendocument.text',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -137,7 +133,6 @@ class mod_office
             'application/vnd.ms-powerpoint',
         ];
         if(in_array($esObject->getMimetype(), $supported)) {
-            echo 'use mod_office';
             return true;
         }
         return parent::canProcess($esObject);

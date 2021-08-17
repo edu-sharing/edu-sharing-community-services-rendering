@@ -6,7 +6,7 @@ readfile('index.html');
 
 ?>
 <style>
-    #titlebar, #toolbarRight {
+    #titlebar, #toolbarRight, #pageNumberLabel {
         display: none;
     }
 </style>

@@ -41,15 +41,12 @@ class mod_office_spreadsheet
         parent::__construct($Name, $RenderApplication, $p_esobject, $Logger, $Template);
 
     }
-    public function instanceLocked() {
-        //@TODO
-        return false;
-    }
     public function instanceExists() {
         return file_exists($this -> esObject -> getPath(). mod_office_spreadsheet::$CONVERTED_POSTFIX);
     }
 
 
+    // @TODO: Also use inline features
     protected function dynamic()
     {
         $template_data['url'] = $this -> esObject->getPath() . mod_office_spreadsheet::$CONVERTED_POSTFIX.'?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');

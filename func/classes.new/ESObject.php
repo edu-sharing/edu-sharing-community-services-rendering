@@ -483,6 +483,8 @@ class ESObject {
                 $this -> module -> setName('doc');
             }
         }
+
+        // @TODO: May remove this for now and configure all mime types via database
         $modulePath = '../../modules/';
         foreach(scandir($modulePath) as $mod){
             $phpFile = $modulePath.$mod.'/mod_'.$mod.'.php';

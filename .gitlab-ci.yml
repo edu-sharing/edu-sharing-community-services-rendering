@@ -28,6 +28,7 @@ deploy_release:
   script:
     - apt-get update -yqq
     - apt-get install -yqq git
+    - apt-get install -yqq php-gd php-zip
     # Install and run Composer
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install

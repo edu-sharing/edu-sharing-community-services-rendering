@@ -34,8 +34,7 @@ deploy_release:
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install
     - date=$(date --iso-8601=seconds)
-    - sed -i "s/#BUILD_DATE/$date/g" install/version_info.php
-    - sed -i "s/#BUILD_COMMIT/$CI_COMMIT_SHORT_SHA/g" install/version_info.php
-    - sed -i "s/#BUILD_BRANCH/$CI_COMMIT_REF_NAME/g" install/version_info.php
+    - echo "Date: $date" > application/esmain/build.version
+    - echo "Commit: $CI_COMMIT_SHORT_SHA / $CI_COMMIT_REF_NAME" >> application/esmain/build.version
     - rm -rf .git/
     - ls ./

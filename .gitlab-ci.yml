@@ -26,9 +26,10 @@ deploy_release:
     paths:
       - ./
   script:
-    - apt-get update -yqq
-    - apt-get install -yqq git
-    - apt-get install -yqq php-gd php-zip
+    - apt-get update -y && apt-get install -y sendmail libpng-dev zlib1g-dev
+    - docker-php-ext-install mbstring
+    - docker-php-ext-install zip
+    - docker-php-ext-install gd
     # Install and run Composer
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install

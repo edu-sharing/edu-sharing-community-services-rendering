@@ -30,6 +30,7 @@ deploy_release:
     - docker-php-ext-install mbstring
     - docker-php-ext-install zip
     - docker-php-ext-install gd
+    - docker-php-ext-install libzip
     # Install and run Composer
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install

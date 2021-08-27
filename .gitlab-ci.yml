@@ -18,7 +18,7 @@ deploy:
 
 
 deploy_release:
-  image: php:7.0-fpm
+  image: php:7.3-fpm
 
   stage: deploy
   artifacts:

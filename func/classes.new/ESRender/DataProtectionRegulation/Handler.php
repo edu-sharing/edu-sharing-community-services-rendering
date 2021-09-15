@@ -6,7 +6,7 @@ class ESRender_DataProtectionRegulation_Handler {
         $return = '<b>'.$msg['dataProtectionRegulations3']->localize($Locale, $Translate).'</b><br/>
                   <a href="'.$providerUrlTermsOfUse.'" target="_blank">'.$msg['dataProtectionRegulations']->localize($Locale, $Translate).'</a>';
         if(!empty($providerName)) {
-            $return .= ' '.$msg['of']->localize($Locale, $Translate).' '.$providerName;
+            // $return .= ' '.$msg['of']->localize($Locale, $Translate).' '.$providerName;
         }
         $return .= '<br/>';
         return $return;

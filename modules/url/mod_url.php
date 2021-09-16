@@ -7,8 +7,9 @@
  */
 
 define("VIDEO_TOKEN_YOUTUBE", "youtube.com/watch?");
+define("VIDEO_TOKEN_YOUTUBE_ALT", "youtu.be/");
 define("VIDEO_TOKEN_VIMEO", "vimeo.com");
-define("VIDEO_TOKENS", serialize(array(VIDEO_TOKEN_YOUTUBE, VIDEO_TOKEN_VIMEO)));
+define("VIDEO_TOKENS", serialize(array(VIDEO_TOKEN_YOUTUBE, VIDEO_TOKEN_YOUTUBE_ALT, VIDEO_TOKEN_VIMEO)));
 
 class mod_url
 extends ESRender_Module_NonContentNode_Abstract {
@@ -248,6 +249,17 @@ extends ESRender_Module_NonContentNode_Abstract {
             $params[$item[0]] = $item[1];
         }
         $vidId = $params['v'];
+        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
+        return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
+                    <div class="videoWrapperInner" style="'.($this->dataProtection?'':$videoWrapperInnerStyle).'">
+                       '.$this->dataProtection.'
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($this->dataProtection?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video"></iframe>
+                    </div>
+                    '.$footer.'
+                </div>';
+    }
+    else if (strpos($this -> getUrl(), VIDEO_TOKEN_YOUTUBE_ALT) !== false) {
+        $vidId = basename($this -> getUrl());
         $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
         return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
                     <div class="videoWrapperInner" style="'.($this->dataProtection?'':$videoWrapperInnerStyle).'">

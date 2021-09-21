@@ -1,0 +1,73 @@
+<?php 
+global $Locale, $Translate,$MC_URL;
+$msg = array();
+// $msg['toDownload'] = new Phools_Message_Default('toDownload');
+$msg['cannotOpenObject'] = new Phools_Message_Default('cannotOpenObject');
+$msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText');
+?>
+<html>
+<head>
+<style>
+<?php include(dirname(__FILE__) . '/../../../css/dynamic.php'); ?>
+<?php include(dirname(__FILE__) . '/../../../css/metadata.css'); ?>
+<?php include(dirname(__FILE__) . '/css/loading.css'); ?>
+</style>
+<script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
+</head>
+<body>
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
+  <div id="loadingSpin" class="loadingSpin"></div>
+	<div id="edusharing_rendering_content_wrapper" class="edusharing_rendering_content_wrapper" role="main">
+    <div id="edusharing_rendering_content_embedded" class="edusharing_rendering_content edusharing_rendering_content_embedded">
+        <iframe title="<?php echo $title;?>" src="<?php echo $urlEmbeded ?>" 
+            width="100%" height="100%" style="border: none;"
+            allowfullscreen 
+            webkitallowfullscreen> 
+          </iframe>
+    </div>
+
+    <div id="edusharing_downloadadvice">
+      <img class="edusharing_rendering_content_preview" src="<?php echo $previewUrl?>">
+      <h3><?php echo $msg['cannotOpenObject']->localize($Locale, $Translate); ?> </h3>
+      <h4><?php echo  $msg['cannotOpenObjectText']->localize($Locale, $Translate); ?></h4>
+    </div>
+
+  </div>
+	<?php echo $metadata; ?>
+</div>
+</body>
+<script>
+  // --------------------------- BEGGIN IFRAME ----------------------------------------// 
+
+// Create IE + others compatible event handler
+var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+var eventer = window[eventMethod];
+var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+// Listen to message from child window
+window.addEventListener(messageEvent,renderDocument,false);
+
+function renderDocument(e) {
+  if(e.data.name === 'renderLibreOffice' && e.data.value === true){
+    document.getElementById("loadingSpin").style.display="none";
+    document.getElementById("edusharing_rendering_content_embedded").style.visibility="visible";
+    document.getElementById("edusharing_rendering_content_wrapper").style.height="100%";
+    window.removeEventListener(messageEvent,renderDocument,false);
+  }else if(e.data.name==="errorRenderLibreOffice"){    
+    document.getElementById("loadingSpin").style.display="none";
+    document.getElementById("edusharing_rendering_content_embedded").style.display="none";
+    document.getElementById("edusharing_rendering_content_wrapper").style.height="100%";
+    document.getElementById("edusharing_downloadadvice").style.display="block";
+  } else{
+    return;
+  } 
+}
+
+
+// --------------------------- END IFRAME ----------------------------------------// 
+</script>
+</html>
+
+
+

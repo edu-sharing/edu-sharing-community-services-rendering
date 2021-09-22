@@ -70,7 +70,7 @@ $Translate
     ->addTranslation('de', 'jumpToDataProvider :dataProvider', 'Objekt beim Datengeber (:dataProvider) anzeigen')
     ->addTranslation('de', 'ltiGotoProvider', 'Direkt zum Provider gehen')
     ->addTranslation('de', 'dataProtectionRegulations1 :providerName', 'Ja, Inhalte von :providerName anzeigen')
-    ->addTranslation('de', 'dataProtectionRegulations2 :providerName', 'Sie sind dabei Inhalte von :providerName zu laden und anzuzeigen. Dabei werden unter Umständen persönliche Daten an :providerName übermittelt und dort verarbeitet.')
+    ->addTranslation('de', 'dataProtectionRegulations2 :providerName', 'Sie sind dabei, Inhalte von :providerName zu laden und anzuzeigen. Dabei werden unter Umständen persönliche Daten an diese übermittelt und dort verarbeitet.')
     ->addTranslation('de', 'dataProtectionRegulations1default', 'Ja, Inhalte von externer Quelle anzeigen')
     ->addTranslation('de', 'dataProtectionRegulations2default', 'Sie sind dabei Inhalte von einer externen Quelle zu laden und anzuzeigen. Dabei werden unter Umständen persönliche Daten übermittelt und dort verarbeitet.')
     ->addTranslation('de', 'dataProtectionRegulationsHintDefault', 'Weitere Informationen finden Sie in den Datenschutzhinweisen des Anbieters.')

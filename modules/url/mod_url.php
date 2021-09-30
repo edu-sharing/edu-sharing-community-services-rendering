@@ -73,7 +73,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             $metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
         }
 
-        $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> esObject -> getTitle()));
+        $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> esObject -> getTitle()));
         $Template = $this -> getTemplate();
         $tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl(), 'footer' => $footer);
 
@@ -100,7 +100,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             $metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
         }
 
-        $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> esObject -> getTitle()));
+        $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> esObject -> getTitle()));
 
         $remoteType = new RemoteObjectType($this->esObject);
         $type = $remoteType->getType();
@@ -123,7 +123,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             $license = $this -> esObject->getLicense();
             if (!empty($license))
                 $license = $license->renderFooter($this->getTemplate(), $this->getUrl());
-            $embedding = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> esObject->getTitle(), 'url' => $this->getUrl()));
+            $embedding = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> esObject->getTitle(), 'url' => $this->getUrl()));
         }
 
         $data = array('embedding' => $embedding);

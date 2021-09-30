@@ -4,7 +4,7 @@
 ?>
 <script>
     function replaceData<?php echo $uniqueId; ?>() {
-        const html = <?php echo json_encode(utf8_encode($content))?>;
+        const html = <?php echo json_encode($content)?>;
         jQuery('#<?php echo $uniqueId; ?>-data').html(html);
         jQuery('#<?php echo $uniqueId; ?>-data').show();
         jQuery('#<?php echo $uniqueId; ?>-privacy').hide();

@@ -189,7 +189,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     {
         $html = '<div class="edusharing_audio_wrapper">';
         $html .= '<img alt="" class="edusharing_audio_bg" src="'. $this->esObject->getNode()->preview->url.'">';
-        $html .= '<img alt="" class="edusharing_audio_img" src="'. $this->esObject->getNode()->preview->url.'">';
+        $html .= '<div class="edusharing_audio_img"><img alt="" src="'. $this->esObject->getNode()->preview->url.'"></div>';
         $html .= '<video style="max-width:100%" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls" oncontextmenu="return false;"></video>' . $footer . '</div>';
         return $html;
     }

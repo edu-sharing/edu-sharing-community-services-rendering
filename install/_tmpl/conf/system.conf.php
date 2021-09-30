@@ -10,9 +10,15 @@ $MC_DOCROOT= '[[[TOKEN_DOCROOT]]]';
 $CC_RENDER_PATH = '[[[TOKEN_DATA_DIR]]]';
 
 DEFINE("ENABLE_METADATA_INLINE_RENDERING", true);
-# Default URL for dataprotection dialog (the key must be a regex matching the given url, and the value is an array of name + url. First index match will win)
-# example: $DATAPROTECTIONREGULATION_URL = ["/example/" => ["name" => "Test", "url" => "http://test.de"]]];
-$DATAPROTECTIONREGULATION_URL = [];
+# Default config for dataprotection dialog (the key must be a regex matching the given url, and the value is an array of name + url. First index match will win)
+$DATAPROTECTIONREGULATION_CONFIG = [
+    "enabled" => false,
+    "modules" => [],
+    # (the key must be a regex matching the given url, and the value is an array of name + url. First index match will win)
+    "urls" => [
+        '/.*/' => ["name" => "Example", "url" => "http://example"]
+    ]
+];
 
 $ESRENDER_SESSION_NAME = 'ESSID';
 

@@ -6,42 +6,42 @@
  *
  */
 
-define("VIDEO_TOKEN_YOUTUBE", "youtube.com/watch?");
-define("VIDEO_TOKEN_YOUTUBE_ALT", "youtu.be/");
-define("VIDEO_TOKEN_VIMEO", "vimeo.com");
-define("VIDEO_TOKENS", serialize(array(VIDEO_TOKEN_YOUTUBE, VIDEO_TOKEN_YOUTUBE_ALT, VIDEO_TOKEN_VIMEO)));
-
 class mod_url
 extends ESRender_Module_NonContentNode_Abstract {
-    private $dataProtection;
-    protected function dynamic() {
-    	if (!$this -> validate()) {
-    		return false;
-    	}
 
-    	if(Config::get('urlEmbedding')) {
+    private function getEmbedding() {
+        $remoteType = new RemoteObjectType($this->esObject);
+        $type = $remoteType->getType();
+        if(Config::get('urlEmbedding')) {
             $embedding = Config::get('urlEmbedding');
-        }else if ($this -> detectVideo()) {
+        }else if ($type === RemoteObjectType::$TYPE_VIDEO) {
             $embedding = $this->getVideoEmbedding();
-        }else if($this -> detectAudio()) {
+        }else if ($type === RemoteObjectType::$TYPE_AUDIO) {
             $embedding = $this->getAudioEmbedding();
         }else if($this -> isPixabayRemoteObject()) {
             $embedding = $this->getPixabayEmbedding();
-        }else if($this -> detectImage()) {
+        }else if ($type === RemoteObjectType::$TYPE_IMAGE) {
             $embedding = $this->getImageEmbedding();
-        }else if($this -> detectH5P()) {
+        }else if ($type === RemoteObjectType::$TYPE_H5P) {
             $embedding = $this->getH5PEmbedding();
-        }else if($this -> detectPrezi()) {
+        }else if ($type === RemoteObjectType::$TYPE_PREZI) {
             $embedding = $this->getPreziEmbedding();
         }else{
             $embedding = '';
         }
+        return $embedding;
+    }
+
+    protected function dynamic() {
+    	if (!$this -> validate()) {
+    		return false;
+    	}
+        $embedding = $this->getEmbedding();
 
     	$Template = $this -> getTemplate();
     	$tempArray = array(
     	    'embedding' => $embedding,
             'url' => $this->getUrl(),
-            'dataProtection' => $this->dataProtection,
             'previewUrl' => $this -> esObject->getPreviewUrl()
         );
     	if(Config::get('showMetadata'))
@@ -57,25 +57,7 @@ extends ESRender_Module_NonContentNode_Abstract {
         if (!$this -> validate()) {
             return false;
         }
-
-        if(Config::get('urlEmbedding')) {
-            $embedding = Config::get('urlEmbedding');
-        }else if ($this -> detectVideo()) {
-            $embedding = $this->getVideoEmbedding();
-        }else if($this -> detectAudio()) {
-            $embedding = $this->getAudioEmbedding();
-        }else if($this -> isPixabayRemoteObject()) {
-            $embedding = $this->getPixabayEmbedding();
-        }else if($this -> detectImage()) {
-            $embedding = $this->getImageEmbedding();
-        }else if($this -> detectH5P()) {
-            $embedding = $this->getH5PEmbedding();
-        }else if($this -> detectPrezi()) {
-            $embedding = $this->getPreziEmbedding();
-        }else{
-            $embedding = '';
-        }
-
+        $embedding = $this->getEmbedding();
 
         $license = $this -> esObject->getLicense();
         if(!empty($license)) {
@@ -120,20 +102,22 @@ extends ESRender_Module_NonContentNode_Abstract {
 
         $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> esObject -> getTitle()));
 
+        $remoteType = new RemoteObjectType($this->esObject);
+        $type = $remoteType->getType();
 
         if(Config::get('urlEmbedding')) {
             $embedding = Config::get('urlEmbedding') . $footer;
-        } else if ($this -> detectVideo()) {
+        } else if ($type === RemoteObjectType::$TYPE_VIDEO) {
             $embedding = $this -> getVideoEmbedding(mc_Request::fetch('width', 'INT', 600), $footer);
-        } else if($this -> detectAudio()) {
+        }else if ($type === RemoteObjectType::$TYPE_VIDEO) {
             $embedding = $this->getAudioEmbedding($footer);
         } else if($this -> isPixabayRemoteObject()) {
             $embedding = $this->getPixabayEmbedding($footer, mc_Request::fetch('width', 'INT', 600));
-        } else if($this -> detectImage()) {
+        }else if ($type === RemoteObjectType::$TYPE_IMAGE) {
             $embedding = $this -> getImageEmbedding($footer);
-        } else if($this -> detectH5P()) {
+        }else if ($type === RemoteObjectType::$TYPE_H5P) {
             $embedding = $this->getH5PEmbedding($footer);
-        }else if($this -> detectPrezi()) {
+        }else if ($type === RemoteObjectType::$TYPE_PREZI) {
             $embedding = $this->getPreziEmbedding($footer);
         }else {
             $license = $this -> esObject->getLicense();
@@ -221,27 +205,22 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
     //16:9
     $height = $width * 0.5625;
-    $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
     $objId = $this -> esObject -> getObjectID();
     $videoWrapperInnerStyle = 'position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;';
-
+    $type = new RemoteObjectType($this->esObject);
     //wrappers needed to handle max width
     if($this -> isYoutubeRemoteObject()){
         $vidId = $this -> esObject -> getNode() -> remote -> id;
-        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
         $src = '';
-        if (empty($this->dataProtection)){
-            $src = 'www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1';
-        }
+        $src = 'www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1';
         return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
-                    <div class="videoWrapperInner" style="'.($this->dataProtection?'':$videoWrapperInnerStyle).'">
-                        '.$this->dataProtection.'
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($this->dataProtection?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="'.$src.'" frameborder="0" allowfullscreen class="embedded_video"></iframe>
+                    <div class="videoWrapperInner" style="'.$videoWrapperInnerStyle.'">
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . '" id="' . $objId . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="'.$src.'" frameborder="0" allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
     }
-    else if (strpos($this -> getUrl(), VIDEO_TOKEN_YOUTUBE) !== false) {
+    else if ($type->isYoutube()) {
         $parsedUrl = parse_url($this -> getUrl());
         $paramsArr = explode('&', $parsedUrl['query']);
         foreach ($paramsArr as $param) {
@@ -249,34 +228,19 @@ extends ESRender_Module_NonContentNode_Abstract {
             $params[$item[0]] = $item[1];
         }
         $vidId = $params['v'];
-        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
         return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
-                    <div class="videoWrapperInner" style="'.($this->dataProtection?'':$videoWrapperInnerStyle).'">
-                       '.$this->dataProtection.'
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($this->dataProtection?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video"></iframe>
+                    <div class="videoWrapperInner" style="'.($videoWrapperInnerStyle).'">
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . '" id="' . $objId . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
     }
-    else if (strpos($this -> getUrl(), VIDEO_TOKEN_YOUTUBE_ALT) !== false) {
-        $vidId = basename($this -> getUrl());
-        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
-        return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
-                    <div class="videoWrapperInner" style="'.($this->dataProtection?'':$videoWrapperInnerStyle).'">
-                       '.$this->dataProtection.'
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($this->dataProtection?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video"></iframe>
-                    </div>
-                    '.$footer.'
-                </div>';
-    }
-    else if (strpos($this -> getUrl(), VIDEO_TOKEN_VIMEO) !== false) {
+    else if ($type->isVimeo()) {
         $urlArr = explode('/', $this -> getUrl());
         $vidId = end($urlArr);
-        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Vimeo', 'https://help.vimeo.com/hc/de/sections/203915088-Datenschutz', 'player.vimeo.com', 'VIMEO');
         return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-                    <div class="videoWrapperInner" style="'.($this->dataProtection?'':$videoWrapperInnerStyle).'">
-                        '.$this->dataProtection.'
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($this->dataProtection?'display:none':'') . '" id="' . $objId . '" data-src="//player.vimeo.com/video/' . $vidId . '" src="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video"></iframe>
+                    <div class="videoWrapperInner" style="'.$videoWrapperInnerStyle.'">
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . '" id="' . $objId . '" src="//player.vimeo.com/video/' . $vidId . '" src="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
@@ -286,19 +250,8 @@ extends ESRender_Module_NonContentNode_Abstract {
             $type = 'video/' . pathinfo($this -> getUrl(), PATHINFO_EXTENSION);
         }
         $identifier = uniqid();
-        global $DATAPROTECTIONREGULATION_URL;
-        if(isset($DATAPROTECTIONREGULATION_URL)) {
-            foreach ($DATAPROTECTIONREGULATION_URL as $k => $v) {
-                if (preg_match($k, $this->getUrl())) {
-                    $privacy = $v;
-                    break;
-                }
-            }
-        }
-        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, $privacy ? $privacy["name"] : '', $privacy ? $privacy["url"] : '', $this -> getUrl(),'VIDEO_DEFAULT');
         return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-                    '.$this->dataProtection.'
-                <div id="videoWrapperInner_'.$objId.'" class="videoWrapperInner" style="position: relative; padding-top: 25px;' . ($this->dataProtection?'display:none':'') . '">
+                <div id="videoWrapperInner_'.$objId.'" class="videoWrapperInner" style="position: relative; padding-top: 25px;' . '">
                     <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;background: transparent url(\''.$this->esObject->getPreviewUrl().'\') 50% 50% / cover no-repeat;" oncontextmenu="return false;" controlsList="nodownload">
                         <source src="' . $this -> getUrl() . '" type="' . $type . '"></source>
                     </video>
@@ -312,56 +265,6 @@ extends ESRender_Module_NonContentNode_Abstract {
         $urlProp = $this -> esObject -> getNodeProperty($this -> getUrlProperty());
        if(!empty($urlProp))
             return html_entity_decode($urlProp);
-        return false;
-    }
-
-    protected function detectVideo() {
-
-        if($this -> isYoutubeRemoteObject())
-            return true;
-        
-        $needles = unserialize(VIDEO_TOKENS);
-        foreach ($needles as $needle) {
-            if (strpos($this -> getUrl(), $needle) !== false)
-                return true;
-        }
-
-        if(pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'mp4' || pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'webm')
-            return true;
-        
-        //filter videos that are embedded in html
-        if(strpos($this -> esObject->getMimeType(), 'video') !== false && strpos($this -> getUrl(), '.htm') === false && strpos($this -> getUrl(), '.php') === false)
-        	return true;
-        
-        return false;
-    }
-    
-    protected function detectAudio() {
-    	if(strpos($this -> esObject->getMimeType(), 'audio') !== false)
-    		return true;
-    }
-
-    protected function detectImage() {
-        if((strpos($this -> esObject->getMimeType(), '/png') !== false ||
-            strpos($this -> esObject->getMimeType(), '/jpg') !== false ||
-            strpos($this -> esObject->getMimeType(), '/jpeg') !== false ||
-            strpos($this -> esObject->getMimeType(), '/gif') !== false) &&
-            $this -> esObject -> getNodeProperty('ccm:remoterepositorytype') !== 'DDB')
-            return true;
-        return false;
-    }
-
-    protected function detectH5P() {
-    	if(strpos($this -> getUrl(), 'h5p.org/h5p/embed') !== false){
-            return true;
-        }
-        return false;
-    }
-
-    protected function detectPrezi() {
-        if(strpos($this -> getUrl(), 'prezi.com/view/') !== false){
-            return true;
-        }
         return false;
     }
 

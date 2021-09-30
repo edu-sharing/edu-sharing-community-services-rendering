@@ -267,6 +267,11 @@ img.edusharing_rendering_content_preview {
     left: 0;
     bottom: 0;
 }
+.dataProtectionRegulations .dataProtectionRegulationsHeading,
+.dataProtectionRegulations .dataProtectionRegulationsContainer > * {
+    display: block;
+    text-align: center;
+}
 .dataProtectionRegulations .dataProtectionRegulationsContainer a:not(.btn) {
     color: #B6D8FC;
     text-decoration: underline;

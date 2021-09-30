@@ -293,6 +293,42 @@ a.dataProtectionRegulationsButton {
 	line-height: initial;
 }
 
+
+.edusharing_audio_wrapper {
+    position: relative;
+    height: 350px;
+    display: flex;
+    overflow: hidden;
+}
+.edusharing_audio_wrapper .edusharing_audio_bg {
+    position: absolute;
+    left: -25px;
+    right: -25px;
+    top: 25px;
+    bottom: 25px;
+    width: 100%;
+    margin: auto;
+    object-fit: cover;
+    filter: blur(25px) brightness(0.9);
+}
+.edusharing_audio_wrapper .edusharing_audio_img {
+    display: flex;
+    position: relative;
+    z-index: 1:
+    width: 60%;
+    /* max-width: 450px; */
+    margin: 20px 8% 75px 8%;
+    object-fit: contain;
+    box-shadow: 0 0 9px rgba(0,0,0,.25);
+    background: #fff;
+}
+.edusharing_audio_wrapper video {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    box-shadow: none;
+}
+
 @media (max-width: 900px) {
 
     .edusharing_rendering_content_wrapper{

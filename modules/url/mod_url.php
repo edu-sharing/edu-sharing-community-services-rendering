@@ -187,7 +187,11 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function getAudioEmbedding($footer = '')
     {
-        return '<div><video style="max-width:100%" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls" oncontextmenu="return false;"></video>' . $footer . '</div>';
+        $html = '<div class="edusharing_audio_wrapper">';
+        $html .= '<img alt="" class="edusharing_audio_bg" src="'. $this->esObject->getNode()->preview->url.'">';
+        $html .= '<img alt="" class="edusharing_audio_img" src="'. $this->esObject->getNode()->preview->url.'">';
+        $html .= '<video style="max-width:100%" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls" oncontextmenu="return false;"></video>' . $footer . '</div>';
+        return $html;
     }
 
     protected function getImageEmbedding($footer = '')

@@ -173,7 +173,10 @@ extends ESRender_Module_NonContentNode_Abstract {
         if(substr($preziUrl , -1)!='/'){
             $preziUrl .= '/';
         }
-        $htm = '<div style="max-width:100%"><iframe width="800" height="580" src="'.$preziUrl.'embed" webkitallowfullscreen="1" mozallowfullscreen="1" allowfullscreen="1"></iframe>'. $footer.'</div>';
+        if(strpos($preziUrl, '/embed') === false) {
+            $preziUrl .= 'embed';
+        }
+        $htm = '<div style="max-width:100%"><iframe width="800" height="580" src="'.$preziUrl.'" webkitallowfullscreen="1" mozallowfullscreen="1" allowfullscreen="1"></iframe>'. $footer.'</div>';
         return $htm;
     }
 

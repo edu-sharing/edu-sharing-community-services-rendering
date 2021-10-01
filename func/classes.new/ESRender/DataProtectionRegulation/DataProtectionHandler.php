@@ -31,10 +31,10 @@ class RemoteObjectType {
         if($this->detectImage()) {
             return RemoteObjectType::$TYPE_IMAGE;
         }
-        if($this->detectH5P()) {
+        if($this->isH5P()) {
             return RemoteObjectType::$TYPE_H5P;
         }
-        if($this->detectPrezi()) {
+        if($this->isPrezi()) {
             return RemoteObjectType::$TYPE_PREZI;
         }
         return RemoteObjectType::$TYPE_GENERIC;
@@ -53,16 +53,12 @@ class RemoteObjectType {
             return true;
         return false;
     }
-
-    private function detectH5P() {
-        if(strpos($this -> url, 'h5p.org/h5p/embed') !== false){
-            return true;
-        }
-        return false;
+    public function isH5P(){
+        return strpos($this -> url, 'h5p.org/h5p/embed') !== false;
     }
 
-    private function detectPrezi() {
-        if(strpos($this -> url, 'prezi.com/view/') !== false){
+    public function isPrezi() {
+        if(strpos($this -> url, 'prezi.com/view/') !== false || strpos($this -> url, 'prezi.com/embed/') !== false){
             return true;
         }
         return false;
@@ -134,6 +130,18 @@ class DataProtectionHandler
         }
         $remoteRepository = $node -> getNode() -> remote -> repository -> repositoryType;#
         $type = new RemoteObjectType($node);
+        if($type->isH5P()) {
+            return [
+                "name" => "H5P",
+                "url" => "https://h5p.org/privacy"
+            ];
+        }
+        if($type->isPrezi()) {
+            return [
+                "name" => "Prezi",
+                "url" => "https://prezi.com/privacy-policy"
+            ];
+        }
         if($type->isYoutube()) {
             return [
                 "name" => "YouTube",

@@ -26,7 +26,7 @@
                             </a>
                         </p>
                         <p>
-                            <a href="<?php echo $url; ?>" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton" target="_blank" id="edusharing_rendering_content_href">
+                            <a href="<?php echo $url; ?>" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton dataProtectionRegulationsButton-<?php echo $type;?>" target="_blank" id="edusharing_rendering_content_href">
                                 <?php echo Phools_Message_Default::translate('goToOrigin'); ?>
                             </a>
                         </p>
@@ -48,7 +48,7 @@
                         <br/>
                         <a href="#"
                            onclick="event.preventDefault(); replaceData<?php echo $uniqueId; ?>()"
-                           class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton"
+                           class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton dataProtectionRegulationsButton-<?php echo $type;?>"
                         ><?php echo Phools_Message_Default::translate('dataProtectionRegulations4');?></a>
                     </p>
                     <?php

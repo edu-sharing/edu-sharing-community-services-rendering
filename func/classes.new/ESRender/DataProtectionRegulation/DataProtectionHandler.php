@@ -97,7 +97,9 @@ class DataProtectionHandler
         global $Locale;
         global $DATAPROTECTIONREGULATION_CONFIG;
         if(!$DATAPROTECTIONREGULATION_CONFIG) {
-            $DATAPROTECTIONREGULATION_CONFIG = [];
+            $DATAPROTECTIONREGULATION_CONFIG = [
+                "enabled" => false
+            ];
         }
         return $DATAPROTECTIONREGULATION_CONFIG;
     }

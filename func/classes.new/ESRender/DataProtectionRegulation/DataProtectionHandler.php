@@ -45,7 +45,9 @@ class RemoteObjectType {
     }
 
     private function detectImage() {
-        if((strpos($this -> esObject->getMimeType(), '/png') !== false ||
+        if((
+                $this -> esObject->getNode()->mediatype === 'file-image' ||
+                strpos($this -> esObject->getMimeType(), '/png') !== false ||
                 strpos($this -> esObject->getMimeType(), '/jpg') !== false ||
                 strpos($this -> esObject->getMimeType(), '/jpeg') !== false ||
                 strpos($this -> esObject->getMimeType(), '/gif') !== false) &&

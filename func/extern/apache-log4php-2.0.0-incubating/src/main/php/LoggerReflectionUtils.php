@@ -69,6 +69,20 @@ class LoggerReflectionUtils {
 	 // TODO: check, if this is really useful
 	public function setProperties($properties, $prefix) {
 		$len = strlen($prefix);
+        foreach ($properties as $key => $value){
+            if(strpos($key, $prefix) === 0) {
+                if(strpos($key, '.', ($len + 1)) > 0) {
+                    continue;
+                }
+                $value = LoggerOptionConverter::findAndSubst($key, $properties);
+                $key = substr($key, $len);
+                if($key == 'layout' and ($this->obj instanceof LoggerAppender)) {
+                    continue;
+                }
+                $this->setProperty($key, $value);
+            }
+        }
+
 		while(list($key,) = each($properties)) {
 			if(strpos($key, $prefix) === 0) {
 				if(strpos($key, '.', ($len + 1)) > 0) {
@@ -82,6 +96,7 @@ class LoggerReflectionUtils {
 				$this->setProperty($key, $value);
 			}
 		}
+
 		$this->activate();
 	}
 	

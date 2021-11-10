@@ -392,8 +392,8 @@ video, audio {
 
 .dataProtectionRegulations {
 position: relative;
+aspect-ratio: 16 / 9;
 max-width: 800px;
-height: 450px;
 }
 .dataProtectionRegulations, .dataProtectionRegulationsDialog {
 background: #fff;
@@ -410,13 +410,16 @@ border: 0;
 position: absolute;
 width: 100%;
 z-index: 1;
-color: #fff;
+color: #fff !important;
 text-shadow: 0 0 5px rgba(0,0,0,.5);
 padding: 15px 20px;
 backdrop-filter: blur(4px);
 background-color: rgba(0,0,0,.6);
 left: 0;
 bottom: 0;
+}
+.dataProtectionRegulations .dataProtectionRegulationsContainer p{
+color: #fff !important;
 }
 .dataProtectionRegulations .dataProtectionRegulationsContainer a:not(.btn) {
 color: #B6D8FC;

@@ -333,24 +333,24 @@ class LoggerConfiguratorIni implements LoggerConfigurator {
 	 * @param LoggerHierarchy $hierarchy
 	 */
 	private function parseCatsAndRenderers($props, LoggerHierarchy $hierarchy) {
-		while(list($key,$value) = each($props)) {
-			if(strpos($key, self::CATEGORY_PREFIX) === 0 or 
-				strpos($key, self::LOGGER_PREFIX) === 0) {
-				if(strpos($key, self::CATEGORY_PREFIX) === 0) {
-					$loggerName = substr($key, strlen(self::CATEGORY_PREFIX));
-				} else if(strpos($key, self::LOGGER_PREFIX) === 0) {
-					$loggerName = substr($key, strlen(self::LOGGER_PREFIX));
-				}
-				
-				$logger = $hierarchy->getLogger($loggerName);
-				$this->parseCategory($props, $logger, $key, $loggerName, $value);
-				$this->parseAdditivityForLogger($props, $logger, $loggerName);
-			} else if(strpos($key, self::RENDERER_PREFIX) === 0) {
-				$renderedClass = substr($key, strlen(self::RENDERER_PREFIX));
-				$renderingClass = $value;
-				$hierarchy->getRendererMap()->addRenderer($renderedClass, $renderingClass);
-			}
-		}
+        foreach ($props as $key => $value){
+            if(strpos($key, self::CATEGORY_PREFIX) === 0 or
+                strpos($key, self::LOGGER_PREFIX) === 0) {
+                if(strpos($key, self::CATEGORY_PREFIX) === 0) {
+                    $loggerName = substr($key, strlen(self::CATEGORY_PREFIX));
+                } else if(strpos($key, self::LOGGER_PREFIX) === 0) {
+                    $loggerName = substr($key, strlen(self::LOGGER_PREFIX));
+                }
+
+                $logger = $hierarchy->getLogger($loggerName);
+                $this->parseCategory($props, $logger, $key, $loggerName, $value);
+                $this->parseAdditivityForLogger($props, $logger, $loggerName);
+            } else if(strpos($key, self::RENDERER_PREFIX) === 0) {
+                $renderedClass = substr($key, strlen(self::RENDERER_PREFIX));
+                $renderingClass = $value;
+                $hierarchy->getRendererMap()->addRenderer($renderedClass, $renderingClass);
+            }
+        }
 	}
 
 	/**

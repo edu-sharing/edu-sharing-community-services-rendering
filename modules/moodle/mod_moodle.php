@@ -117,15 +117,19 @@ extends ESRender_Module_ContentNode_Abstract {
 			$logger->error('MOODLE_TOKEN not set');
 			return false;
 		}
-				
+
+        $user_givenname = !empty($this -> esObject -> getData() -> user->user_givenname) ? $this -> esObject -> getData() -> user->user_givenname : 'Moodle';
+        $user_surname = !empty($this -> esObject -> getData() -> user->profile->lastName) ? $this -> esObject -> getData() -> user->profile->lastName : 'Nutzer';
+        $user_email = !empty($this -> esObject -> getData() -> user->profile->email) ? $this -> esObject -> getData() -> user->profile->email : $this->esObject->getData()->user->authorityName;
+
 		$url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_edusharing_handleuser&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
 		$params = array('user_name' => htmlentities($this -> esObject -> getData() -> user->authorityName),
-                        'user_givenname' => htmlentities($this -> esObject->getData()->user->user_givenname),
-                        'user_surname' => htmlentities($this -> esObject->getData()->user->profile->lastName),
-                        'user_email' => htmlentities($this -> esObject->getData()->user->profile->email),
+                        'user_givenname' => htmlentities($user_givenname),
+                        'user_surname' => htmlentities($user_surname),
+                        'user_email' => htmlentities($user_email),
                         'courseid' => $this->getCourseId(),
                         'role' => 'student'); // or role 'editingteacher'
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);

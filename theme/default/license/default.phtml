@@ -4,6 +4,8 @@
 global $Locale, $Translate;
 $msg = array();
 $msg['customLicense'] = new Phools_Message_Default('custom license');
+$msg['authored_by'] = new Phools_Message_Default('authored_by');
+$msg['published_under_a'] = new Phools_Message_Default('published under a');
 
 $licenceContent =  Config::get('licensePre', '');
 
@@ -15,13 +17,13 @@ if(!empty($license_author)) {
     if(!is_array($license_author)){
         $license_author = [$license_author];
     }
-    $licenceContent .= '<br/>' . htmlentities($this->translate('authored_by'), ENT_COMPAT, 'utf-8')
+    $licenceContent .= '<br/>' . htmlentities($msg['authored_by']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8')
                     . '&nbsp;'
                     . '<span class="author">'
                     . htmlentities(implode(', ',$license_author), ENT_QUOTES, 'utf-8') . '</span>'
                     . '&nbsp;';
 }
-$licenceContent .=  htmlentities($this->translate('published under a'), ENT_COMPAT, 'utf-8')
+$licenceContent .=  htmlentities($msg['published_under_a']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8')
                     . '&nbsp;';
                     if(!empty($license_icon_url)) {
                         $licenceContent .= '<a target="_blank" class="license_link" href="' . htmlspecialchars($license_url, ENT_QUOTES, 'utf-8') . '">';

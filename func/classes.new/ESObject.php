@@ -583,7 +583,7 @@ class ESObject {
             $result = $stmt -> execute();
             if(!$result)
                 throw new Exception('Error storing object in DB. ' . print_r($stmt -> errorInfo(), true));
-            $this -> id = ($pdo->getDriver() === 'pgsql') ? $pdo->lastInsertId('h5p_contents_id_seq') : $pdo->lastInsertId();  //why?
+            //$this -> id = ($pdo->getDriver() === 'pgsql') ? $pdo->lastInsertId('h5p_contents_id_seq') : $pdo->lastInsertId();  //why?
         } catch(PDOException $e) {
             throw new Exception($e -> getMessage());
         }

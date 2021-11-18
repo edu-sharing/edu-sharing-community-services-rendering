@@ -32,6 +32,8 @@ require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-metadata.class
 require_once (dirname(__FILE__) . '/H5PFramework.php');
 require_once (dirname(__FILE__) . '/H5PContentHandler.php');
 
+global $MC_URL;
+
 $pUrl = parse_url($MC_URL);
 define('DOMAIN', $pUrl['scheme'] . '://' . $pUrl['host']); // port only if specified!!!!!!
 define('PATH', $pUrl['path'] . '/modules/cache/h5p');
@@ -76,7 +78,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $statement = $db -> query($query);
         $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
-        if(!$results[0]->id){// only create new folder if we dont already have the object
+        if(!$results[0]->id){// only create new folder if we don't already have the object
             @mkdir($this->H5PFramework->get_h5p_path());
 
             //if dir exits -> somebody else is building the h5p-object. Abort and let the user try again.
@@ -87,8 +89,13 @@ extends ESRender_Module_ContentNode_Abstract {
                 $this->H5PCore->disableFileCheck = true;
 
                 if($this->H5PValidator->isValidPackage()){
+                    $title = $this->esObject->getTitle();
+                    if (!empty($this->H5PValidator->h5pC->mainJsonData['title'])) {
+                        error_log('mainJsonData[title]: '.print_r($this->H5PValidator->h5pC->mainJsonData['title'], true));
+                        $title = $this->H5PValidator->h5pC->mainJsonData['title'];
+                    }
                     $this->H5PStorage->savePackage(array('title' => $this->esObject->getObjectID()."-".$contentHash, 'disable' => 0));
-                    $query = 'UPDATE h5p_contents SET updated_at = CURRENT_TIMESTAMP, description = '.$db->quote($this->esObject->getTitle()).' WHERE id = '.$this->H5PCore->loadContent($this->H5PFramework->id)['id'];
+                    $query = 'UPDATE h5p_contents SET updated_at = CURRENT_TIMESTAMP, description = '.$db->quote($title).' WHERE id = '.$this->H5PCore->loadContent($this->H5PFramework->id)['id'];
                     $results = $db -> query($query);
                     $Logger -> debug('h5p saved: '.$this->esObject->getTitle());
                 }else{

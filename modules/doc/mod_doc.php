@@ -117,7 +117,7 @@ extends ESRender_Module_ContentNode_Abstract {
         return $filename;
     }
 
-    final protected function dynamic() {
+    protected function dynamic() {
         if($this->getDoctype() === DOCTYPE_HTML || $this->getDoctype() === DOCTYPE_TEXT) {
             echo $this -> renderTemplate($this -> getThemeByDoctype().'dynamic');
             return true;

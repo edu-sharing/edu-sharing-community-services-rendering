@@ -404,11 +404,19 @@ class ESObject {
         }
 
         if($this -> getNode() -> isDirectory) {
-            Logger::getLogger('de.metaventis.esrender.index') -> info('Property "directory" is true, using module "directory".');
-            $this -> module -> setName('directory');
-            $this -> module -> loadModuleData();
-            $this -> moduleId = $this -> module -> getModuleId();
-            return true;
+            if(in_array('ccm:collection', $this -> getNode() -> aspects)) {
+                Logger::getLogger('de.metaventis.esrender.index')->info('Property "collection" is true, using module "collection".');
+                $this->module->setName('collection');
+                $this->module->loadModuleData();
+                $this->moduleId = $this->module->getModuleId();
+                return true;
+            } else {
+                Logger::getLogger('de.metaventis.esrender.index')->info('Property "directory" is true, using module "directory".');
+                $this->module->setName('directory');
+                $this->module->loadModuleData();
+                $this->moduleId = $this->module->getModuleId();
+                return true;
+            }
         }
 
         if ($this->getNode()->type == 'ccm:saved_search') {

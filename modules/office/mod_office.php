@@ -128,9 +128,9 @@ class mod_office
         $supported = [
             'application/vnd.oasis.opendocument.text',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'application/vnd.oasis.opendocument.presentation',
-            'application/vnd.ms-powerpoint',
+            // 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            // 'application/vnd.oasis.opendocument.presentation',
+            // 'application/vnd.ms-powerpoint',
         ];
         if(in_array($esObject->getMimetype(), $supported)) {
             return true;

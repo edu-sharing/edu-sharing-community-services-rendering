@@ -91,20 +91,10 @@ try {
         $data = $_SESSION['esrender']['data'];
     }
 
-    // init translate
-    global $Translate, $LanguageCode;
-    $Translate = new Phools_Translate_Array();
-
     // LANGUAGE
     $LanguageCode = mc_Request::fetch('language', 'CHAR', 'en');
-    $Locale = new Phools_Locale_Default(strtolower($LanguageCode), strtoupper($LanguageCode), ',', '.');
-    if (file_exists(dirname(__FILE__) . '/../../locale/esmain/'.strtoupper($LanguageCode).'/lang.common.php') ){
-        require_once dirname(__FILE__) . '/../../locale/esmain/'.strtoupper($LanguageCode).'/lang.common.php';
-    }else{
-        // use DE as fallback language
-        $Locale = new Phools_Locale_Default('de', 'DE', ',', '.');
-        require_once dirname(__FILE__) . '/../../locale/esmain/DE/lang.common.php';
-    }
+    $_SESSION['languageCode'] = $LanguageCode;
+    require_once 'init-language.php';
 
     // init templating
     $TemplateDirectory = dirname(__FILE__) . '/../../theme';

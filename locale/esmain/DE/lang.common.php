@@ -86,5 +86,12 @@ $Translate
     ->addTranslation('de', 'createdBy', 'Erstellt von')
     ->addTranslation('de', 'goToCourse', 'Zum Kurs springen')
     ->addTranslation('de', 'inConversionQueue', 'Format wird konvertiert.')
+    ->addTranslation('de', 'ViewerJS_Actual Size', 'Tatsächliche Größe')
+    ->addTranslation('de', 'ViewerJS_Automatic', 'Automatisch')
+    ->addTranslation('de', 'ViewerJS_Full Width', 'Volle Breite')
+    ->addTranslation('de', 'ViewerJS_Next Page', 'Nächste Seite')
+    ->addTranslation('de', 'ViewerJS_Previous Page', 'Vorherige Seite')
+    ->addTranslation('de', 'ViewerJS_Zoom In', 'Hineinzoomen')
+    ->addTranslation('de', 'ViewerJS_Zoom Out', 'Herauszoomen')
     ->addTranslation('de', 'imageDescriptionNotAvailable', 'Eine Beschreibung des Bildinhaltes ist leider nicht verfügbar.');
 

@@ -33,8 +33,7 @@
     line-height: 1.5;
 }
 .edusharing_rendering_metadata_body .mdsWidgetMultivalue{
-    padding-top: 5px;
-    padding-left: 8px;
+    margin: 5px 0 0 8px;
 }
 .edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue{
     display: inline-block;

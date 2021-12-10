@@ -9,6 +9,8 @@ $msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
     <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
 </style>
 
+<script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
+
 <div>
     <?php if(empty($h5p_new)){ ?>
         <iframe src="<?php echo $iframeurl?>" style="width:85%;border:none" allowfullscreen="allowfullscreen" allow="camera *;microphone *" frameBorder="0" scrolling="no"></iframe>
@@ -19,3 +21,26 @@ $msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
 
     <?php echo $footer?>
 </div>
+
+<script>
+    $("body").click(function(e) {
+        if ($(e.target).closest(".edusharing_metadata").length) {
+            // Clicked inside ".edusharing_metadata" - do nothing
+        } else if ($(e.target).closest(".edusharing_metadata_toggle_button").length) {
+            $(".edusharing_metadata").fadeOut('fast');
+            let toggle_button = $(e.target);
+            let metadata = toggle_button.parent().find(".edusharing_metadata");
+            if (metadata.hasClass('open')) {
+                metadata.toggleClass('open');
+                metadata.fadeOut('fast');
+            } else {
+                $(".edusharing_metadata").removeClass('open');
+                metadata.toggleClass('open');
+                metadata.fadeIn('fast');
+            }
+        } else {
+            $(".edusharing_metadata").fadeOut('fast');
+            $(".edusharing_metadata").removeClass('open');
+        }
+    });
+</script>

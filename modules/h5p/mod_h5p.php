@@ -74,7 +74,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $contentHash = $this->esObject->getContentHash();
 
         //check if Content already exists in db & cache
-        $query = 'SELECT id FROM h5p_contents WHERE title = '.$db->quote($this->esObject->getObjectID().'-'.$contentHash);
+        $query = 'SELECT id, created_at FROM h5p_contents WHERE title = '.$db->quote($this->esObject->getObjectID().'-'.$contentHash);
         $statement = $db -> query($query);
         $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
@@ -91,7 +91,6 @@ extends ESRender_Module_ContentNode_Abstract {
                 if($this->H5PValidator->isValidPackage()){
                     $title = $this->esObject->getTitle();
                     if (!empty($this->H5PValidator->h5pC->mainJsonData['title'])) {
-                        error_log('mainJsonData[title]: '.print_r($this->H5PValidator->h5pC->mainJsonData['title'], true));
                         $title = $this->H5PValidator->h5pC->mainJsonData['title'];
                     }
                     $this->H5PStorage->savePackage(array('title' => $this->esObject->getObjectID()."-".$contentHash, 'disable' => 0));
@@ -103,19 +102,27 @@ extends ESRender_Module_ContentNode_Abstract {
                     $h5p_error = end($messagesArray);
                     $Logger -> debug('There was a problem with the H5P-file ('.$this->esObject->getObjectID().'): '.$h5p_error->code);
                     $template_data['h5p_new'] = 'There was a problem with the H5P-file: '.$h5p_error->code.'<br>'.$h5p_error->message;
-                    echo $this -> getTemplate() -> render($TemplateName, $template_data);
                     @rmdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
+                    echo $this -> getTemplate() -> render($TemplateName, $template_data);
                     return;
                 }
 
             }else{
                 $Logger -> debug('This file is being worked on: '.$this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
                 $template_data['h5p_new'] = 'This file is being worked on. Please try again in a few moments.';
+
+                date_default_timezone_set('Europe/Berlin');
+                if ( $results[0]->created_at < date("Y-m-d H:i:s", strtotime("-10 minutes")) ){
+                    @rmdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
+                    $Logger -> debug('H5P is at least 10 minutes old. Build Folder deleted...');
+                }
+
                 echo $this -> getTemplate() -> render($TemplateName, $template_data);
                 return;
             }
 
         }else{
+
             $Logger -> info('H5P found: '.$this->esObject->getObjectID()."-".$contentHash);
             $this->H5PFramework->id = $results[0]->id;
         }

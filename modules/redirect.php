@@ -106,7 +106,7 @@ if (!empty($_GET[$ESRENDER_SESSION_NAME])) {
     $l_sid = $_GET[$ESRENDER_SESSION_NAME];
 } else if(!empty($_SERVER['HTTP_REFERER'])) {
     $parts = parse_url($_SERVER['HTTP_REFERER']);
-    parse_str($parts[query], $query);
+    parse_str($parts['query'], $query);
     if (!empty($query[$ESRENDER_SESSION_NAME])){
         $l_sid = $query[$ESRENDER_SESSION_NAME];
     }else{

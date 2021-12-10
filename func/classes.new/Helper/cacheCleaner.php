@@ -1,6 +1,6 @@
 <?php
 
-define('RATIO_MAX', 0.08);
+define('RATIO_MAX', 0.8);
 
 //error_reporting(0);
 
@@ -46,14 +46,18 @@ class cacheCleaner
         try {
             $sql = 'SELECT "ESTRACK_ESOBJECT_ID", MAX("ESTRACK_TIME") FROM "ESTRACK" GROUP BY "ESTRACK_ESOBJECT_ID" ORDER BY MAX("ESTRACK_TIME") ASC LIMIT 1 OFFSET 0';
             $stmt = $this->pdo->query($sql);
-            $esObjectId = $stmt->fetchObject()->ESTRACK_ESOBJECT_ID;
-
-            $this->logger->info('esObjectId: ' . $esObjectId);
+            if($stmt){
+                $esObjectId = $stmt->fetchObject()->ESTRACK_ESOBJECT_ID;
+            }else{
+                $this->logger->error('query error: '.print_r($stmt, true));
+            }
 
             if (empty($esObjectId)) {
                 $this->logger->info('Could not get result from ESTRACK.');
                 return false;
             }
+
+            $this->logger->info('esObjectId: ' . $esObjectId);
 
             $sql = 'SELECT * FROM "ESOBJECT" WHERE "ESOBJECT_ID" = :esobject_id';
             $stmt = $this->pdo->prepare($sql);

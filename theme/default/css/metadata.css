@@ -72,6 +72,12 @@
     margin-right: 10px;
 }
 
+/* Produce a proper bounding box for focus styles (not provided here). */
+.edusharing_rendering_metadata_body .mds_license a {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 6px;
+}
 .edusharing_rendering_metadata_body .mds_license img {
     height: 30px;
     width: auto;

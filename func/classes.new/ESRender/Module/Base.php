@@ -162,7 +162,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         }
 
         if ($result) {
-            $Logger -> debug('Instance locked.');
+            $Logger -> debug('Instance is locked! Cannot process...');
             return true;
         }
         return false;
@@ -193,6 +193,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
     }
 
     public function instanceLock() {
+        $Logger = $this -> getLogger();
 
         $pdo = RsPDO::getInstance();
         try {
@@ -203,10 +204,13 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
             $stmt -> bindValue(':objectversion', $this -> esObject -> getObjectVersion());
             $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
             $result = $stmt -> execute();
+
             if (!$result) {
-                throw new Exception('Error storing entry to lock table. PDO error info ' . print_r($stmt -> errorInfo(), true));
+                throw new Exception('Error storing entry to lock table. PDO error info ' . print_r($stmt->errorInfo(), true));
+            }
+
+            $Logger -> debug('Locking instance...');
             return true;
-        }
         } catch(PDOException $e) {
             throw new Exception($e -> getMessage());
         }

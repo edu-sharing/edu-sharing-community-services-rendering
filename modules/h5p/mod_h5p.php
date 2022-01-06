@@ -67,65 +67,55 @@ extends ESRender_Module_ContentNode_Abstract {
     }
 
 
-	protected function renderTemplate($TemplateName, $getDefaultData = true, $showMetadata = true) {
+    public function createInstance() {
+
+        parent::createInstance();
 
         global $db;
         $Logger = $this -> getLogger();
         $contentHash = $this->esObject->getContentHash();
 
-        //check if Content already exists in db & cache
+        @mkdir($this->H5PFramework->get_h5p_path()); // make sure folder exits
+
+        @mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()) );
+
+        copy($this->esObject->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()) . DIRECTORY_SEPARATOR . $this->esObject->getObjectID() . '.h5p');
+        $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID());
+        $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()) . DIRECTORY_SEPARATOR . $this->esObject->getObjectID() . '.h5p';
+        $this->H5PCore->disableFileCheck = true;
+
+        if($this->H5PValidator->isValidPackage()){
+            $title = $this->esObject->getTitle();
+            if (!empty($this->H5PValidator->h5pC->mainJsonData['title'])) {
+                $title = $this->H5PValidator->h5pC->mainJsonData['title'];
+            }
+            $this->H5PStorage->savePackage(array('title' => $this->esObject->getObjectID()."-".$contentHash, 'disable' => 0));
+            $query = 'UPDATE h5p_contents SET updated_at = CURRENT_TIMESTAMP, description = '.$db->quote($title).' WHERE id = '.$this->H5PCore->loadContent($this->H5PFramework->id)['id'];
+            $db -> query($query);
+            $Logger -> debug('h5p saved: '.$this->esObject->getTitle());
+            return true;
+        }
+
+        $messagesArray = array_values($this->H5PFramework->getMessages('error'));
+        $h5p_error = end($messagesArray);
+        $Logger -> debug('There was a problem with the H5P-file ('.$this->esObject->getObjectID().'): '.$h5p_error->code);
+
+        @rmdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
+        return false;
+    }
+
+	protected function renderTemplate($TemplateName, $getDefaultData = true, $showMetadata = true) {
+        global $db;
+        $Logger = $this -> getLogger();
+        $contentHash = $this->esObject->getContentHash();
+
+        //get h5p content from db
         $query = 'SELECT id, created_at FROM h5p_contents WHERE title = '.$db->quote($this->esObject->getObjectID().'-'.$contentHash);
         $statement = $db -> query($query);
         $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
-        if(!$results[0]->id){// only create new folder if we don't already have the object
-            @mkdir($this->H5PFramework->get_h5p_path());
-
-            //if dir exits -> somebody else is building the h5p-object. Abort and let the user try again.
-            if(@mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()) )){
-                copy($this->esObject->getFilePath(), $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()) . DIRECTORY_SEPARATOR . $this->esObject->getObjectID() . '.h5p');
-                $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID());
-                $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()) . DIRECTORY_SEPARATOR . $this->esObject->getObjectID() . '.h5p';
-                $this->H5PCore->disableFileCheck = true;
-
-                if($this->H5PValidator->isValidPackage()){
-                    $title = $this->esObject->getTitle();
-                    if (!empty($this->H5PValidator->h5pC->mainJsonData['title'])) {
-                        $title = $this->H5PValidator->h5pC->mainJsonData['title'];
-                    }
-                    $this->H5PStorage->savePackage(array('title' => $this->esObject->getObjectID()."-".$contentHash, 'disable' => 0));
-                    $query = 'UPDATE h5p_contents SET updated_at = CURRENT_TIMESTAMP, description = '.$db->quote($title).' WHERE id = '.$this->H5PCore->loadContent($this->H5PFramework->id)['id'];
-                    $results = $db -> query($query);
-                    $Logger -> debug('h5p saved: '.$this->esObject->getTitle());
-                }else{
-                    $messagesArray = array_values($this->H5PFramework->getMessages('error'));
-                    $h5p_error = end($messagesArray);
-                    $Logger -> debug('There was a problem with the H5P-file ('.$this->esObject->getObjectID().'): '.$h5p_error->code);
-                    $template_data['h5p_new'] = 'There was a problem with the H5P-file: '.$h5p_error->code.'<br>'.$h5p_error->message;
-                    @rmdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
-                    echo $this -> getTemplate() -> render($TemplateName, $template_data);
-                    return;
-                }
-
-            }else{
-                $Logger -> debug('This file is being worked on: '.$this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
-                $template_data['h5p_new'] = 'This file is being worked on. Please try again in a few moments.';
-
-                date_default_timezone_set('Europe/Berlin');
-                if ( $results[0]->created_at < date("Y-m-d H:i:s", strtotime("-10 minutes")) ){
-                    @rmdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
-                    $Logger -> debug('H5P is at least 10 minutes old. Build Folder deleted...');
-                }
-
-                echo $this -> getTemplate() -> render($TemplateName, $template_data);
-                return;
-            }
-
-        }else{
-
-            $Logger -> info('H5P found: '.$this->esObject->getObjectID()."-".$contentHash);
-            $this->H5PFramework->id = $results[0]->id;
-        }
+        $Logger -> info('H5P found: '.$this->esObject->getObjectID()."-".$contentHash);
+        $this->H5PFramework->id = $results[0]->id;
 
         try {
             $content = $this->H5PCore->loadContent($this->H5PFramework->id);
@@ -145,7 +135,7 @@ extends ESRender_Module_ContentNode_Abstract {
                 $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
             }
 
-            $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+            $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id();
             $template_data['title'] = $this->esObject->getTitle();
             $template_data['h5pId'] = $content['id'];
             $template_data['h5pApi'] = $content['id'];

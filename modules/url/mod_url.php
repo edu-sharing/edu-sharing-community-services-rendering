@@ -93,7 +93,7 @@ extends ESRender_Module_NonContentNode_Abstract {
 
         $footer = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => utf8_decode($metadata), 'sequence' => $sequence, 'title' => $this -> esObject -> getTitle()));
         $Template = $this -> getTemplate();
-        $tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl(), 'footer' => $footer);
+        $tempArray = array('embedding' => $embedding, 'url' => $this->getUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl(), 'footer' => $footer, 'title' => $this -> esObject -> getTitle());
 
         echo $Template -> render('/module/url/embed', $tempArray);
 

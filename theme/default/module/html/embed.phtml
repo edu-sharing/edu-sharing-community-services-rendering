@@ -9,7 +9,7 @@ $msg['showDocument'] = new Phools_Message_Default('showDocument');
 </style>
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
     <div class="edusharing_rendering_content_wrapper" role="main">
-        <img class="edusharing_rendering_content_preview" src="<?php echo $previewUrl?>">
+        <img class="edusharing_rendering_content_preview" src="<?php echo $previewUrl?>" alt="">
         <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['showDocument']->localize($Locale, $Translate);?></a>
     </div>
 </div>

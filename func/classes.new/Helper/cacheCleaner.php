@@ -190,6 +190,8 @@ class cacheCleaner
             if ($diskUsageRatio > RATIO_MAX || $forceDelete) {
                 if ($this->deleteUndemandedObject())
                     $this->cleanUp($forceDelete);
+            } else {
+                echo "Current Disk Usage Ratio < Configured Ratio (" . $diskUsageRatio . " < " . RATIO_MAX . "). Stopping...";
             }
 
         } catch (Exception $e) {

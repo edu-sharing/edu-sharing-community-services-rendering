@@ -1,0 +1,18 @@
+{
+  "name": "edu-sharing/rendering-service",
+  "type": "project",
+  "description": "The rendering service brings edu-sharing objects to devices. Therefore it will convert objects, render them together with the respective license and check for viewing permissions",
+  "minimum-stability": "stable",
+  "license": "GNU General Public License, version 2",
+  "authors": [
+    {
+      "name": "metaVentis GmbH",
+      "email": "support@edu-sharing.net"
+    }
+  ],
+  "require": {
+  }
+}
+
+
+

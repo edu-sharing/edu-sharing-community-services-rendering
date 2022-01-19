@@ -1,6 +1,6 @@
 <?php
 
-define('RATIO_MAX', 0.08);
+define('RATIO_MAX', 0.8);
 
 //error_reporting(0);
 
@@ -76,7 +76,10 @@ class cacheCleaner
             $this->logger->info('deleted db record with id ' . $esobject->getId());
 
             $module = $esobject->getModule();
-
+            if(!$module) {
+                $this->logger->warn('Could not determine module for esObjectId ' . $esObjectId);
+                return false;
+            }
             if ($module->getName() === 'h5p') {
 
                 //get h5p-ID for the directory name
@@ -136,6 +139,12 @@ class cacheCleaner
             }
         }
 
+        // clean up database
+        $sql = 'DELETE FROM "ESTRACK" WHERE "ESTRACK_ESOBJECT_ID" = :esobject_id';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':esobject_id', $esObjectId);
+        $stmt->execute();
+
         return true;
     }
 
@@ -181,6 +190,8 @@ class cacheCleaner
             if ($diskUsageRatio > RATIO_MAX || $forceDelete) {
                 if ($this->deleteUndemandedObject())
                     $this->cleanUp($forceDelete);
+            } else {
+                echo "Current Disk Usage Ratio < Configured Ratio (" . $diskUsageRatio . " < " . RATIO_MAX . "). Stopping...";
             }
 
         } catch (Exception $e) {

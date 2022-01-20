@@ -1,5 +1,6 @@
 {
-  "name": "edu-sharing/rendering-service",
+  "name": "${composer.vendor}/community-services-rendering",
+  "version": "${composer.version}",
   "type": "project",
   "description": "The rendering service brings edu-sharing objects to devices. Therefore it will convert objects, render them together with the respective license and check for viewing permissions",
   "minimum-stability": "stable",
@@ -11,8 +12,12 @@
     }
   ],
   "require": {
-  }
+    "${composer.vendor}/community-repository-backend-services-rest-client-php-core": "${org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php-core:zip.range}"
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "${composer.repo.url}"
+    }
+  ]
 }
-
-
-

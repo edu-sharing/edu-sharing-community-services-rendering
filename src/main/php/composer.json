@@ -12,7 +12,7 @@
     }
   ],
   "require": {
-    "${composer.vendor}/community-repository-backend-services-rest-client-php-core": "${org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php-core:zip.range}"
+    "${composer.vendor}/community-repository-backend-services-rest-client-core": "${org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php-core:zip.range}"
   },
   "repositories": [
     {

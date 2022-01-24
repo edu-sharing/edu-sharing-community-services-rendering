@@ -111,29 +111,6 @@
               </scripts>
             </configuration>
           </execution>
-          <execution>
-            <id>enterprise-repository-plugin-transform-jodconverter-client</id>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-            <phase>generate-resources</phase>
-            <configuration>
-              <scripts>
-                <!--suppress UnresolvedMavenProperty -->
-                <script><![CDATA[
-                  def range = project.properties['org.edu_sharing:edu_sharing-enterprise-repository-plugin-transform-jodconverter-client-php-core:zip.version']
-                  if (range.contains('SNAPSHOT')) {
-                    if (range.contains('release')) {
-                      range = '~' + range.replace("release-","").replace("-SNAPSHOT","").concat(".0")
-                    } else {
-                      range = '9999.99.99-dev'
-                    }
-                  }
-                  project.properties.setProperty('org.edu_sharing:edu_sharing-enterprise-repository-plugin-transform-jodconverter-client-php-core:zip.range', range)
-                ]]></script>
-              </scripts>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
 
@@ -201,13 +178,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>edu_sharing-community-repository-backend-services-rest-client-php-core</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>edu_sharing-enterprise-repository-plugin-transform-jodconverter-client-php-core</artifactId>
       <type>zip</type>
       <scope>provided</scope>
     </dependency>

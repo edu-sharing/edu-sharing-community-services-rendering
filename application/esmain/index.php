@@ -444,6 +444,11 @@ try {
     if($exception -> getCode() != 0)
         $code = $exception -> getCode();	
     echo $Template -> render('/error/default', array('i18nName' => 'internal', 'technicalDetail' => $MessageDefault -> localize($Locale, $Translate) . ' - ' . $Message -> localize($Locale, $Translate) . ' ' .  $code));
+} catch(ESRender_Exception_Generic $exception) {
+    $Logger -> error($exception -> getMessage());
+    $Logger -> debug($exception);
+    $Message = new Phools_Message_Default($exception -> getMessage());
+    echo $Template -> render('/error/default', array('i18nName' =>$exception->getType(),  'technicalDetail' => $Message -> localize($Locale, $Translate)));
 } catch(Exception $exception) {
     $Logger -> error('An internal server error occurred.');
     $Logger -> debug($exception);

@@ -187,7 +187,7 @@ try {
 
     $homeRep->url = str_replace('/services/authbyapp', '', $homeRep->prop_array['authenticationwebservice']);
     Config::set('homeRepository', $homeRep);
-    Config::set('baseUrl', $req_data['baseUrl']);
+    Config::set('baseUrl', $homeRep->url);
 
     $Logger -> debug('Successfully loaded home repository by id "' . $homeRepId . '".');
 

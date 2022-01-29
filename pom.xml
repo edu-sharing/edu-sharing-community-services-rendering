@@ -93,7 +93,7 @@
             <goals>
               <goal>execute</goal>
             </goals>
-            <phase>generate-resources</phase>
+            <phase>generate-sources</phase>
             <configuration>
               <scripts>
                 <!--suppress UnresolvedMavenProperty -->
@@ -123,7 +123,7 @@
             <goals>
               <goal>resources</goal>
             </goals>
-            <phase>process-resources</phase>
+            <phase>generate-sources</phase>
             <configuration>
               <outputDirectory>${project.build.directory}/php</outputDirectory>
             </configuration>
@@ -139,7 +139,7 @@
             <goals>
               <goal>install</goal>
             </goals>
-            <phase>process-resources</phase>
+            <phase>generate-sources</phase>
             <configuration>
               <phpPath>php</phpPath>
               <composerJsonPath>${project.build.directory}/php/composer.json</composerJsonPath>

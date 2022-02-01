@@ -109,7 +109,7 @@
                     if (range.contains('release')) {
                       range = '~' + range.replace("release-","").replace("-SNAPSHOT","").concat(".0")
                     } else {
-                      range = '9999.99.99-dev'
+                      range = '${git.closest.tag.fallback}'
                     }
                   }
                   project.properties.setProperty('org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php-core:zip.range', range)

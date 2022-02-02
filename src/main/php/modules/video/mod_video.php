@@ -21,9 +21,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-// load plugin config
-require_once(dirname(__FILE__).'/config.php');
-
 include_once (dirname(__FILE__).'/../../conf.inc.php');
 include_once (MC_ROOT_PATH.'func/classes.new/ESRender/Module/AudioVideo/Helper.php');
 

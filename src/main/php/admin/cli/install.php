@@ -72,8 +72,8 @@ if (empty($options['c'])) {
     $file = $confDir . DIRECTORY_SEPARATOR . 'de.metaventis.esrender.log4php.cachecleaner.properties';
     replaceValuesInFile($file, '[[[TOKEN_BASE_DIR]]]', $config['application_root'] . '/');
 
-    $videoConf = $config['application_root'] . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'video' . DIRECTORY_SEPARATOR . 'config.php';
-    $copied = copy($confTemplateDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'video' . DIRECTORY_SEPARATOR . 'config.php', $videoConf);
+    $videoConf = $config['application_root'] . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . 'video.config.php';
+    $copied = copy($confTemplateDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . 'video.config.php', $videoConf);
     if($copied)
         echo '[OK] Copy ' . $confTemplateDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'video' . DIRECTORY_SEPARATOR . 'config.php' . PHP_EOL;
     replaceValuesInFile($videoConf, '[[[TOKEN_FFMPEG_EXEC]]]', $config['application_ffmpeg']);

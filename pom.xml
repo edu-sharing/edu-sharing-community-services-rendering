@@ -125,6 +125,25 @@
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
+            <id>empty</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <phase>initialize</phase>
+            <configuration>
+              <includeEmptyDirs>true</includeEmptyDirs>
+              <outputDirectory>../repository/Backend/services/rest/client/php/core/target</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/templates</directory>
+                  <excludes>
+                    <exclude>version*</exclude>
+                  </excludes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
             <id>resources</id>
             <goals>
               <goal>resources</goal>

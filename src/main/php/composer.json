@@ -12,9 +12,14 @@
     }
   ],
   "require": {
+    "php": "^7.4",
     "${composer.vendor}/community-repository-backend-services-rest-client-core": "${org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php-core:zip.range}"
   },
   "repositories": [
+    {
+      "type": "artifact",
+      "url": "../../../repository/Backend/services/rest/client/php/core/target"
+    },
     {
       "type": "composer",
       "url": "${composer.repo.url}"

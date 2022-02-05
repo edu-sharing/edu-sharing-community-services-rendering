@@ -30,7 +30,7 @@
 
   <properties>
 
-    <repository.version>${project.version}</repository.version>
+    <bom.repository.version>${project.version}</bom.repository.version>
 
   </properties>
 
@@ -193,7 +193,7 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>edu_sharing-community-repository</artifactId>
-        <version>${repository.version}</version>
+        <version>${bom.repository.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

@@ -163,7 +163,10 @@ class ESObject {
         $this -> data = $data;
         $this -> module = new ESModule();
         $this -> setDataByNode();
-        return true;
+    }
+
+    public function getUser() {
+        return $this -> data -> user;
     }
 
     public function getData() {

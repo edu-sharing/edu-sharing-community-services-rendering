@@ -47,7 +47,7 @@ class ESRender_Plugin_Omega
         */
 
         $role = 'learner';
-        if(Config::get('renderInfoLMSReturn') -> eduSchoolPrimaryAffiliation === 'teacher') {
+        if($esObject->getUser()->primaryAffiliation === 'teacher') {
             $role = 'teacher';
         }
 

@@ -30,9 +30,32 @@
 
   <properties>
 
+    <!-- release-2 -->
     <bom.repository.version>${project.version}</bom.repository.version>
 
   </properties>
+
+  <profiles>
+
+    <profile>
+
+      <id>dev</id>
+
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>env.DEV</name>
+          <value>true</value>
+        </property>
+      </activation>
+
+      <properties>
+        <bom.repository.version>${project.version}</bom.repository.version>
+      </properties>
+
+    </profile>
+
+  </profiles>
 
   <build>
 

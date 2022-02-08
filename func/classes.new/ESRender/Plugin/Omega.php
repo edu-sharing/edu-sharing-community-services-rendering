@@ -11,14 +11,16 @@ class ESRender_Plugin_Omega
 
     private $url = '';
     private $proxy = '';
+    private $user = '';
 
     /**
      *
      * @param string $Url
      */
-    public function __construct($url, $proxy = '') {
+    public function __construct($url, $proxy = '', $user = 'dabiplus') {
         $this->url = $url;
         $this->proxy = $proxy;
+        $this->user = $user;
     }
 
     /**
@@ -98,6 +100,19 @@ class ESRender_Plugin_Omega
         if(!empty($response->get->error)) {
             throw new ESRender_Exception_Omega($response->get->error);
         }
+        if(substr($response->get->streamURL,0,8) == 'problem:' && substr($response->get->downloadURL,0,8) == 'problem:') {
+            if(strpos($response->get->downloadURL, 'no right to download') !== false) {
+                throw new ESRender_Exception_Generic(ESRender_Exception_Generic::$TYPE_PERMISSIONS_MISSING);
+            }
+        }
+        if(substr($response->get->streamURL,0,8) == 'problem:') {
+            $response->get->streamURL = '';
+        }
+        if(substr($response->get->downloadURL,0,8) == 'problem:') {
+            $response->get->downloadURL = '';
+        }
+        if(empty($response->get->streamURL) && !empty($response -> get -> downloadURL))
+            $response->get->streamURL = $response->get->downloadURL;
 
         if(empty($response->get->streamURL) && empty($response -> get -> downloadURL)) {
             throw new ESRender_Exception_Omega('urls empty');
@@ -123,9 +138,7 @@ class ESRender_Plugin_Omega
         if(empty($replicationSourceId)) {
             throw new ESRender_Exception_Omega('Property replicationsourceid is empty');
         }
-        // @TODO: The user variable is not always the same and must be configurable!
-        $url = $this->url . '?token_id=' . $replicationSourceId . '&role=' . $role . '&user=dabiplus';
-
+        $url = $this->url . '?token_id=' . $replicationSourceId . '&role=' . $role . '&user=' . $this->user;
 		$curlhandle = curl_init($url);
         curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($curlhandle, CURLOPT_HEADER, 0);

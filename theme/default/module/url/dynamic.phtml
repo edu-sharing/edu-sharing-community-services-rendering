@@ -8,6 +8,7 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 <style>
 <?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
 <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+<?php include(dirname(__FILE__) . '/css/url.css'); ?>
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
@@ -20,7 +21,7 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 		}?>
         <?php
         if(!$dataProtection) { ?>
-		    <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
+		    <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content edusharing_rendering_content-origin" id="edusharing_rendering_content_href"><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
         <?php
         }
         ?>

@@ -8,7 +8,7 @@ $msg['showDocument'] = new Phools_Message_Default('showDocument');
     <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
 </style>
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-    <div class="edusharing_rendering_content_wrapper" role="main">
+    <div class="edusharing_rendering_content_wrapper" >
         <img class="edusharing_rendering_content_preview" src="<?php echo $previewUrl?>">
         <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['showDocument']->localize($Locale, $Translate);?></a>
     </div>

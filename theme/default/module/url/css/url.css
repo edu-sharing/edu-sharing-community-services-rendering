@@ -1,8 +1,38 @@
-section a {
-	color: #ccc;
-	outline: none;
+.edusharing_audio_wrapper {
+	position: relative;
+	height: 350px;
+	display: flex;
+	overflow: hidden;
 }
-
-section a:hover, section a:active, section a:visited {
-	outline: none;
+.edusharing_audio_wrapper .edusharing_audio_bg {
+	position: absolute;
+	left: -25px;
+	right: -25px;
+	top: 25px;
+	bottom: 25px;
+	width: 100%;
+	height: 100%;
+	margin: auto;
+	object-fit: cover;
+	filter: blur(25px) brightness(0.9);
+}
+.edusharing_audio_wrapper .edusharing_audio_img {
+	display: flex;
+	position: relative;
+	width: auto;
+	/* max-width: 450px; */
+	margin: 20px 8% 75px 8%;
+	box-shadow: 0 0 9px rgba(0,0,0,.25);
+	background: #fff;
+}
+.edusharing_audio_wrapper .edusharing_audio_img img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.edusharing_audio_wrapper video {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	box-shadow: none;
 }

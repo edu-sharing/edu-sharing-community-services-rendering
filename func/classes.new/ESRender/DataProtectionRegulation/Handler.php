@@ -12,6 +12,7 @@ class ESRender_DataProtectionRegulation_Handler {
         return $return;
     }
     public function getApplyDataProtectionRegulationsDialog($esObject, $uniqueId, $providerName, $providerUrlTermsOfUse, $target, $type = null) {
+        return '';
         global $Locale, $Translate;
 
         if(defined('DISABLE_DATAPROTECTIONREGULATIONHANDLER_FOR') && !empty(DISABLE_DATAPROTECTIONREGULATIONHANDLER_FOR)) {
@@ -35,7 +36,6 @@ class ESRender_DataProtectionRegulation_Handler {
         $msg['dataProtectionRegulations'] = new Phools_Message_Default('dataProtectionRegulations');
         $msg['abort'] = new Phools_Message_Default('abort');
         $msg['of'] = new Phools_Message_Default('of');
-
         $button = '<a href="#" onclick="'.$this->getClickEvent($uniqueId).'" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton">'.$msg['dataProtectionRegulations4']->localize($Locale, $Translate).'</a>';
 
         switch($type) {

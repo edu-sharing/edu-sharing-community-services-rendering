@@ -83,20 +83,6 @@ class LoggerReflectionUtils {
             }
         }
 
-		while(list($key,) = each($properties)) {
-			if(strpos($key, $prefix) === 0) {
-				if(strpos($key, '.', ($len + 1)) > 0) {
-					continue;
-				}
-				$value = LoggerOptionConverter::findAndSubst($key, $properties);
-				$key = substr($key, $len);
-				if($key == 'layout' and ($this->obj instanceof LoggerAppender)) {
-					continue;
-				}
-				$this->setProperty($key, $value);
-			}
-		}
-
 		$this->activate();
 	}
 	

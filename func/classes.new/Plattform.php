@@ -40,7 +40,7 @@ class Plattform
 	/**
 	 * Initialisiert werden die der Klasse App zugehörige Membervariablen
 	 */
-	public function Plattform()
+	public function __construct()
 	{
 		// DEBUG (siehe dblog.inc.php)
 		$this->DEBUG = MC_DEBUG;

@@ -1,55 +1,55 @@
 <?php
-    global $Locale, $Translate, $MC_URL;
-    $errMsg = new Phools_Message_Default('Video player cannot play back this video.');
-    $conversionMsg = new Phools_Message_Default('inConversionQueue');
-    $licid = uniqid();
-    $styleVideo = 'max-width: 100%;';
-    if(isset($_REQUEST['width']) && !empty($_REQUEST['width'])){
-        $styleVideo .= 'width:'.(int)$_REQUEST['width'] . 'px';
-    }
+global $Locale, $Translate, $MC_URL;
+$errMsg = new Phools_Message_Default('Video player cannot play back this video.');
+$conversionMsg = new Phools_Message_Default('inConversionQueue');
+$licid = uniqid();
+$styleVideo = 'max-width: 100%;';
+if (isset($_REQUEST['width']) && !empty($_REQUEST['width'])) {
+    $styleVideo .= 'width:' . (int)$_REQUEST['width'] . 'px';
+}
 
-    $defaultRes = ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_M;
-    if ( empty($url[$defaultRes]) ){
-        $defaultRes = ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S;
-    }
+$defaultRes = ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_M;
+if (empty($url[$defaultRes])) {
+    $defaultRes = ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S;
+}
 
 ?>
 <style>
     <?php
-        if ($css){
-            include(dirname(__FILE__) . '/../../css/metadata.css');
-            include(dirname(__FILE__) . '/../../css/inline.php');
-        }
+    if ($css) {
+        include(dirname(__FILE__) . '/../../css/metadata.css');
+        include(dirname(__FILE__) . '/../../css/inline.php');
+    }
     ?>
 </style>
-    <div class="edusharing_rendering_content_video_wrapper">
-        <video src="<?php echo $url[$defaultRes]?>" style="<?php echo $styleVideo?>" data-tap-disabled="true" id="<?php echo $videoObjectIdentifier?>" data-licid="<?php echo $licid;?>" controls controlsList="nodownload" oncontextmenu="return false;"></video>
-        <div class="edusharing_rendering_content_video_options">
-            <i class="material-icons edusharing_rendering_content_video_options_toggle">settings</i>
-            <div class="edusharing_rendering_content_video_options_content">
-                <ul class="edusharing_rendering_content_video_options_resolutions">
-                    <?php
-                    foreach($url as $res => $u) {
-                        if(!empty($u))
-                            echo '<li class="option_'.$videoObjectIdentifier.'" id="option_'.$videoObjectIdentifier.'-'.$res.'" data-url="'.$u.'">' . ($res == $defaultRes ? '<i class="material-icons">done</i>' : '') . $res . 'p</li>';
-                        else
-                            echo '<li class="edusharing_rendering_content_video_options_resolutions_converting" title="' . $conversionMsg -> localize($Locale, $Translate) . '">' . $res . 'p</li>';
-                    }
-                    ?>
-                </ul>
-            </div>
+<div class="edusharing_rendering_content_video_wrapper">
+    <video src="<?php echo $url[$defaultRes] ?>" style="<?php echo $styleVideo ?>" data-tap-disabled="true" id="<?php echo $videoObjectIdentifier ?>" data-licid="<?php echo $licid; ?>" controls controlsList="nodownload" oncontextmenu="return false;"></video>
+    <div class="edusharing_rendering_content_video_options">
+        <i class="material-icons edusharing_rendering_content_video_options_toggle">settings</i>
+        <div class="edusharing_rendering_content_video_options_content">
+            <ul class="edusharing_rendering_content_video_options_resolutions">
+                <?php
+                foreach ($url as $res => $u) {
+                    if (!empty($u))
+                        echo '<li class="option_' . $videoObjectIdentifier . '" id="option_' . $videoObjectIdentifier . '-' . $res . '" data-url="' . $u . '">' . ($res == $defaultRes ? '<i class="material-icons">done</i>' : '') . $res . 'p</li>';
+                    else
+                        echo '<li class="edusharing_rendering_content_video_options_resolutions_converting" title="' . $conversionMsg->localize($Locale, $Translate) . '">' . $res . 'p</li>';
+                }
+                ?>
+            </ul>
         </div>
-    <?php echo $footer?>
-    <p id="e_<?php echo $videoObjectIdentifier ?>" style="display: none;"><?php echo $errMsg -> localize($Locale, $Translate);?></p>
+    </div>
+    <?php echo $footer ?>
+    <p id="e_<?php echo $videoObjectIdentifier ?>" style="display: none;"><?php echo $errMsg->localize($Locale, $Translate); ?></p>
 </div>
 <script>
-    $('.option_<?php echo $videoObjectIdentifier?>').click(function() {
+    $('.option_<?php echo $videoObjectIdentifier ?>').click(function() {
         var url = $(this).attr('data-url');
-        if(url == undefined)
+        if (url == undefined)
             return;
         $(this).parent().find('i.material-icons').remove();
         $(this).prepend('<i class="material-icons">done</i>');
-        const video_<?php echo $videoObjectIdentifier ?> = document.getElementById('<?php echo $videoObjectIdentifier?>');
+        const video_<?php echo $videoObjectIdentifier ?> = document.getElementById('<?php echo $videoObjectIdentifier ?>');
         video_<?php echo $videoObjectIdentifier ?>.pause();
         video_<?php echo $videoObjectIdentifier ?>.setAttribute('src', url + '#t=' + Math.ceil(video_<?php echo $videoObjectIdentifier ?>.currentTime)); /* ie not working */
         video_<?php echo $videoObjectIdentifier ?>.load();
@@ -57,7 +57,7 @@
     });
 
     $('.edusharing_rendering_content_video_options').click(function() {
-        if($(this).find('.edusharing_rendering_content_video_options_content').is(':visible')) {
+        if ($(this).find('.edusharing_rendering_content_video_options_content').is(':visible')) {
             $(this).css('background', 'none');
             $(this).find('.edusharing_rendering_content_video_options_content').css('display', 'none');
         } else {
@@ -66,7 +66,7 @@
         }
     });
 
-    function setResByConnection(){
+    function setResByConnection() {
         // navigator.connection not yet supported by all browsers, so check it first
         if (!navigator.connection) {
             return;
@@ -75,55 +75,55 @@
         const downLink = navigator.connection.downlink;
 
         let resolution = '<?php echo ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S; ?>';
-        if (downLink >= 5){
+        if (downLink >= 5) {
             resolution = '<?php echo ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_L; ?>';
-        }else if (downLink >= 2){
+        } else if (downLink >= 2) {
             // FORMAT_VIDEO_RESOLUTIONS_M is already set as default, so we can skip the rest
             return;
         }
 
-        const option = '#<?php echo 'option_'.$videoObjectIdentifier.'-'; ?>' + resolution;
+        const option = '#<?php echo 'option_' . $videoObjectIdentifier . '-'; ?>' + resolution;
         const url = $(option).attr('data-url');
-        if(url != undefined){
+        if (url != undefined) {
             $(option).parent().find('i.material-icons').remove();
             $(option).prepend('<i class="material-icons">done</i>');
-            var video_<?php echo $videoObjectIdentifier ?> = document.getElementById('<?php echo $videoObjectIdentifier?>');
+            var video_<?php echo $videoObjectIdentifier ?> = document.getElementById('<?php echo $videoObjectIdentifier ?>');
             video_<?php echo $videoObjectIdentifier ?>.pause();
             video_<?php echo $videoObjectIdentifier ?>.setAttribute('src', url + '#t=' + Math.ceil(video_<?php echo $videoObjectIdentifier ?>.currentTime)); /* ie not working */
             video_<?php echo $videoObjectIdentifier ?>.load();
         }
     }
 
-    $( document ).ready(function() {
+    $(document).ready(function() {
         setResByConnection();
     });
 
     document.getElementById('<?php echo $videoObjectIdentifier ?>').addEventListener('error', function(e) {
         document.getElementById('b_<?php echo $videoObjectIdentifier ?>').style.display = 'none';
         switch (e.target.error.code) {
-    	    case e.target.error.MEDIA_ERR_ABORTED:
-       		case e.target.error.MEDIA_ERR_NETWORK:
-      		case e.target.error.MEDIA_ERR_DECODE:
-      		case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-    	  		document.getElementById('<?php echo $videoObjectIdentifier ?>').style.display = 'none';
-          		document.getElementById('e_<?php echo $videoObjectIdentifier ?>').style.display = 'block';
-        	break;
-      		default:
-        	return;
-      }
+            case e.target.error.MEDIA_ERR_ABORTED:
+            case e.target.error.MEDIA_ERR_NETWORK:
+            case e.target.error.MEDIA_ERR_DECODE:
+            case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                document.getElementById('<?php echo $videoObjectIdentifier ?>').style.display = 'none';
+                document.getElementById('e_<?php echo $videoObjectIdentifier ?>').style.display = 'block';
+                break;
+            default:
+                return;
+        }
     }, true);
 
     function trackError() {
-    	var url = '<?php echo htmlentities($logger, ENT_QUOTES, 'UTF-8') ?>';
-    	var data = '<?php echo htmlentities($cachePath, ENT_QUOTES, 'UTF-8') ?>';
-    	try {
-    		x = new(this.XMLHttpRequest || ActiveXObject)('MSXML2.XMLHTTP.3.0');
-    		x.open(data ? 'POST' : 'GET', url, 1);
-    		x.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    		x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    		x.send(data)
-    	} catch (e) {
-    		window.console && console.log(e);
-    	}
+        var url = '<?php echo htmlentities($logger, ENT_QUOTES, 'UTF-8') ?>';
+        var data = '<?php echo htmlentities($cachePath, ENT_QUOTES, 'UTF-8') ?>';
+        try {
+            x = new(this.XMLHttpRequest || ActiveXObject)('MSXML2.XMLHTTP.3.0');
+            x.open(data ? 'POST' : 'GET', url, 1);
+            x.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            x.send(data)
+        } catch (e) {
+            window.console && console.log(e);
+        }
     };
 </script>

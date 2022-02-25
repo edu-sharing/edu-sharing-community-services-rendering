@@ -46,6 +46,7 @@ $Translate
     ->addTranslation('de', 'Error fetching object properties', 'Fehler beim Laden der Objekteigenschaften')
     ->addTranslation('de', 'Resource is waiting for conversion.', 'Ressource wartet auf Konvertierung.')
     ->addTranslation('de', 'Postition in queue', 'Position in Warteschlange')
+    ->addTranslation('de', 'Set video resolution', 'Video-Auflösung wählen')
     ->addTranslation('de', 'Video player cannot play back this video.', 'Der Videoplayer kann dieses Video nicht wiedergeben.')
     ->addTranslation('de', 'Fit image size to browser window (esc)', 'Bildgröße an Browserfenster anpassen (esc)')
     ->addTranslation('de', 'Show image in original size', 'Bild in Originalgröße anzeigen')

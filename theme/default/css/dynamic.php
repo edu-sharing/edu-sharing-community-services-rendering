@@ -1,6 +1,8 @@
+/*
 <?php
 header("Content-type: text/css");
 global $MC_URL;?>
+*/
 
 body {
   padding: 0;
@@ -21,23 +23,53 @@ body {
   padding-bottom: 1px;
 }
 
-div.edusharing_rendering_content_video_options {
+.edusharing_rendering_content_video_options_container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   position: absolute;
   top: 2%;
   right: 2%;
   color: #fff;
   margin: 0;
-  padding: 5px;
   text-align: right;
 }
 
-div.edusharing_rendering_content_video_options i {
+.edusharing_rendering_content_video_options_container_expanded {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.edusharing_rendering_content_video_options {
+  display: flex;
+  background: none;
+  border: none;
+  padding: 5px;
+}
+
+.edusharing_rendering_content_video_options:focus-visible {
+  outline: 2px solid white;
+  border-radius: 2px;
+}
+
+.edusharing_rendering_content_video_options i {
   opacity: 0.8;
-  cursor: pointer;
+}
+
+.edusharing_rendering_content_video_options_container_expanded
+  .edusharing_rendering_content_video_options
+  i,
+.edusharing_rendering_content_video_options:hover i,
+.edusharing_rendering_content_video_options:focus-visible i {
+  opacity: 1;
 }
 
 div.edusharing_rendering_content_video_options_content {
   display: none;
+}
+
+.edusharing_rendering_content_video_options_container_expanded
+  .edusharing_rendering_content_video_options_content {
+  display: block;
 }
 
 div.edusharing_rendering_content_video_wrapper {
@@ -68,8 +100,18 @@ i.edusharing_rendering_content_video_options_toggle {
 
 ul.edusharing_rendering_content_video_options_resolutions > li {
   cursor: pointer;
-  padding: 4px 0;
+  padding: 4px 10px;
   list-style: none;
+}
+
+ul.edusharing_rendering_content_video_options_resolutions > li:hover,
+ul.edusharing_rendering_content_video_options_resolutions > li:focus-visible {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+ul.edusharing_rendering_content_video_options_resolutions > li:focus-visible {
+  outline: 2px solid white;
+  border-radius: 2px;
 }
 
 ul.edusharing_rendering_content_video_options_resolutions

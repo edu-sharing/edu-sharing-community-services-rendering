@@ -75,7 +75,7 @@ class TemplateFile
             'esmain/homeApplication.properties.xml' => 'conf'.DIRECTORY_SEPARATOR.'esmain'.DIRECTORY_SEPARATOR.'homeApplication.properties.xml',
 
             // logger-configuration
-            'de.metaventis.esrender.log4php.properties' => 'conf'.DIRECTORY_SEPARATOR.'de.metaventis.esrender.log4php.properties',
+            'de.metaventis.esrender.log4php.xml' => 'conf'.DIRECTORY_SEPARATOR.'de.metaventis.esrender.log4php.xml',
 
             // module-config
             'modules/audio/config.php' => 'modules/audio/config.php',

@@ -32,10 +32,7 @@ class Converter {
     }
 
     private function initLogger() {
-        // init LOGGER
-        require_once (__DIR__ . '/../../../../../func/extern/apache-log4php-2.0.0-incubating/src/main/php/Logger.php');
-        Logger::configure(__DIR__ . '/../../../../../conf/de.metaventis.esrender.log4php.properties');
-        $this -> logger = Logger::getLogger('de.metaventis.esrender.converter');
+        $this -> logger = require_once(MC_LIB_PATH . 'Log/init.php');
         $this -> logger -> info('Converter: Starting up.');
     }
     private function setThreads() {

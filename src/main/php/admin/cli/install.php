@@ -69,9 +69,6 @@ if (empty($options['c'])) {
     $replace = array($config['application_url_client'], $config['application_root'], $config['application_cache']);
     replaceValuesInFile($file, $needle, $replace);
 
-    $file = $confDir . DIRECTORY_SEPARATOR . 'de.metaventis.esrender.log4php.cachecleaner.properties';
-    replaceValuesInFile($file, '[[[TOKEN_BASE_DIR]]]', $config['application_root'] . '/');
-
     $videoConf = $config['application_root'] . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . 'video.config.php';
     $copied = copy($confTemplateDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . 'video.config.php', $videoConf);
     if($copied)

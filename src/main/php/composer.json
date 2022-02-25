@@ -13,7 +13,9 @@
   ],
   "require": {
     "php": "^7.4",
+    "apache/log4php": "~2.3.0",
     "${composer.vendor}/community-repository-backend-services-rest-client-core": "${org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php-core:zip.range}"
+
   },
   "repositories": [
     {

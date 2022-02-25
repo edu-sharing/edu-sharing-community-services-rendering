@@ -36,9 +36,7 @@ class cacheCleaner
 
     private function initLogger()
     {
-        require_once(dirname(__FILE__) . '/../../extern/apache-log4php-2.0.0-incubating/src/main/php/Logger.php');
-        Logger::configure(dirname(__FILE__) . '/../../../conf/de.metaventis.esrender.log4php.cachecleaner.properties');
-        $this->logger = Logger::getLogger('de.metaventis.esrender.cachecleaner');
+        $this->logger = require_once(MC_LIB_PATH . 'Log/init.php');
     }
 
     private function deleteUndemandedObject()

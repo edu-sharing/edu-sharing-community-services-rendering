@@ -25,8 +25,6 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: *");
 include_once('../../conf.inc.php');
-// init LOGGER
-require_once(dirname(__FILE__) . '/../../func/extern/apache-log4php-2.0.0-incubating/src/main/php/Logger.php');
 require_once(dirname(__FILE__) . '/../../func/classes.new/ESRender/DataProtectionRegulation/DataProtectionHandler.php');
 
 // init PROXY
@@ -41,8 +39,7 @@ require_once(MC_LIB_PATH . 'EsApplication.php');
 require_once(MC_LIB_PATH . 'ESModule.php');
 require_once(MC_LIB_PATH . 'ESObject.php');
 
-Logger::configure(dirname(__FILE__) . '/../../conf/de.metaventis.esrender.log4php.properties');
-$Logger = Logger::getLogger('de.metaventis.esrender.index');
+$Logger = require_once(MC_LIB_PATH . 'Log/init.php');
 
 $Logger->info('Starting up.');
 $Logger->debug($_SERVER['REQUEST_URI']);

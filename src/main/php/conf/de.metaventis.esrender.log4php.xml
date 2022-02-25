@@ -1,0 +1,11 @@
+<configuration xmlns="http://logging.apache.org/log4php/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://logging.apache.org/log4php/ ">
+    <appender name="default" class="LoggerAppenderConsole">
+        <layout class="LoggerLayoutPattern">
+            <param name="conversionPattern" value="%date %logger %-5level [%X] %msg%n" />
+        </layout>
+    </appender>
+    <root>
+        <appender_ref ref="default"/>
+    </root>
+</configuration>

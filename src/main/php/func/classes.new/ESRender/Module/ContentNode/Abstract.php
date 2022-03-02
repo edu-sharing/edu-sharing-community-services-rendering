@@ -86,6 +86,7 @@ extends ESRender_Module_Base
                 return false;
             }
 
+            // @TODO: this does not obey proxy
             $remotehandle = fopen($url, "rb");
             if($remotehandle === false) {
                 fclose($handle);

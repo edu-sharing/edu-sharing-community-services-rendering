@@ -41,6 +41,8 @@ require_once(dirname(__FILE__).'/func/extern/Phools/Autoload.php');
 Phools_Autoload::register();
 
 require_once (dirname(__FILE__) . '/conf/system.conf.php');
+require_once(dirname(__FILE__) . '/func/classes.new/Helper/GuzzleHelper.php');
+require_once(dirname(__FILE__) . '/func/classes.new/Helper/ProxyHelper.php');
 
 require_once ($ROOT_PATH."conf/db.conf.php");
 require_once ($ROOT_PATH."conf/defines.conf.php");
@@ -58,3 +60,8 @@ require_once(MC_LIB_PATH."Debug.php");
 require_once(MC_LIB_PATH."SysMsg.php");
 require_once(MC_LIB_PATH."Request.class.php");
 
+// init PROXY
+$ProxyConfig = dirname(__FILE__) . '/conf/proxy.conf.php';
+if (file_exists($ProxyConfig)) {
+    include_once($ProxyConfig);
+}

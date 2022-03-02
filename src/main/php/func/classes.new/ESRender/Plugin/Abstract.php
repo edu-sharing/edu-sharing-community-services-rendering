@@ -22,6 +22,16 @@ implements ESRender_Plugin_Interface
         $this->Logger = null;
     }
 
+    public function __construct(Array $properties=array())
+    {
+        if(is_array($properties))
+        {
+            foreach ($properties as $property => $value) {
+                $this->{$property} = $value;
+            }
+        }
+    }
+
     /**
      * Method-stub to save ourselfs the implementation as required by interface
      * when plugin won't even use this hook.

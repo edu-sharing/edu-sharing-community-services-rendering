@@ -258,10 +258,8 @@ extends ESRender_Plugin_Abstract {
         $ch = curl_init();
         
         curl_setopt($ch, CURLOPT_URL, $url);
-        if(defined('USE_HTTP_PROXY') && USE_HTTP_PROXY) {
-            curl_setopt($ch, CURLOPT_PROXYPORT, HTTP_PROXY_PORT);
-            curl_setopt($ch, CURLOPT_PROXY, HTTP_PROXY_HOST);
-        }
+        $helper = new ProxyHelper($url);
+        $helper->applyToCurl($ch);
         
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params);

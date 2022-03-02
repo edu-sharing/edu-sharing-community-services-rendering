@@ -100,16 +100,8 @@ class ESApp
 			$hc         = $this->getHomeConf();
 			$remote_app = $this->getAppByID($app_id);
 
-			$SoapClientParams = array();
-			if ( defined('USE_HTTP_PROXY') && USE_HTTP_PROXY )
-			{
-			        $SoapClientParams = array(
-			                'proxy_host' => HTTP_PROXY_HOST,
-			                'proxy_port' => HTTP_PROXY_PORT,
-			                'proxy_login' => HTTP_PROXY_USER,
-			                'proxy_password' => HTTP_PROXY_PASS,
-			        );
-			}
+            $helper = new ProxyHelper($remote_app->prop_array['authenticationwebservice_wsdl']);
+            $SoapClientParams = $helper->getSoapClientParams();
 
 			$client = new SoapClient($remote_app->prop_array['authenticationwebservice_wsdl'], $SoapClientParams);
 

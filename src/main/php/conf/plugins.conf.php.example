@@ -52,6 +52,10 @@
     $Plugins['serlo'] = $serlo;
     
  //FWU/OMEGA
- $Plugin = new ESRender_Plugin_Omega('', '', '');
+ $Plugin = new ESRender_Plugin_Omega([
+    'url' => '',
+    'user' => '',
+    'validateUrls' => true
+ ]);
  $Plugins[] = $Plugin;
  

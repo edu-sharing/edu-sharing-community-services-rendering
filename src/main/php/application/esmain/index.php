@@ -27,12 +27,6 @@ header("Access-Control-Allow-Headers: *");
 include_once('../../conf.inc.php');
 require_once(dirname(__FILE__) . '/../../func/classes.new/ESRender/DataProtectionRegulation/DataProtectionHandler.php');
 
-// init PROXY
-$ProxyConfig = '../../conf/proxy.conf.php';
-if (file_exists($ProxyConfig)) {
-    include_once($ProxyConfig);
-}
-
 require_once(MC_LIB_PATH . 'ESApp.php');
 require_once(MC_LIB_PATH . 'EsApplications.php');
 require_once(MC_LIB_PATH . 'EsApplication.php');

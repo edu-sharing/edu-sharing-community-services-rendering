@@ -8,19 +8,21 @@
 class ESRender_Plugin_Omega
     extends ESRender_Plugin_Abstract
 {
-
-    private $url = '';
-    private $proxy = '';
-    private $user = '';
+    protected $url;
+    protected $user;
+    protected $validateUrls;
 
     /**
-     *
-     * @param string $Url
+     * warning: new signature!
+     * all has moved to an options object!
+     * $proxy is not longer defined here, but defined globally via the proxy.conf using the regex matcher for the url
      */
-    public function __construct($url, $proxy = '', $user = 'dabiplus') {
-        $this->url = $url;
-        $this->proxy = $proxy;
-        $this->user = $user;
+    public function __construct($options = [
+        "url" => '',
+        "user" => 'dabiplus',
+        "validateUrls" => true
+    ]) {
+        parent::__construct($options);
     }
 
     /**
@@ -75,18 +77,10 @@ class ESRender_Plugin_Omega
     }
 
     protected function checkStatus($streamUrl) {
-        $curlhandle = curl_init();
-        curl_setopt($curlhandle, CURLOPT_URL, $streamUrl);
-        curl_setopt($curlhandle, CURLOPT_HEADER, true);
-        curl_setopt($curlhandle, CURLOPT_NOBODY, true);
-        curl_setopt($curlhandle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($curlhandle, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curlhandle, CURLOPT_SSL_VERIFYHOST, false);
-        curl_exec($curlhandle);
-        $response = curl_getinfo($curlhandle, CURLINFO_HTTP_CODE);
-        curl_close($curlhandle);
-        return $response;
+        $client = GuzzleHelper::getClient();
+        return $client->head($streamUrl, [
+            'http_errors' => false
+        ])->getStatusCode();
     }
 
     protected function evaluateResponse($response = null, $esObject) {
@@ -111,11 +105,14 @@ class ESRender_Plugin_Omega
 
         if(empty($response->get->streamURL) && !empty($response -> get -> downloadURL))
             $response->get->streamURL = $response->get->downloadURL;
-
-        $status = $this->checkStatus(urlencode($response->get->streamURL));
-        if($status > 299)
-            throw new ESRender_Exception_Omega('given streamURL is invalid', $status);
-
+        if($this->validateUrls) {
+            $preExec = microtime(true);
+            $status = $this->checkStatus($response->get->streamURL);
+            $postExec = microtime(true);
+            $this->getLogger()->info("Checking if Sodis result url is valid took " . ($postExec - $preExec) . " seconds");
+            if ($status > 299)
+                throw new ESRender_Exception_Omega('given streamURL is invalid', $status);
+        }
         if($response -> get -> downloadURL) {
             Config::set('downloadUrl', $response -> get -> downloadURL);
         }
@@ -130,21 +127,18 @@ class ESRender_Plugin_Omega
             throw new ESRender_Exception_Omega('Property replicationsourceid is empty');
         }
         $url = $this->url . '?token_id=' . $replicationSourceId . '&role=' . $role . '&user=' . $this->user;
-
-		$curlhandle = curl_init($url);
-        curl_setopt($curlhandle, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($curlhandle, CURLOPT_HEADER, 0);
-        curl_setopt($curlhandle, CURLOPT_PROXY, $this->proxy);
-        curl_setopt($curlhandle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curlhandle, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-        curl_setopt($curlhandle, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curlhandle, CURLOPT_SSL_VERIFYHOST, false);
+        $client = GuzzleHelper::getClient();
 		$preExec = microtime(true);
-        $resp = curl_exec($curlhandle);
+        $response = $client->get($url, [
+            'headers' => [
+                'User-Agent' => $_SERVER['HTTP_USER_AGENT']
+            ],
+            'http_errors' => false
+        ]);
 		$postExec = microtime(true);
 		$diff = $postExec - $preExec;
-		$logger->debug('API request took '. $diff .' seconds');
-        $logger->info('Called ' . $url . ' got ' . $resp);
-        return $resp;
+		$logger->debug('Omega API request took '. $diff .' seconds');
+        $logger->info('Called ' . $url . ' got ' . $response->getBody());
+        return $response->getBody();
     }
 }

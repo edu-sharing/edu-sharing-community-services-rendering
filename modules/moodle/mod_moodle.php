@@ -162,7 +162,7 @@ extends ESRender_Module_ContentNode_Abstract {
 			return parent::dynamic();
 		}
 		$Template = $this -> getTemplate();
-		$tempArray = array('url' => $this-> getForwardUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl());
+		$tempArray = array('url' => $this-> getForwardUrl(), 'url2' => $this-> getForwardUrl(), 'previewUrl' => $this -> esObject->getPreviewUrl());
 		
 		if(Config::get('showMetadata'))
 			$tempArray['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');

@@ -157,6 +157,33 @@ h1.edusharing_rendering_metadata_header_title {
 	font-size: 140%;
 }
 
+.edusharing_rendering_fullscreen_wrapper{
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.edusharing_rendering_fullscreen_wrapper:fullscreen .edusharing_rendering_content{
+    height: 100vh;
+    max-height: 100vh;
+}
+
+#edusharing_toggle_fullscreen{
+    position: absolute;
+    top: 0.25em;
+    right: 0.25em;
+    color: white;
+    font-size: 34px;
+    cursor: pointer;
+    opacity: 0.8;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+
+#edusharing_toggle_fullscreen:hover{
+    opacity: 1;
+}
+
 h1.edusharing_rendering_content_title {
 	font-size: 120%;
 	font-weight: 600;

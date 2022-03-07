@@ -1,5 +1,5 @@
 <?php 
-global $Locale, $Translate;
+global $Locale, $Translate, $MC_URL;
 $msg = array();
 $msg['showInformation'] = new Phools_Message_Default('showInformation');
 $msg['hideInformation'] = new Phools_Message_Default('hideInformation');
@@ -13,9 +13,14 @@ $msg['goToCourse'] = new Phools_Message_Default('goToCourse');
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
 	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
-	<div class="edusharing_rendering_content_wrapper" role="main">	
-		<?php echo '<img class="edusharing_rendering_content_preview" src="'.$previewUrl.'" alt="'.$title.'">'?>
-		<a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['goToCourse']->localize($Locale, $Translate);?></a>
+	<div class="edusharing_rendering_content_wrapper" role="main">
+        <div class="edusharing_rendering_fullscreen_wrapper">
+            <iframe title="<?php echo $title?>" src="<?php echo $url ?>" width="100%" height="100%" frameBorder="0" allowfullscreen style="display: block; border: 1px solid #383838; margin: 0 auto; min-width: 80vw; min-height: 60vh;"></iframe>
+            <i id="edusharing_toggle_fullscreen" class="material-icons">fullscreen</i>
+        </div>
+		<?php //echo '<img class="edusharing_rendering_content_preview" src="'.$previewUrl.'" alt="'.$title.'">'?>
+
+		<a href="<?php echo $url2 ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['goToCourse']->localize($Locale, $Translate);?></a>
 	</div>
 	<?php echo $metadata; ?>
 </div>
@@ -24,3 +29,39 @@ $downloadUrl = Config::get('downloadUrl');
 if(!empty($downloadUrl))
     echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
 ?>
+
+
+<script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
+<script>
+    $('#edusharing_toggle_fullscreen').on('click', function(){
+        // if already full screen; exit
+        // else go fullscreen
+        if (
+            document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.mozFullScreenElement ||
+            document.msFullscreenElement
+        ) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        } else {
+            element = $('.edusharing_rendering_fullscreen_wrapper').get(0);
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            }
+        }
+    });
+</script>

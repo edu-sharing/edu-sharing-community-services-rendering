@@ -21,7 +21,7 @@
 
 global $Translate;
 $Translate
-    ->addTranslation('de', 'Error', 'Error')
+    ->addTranslation('en', 'Error', 'Error')
 	->addTranslation('en', 'Missing parameter ":name".', 'Missing parameter ":name".')
 	->addTranslation('en', 'Invalid parameter ":name".', 'Invalid parameter ":name".')
 	->addTranslation('en', 'Error loading configuration.', 'Error loading configuration.')
@@ -42,6 +42,7 @@ $Translate
     ->addTranslation('en', 'Chapter', 'Chapter')
     ->addTranslation('en', 'Object does not exist in repository', 'Object does not exist in repository.')
     ->addTranslation('en', 'Error fetching object properties', 'Error fetching object properties.')
+    ->addTranslation('de', 'Set video resolution', 'Set video resolution')
     ->addTranslation('en', 'Video player cannot play back this video.', 'Video player cannot play back this video.')
     ->addTranslation('en', 'Fit image size to browser window (esc)', 'Fit image size to browser window (esc)')
     ->addTranslation('en', 'Show image in original size', 'Show image in original size')

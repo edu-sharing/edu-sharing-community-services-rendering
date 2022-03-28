@@ -2,7 +2,7 @@
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'install/sweepH5P.php';
 
-define ( 'UPDATEVERSION', '6.0.99' );
+define ( 'UPDATEVERSION', '6.1.0' );
 set_time_limit(18000);
 ini_set('memory_limit', '2048M');
 

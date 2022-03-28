@@ -1,2 +1,2 @@
 INSERT INTO "VERSION" ("VERSION_VNUMBER", "VERSION_TYPE") VALUES
-('6.0.99', 'install');
+('6.1.0', 'install');

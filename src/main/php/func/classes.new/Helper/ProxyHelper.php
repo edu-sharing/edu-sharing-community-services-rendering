@@ -19,6 +19,8 @@ class ProxyHelper {
                     return null;
                 }
             }
+        } else {
+            return null;
         }
         if($parsed['scheme'] === 'https') {
             return $PROXY_CONFIG['https.proxy'];

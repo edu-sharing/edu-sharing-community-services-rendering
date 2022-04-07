@@ -1,16 +1,5 @@
 <?php
 
-/*
- * Define proxy-setting to be used for HTTP communication 
- */
-define('USE_HTTP_PROXY', true);
-define('HTTP_PROXY_SNI', true);
-
-define('HTTP_PROXY_HOST', 'proxy.host.domain');
-define('HTTP_PROXY_PORT', 8080);
-define('HTTP_PROXY_USER', 'username');
-define('HTTP_PROXY_PASS', 'password');
-
 // config for using proxy (the key must be a regex matching the given outgoing url, and the value is the corresponding proxy url (if any))
 $PROXY_CONFIG = [
     // list of ips or host names which should not be pass through the proxy

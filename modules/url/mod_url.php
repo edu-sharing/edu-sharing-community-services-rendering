@@ -16,6 +16,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     private $dataProtection;
     protected function dynamic() {
     	if (!$this -> validate()) {
+            error_log('validate: false');
     		return false;
     	}
 
@@ -159,15 +160,19 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
     
     protected function isYoutubeRemoteObject() {
-        if($this -> esObject -> getNode() -> remote -> repository -> repositoryType  == 'YOUTUBE'){
-            return true;
+        if (!empty($this -> esObject -> getNode() -> remote)){
+            if($this -> esObject -> getNode() -> remote -> repository -> repositoryType  == 'YOUTUBE'){
+                return true;
+            }
         }
         return false;
     }
 
     protected function isPixabayRemoteObject() {
-        if($this -> esObject -> getNode() -> remote -> repository -> repositoryType  == 'PIXABAY'){
-            return true;
+        if (!empty($this -> esObject -> getNode() -> remote)){
+            if($this -> esObject -> getNode() -> remote -> repository -> repositoryType  == 'PIXABAY'){
+                return true;
+            }
         }
         return false;
     }
@@ -310,9 +315,13 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function getUrl() {
         $urlProp = $this -> esObject -> getNodeProperty($this -> getUrlProperty());
-       if(!empty($urlProp))
-            return html_entity_decode($urlProp);
-        return false;
+       if(!empty($urlProp)){
+           if (is_array($urlProp)){
+               $urlProp = $urlProp[0];
+           }
+           return html_entity_decode($urlProp);
+       }
+       return false;
     }
 
     protected function detectVideo() {

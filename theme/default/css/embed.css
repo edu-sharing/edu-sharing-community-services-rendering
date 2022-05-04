@@ -1,8 +1,11 @@
 
-
 .edusharing_rendering_content_wrapper {
-    min-width: 300px;
+    min-width: 250px;
     line-height: 1.2;
+}
+
+.edusharing_rendering_content{
+    width: 100%;
 }
 
 div.edusharing_rendering_content_video_options {
@@ -71,6 +74,7 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
     width: 100%;
     background: #f6f6f6;
     padding: 6px;
+    box-sizing: border-box;
 }
 
 .edusharing_rendering_content_footer a, .edusharing_rendering_content_footer a:visited, .edusharing_rendering_content_footer a:focus, .edusharing_rendering_content_footer a:hover {
@@ -156,6 +160,7 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
     background: #f6f6f6;
     width: calc(100% + 12px);
     margin-left: -6px;
+    box-sizing: border-box;
 }
 
 .edusharing_rendering_content_footer_directory ul {
@@ -163,6 +168,7 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
     background: #f6f6f6;
     width: 100%;
     padding: 0 !important;
+    box-sizing: border-box;
 }
 
 .edusharing_rendering_content_footer_sequence ul li, .edusharing_rendering_content_footer_directory ul li {

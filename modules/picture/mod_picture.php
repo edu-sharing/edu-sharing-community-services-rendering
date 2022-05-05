@@ -173,13 +173,15 @@ extends ESRender_Module_ContentNode_Abstract {
 
     private function getFileExtension($type = null, $file = null) {
 
-        if($type === null && $file === null)
+        if($type === null && $file === null){
             throw new Exception('Either a type or file must be provided.');
-
-        if($this->isSvg($file))
-            return self::EXTENSION_SVG;
+        }
 
         if($file) {
+            if($this->isSvg($file)){
+                return self::EXTENSION_SVG;
+            }
+            
             $type = exif_imagetype ($file);
         }
 

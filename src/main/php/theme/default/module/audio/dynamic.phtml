@@ -1,0 +1,39 @@
+<?php 
+global $Locale, $Translate, $MC_URL;
+$msg = array();
+?>
+
+<style>
+    <?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
+    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+</style>
+
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
+	<div class="edusharing_rendering_content_wrapper" >
+		<div id="edusharing_rendering_content"></div>
+	</div>
+	<?php echo $metadata; ?>
+</div>
+
+<script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
+
+<script>
+	get_resource = function(authstring) {
+	    jQuery.ajax({
+	        url:"<?php echo $ajax_url ?>&callback=get_resource&"+authstring,
+	        success:function(data){
+	            jQuery("#edusharing_rendering_content").html(data);
+	        }
+	    });
+	}
+	
+	get_resource("<?php echo $authString ?>");
+
+</script>
+
+<?php
+$downloadUrl = Config::get('downloadUrl');
+if(!empty($downloadUrl))
+    echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
+?>

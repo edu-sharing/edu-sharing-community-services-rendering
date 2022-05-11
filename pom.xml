@@ -1,108 +1,266 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
     <groupId>org.edu_sharing</groupId>
-    <artifactId>edu_sharing-renderingservice</artifactId>
-    <version>${revision}</version>
-    <packaging>pom</packaging>
-    <name>edu sharing Rendering-Service</name>
-    <url>https://scm.edu-sharing.com/edu-sharing/rendering-service</url>
-    <dependencies />
-    <build>
-        <finalName>${project.artifactId}-${revision}</finalName>
-        <!-- your list of plugins -->
-        <plugins>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>${project.basedir}/assembly.xml</descriptor>
-                    </descriptors>
-                    <tarLongFileMode>posix</tarLongFileMode>
-                </configuration>
-                <executions>
-                        <execution>
-                            <id>dist-assembly</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>single</goal> <!-- that's all :) -->
-                            </goals>
-                        </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>3.0.1</version>
-                <executions>
-                    <execution>
-                        <id>get-the-git-infos</id>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>validate-the-git-infos</id>
-                        <goals>
-                            <goal>validateRevision</goal>
-                        </goals>
-                        <!-- *NOTE*: The default phase of validateRevision is verify, but in case you want to
-                        change it, you can do so by adding the phase here -->
-                        <phase>package</phase>
-                    </execution>
-                </executions>
+    <artifactId>edu_sharing-super-pom</artifactId>
+    <version>develop-SNAPSHOT</version>
+    <relativePath/>
+  </parent>
 
-                <configuration>
-                    <verbose>false</verbose>
-                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.basedir}/git.properties</generateGitPropertiesFilename>
-                    <format>properties</format>
-                    <offline>true</offline>
-                    <excludeProperties>
-                        <excludeProperty>git.user.*</excludeProperty>
-                    </excludeProperties>
-                    <gitDescribe>
-                        <skip>true</skip>
-                    </gitDescribe>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <artifactId>edu_sharing-community-services-rendering</artifactId>
+  <packaging>pom</packaging>
+  <version>git</version>
+
+  <name>edu_sharing-community-services-rendering</name>
+
+  <scm>
+    <connection>scm:git:https://scm.edu-sharing.com/edu-sharing/community/services/edu-sharing-rendering-service.git
+    </connection>
+    <developerConnection>
+      scm:git:https://scm.edu-sharing.com/edu-sharing/community/services/edu-sharing-rendering-service.git
+    </developerConnection>
+    <url>https://scm.edu-sharing.com/edu-sharing/community/services/edu-sharing-rendering-service.git</url>
+  </scm>
+
+  <properties>
+
+    <!-- release-2 -->
+    <bom.repository.version>${project.version}</bom.repository.version>
+
+  </properties>
+
+  <profiles>
+
+    <profile>
+
+      <id>dev</id>
+
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>env.DEV</name>
+          <value>true</value>
+        </property>
+      </activation>
+
+      <properties>
+        <bom.repository.version>${project.version}</bom.repository.version>
+      </properties>
+
+    </profile>
+
+  </profiles>
+
+  <build>
+
+    <resources>
+
+      <resource>
+        <directory>src/main/php</directory>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>install/_tmpl/sql/VERSION.sql</exclude>
+          <exclude>admin/update/update.php</exclude>
+          <exclude>composer.json</exclude>
+        </excludes>
+      </resource>
+
+      <resource>
+        <directory>src/main/php</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>install/_tmpl/sql/VERSION.sql</include>
+          <include>admin/update/update.php</include>
+          <include>composer.json</include>
+        </includes>
+      </resource>
+
+      <resource>
+        <directory>src/main/templates</directory>
+        <filtering>true</filtering>
+      </resource>
+
+    </resources>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>community-repository-backend-services-rest-client</id>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <scripts>
+                <!--suppress UnresolvedMavenProperty -->
+                <script><![CDATA[
+                  def range = project.properties['org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.version']
+                  if (range.contains('-SNAPSHOT')) {
+                    if (range.contains('fixes-')) {
+                      range = '~' + range.substring(range.indexOf('fixes-')).replace("fixes-","").replace("-SNAPSHOT","").concat(".0-dev")
+                    } else {
+                      range = '${git.closest.tag.fallback}'
+                    }
+                  }
+                  project.properties.setProperty('org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.range', range)
+                ]]></script>
+              </scripts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>empty</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <phase>initialize</phase>
+            <configuration>
+              <includeEmptyDirs>true</includeEmptyDirs>
+              <outputDirectory>../repository/Backend/services/rest/client/php/target</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/templates</directory>
+                  <excludes>
+                    <exclude>version*</exclude>
+                  </excludes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>resources</id>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <outputDirectory>${project.build.directory}/php</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>uk.co.codezen</groupId>
+        <artifactId>composer-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <phpPath>php</phpPath>
+              <composerJsonPath>${project.build.directory}/php/composer.json</composerJsonPath>
+              <withDev>false</withDev>
+              <withOptimisedAutoloader>false</withOptimisedAutoloader>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/bin.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>assembly</id>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>edu_sharing-community-repository-backend-services-rest-client-php</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+
+  <dependencyManagement>
+
+    <dependencies>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-repository</artifactId>
+        <version>${bom.repository.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-services-rendering</artifactId>
+        <version>${project.version}</version>
+        <type>tar.gz</type>
+        <classifier>bin</classifier>
+      </dependency>
+
+    </dependencies>
+
+  </dependencyManagement>
 
   <repositories>
-        <repository>
-            <id>nexus-intern</id>
-            <url>https://artifacts.edu-sharing.com/repository/maven-releases/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>nexus-intern-snapshots</id>
-            <url>https://artifacts.edu-sharing.com/repository/maven-snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
-    <distributionManagement>
-        <repository>
-            <id>nexus-intern</id>
-            <url>https://artifacts.edu-sharing.com/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>nexus-intern-snapshots</id>
-            <url>https://artifacts.edu-sharing.com/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <repository>
+      <id>edusharing-remote</id>
+      <url>https://artifacts.edu-sharing.com/repository/maven-remote/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>edusharing-mirror</id>
+      <url>https://artifacts.edu-sharing.com/repository/maven-mirror/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+
+  </repositories>
 
 </project>

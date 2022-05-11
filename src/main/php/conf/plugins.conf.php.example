@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * Configure the plugins to be used by renderservice here.
+ * Don't forget to add your plugins to the global $Plugins-array.
+ *
+ */
+ 
+ /*
+	$Plugin = new ESRender_Plugin_Redirect();
+	$Plugin
+		->setPropertyLocation('cclom:location')
+		->whereEquals('ccm:replicationsource', 'DE.EDU-SHARING');
+	$Plugins[] = $Plugin; 
+*/
+
+/*
+	$Plugin = new ESRender_Plugin_Redirect();
+	$Plugin
+		->setPropertyLocation('cclom:location')
+		->whereEquals('ccm:replicationsource', 'DE.FWU');
+	$Plugins[] = $Plugin;
+*/
+
+/*
+	// Arix
+	$Plugin = new ESRender_Plugin_Arix('http://the.arix.domain.tld/to/query');
+	$Plugins[] = $Plugin;
+*/
+
+/*
+	// EDUNEX-connection
+	$EdunexRemoteHandler = new ESRender_Plugin_RemoteObject_Edunex(
+		'https://edunex.somthing.example.domain/endpoint', 
+		'password!',
+		'127.0.0.1',
+		'cn=Manager,dc=your_dc_thingy',
+		'your_thingy_manager_pwd',
+		'cn=Your,dc=Search,o=Base,ou=Dn,'
+		'http://example.com/path/to/school/webservice?wsdl'
+		389);
+	$Plugins[] = $EdunexRemoteHandler;
+*/
+
+ // EDUNEX-connection
+    $EdunexRemoteHandler = new ESRender_Plugin_RemoteObject_Edunex();
+    $Plugins['edunex'] = $EdunexRemoteHandler;
+    
+    
+ //SERLO
+     $serlo = new ESRender_Plugin_RemoteObject_Serlo();
+    $Plugins['serlo'] = $serlo;
+    
+ //FWU/OMEGA
+ $Plugin = new ESRender_Plugin_Omega([
+    'url' => '',
+    'user' => '',
+    'validateUrls' => true
+ ]);
+ $Plugins[] = $Plugin;
+ 

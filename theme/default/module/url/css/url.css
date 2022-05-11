@@ -1,8 +1,0 @@
-section a {
-	color: #ccc;
-	outline: none;
-}
-
-section a:hover, section a:active, section a:visited {
-	outline: none;
-}

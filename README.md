@@ -1,20 +1,30 @@
-edu-sharing rendering service
+edu-sharing community services rendering
 ===========================
-The rendering service brings edu-sharing objects to devices.
-Therefore it will convert objects, render them together with the respective license and check for viewing permissions.
 
-Installation
-------------
-For a full documentation with screenshots of the installation steps visit the [documentation pages](http://docs.edu-sharing.com/confluence/edp/en).
+The edu-sharing open-source project started in 2007 to develop networked E-Learning environments for managing and
+sharing educational contents inter-organisationally.
 
 Documentation
 -------------
 More information can be found on the [homepage](http://www.edu-sharing.com).
 
+Or visit the edu-sharing [documentation](http://docs.edu-sharing.com/confluence/edp).
+
 Where can I get the latest release?
 -----------------------------------
-You find our latest releases on our [github repository](https://github.com/edu-sharing).
+You can download source and binaries from
+our [artifact repository](https://artifacts.edu-sharing.com).
 
 Contributing
 ------------
-If you plan to contribute on a regular basis, please visit our [community site](http://edu-sharing-network.org/?lang=en).
+For contribution on a regular basis please visit our [community site](http://edu-sharing-network.org/?lang=en).
+
+Security Issues
+---------------
+If you found something which might could be a vulnerability or a security issue, please contact us first instead of
+making a public issue. This can help us tracking down the issue first and may provide patches beforehand.
+
+Please provide such concerns via mail to security@edu-sharing.com
+
+Thanks!
+ 

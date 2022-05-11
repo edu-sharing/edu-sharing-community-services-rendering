@@ -1,0 +1,12 @@
+<?php
+
+// config for using proxy (the key must be a regex matching the given outgoing url, and the value is the corresponding proxy url (if any))
+$PROXY_CONFIG = [
+    // list of ips or host names which should not be pass through the proxy
+    // no support for wildcards
+    // e.g. ["127.0.0.1", "localhost"]
+    "http.nonproxyhosts" => [],
+     // e.g. "http://user:password@localhost:1234"
+    "http.proxy" => null,
+    "https.proxy" => null
+];

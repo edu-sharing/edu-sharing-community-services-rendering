@@ -1,0 +1,23 @@
+<?php
+global $Locale, $Translate,  $MC_URL;
+$msg = array();
+$msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
+?>
+<style>
+    <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
+    <?php include(dirname(__FILE__) . '/css/url.css'); ?>
+</style>
+
+<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+    <div class="edusharing_rendering_content_wrapper" >
+        <?php if(empty($embedding)) {
+            echo '<img class="edusharing_rendering_content_preview" src="'.$previewUrl.'" alt="'.$title.'">';
+        } else {
+            echo $embedding;
+        }?>
+        <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
+    </div>
+    <?php echo $footer?>
+</div>
+
+<script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>

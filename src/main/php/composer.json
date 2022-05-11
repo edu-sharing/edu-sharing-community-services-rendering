@@ -1,0 +1,32 @@
+{
+  "name": "${composer.vendor}/community-services-rendering",
+  "version": "${composer.version}",
+  "type": "project",
+  "description": "The rendering service brings edu-sharing objects to devices. Therefore it will convert objects, render them together with the respective license and check for viewing permissions",
+  "minimum-stability": "stable",
+  "license": "GNU General Public License, version 2",
+  "authors": [
+    {
+      "name": "metaVentis GmbH",
+      "email": "support@edu-sharing.net"
+    }
+  ],
+  "require": {
+    "php": ">=7.4",
+    "curl/curl": "~2.0",
+    "guzzlehttp/guzzle": "~7.4.1",
+    "apache/log4php": "~2.3.0",
+    "${composer.vendor}/community-repository-backend-services-rest-client": "${org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.range}"
+
+  },
+  "repositories": [
+    {
+      "type": "artifact",
+      "url": "../../../repository/Backend/services/rest/client/php/target"
+    },
+    {
+      "type": "composer",
+      "url": "${composer.repo.url}"
+    }
+  ]
+}

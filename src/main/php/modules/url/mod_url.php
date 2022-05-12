@@ -6,19 +6,8 @@
  *
  */
 
-define("VIDEO_TOKEN_YOUTUBE", "youtube.com/watch?");
-define("VIDEO_TOKEN_YOUTUBE_ALT", "youtu.be/");
-define("VIDEO_TOKEN_VIMEO", "vimeo.com");
-define("VIDEO_TOKENS", serialize(array(VIDEO_TOKEN_YOUTUBE, VIDEO_TOKEN_YOUTUBE_ALT, VIDEO_TOKEN_VIMEO)));
-
 class mod_url
 extends ESRender_Module_NonContentNode_Abstract {
-    private $dataProtection;
-    protected function dynamic() {
-    	if (!$this -> validate()) {
-            error_log('validate: false');
-    		return false;
-    	}
 
     private function getEmbedding() {
         $remoteType = new RemoteObjectType($this->esObject);

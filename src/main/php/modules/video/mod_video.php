@@ -21,14 +21,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-// load plugin config
-$configFile = dirname(__FILE__).'/config.php';
-// first install -> file might not exists, init it with the example
-if(!file_exists($configFile)) {
-    copy(dirname(__FILE__).'/config.example.php', $configFile);
-}
-require_once($configFile);
-
 include_once (dirname(__FILE__).'/../../conf.inc.php');
 include_once (MC_ROOT_PATH.'func/classes.new/ESRender/Module/AudioVideo/Helper.php');
 

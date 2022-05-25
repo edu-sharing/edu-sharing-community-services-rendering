@@ -104,17 +104,9 @@
               <scripts>
                 <!--suppress UnresolvedMavenProperty -->
                 <script><![CDATA[
-                  def range = project.properties['org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.version']
-                  if (range.contains('-SNAPSHOT')) {
-                    if (range.contains('fixes-')) {
-                      range = '~' + range.substring(range.indexOf('fixes-')).replace("fixes-","").replace("-SNAPSHOT","").concat(".0-dev")
-                    } else if (range.contains('release-')) {
-                      range = '~' + range.substring(range.indexOf('release-')).replace("release-","").replace("-SNAPSHOT","").concat(".0-dev")
-                    } else {
-                      range = '${git.closest.tag.fallback}'
-                    }
-                  }
-                  project.properties.setProperty('org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.range', range)
+                  def version = project.properties['org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.version']
+                  ${git.semver}
+                  project.properties.setProperty('org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.range', semver)
                 ]]></script>
               </scripts>
             </configuration>

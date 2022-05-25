@@ -57,13 +57,11 @@ H5P.MathDisplay = (function () {
 
       // Set MathJax using CDN as default if no config given.
       if (!that.settings.renderer || Object.keys(that.settings.renderer).length === 0) {
-        let rsUrl = window.location.href;
-        rsUrl = rsUrl.substring(0, rsUrl.indexOf('modules'));
         that.settings = that.extend({
           renderer: {
             // See http://docs.mathjax.org/en/latest/options/index.html for options
             mathjax: {
-              src: rsUrl+'vendor/mathjax/mathjax/MathJax.js',
+              src: window.renderingServiceUrl+'/vendor/mathjax/mathjax/MathJax.js',
               config: {
                 extensions: ['tex2jax.js'],
                 showMathMenu: false,

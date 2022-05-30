@@ -29,6 +29,10 @@
   },
   "repositories": [
     {
+      "type": "composer",
+      "url": "https://repo.packagist.org"
+    },
+    {
       "type": "artifact",
       "url": "../../../repository/Backend/services/rest/client/php/target"
     },

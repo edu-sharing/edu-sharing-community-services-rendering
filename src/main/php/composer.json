@@ -28,6 +28,7 @@
     "phpoffice/phppresentation": "^0.9.0",
     "phpoffice/phpspreadsheet": "^1.18",
     "phpoffice/phpword": "^0.18.2",
+    "mathjax/mathjax": "^2.7.5",
     "${composer.vendor}/community-repository-rest-client": "${org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.range}"
 
   },

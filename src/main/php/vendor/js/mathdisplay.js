@@ -61,7 +61,7 @@ H5P.MathDisplay = (function () {
           renderer: {
             // See http://docs.mathjax.org/en/latest/options/index.html for options
             mathjax: {
-              src: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js',
+              src: window.renderingServiceUrl+'/vendor/mathjax/mathjax/MathJax.js',
               config: {
                 extensions: ['tex2jax.js'],
                 showMathMenu: false,

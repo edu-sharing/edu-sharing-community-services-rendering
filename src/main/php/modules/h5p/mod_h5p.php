@@ -182,6 +182,7 @@ extends ESRender_Module_ContentNode_Abstract {
         }
 
         //neccessary to render latex
+        $html .= '<script>window.renderingServiceUrl = "'.$MC_URL.'"</script> ';
         $html .= '<script src="'.$MC_URL.'/vendor/js/mathdisplay.js"></script> ';
 
         foreach (self::$settings['core']['styles'] as $style) {

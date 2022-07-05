@@ -229,9 +229,25 @@ extends ESRender_Module_AudioVideo_Abstract
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
 
             if ($result) {
-                $Logger -> debug('Instance exists.');
                 $this -> esObject -> setInstanceData($result);
-                return true;
+
+                // check if cache exists
+                global $CC_RENDER_PATH;
+                $module = $this -> esObject -> getModule();
+                $src_file =  $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $module->getName() . DIRECTORY_SEPARATOR . $this->esObject->getSubUri_file();
+                $src_file .= DIRECTORY_SEPARATOR . $this->esObject->getObjectIdVersion();
+                if ((is_file($src_file)) || (is_readable($src_file))) {
+                    $Logger -> debug('Instance exists.');
+                    return true;
+                }else{
+                    $Logger -> debug('No cache, deleting from DB...');
+                    try {
+                        $this->esObject->deleteFromDb();
+                    } catch (Exception $e) {
+                        $Logger -> debug('Could not delete from DB: ' . $e);
+                    }
+                    return false;
+                }
             }
 
             $Logger -> debug('Instance does not exist.');

@@ -395,6 +395,33 @@ function run($installedVersion) {
         if(version_compare ( '5.1', $installedVersion ) > 0) {
 
             $pdo = RsPDO::getInstance();
+            if ($pdo->getDriver() == 'pgsql') {
+                $sql = $pdo -> formatQuery( 'SELECT max(`REL_ESMODULE_MIMETYPE_ID`) as max FROM `REL_ESMODULE_MIMETYPE`' );
+                $stmt = $pdo -> prepare ( $sql );
+                $stmt -> execute();
+                $result = $stmt -> fetchObject();
+                $maxPrimaryKey = $result->max;
+
+                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime) ON CONFLICT DO NOTHING' );
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->bindValue ( ':id', $maxPrimaryKey + 1 );
+                $stmt->bindValue ( ':modid', '10' );
+                $stmt->bindValue ( ':mime', 'image/svg' );
+                $stmt->execute ();
+
+                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime) ON CONFLICT DO NOTHING' );
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->bindValue ( ':id', $maxPrimaryKey + 2 );
+                $stmt->bindValue ( ':modid', '10' );
+                $stmt->bindValue ( ':mime', 'image/svg+xml' );
+                $stmt->execute ();
+
+                $sql = $pdo->formatQuery ( 'INSERT INTO `REL_ESMODULE_MIMETYPE` (`REL_ESMODULE_MIMETYPE_ID`, `REL_ESMODULE_MIMETYPE_ESMODULE_ID`, `REL_ESMODULE_MIMETYPE_TYPE`) VALUES (:id, :modid, :mime) ON CONFLICT DO NOTHING' );
+                $stmt = $pdo->prepare ( $sql );
+                $stmt->bindValue ( ':id', $maxPrimaryKey + 3 );
+                $stmt->bindValue ( ':modid', '10' );
+                $stmt->bindValue ( ':mime', 'image/webp' );
+                $stmt->execute ();
 
             $sql = 'SELECT max("REL_ESMODULE_MIMETYPE_ID") as max FROM "REL_ESMODULE_MIMETYPE"';
             $stmt = $pdo -> prepare ( $sql );

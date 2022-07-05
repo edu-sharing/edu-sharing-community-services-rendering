@@ -632,16 +632,18 @@ class ESObject {
             $sql = 'UPDATE "ESOBJECT_CONVERSION" set "ESOBJECT_CONVERSION_STATUS" = :convstatus, "ESOBJECT_CONVERSION_TIME" = :time ' .
                 'WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format';
 
-            if($resolution)
-                $sql .= '  AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution';
+            if($resolution){
+                $sql .= '  AND `ESOBJECT_CONVERSION_RESOLUTION` = :resolution';
+            }
 
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':convstatus', $state);
             $stmt -> bindValue(':time', time(), PDO::PARAM_INT);
             $stmt -> bindValue(':objectid', $objId, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);
-            if($resolution)
+            if($resolution){
                 $stmt -> bindValue(':resolution', $resolution);
+            }
 
             $result = $stmt -> execute();
             if(!$result)
@@ -721,11 +723,11 @@ class ESObject {
             $stmt -> execute();
             $sum = $stmt -> fetchObject() -> SUM;
 
-            $sql = 'SELECT COUNT("ESOBJECT_CONVERSION_ID") AS "POS" FROM "ESOBJECT_CONVERSION" 
-                        WHERE "ESOBJECT_CONVERSION_STATUS" = :status 
-                          AND "ESOBJECT_CONVERSION_ID" < ( 
-                              SELECT "ESOBJECT_CONVERSION_ID" FROM "ESOBJECT_CONVERSION" 
-                              WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid 
+            $sql = 'SELECT COUNT("ESOBJECT_CONVERSION_ID") AS "POS" FROM "ESOBJECT_CONVERSION"
+                        WHERE "ESOBJECT_CONVERSION_STATUS" = :status
+                          AND "ESOBJECT_CONVERSION_ID" < (
+                              SELECT "ESOBJECT_CONVERSION_ID" FROM "ESOBJECT_CONVERSION"
+                              WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid
                                 AND "ESOBJECT_CONVERSION_FORMAT" = :format' . (($resolution) ? ' AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution' : '') . ')';
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':objectid', $this->id, PDO::PARAM_INT);

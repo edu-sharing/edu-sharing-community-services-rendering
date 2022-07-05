@@ -104,6 +104,19 @@ class ESRender_Plugin_Omega
         if(!empty($response->get->error)) {
             throw new ESRender_Exception_Omega($response->get->error);
         }
+        if(substr($response->get->streamURL,0,8) == 'problem:' && substr($response->get->downloadURL,0,8) == 'problem:') {
+            if(strpos($response->get->downloadURL, 'no right to download') !== false) {
+                throw new ESRender_Exception_Generic(ESRender_Exception_Generic::$TYPE_PERMISSIONS_MISSING);
+            }
+        }
+        if(substr($response->get->streamURL,0,8) == 'problem:') {
+            $response->get->streamURL = '';
+        }
+        if(substr($response->get->downloadURL,0,8) == 'problem:') {
+            $response->get->downloadURL = '';
+        }
+        if(empty($response->get->streamURL) && !empty($response -> get -> downloadURL))
+            $response->get->streamURL = $response->get->downloadURL;
 
         if(empty($response->get->streamURL) && empty($response -> get -> downloadURL)) {
             throw new ESRender_Exception_Omega('urls empty');

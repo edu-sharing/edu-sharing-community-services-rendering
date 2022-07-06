@@ -259,7 +259,13 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
     else if (strpos($this -> getUrl(), VIDEO_TOKEN_VIMEO) !== false) {
         $urlArr = explode('/', $this -> getUrl());
-        $vidId = end($urlArr);
+        if (substr_count($this -> getUrl(), '/') == 4 ){
+            $token = end($urlArr);
+            $vidId = prev($urlArr).'?h='.$token;
+        }else{
+            $vidId = end($urlArr);
+        }
+        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Vimeo', 'https://help.vimeo.com/hc/de/sections/203915088-Datenschutz', 'player.vimeo.com', 'VIMEO');
         return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
                     <div class="videoWrapperInner" style="'.$videoWrapperInnerStyle.'">
                         <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . '" id="' . $objId . '" src="//player.vimeo.com/video/' . $vidId . '" src="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video"></iframe>

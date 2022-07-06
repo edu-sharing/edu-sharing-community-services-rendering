@@ -633,7 +633,7 @@ class ESObject {
                 'WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format';
 
             if($resolution){
-                $sql .= '  AND `ESOBJECT_CONVERSION_RESOLUTION` = :resolution';
+                $sql .= '  AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution';
             }
 
             $stmt = $pdo -> prepare($sql);

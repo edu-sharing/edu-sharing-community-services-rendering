@@ -419,51 +419,56 @@ function render(array $options)
 
         return null;
 
-    } catch (ESRender_Exception_MissingRequestParam $exception) {
-        $Logger->error('Missing parameter "' . $exception->getParamName() . '"');
-        $Logger->error($exception);
-        $Message = new Phools_Message_Default('Missing parameter ":name".', array(new Phools_Message_Param_String(':name', $exception->getParamName())));
-        return $Template->render('/error/default', array('technicalDetail' => $Message->localize($Locale, $Translate), 'i18nName' => 'invalid_parameters'));
-    } catch (ESRender_Exception_SslVerification $exception) {
-        $Logger->error('SSL verification error "' . $exception->getMessage() . '"');
-        $Logger->error($exception);
-        $Message = new Phools_Message_Default($exception->getMessage());
-        return $Template->render('/error/default', array('technicalDetail' => $Message->localize($Locale, $Translate), 'i18nName' => 'encryption'));
-    } catch (ESRender_Exception_InvalidRequestParam $exception) {
-        $Logger->error('Invalid parameter "' . $exception->getParamName() . '"');
-        $Logger->error($exception);
-        $Message = new Phools_Message_Default('Invalid parameter ":technicalDetail".', array(new Phools_Message_Param_String(':name', $exception->getParamName())));
-        return $Template->render('/error/default', array('error' => $Message->localize($Locale, $Translate), 'i18nName' => 'invalid_parameters'));
-    } catch (ESRender_Exception_HomeConfigNotLoaded $exception) {
-        $Logger->error('Error loading home-configuration.');
-        $Logger->error($exception);
-        $Message = new Phools_Message_Default('Error loading configuration.');
-        return $Template->render('/error/default', array('technicalDetail' => $Message->localize($Locale, $Translate), 'i18nName' => 'internal'));
-    } catch (ESRender_Exception_AppConfigNotLoaded $exception) {
-        $Logger->error('Error loading config for application "' . $exception->getAppId() . '".');
-        $Logger->error($exception);
-        $Message = new Phools_Message_Default('Error loading config for application ":app_id".', array(new Phools_Message_Param_String(':app_id', $exception->getAppId())));
-        return $Template->render('/error/default', array('technicalDetail' => $Message->localize($Locale, $Translate), 'i18nName' => 'internal'));
-    } catch (ESRender_Exception_ConfigParamInvalidOrMissing $exception) {
-        $Logger->error('Missing or wrong config parameter "' . $exception->getParam() . '".');
-        $Logger->error($exception);
-        $Message = new Phools_Message_Default('The config param ":param" for app ":app" is invalid or missing. Please contact your system-administrator.');
-        return $Template->render('/error/default', array('technicalDetail' => $Message->localize($Locale, $Translate), 'i18nName' => 'internal'));
-    } catch (ESRender_Exception_Omega $exception) {
-        $Logger->error($exception->getMessage());
-        $Logger->debug($exception);
-        $MessageDefault = new Phools_Message_Default('Omega plugin error');
-        $Message = new Phools_Message_Default($exception->getMessage());
-        $code = '';
-        if ($exception->getCode() != 0)
-            $code = $exception->getCode();
-        return $Template->render('/error/default', array('i18nName' => 'internal', 'technicalDetail' => $MessageDefault->localize($Locale, $Translate) . ' - ' . $Message->localize($Locale, $Translate) . ' ' . $code));
-    } catch (Exception $exception) {
-        $Logger->error('An internal server error occurred.');
-        $Logger->debug($exception);
-        $Message = new Phools_Message_Default($exception->getMessage());
-        return $Template->render('/error/default', array('technicalDetail' => $Message->localize($Locale, $Translate), 'i18nName' => 'internal'));
-    }
+} catch(ESRender_Exception_MissingRequestParam $exception) {
+    $Logger -> error('Missing parameter "' . $exception -> getParamName() . '"');
+    $Logger -> error($exception);
+    $Message = new Phools_Message_Default('Missing parameter ":name".', array(new Phools_Message_Param_String(':name', $exception -> getParamName())));
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'invalid_parameters'));
+} catch(ESRender_Exception_SslVerification $exception) {
+    $Logger -> error('SSL verification error "' . $exception -> getMessage() . '"');
+    $Logger -> error($exception);
+    $Message = new Phools_Message_Default($exception -> getMessage());
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'encryption'));
+} catch(ESRender_Exception_InvalidRequestParam $exception) {
+    $Logger -> error('Invalid parameter "' . $exception -> getParamName() . '"');
+    $Logger -> error($exception);
+    $Message = new Phools_Message_Default('Invalid parameter ":technicalDetail".', array(new Phools_Message_Param_String(':name', $exception -> getParamName())));
+    echo $Template -> render('/error/default', array('error' => $Message -> localize($Locale, $Translate), 'i18nName' => 'invalid_parameters'));
+} catch(ESRender_Exception_HomeConfigNotLoaded $exception) {
+    $Logger -> error('Error loading home-configuration.');
+    $Logger -> error($exception);
+    $Message = new Phools_Message_Default('Error loading configuration.');
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'internal'));
+} catch(ESRender_Exception_AppConfigNotLoaded $exception) {
+    $Logger -> error('Error loading config for application "' . $exception -> getAppId() . '".');
+    $Logger -> error($exception);
+    $Message = new Phools_Message_Default('Error loading config for application ":app_id".', array(new Phools_Message_Param_String(':app_id', $exception -> getAppId())));
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'internal'));
+} catch(ESRender_Exception_ConfigParamInvalidOrMissing $exception) {
+    $Logger -> error('Missing or wrong config parameter "' . $exception -> getParam() . '".');
+    $Logger -> error($exception);
+    $Message = new Phools_Message_Default('The config param ":param" for app ":app" is invalid or missing. Please contact your system-administrator.');
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'internal'));
+} catch(ESRender_Exception_Omega $exception) {
+    $Logger -> error($exception -> getMessage());
+    $Logger -> debug($exception);
+    $MessageDefault = new Phools_Message_Default('Omega plugin error');
+    $Message = new Phools_Message_Default($exception -> getMessage());
+    $code = '';
+    if($exception -> getCode() != 0)
+        $code = $exception -> getCode();	
+    echo $Template -> render('/error/default', array('i18nName' => 'internal', 'technicalDetail' => $MessageDefault -> localize($Locale, $Translate) . ' - ' . $Message -> localize($Locale, $Translate) . ' ' .  $code));
+} catch(ESRender_Exception_Generic $exception) {
+    $Logger -> error($exception -> getMessage());
+    $Logger -> debug($exception);
+    $Message = new Phools_Message_Default($exception -> getMessage());
+    echo $Template -> render('/error/default', array('i18nName' =>$exception->getType(),  'technicalDetail' => $Message -> localize($Locale, $Translate)));
+} catch(Exception $exception) {
+    $Logger -> error('An internal server error occurred.');
+    $Logger -> debug($exception);
+    $Message = new Phools_Message_Default($exception->getMessage());
+    echo $Template -> render('/error/default', array('technicalDetail' => $Message -> localize($Locale, $Translate), 'i18nName' => 'internal'));
+}
 
     $Logger->info('Shutting down.');
     return null;

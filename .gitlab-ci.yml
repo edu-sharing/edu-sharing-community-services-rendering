@@ -26,7 +26,7 @@ deploy_release:
     paths:
       - ./
   script:
-    - apt-get update -y && apt-get install -y sendmail libpng-dev zlib1g-dev libzip-dev
+    - apt-get update -y && apt-get install -y sendmail libpng-dev zlib1g-dev libzip-dev libonig-dev
     - docker-php-ext-install mbstring
     - docker-php-ext-install zip
     - docker-php-ext-install gd

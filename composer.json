@@ -10,7 +10,13 @@
       "email": "support@edu-sharing.net"
     }
   ],
+  "require-dev": {
+    "phpoffice/phpword": "^0.18.2"
+  },
   "require": {
+    "dompdf/dompdf": "^1.0",
+    "phpoffice/phpspreadsheet": "^1.18",
+    "phpoffice/phppresentation": "^0.9.0"
   }
 }
 

@@ -83,4 +83,11 @@ $Translate
     ->addTranslation('en', 'inConversionQueue', 'Format is being converted.')
     ->addTranslation('en', 'Postition in queue', 'Postition in queue')
     ->addTranslation('en', 'Resource is waiting for conversion.', 'Resource is waiting for conversion.')
+    ->addTranslation('en', 'ViewerJS_Actual Size', 'Actual Size')
+    ->addTranslation('en', 'ViewerJS_Automatic', 'Automatic')
+    ->addTranslation('en', 'ViewerJS_Full Width', 'Full Width')
+    ->addTranslation('en', 'ViewerJS_Next Page', 'Next Page')
+    ->addTranslation('en', 'ViewerJS_Previous Page', 'Previous Page')
+    ->addTranslation('en', 'ViewerJS_Zoom In', 'Zoom in')
+    ->addTranslation('en', 'ViewerJS_Zoom Out', 'Zoom out')
     ->addTranslation('en', 'imageDescriptionNotAvailable', 'An image description is not available.');

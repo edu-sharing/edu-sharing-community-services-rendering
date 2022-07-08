@@ -44,7 +44,9 @@ define('DOCTYPE_UNKNOWN', 'DOCTYPE_UNKNOWN');
 class mod_doc
 extends ESRender_Module_ContentNode_Abstract {
 
-    private $doctype;
+    protected $doctype;
+    // optional, converted path, if unset, the es content path will be used
+    protected $convertedPath;
 
     /**
      * Extension: set doctype
@@ -62,7 +64,7 @@ extends ESRender_Module_ContentNode_Abstract {
         if(Config::get('hasContentLicense') === true) {
 
             if($this->getDoctype() == DOCTYPE_PDF) {
-                $template_data['content'] = $this -> esObject -> getPath() . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+                $template_data['content'] = ($this->convertedPath ? $this->convertedPath : $this -> esObject -> getPath()) . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
                 $template_data['url'] = $this -> esObject->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
             }
 

@@ -55,7 +55,6 @@ class Converter {
      *
      */
     public function convert() {
-        
         if($this->converterIsOccupied()){
             return;
         }

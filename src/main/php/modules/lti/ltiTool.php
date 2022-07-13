@@ -21,10 +21,10 @@ class ltiTool {
         $launch_data = array();
         $launch_data["roles"] = $this -> esObject  -> getNodeProperty('ccm:tool_instance_roles');
         $launch_data["params"] = $this -> esObject  -> getNodeProperty('ccm:tool_instance_params');
-        $launch_data["lis_person_name_given"] = $this -> esobject -> getData() -> user -> profile -> givenName;
-        $launch_data["lis_person_name_family"] = $this -> esobject -> getData() -> user -> profile -> lastName;
-        $launch_data["lis_person_contact_email_primary"] = $this -> esobject -> getData() -> user -> profile -> email;
-        $launch_data["user_id"] = $this -> esobject -> getData() -> user -> authorityName;
+        $launch_data["lis_person_name_given"] = $this -> esObject -> getData() -> user -> profile -> givenName;
+        $launch_data["lis_person_name_family"] = $this -> esObject -> getData() -> user -> profile -> lastName;
+        $launch_data["lis_person_contact_email_primary"] = $this -> esObject -> getData() -> user -> profile -> email;
+        $launch_data["user_id"] = $this -> esObject -> getData() -> user -> authorityName;
         $launch_data["lti_version"] = LTI_VERSION;
         $launch_data["lti_message_type"] = LTI_MESSAGE_TYPE;
         $launch_data["oauth_callback"] = OAUTH_CALLBACK;

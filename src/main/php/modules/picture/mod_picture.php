@@ -264,7 +264,7 @@ extends ESRender_Module_ContentNode_Abstract {
          }
 
          if(empty($flavours))
-             throw new Exception('No  image binary found.');
+             throw new Exception('No image binary found.');
 
         rsort($flavours);
 

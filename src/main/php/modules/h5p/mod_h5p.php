@@ -104,6 +104,13 @@ extends ESRender_Module_ContentNode_Abstract {
             }else{
                 $Logger -> debug('This file is being worked on: '.$this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
                 $template_data['h5p_new'] = 'This file is being worked on. Please try again in a few moments.';
+
+                date_default_timezone_set('Europe/Berlin');
+                if ( $results[0]->created_at < date("Y-m-d H:i:s", strtotime("-10 minutes")) ){
+                    @rmdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
+                    $Logger -> debug('H5P is at least 10 minutes old. Build Folder deleted...');
+                }
+
                 echo $this -> getTemplate() -> render($TemplateName, $template_data);
                 return;
             }
@@ -423,9 +430,25 @@ extends ESRender_Module_ContentNode_Abstract {
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
 
             if ($result) {
-                $Logger -> debug('Instance exists.');
                 $this -> esObject -> setInstanceData($result);
-                return true;
+
+                // check if cache exists
+                global $CC_RENDER_PATH;
+                $module = $this -> esObject -> getModule();
+                $src_file =  $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $module->getName() . DIRECTORY_SEPARATOR . $this->esObject->getSubUri_file();
+                $src_file .= DIRECTORY_SEPARATOR . $this->esObject->getObjectIdVersion();
+                if ((is_file($src_file)) || (is_readable($src_file))) {
+                    $Logger -> debug('Instance exists.');
+                    return true;
+                }else{
+                    $Logger -> debug('No cache, deleting from DB...');
+                    try {
+                        $this->esObject->deleteFromDb();
+                    } catch (Exception $e) {
+                        $Logger -> debug('Could not delete from DB: ' . $e);
+                    }
+                    return false;
+                }
             }
 
             $Logger -> debug('Instance does not exist.');

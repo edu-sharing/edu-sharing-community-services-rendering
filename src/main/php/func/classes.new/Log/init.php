@@ -7,4 +7,7 @@ if(isset($_SERVER['HTTP_X_B3_TRACEID']) && isset($_SERVER['HTTP_X_B3_SPANID'])) 
     LoggerMDC::put("TraceId", $_SERVER['HTTP_X_B3_TRACEID']);
     LoggerMDC::put("SpanId", $_SERVER['HTTP_X_B3_SPANID']);
 }
+if(isset($_SERVER['HTTP_X_CLIENT_TRACE_ID'])) {
+    LoggerMDC::put("ClientTraceId", $_SERVER['HTTP_X_CLIENT_TRACE_ID']);
+}
 return Logger::getLogger('de.metaventis.esrender.index');

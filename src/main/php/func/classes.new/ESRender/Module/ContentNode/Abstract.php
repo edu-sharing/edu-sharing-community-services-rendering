@@ -175,5 +175,11 @@ extends ESRender_Module_Base
         return true;
     }
 
+    /**
+     * override this in your module if you can clearly decide if it should process the particular format
+     */
+    public static function canProcess($esObject) {
+        return false;
+    }
 
 }

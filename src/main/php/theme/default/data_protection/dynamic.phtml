@@ -1,8 +1,13 @@
+<?php
+    global $MC_URL;
+    $uniqueId = rand();
+?>
+<script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
+<script src="<?php echo $MC_URL?>/theme/default/data_protection/script.js"></script>
 <style>
     <?php include(dirname(__FILE__) . '/../css/dynamic.php'); ?>
     <?php include(dirname(__FILE__) . '/../css/metadata.css'); ?>
 </style>
-<?php include(dirname(__FILE__) . '/scripts.php'); ?>
 <div class="edusharing_rendering_wrapper" id="<?php echo $uniqueId;?>-privacy">
     <h1 class="edusharing_rendering_content_title"><?php echo $node->getNode()->title ?></h1>
     <div class="edusharing_rendering_content_wrapper" role="main">
@@ -47,7 +52,9 @@
                         <a href="<?php echo $handler['url'];?>" target="_blank"><?php echo Phools_Message_Default::translate('dataProtectionRegulations');?></a>
                         <br/>
                         <a href="#"
-                           onclick="event.preventDefault(); replaceData<?php echo $uniqueId; ?>()"
+                           id="<?php echo $uniqueId; ?>-btn"
+                           data-id="<?php echo $uniqueId; ?>"
+                           data-content="<?php echo htmlspecialchars($content); ?>"
                            class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton dataProtectionRegulationsButton-<?php echo $type;?>"
                         ><?php echo Phools_Message_Default::translate('dataProtectionRegulations4');?></a>
                     </p>

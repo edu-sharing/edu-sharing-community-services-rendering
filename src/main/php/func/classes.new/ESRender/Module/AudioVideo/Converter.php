@@ -47,6 +47,27 @@ class Converter {
             $this -> timeout = "timeout " . VIDEO_EXEC_TIMEOUT . " ";
     }
 
+    public function startup() {
+        global $argv;
+        if(count($argv) > 1) {
+            $param = $argv[1];
+            $pdo = RsPDO::getInstance();
+            $sql = 'DELETE FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_STATUS" LIKE :status';
+            $stmt = $pdo -> prepare($sql);
+            if($param == '--restart') {
+                $stmt->bindValue(':status', ESObject::CONVERSION_STATUS_PROCESSING);
+            } else if($param == '--retry-failed') {
+                $stmt->bindValue(':status', ESObject::CONVERSION_STATUS_ERROR . '%');
+            } else if($param == '--retry-stuck') {
+                $stmt->bindValue(':status', ESObject::CONVERSION_STATUS_STUCK);
+            } else {
+                die('Invalid argument(s) detected: ' . $param);
+            }
+            $stmt->execute();
+            echo 'Reset ' . $stmt->rowCount() . ' elements in queue';
+        }
+        $this->convert();
+    }
     /*
      *
      * Load queue, lock and convert items.
@@ -56,7 +77,7 @@ class Converter {
      */
     public function convert() {
         if($this->converterIsOccupied()){
-            return;
+            die('Converter is still running. Use --restart to remove any current conversions and restart them');
         }
 
         if (!$conv = $this -> getNextFromConversionQueue()){
@@ -102,7 +123,7 @@ class Converter {
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_MP4 :
                         $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.mp4';
-                        exec($this -> timeout . VIDEO_FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a libmp3lame -b:a 128k" . " " . $tmpName . " " ."2>>" . $logfile, $output, $code);
+                        exec($this -> timeout . VIDEO_FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a aac -b:a 160k" . " " . $tmpName . " " ."2>>" . $logfile, $output, $code);
                         //exec($this -> timeout . VIDEO_FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a libmp3lame -b:a 128k" . " " . $tmpName, $output, $code);
                         $this->setConversionStatus($code, $conv, $tmpName,$output);
                         break;
@@ -197,8 +218,8 @@ class Converter {
     }
     
     private function markStuckConversions() {
-       // if(empty($this -> timeout))
-        //    return;
+        if(empty($this -> timeout))
+            return;
         
         $timeoutThreshold = time() - VIDEO_EXEC_TIMEOUT;
 
@@ -224,5 +245,5 @@ class Converter {
 
 set_time_limit(0);
 $c = new converter();
-$c -> convert();
+$c -> startup();
 exit();

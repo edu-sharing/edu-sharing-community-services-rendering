@@ -241,7 +241,7 @@ class mod_scenario
 
 
 	final public function process(
-		$p_kind)
+		$p_kind, $locked = NULL)
 	{
 		$m_mimeType = $this -> esObject->getMimeType();
 		$m_path = $this -> esObject->getPath();

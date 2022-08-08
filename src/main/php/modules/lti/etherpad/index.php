@@ -97,7 +97,7 @@ $groupID = $_POST['groupID']; //'';
     <title>Etherpad</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <script src="./jquery-3.4.1.min.js"></script>
+    <script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
     <script src="./etherpad.js"></script>
     <script src="./jquery.cookie.js"></script>
 

@@ -484,6 +484,22 @@ class ESObject {
             }
         }
 
+        // @TODO: May remove this for now and configure all mime types via database
+        $modulePath = '../../modules/';
+        foreach(scandir($modulePath) as $mod){
+            $phpFile = $modulePath.$mod.'/mod_'.$mod.'.php';
+            if(!file_exists($phpFile)) {
+                continue;
+            }
+            require_once ($phpFile);
+            $className='mod_'.$mod;
+            if(method_exists($className, 'canProcess') && $className::canProcess($this)) {
+                Logger::getLogger('de.metaventis.esrender.index') -> info('module canProcess() returned true');
+                $this -> module -> setName($mod);
+                break;
+            }
+        }
+
         $this -> module -> loadModuleData();
 
         $this -> moduleId = $this -> module -> getModuleId();

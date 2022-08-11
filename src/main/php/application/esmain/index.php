@@ -369,6 +369,17 @@ function render(array $options)
             }
 
             $Module->instanceUnlock();
+        } else {
+            while($Module->instanceLocked()) {
+                $Logger->info(
+                    'Instance of module ' . $moduleName . ' / id ' .
+                    $ESObject->getObjectID(). ' is currently locked, waiting...'
+                );
+                // wait 200ms
+                usleep(200000);
+            }
+            // this method sounds like it just returns but it will also (re-) init the current module based on the database values
+            $Module->instanceExists();
         }
 
         $ESObject->update();

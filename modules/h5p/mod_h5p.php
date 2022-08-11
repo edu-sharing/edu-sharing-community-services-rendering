@@ -32,8 +32,10 @@ require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-metadata.class
 require_once (dirname(__FILE__) . '/H5PFramework.php');
 require_once (dirname(__FILE__) . '/H5PContentHandler.php');
 
+global $MC_URL;
+
 $pUrl = parse_url($MC_URL);
-define('DOMAIN', $pUrl['scheme'] . '://' . $pUrl['host']); // port only if specified!!!!!!
+define('DOMAIN', $pUrl['scheme'] . '://' . $pUrl['host'] . ':' . $pUrl['port']);
 define('PATH', $pUrl['path'] . '/modules/cache/h5p');
 define('DIR', $pUrl['path']);
 

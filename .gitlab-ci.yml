@@ -16,7 +16,8 @@ deploy:
       - target/php/composer.lock
     when: always
   before_script:
+    - curl -sSL https://packages.sury.org/php/README.txt | bash -x
     - apt-get update -y
-    - apt-get install -y php php-curl php-dom php-gd php-mbstring php-xml php-zip
+    - apt-get install -y php8.1 php8.1-curl php8.1-dom php8.1-gd php8.1-mbstring php8.1-xml php8.1-zip
   script:
     - mvn $MAVEN_CLI -s .mvn/settings.xml deploy

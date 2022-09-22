@@ -20,7 +20,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 /**
  * handles debug
  *
@@ -44,23 +43,6 @@ class mc_Debug
 //		return;
 		return false;
 	} // end method error
-
-
-
-	/**
-	 *
-	 */
-	public static function isError($p_err)
-	{
-		if (DBMC::isError($p_err))
-		{
-			mc_Debug::error($p_err, $p_err->getUserInfo());
-			return true;
-		}
-
-		return false;
-	} // end function isError
-
 
 
 	/**
@@ -112,42 +94,6 @@ class mc_Debug
 //		return;
 		return $log;
 	} // end method log
-
-
-
-	/**
-	 *
-	 */
-	public static function chat($param = "")
-	{
-		$l_debug = mc_Debug::check(MC_DEBUG);
-		if ( $l_debug == false )
-		{
-			return '';
-		}
-
-		if (file_exists(MC_MODULES_PATH.'webchat/webchat.inc.php'))
-		{
-			$l_msg = 'admin debug ';
-
-			$l_backtrace = debug_backtrace();
-			$l_msg .= ' (from '.$l_backtrace[0]['file'].' : '.$l_backtrace[0]['line'].')<br>';
-
-			if (is_array($param) == true)
-			{
-				$param = implode("<br>", $param);
-			}
-			$l_msg .= $param;
-
-			require_once(MC_MODULES_PATH.'webchat/webchat.inc.php');
-			require_once(MC_WEBCHAT_CLASSES."WebchatSend.php");
-			$l_send = new WebchatSend();
-			$l_send->saveMessage($l_msg, 1, 0, -2);
-
-			return;
-		}
-	} // end method chat
-
 
 } // end class mc_Debug
 
@@ -243,25 +189,3 @@ $l_debug = mc_Debug::check(MC_DEBUG, $l_msg_prefix);
 
   return $l_msg_prefix.'<hr /><center style="font-family:verdana; font-size:9px;">'.$p_prefix.' code generated in '.str_pad(round((($t_end[1] - $t_start[1]) + ($t_end[0] - $t_start[0])), 4), 6, "0", STR_PAD_RIGHT).' sec</center>';
 }
-
-
-/**
- *
- */
-function initTimer($name) { $GLOBALS['mc_timer_'.$name] = microtime(); }
-
-/**
- *
- */
-function getTimer($name) {
-	$t_start = split(' ', $GLOBALS['mc_timer_'.$name]);
-	$t_end   = split(' ', microtime());
-	$t_sec  = (int)$t_end[1] - (int)$t_start[1];
-	$t_msec = $t_end[0] - $t_start[0];
-	return $name.' : '.($t_sec + $t_msec).'<br>from file '.__FILE__.'<br>';
-}
-
-
-
-
-?>

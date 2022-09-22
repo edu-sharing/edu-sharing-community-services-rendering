@@ -22,7 +22,9 @@ class RsPDO extends PDO {
     public function querylimit($query, $limit, $offset) {
                 return $query . ' LIMIT ' . $limit . ' OFFSET ' . $offset;
     }
-
+    /**
+     * @psalm-suppress UndefinedGlobalVariable
+     */
     public function __construct() {
         include(__DIR__ . '/../../conf/db.conf.php');
         $this -> dsn = $dsn;

@@ -26,7 +26,7 @@ class ESRender_Plugin_NetMath
             $logger = $this->getLogger();
             $unique = uniqid();
             $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
-            $dialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($contentNode, $unique, 'NetMath', 'https://www.netmath.de/datenschutzerklaerung/');
+            $dialog = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($contentNode, $unique, 'NetMath', 'https://www.netmath.de/datenschutzerklaerung/', 'NETMATH');
             $url = $contentNode->getNodeProperty('ccm:wwwurl');
             Config::set('urlEmbedding', $dialog.'<iframe id="'.$unique.'" style="display:none; background:#fff" src="'.$url.'" width="100%" height="800px" border="0"></iframe>');
         }

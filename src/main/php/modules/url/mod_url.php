@@ -214,6 +214,7 @@ extends ESRender_Module_NonContentNode_Abstract {
     if(empty($width)) {
         $width = 800;
     }
+    $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
     //16:9
     $height = $width * 0.5625;
     $objId = $this -> esObject -> getObjectID();

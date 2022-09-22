@@ -162,8 +162,26 @@
             <configuration>
               <phpPath>php</phpPath>
               <composerJsonPath>${project.build.directory}/php/composer.json</composerJsonPath>
-              <withDev>false</withDev>
+              <withDev>true</withDev>
               <withOptimisedAutoloader>false</withOptimisedAutoloader>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>assembly</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>verify</phase>
+            <configuration>
+              <workingDirectory>${project.build.directory}/php</workingDirectory>
+              <executable>${project.build.directory}/php/vendor/bin/psalm</executable>
             </configuration>
           </execution>
         </executions>

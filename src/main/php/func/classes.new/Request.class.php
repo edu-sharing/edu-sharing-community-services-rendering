@@ -168,27 +168,6 @@ class mc_Request
 		return $l_value;
 	}
 
-
-	/**
-	 *
-	 */
-	public static function fetchMulti($p_arr_var, $p_arr_return)
-	{
-		foreach ($p_arr_var as $p_var)
-		{
-			$p_arr_return[$l_var] = Request::fetch(
-				$p_var[0],
-				$p_var[1],
-				(isset($p_var[2]) ? $p_var[2] : null),
-				(isset($p_var[3]) ? $p_var[3] : null),
-				(isset($p_var[4]) ? $p_var[4] : null)
-			);
-		}
-		return true;
-	}
-
-
-
 } // end class mc_Request
 
 ?>

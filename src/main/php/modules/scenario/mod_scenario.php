@@ -45,6 +45,8 @@ class mod_scenario
 	 */
 	final protected function display()
 	{
+        global $user_data;
+        global $hc;
 		include_once('config.php');
 /*
 	  array(11) { ["estrack_app_id"]=>  string(10) "demomoodle"
@@ -80,9 +82,8 @@ class mod_scenario
 
 			$client = new SoapClient(cfg_scenario_auth_service, $SoapClientParams);
 
-			unset($wrappedParams);
-			global $user_data;
-			global $hc;
+
+            $wrappedParams = null;
             $wrappedParams = new stdClass();
 			//$wrappedParams->courseid = $COURSE->id;
 			$wrappedParams->applicationId = $hc->prop_array['appid'];

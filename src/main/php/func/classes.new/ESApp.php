@@ -93,34 +93,6 @@ class ESApp
 		return false;
 	}
 
-	public function getRemoteAppData($session,$app_id)
-	{
-		try
-		{
-			$hc         = $this->getHomeConf();
-			$remote_app = $this->getAppByID($app_id);
-
-            $helper = new ProxyHelper($remote_app->prop_array['authenticationwebservice_wsdl']);
-            $SoapClientParams = $helper->getSoapClientParams();
-
-			$client = new SoapClient($remote_app->prop_array['authenticationwebservice_wsdl'], $SoapClientParams);
-
-			$params = array("applicationId" => $hc->prop_array['appid'],
-											"username" => '',
-											"email" => '',
-											"ticket" => $session,
-											"createUser" => false);
-
-			$return = $client->authenticateByApp($params);
-
-			return $return;
-		}
-		catch (Exception $e)
-		{
-			return $e;
-		}
-	}
-
 	public function GetTicketbyConf($p_alf_conf,$p_home_conf) {
         throw new Exception('GetTicketbyConf() is deprecated!');
 		try {
@@ -161,36 +133,6 @@ class ESApp
 			return $e;
 		}
 	}
-
-
-	// --- get some nice text out of alfrescos error exceptions ---
-	public function beautifyException($exception) {
-
-		// still crap ... alf exceptions are not consistent/unified/defined yet :(
-		switch (1) {
-			case (isSet($exception->faultstring)):
-				$_exception = $exception->faultstring;
-				break;
-			case (isset($exception->detail->{$exception->detail->exceptionName})):
-				$_exception =$exception->detail->{$exception->detail->exceptionName};
-				break;
-			default:
-				$_exception = "unknown";
-		}
-
-
-		switch(1) {
-			case (strpos($_exception, "SENDACTIVATIONLINK_SUCCESS") !== false):
-				return get_string('exc_SENDACTIVATIONLINK_SUCCESS','campuscontent');
-			case (strpos($_exception, "APPLICATIONACCESS_NOT_ACTIVATED_BY_USER") !== false):
-				return get_string('exc_APPLICATIONACCESS_NOT_ACTIVATED_BY_USER','campuscontent');
-			case (strpos($_exception, "Could not connect to host") !== false):
-				return get_string('exc_COULD_NOT_CONNECT_TO_HOST','campuscontent');
-			default:
-				return get_string('exc_UNKNOWN_ERROR','campuscontent')."(".$_exception."<hr><pre>".var_dump($_exception)."</pre>)";
-		}
-
-	} // eof beautifyException
 
 }//eof class CCWebServiceFactory
 

@@ -24,14 +24,14 @@ extends ESRender_Plugin_Abstract
 	 */
 	public function postRetrieveObjectProperties(
 		EsApplication &$remote_rep,
-		Node &$contentNode,
+        ESObject &$contentNode,
 		&$course_id,
 		&$resource_id,
 		&$username)
 	{
-		if ( $contentNode->properties['ccm:replicationsource'] == 'DE.EDMOND' )
+		if ( $contentNode->getNodeProperty('ccm:replicationsource') == 'DE.EDMOND' )
 		{
-    		$RemoteNodeId = $contentNode->properties['ccm:replicationsourceid'];
+    		$RemoteNodeId = $contentNode->getNodeProperty('ccm:replicationsourceid');
 
 			$this->handleRemoteObject($RemoteNodeId);
 		}

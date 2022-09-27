@@ -10,7 +10,7 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
+	<h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
 	<div class="edusharing_rendering_content_wrapper" role="main">
         <?php echo $dataProtectionRegulationsDialog ?>
 		<iframe id="<?php echo $uniqueId?>" src="<?php echo $url?>" width="95%" height="100%" style="border: none; height: 80vh" ></iframe>

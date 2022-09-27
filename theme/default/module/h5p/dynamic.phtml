@@ -10,7 +10,7 @@ $id = uniqid();
 </style>
 
 <div class="edusharing_rendering_wrapper h5p-org-content-wrapper" vocab="http://schema.org/" typeof="WebPage">
-    <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
+    <h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
     <div class="edusharing_rendering_content_wrapper" role="main">
         <?php if(empty($h5p_new)){ ?>
             <iframe src="<?php echo $iframeurl?>" style="width:85%;border:none" allowfullscreen="allowfullscreen" frameBorder="0" scrolling="no"></iframe>

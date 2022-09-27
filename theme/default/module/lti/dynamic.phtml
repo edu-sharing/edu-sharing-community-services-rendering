@@ -10,7 +10,7 @@ $msg['ltiGotoProvider'] = new Phools_Message_Default('ltiGotoProvider');
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
+	<h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
 	<div class="edusharing_rendering_content_wrapper" role="main">
         <?php echo $applyDataProtectionRegulationsDialog?>
 		<iframe id="lti_frame_<?php echo $objectId?>" name="lti_frame_<?php echo $objectId?>" src="" style="display:none; border: none; width: 80%; min-height: 600px;margin: auto;"></iframe>

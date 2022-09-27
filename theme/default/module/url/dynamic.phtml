@@ -11,7 +11,7 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
+	<h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
 	<div class="edusharing_rendering_content_wrapper" role="main">	
 		<?php if(empty($embedding)) {
 			echo '<img class="edusharing_rendering_content_preview" src="'.$previewUrl.'">';

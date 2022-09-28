@@ -20,7 +20,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-include_once (dirname(__FILE__) . '/config.php');
+if (file_exists(dirname(__FILE__).'/config.php')) {
+    include_once (dirname(__FILE__) . '/config.php');
+}
 include_once ('../../conf.inc.php');
 
 

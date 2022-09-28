@@ -20,5 +20,6 @@ log/esrender.log
 log/redirect.log
 modules/*/config.php
 vendor/lib/h5p
+playwright/
 
 /vendor/

@@ -12,8 +12,8 @@ $msg['goToCourse'] = new Phools_Message_Default('goToCourse');
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
-	<div class="edusharing_rendering_content_wrapper" >	
+	<h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
+	<div class="edusharing_rendering_content_wrapper" >
 		<?php echo '<img class="edusharing_rendering_content_preview" src="'.$previewUrl.'">'?>
 		<a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['goToCourse']->localize($Locale, $Translate);?></a>
 	</div>

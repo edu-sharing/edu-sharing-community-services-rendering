@@ -4,13 +4,13 @@ $msg = array();
 ?>
 
 <style>
-    <?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
-    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+<?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
+<?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
-	<div class="edusharing_rendering_content_wrapper" >
+	<h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
+	<div class="edusharing_rendering_content_wrapper" role="main">
 		<div id="edusharing_rendering_content"></div>
 	</div>
 	<?php echo $metadata; ?>

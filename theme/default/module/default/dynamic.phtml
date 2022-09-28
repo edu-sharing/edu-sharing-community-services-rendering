@@ -31,7 +31,7 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
         }
         ?>
 
-        <?php if(Config::get('showDownloadButton') && Config::get('renderInfoLMSReturn')->hasContentLicense === true){
+        <?php if(Config::get('showDownloadButton') && Config::get('hasContentLicense') === true){
             echo '<a href="' .  $url . '" download="'.$title.'" class="edusharing_rendering_content" id="edusharing_rendering_content_href">' .  $msg['toDownload']->localize($Locale, $Translate) . '</a>';
         }
         ?>

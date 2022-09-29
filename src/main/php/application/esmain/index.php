@@ -370,13 +370,19 @@ function render(array $options)
 
             $Module->instanceUnlock();
         } else {
+            $lockAquireWait = 0;
             while($Module->instanceLocked()) {
                 $Logger->info(
                     'Instance of module ' . $moduleName . ' / id ' .
-                    $ESObject->getObjectID(). ' is currently locked, waiting...'
+                    $ESObject->getObjectID(). ' is currently locked, waiting... (' . $lockAquireWait . 'ms)'
                 );
                 // wait 200ms
+                $lockAquireWait += 200;
                 usleep(200000);
+                if($lockAquireWait > 60000) {
+                    $Logger->error('Node ' . $ESObject->getObjectID() . ' did not unlock, giving up - exit.');
+                    throw new Exception('Node is currently locked or processed by another instance.');
+                }
             }
             // this method sounds like it just returns but it will also (re-) init the current module based on the database values
             $Module->instanceExists();

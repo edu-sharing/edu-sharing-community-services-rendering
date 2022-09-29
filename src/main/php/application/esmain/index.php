@@ -143,7 +143,7 @@ function render(array $options)
             // is it a licensed node? check the original for access (new since 5.1)
             if ($data->node->originalRestrictedAccess) {
                 Config::set('hasContentLicense', @in_array('ReadAll', $data->node->accessOriginal) === true);
-            } else if (@in_array('Read', $data->node->accessOriginal) === true) {
+            } else if (!empty($data->node->accessOriginal) && @in_array('Read', $data->node->accessOriginal) === true) {
                 //Has the user alf permissions on the node? -> check if he also has read_all permissions
                 // LEGACY! Remove this Behaviour in future releases, only included for back compat
                 Config::set('hasContentLicense', in_array('ReadAll', $data->node->accessOriginal));

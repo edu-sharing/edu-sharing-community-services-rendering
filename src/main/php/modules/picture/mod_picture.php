@@ -123,9 +123,9 @@ extends ESRender_Module_ContentNode_Abstract {
 
 
                 $exif = @exif_read_data($SourceFile);
-                $orientation = $exif['IFD0']['Orientation'];
-
-                if (empty($orientation)) {
+                if (!empty($exif['IFD0'])) {
+                    $orientation = $exif['IFD0']['Orientation'];
+                }else{
                     $orientation = $exif['Orientation'];
                 }
 
@@ -259,7 +259,8 @@ extends ESRender_Module_ContentNode_Abstract {
              if(strpos($file, '.' . $fileExtension) !== false) {
                  if(empty($tmpFile))
                     $tmpFile = $file;
-                $flavours[] = intval(end(explode('_', str_replace('.' . $fileExtension, '', $file))));
+                 $array = explode('_', str_replace('.' . $fileExtension, '', $file));
+                 $flavours[] = intval(end($array));
              }
          }
 

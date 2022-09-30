@@ -25,6 +25,7 @@ set_time_limit(0);
 include_once ('../conf.inc.php');
 
 $skipToken = false;
+$logCacheRead = false;
 
 if (empty($ESRENDER_SESSION_NAME)) {
     error_log('ESRENDER_SESSION_NAME not set in conf/system.conf.php');
@@ -249,6 +250,10 @@ if(isset($_SERVER['HTTP_RANGE'])) {
 }
 addContentHeaders($src_file);
 
+if ($logCacheRead){
+    error_log('start readfile from cache...');
+}
+
 if($filesize <= 2048) {
     @readfile($src_file);
 } else {
@@ -259,6 +264,10 @@ if($filesize <= 2048) {
         flush();
     }
     fclose($fd);
+}
+
+if ($logCacheRead){
+    error_log('file finished.');
 }
 
 exit(0);

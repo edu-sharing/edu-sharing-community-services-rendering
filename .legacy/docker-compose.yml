@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'rendering'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'rendering'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'rendering'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'rendering'
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - rendering
+  rendering-legacy:
+    image: rendering-legacy:latest
+    build: .
+    networks:
+      - rendering
+    ports:
+      - "8081:80"
+    volumes:
+      - ../:/var/www/html/
+
+networks:
+  rendering:
+
+volumes:
+  db:

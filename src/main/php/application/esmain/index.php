@@ -143,7 +143,7 @@ function render(array $options)
             // is it a licensed node? check the original for access (new since 5.1)
             if ($data->node->originalRestrictedAccess) {
                 Config::set('hasContentLicense', @in_array('ReadAll', $data->node->accessOriginal) === true);
-            } else if (@in_array('Read', $data->node->accessOriginal) === true) {
+            } else if (!empty($data->node->accessOriginal) && @in_array('Read', $data->node->accessOriginal) === true) {
                 //Has the user alf permissions on the node? -> check if he also has read_all permissions
                 // LEGACY! Remove this Behaviour in future releases, only included for back compat
                 Config::set('hasContentLicense', in_array('ReadAll', $data->node->accessOriginal));
@@ -369,6 +369,23 @@ function render(array $options)
             }
 
             $Module->instanceUnlock();
+        } else {
+            $lockAquireWait = 0;
+            while($Module->instanceLocked()) {
+                $Logger->info(
+                    'Instance of module ' . $moduleName . ' / id ' .
+                    $ESObject->getObjectID(). ' is currently locked, waiting... (' . $lockAquireWait . 'ms)'
+                );
+                // wait 200ms
+                $lockAquireWait += 200;
+                usleep(200000);
+                if($lockAquireWait > 60000) {
+                    $Logger->error('Node ' . $ESObject->getObjectID() . ' did not unlock, giving up - exit.');
+                    throw new Exception('Node is currently locked or processed by another instance.');
+                }
+            }
+            // this method sounds like it just returns but it will also (re-) init the current module based on the database values
+            $Module->instanceExists();
         }
 
         $ESObject->update();

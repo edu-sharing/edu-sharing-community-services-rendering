@@ -141,6 +141,18 @@ extends ESRender_Module_ContentNode_Abstract {
         else return parent::embed();
     }
 
+    final protected function inline() {
+        if($this->getDoctype() === DOCTYPE_HTML || $this->getDoctype() === DOCTYPE_TEXT) {
+            echo $this -> renderTemplate($this -> getThemeByDoctype().'inline', false);
+            return true;
+        }
+        else if($this->getDoctype() === DOCTYPE_PDF) {
+            echo $this -> renderTemplate($this -> getThemeByDoctype().'inline', false);
+            return true;
+        }
+        else return parent::embed();
+    }
+
     /**
      * Load theme according to current doctype
      */

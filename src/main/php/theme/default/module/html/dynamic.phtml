@@ -11,10 +11,10 @@ $msg['showDocument'] = new Phools_Message_Default('showDocument');
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-    <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
-    <div class="edusharing_rendering_content_wrapper" >
+    <h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
+    <div class="edusharing_rendering_content_wrapper">
 <!--            <img class="edusharing_rendering_content_preview" src="--><?php //echo $previewUrl?><!--">-->
-        <iframe title="<?php echo $title?>" src="<?php echo $url ?>" width="90%" height="800" frameBorder="0" style="display: block; margin: 0 auto;"></iframe>
+        <iframe src="<?php echo $url ?>" width="90%" height="800" frameBorder="0" style="display: block; margin: 0 auto;"></iframe>
         <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['showDocument']->localize($Locale, $Translate);?></a>
     </div>
     <?php echo $metadata; ?>

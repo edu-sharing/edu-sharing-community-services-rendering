@@ -20,7 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-if (file_exists(dirname(__FILE__).'/config.php')) {
+if (!defined('MOODLE_BASE_DIR') && file_exists(dirname(__FILE__).'/config.php')) {
     require_once dirname(__FILE__). '/config.php';
 }
 

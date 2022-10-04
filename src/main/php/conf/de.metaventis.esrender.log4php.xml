@@ -6,6 +6,7 @@
         </layout>
     </appender>
     <root>
+        <level value="INFO" />
         <appender_ref ref="default"/>
     </root>
 </configuration>

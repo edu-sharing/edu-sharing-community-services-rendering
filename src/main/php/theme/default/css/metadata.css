@@ -22,8 +22,11 @@
     line-height: 1.5;
 }
 
-.edusharing_rendering_metadata_body .mdsWidgetContent{
+.edusharing_rendering_metadata_body .mdsWidget:not(.mdsWidget_tinyMCE)  .mdsWidgetContent{
     white-space: pre-line;
+}
+.edusharing_rendering_metadata_body .mdsWidget_tinyMCE  .mdsValue > div > p:first-child {
+    margin-top: 0;
 }
 
 .edusharing_rendering_metadata_body .mdsWidgetContent .mdsValue{

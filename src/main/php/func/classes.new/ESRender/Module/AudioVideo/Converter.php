@@ -123,7 +123,7 @@ class Converter {
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
                     case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_MP4 :
                         $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.mp4';
-                        exec($this -> timeout . VIDEO_FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a libmp3lame -b:a 128k" . " " . $tmpName . " " ."2>>" . $logfile, $output, $code);
+                        exec($this -> timeout . VIDEO_FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a aac -b:a 160k" . " " . $tmpName . " " ."2>>" . $logfile, $output, $code);
                         //exec($this -> timeout . VIDEO_FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a libmp3lame -b:a 128k" . " " . $tmpName, $output, $code);
                         $this->setConversionStatus($code, $conv, $tmpName,$output);
                         break;

@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<psalm
+        errorLevel="8"
+        kipChecksOnUnresolvableIncludes="true"
+        checkForThrowsInGlobalScope="false"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://getpsalm.org/schema/config"
+        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <issueHandlers>
+        <InvalidGlobal>
+            <errorLevel type="info">
+                <directory name="*" />
+            </errorLevel>
+        </InvalidGlobal>
+        <UndefinedDocblockClass>
+            <errorLevel type="info">
+                <directory name="*" />
+            </errorLevel>
+        </UndefinedDocblockClass>
+        <MissingFile>
+            <errorLevel type="info">
+                <directory name="admin/model" />
+                <directory name="func" />
+                <directory name="modules" />
+                <file name="conf.inc.php" />
+                <file name="application/esmain/index.php" />
+            </errorLevel>
+        </MissingFile>
+        <UndefinedGlobalVariable>
+            <errorLevel type="info">
+                <directory name="admin" />
+                <directory name="func" />
+                <directory name="modules" />
+                <referencedVariable name="$ROOT_PATH" />
+                <referencedVariable name="$DEBUG" />
+                <referencedVariable name="$DEVMODE" />
+                <referencedVariable name="$MC_URL" />
+                <referencedVariable name="$MC_DOCROOT" />
+                <referencedVariable name="$ROOT_URI" />
+                <referencedVariable name="$INTERNAL_URL" />
+                <referencedVariable name="$CC_RENDER_PATH" />
+            </errorLevel>
+        </UndefinedGlobalVariable>
+        <UndefinedVariable>
+            <errorLevel type="info">
+                <directory name="admin" />
+                <directory name="func" />
+                <directory name="modules" />
+            </errorLevel>
+        </UndefinedVariable>
+        <UndefinedConstant>
+            <errorLevel type="info">
+                <directory name="admin" />
+                <directory name="func" />
+                <directory name="modules" />
+                <directory name="conf" />
+                <directory name="application/esmain" />
+                <file name="conf.inc.php" />
+            </errorLevel>
+        </UndefinedConstant>
+        <UndefinedClass>
+            <errorLevel type="info">
+                <directory name="modules" />
+                <referencedClass name="Phools_*" />
+                <referencedClass name="ESRender_*" />
+                <referencedClass name="SysMsg" />
+            </errorLevel>
+        </UndefinedClass>
+        <InvalidScope>
+            <errorLevel type="info">
+                <directory name="admin/view" />
+            </errorLevel>
+        </InvalidScope>
+        <InvalidThrow>
+            <errorLevel type="info">
+                <directory name="modules" />
+            </errorLevel>
+        </InvalidThrow>
+    </issueHandlers>
+    <projectFiles>
+        <file name="index.php" />
+        <file name="conf.inc.php" />
+        <directory name="modules" />
+        <directory name="conf" />
+        <directory name="admin" />
+        <directory name="func" />
+        <directory name="application" />
+        <ignoreFiles>
+            <directory name="install" />
+            <directory name="admin/cli" />
+            <directory name="func/extern" />
+            <directory name="vendor" />
+            <directory name="admin/vendor" />
+            <directory name="modules/lti/ims-blti" />
+            <!-- module seems unused, may delete it entirely? -->
+            <directory name="func/classes.new/ESRender/Form" />
+        </ignoreFiles>
+    </projectFiles>
+</psalm>

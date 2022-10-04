@@ -1,6 +1,12 @@
 <?php session_start();
 require_once (dirname(__FILE__) . '/../../conf.inc.php');
+/**
+ * @psalm-suppress UndefinedGlobalVariable
+ */
 define('USERNAME', $dbuser);
+/**
+ * @psalm-suppress UndefinedGlobalVariable
+ */
 define('PASSWORD_MD5', md5($pwd));
 define('SESSION_LIFETIME_MINUTES', 30);
 

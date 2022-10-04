@@ -30,7 +30,9 @@
     "phpoffice/phpword": "^0.18.2",
     "mathjax/mathjax": "^2.7.5",
     "${composer.vendor}/community-repository-rest-client": "${org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.range}"
-
+  },
+  "require-dev": {
+    "vimeo/psalm": "~4.27.0"
   },
   "repositories": [
     {

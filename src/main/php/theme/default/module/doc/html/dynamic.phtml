@@ -9,8 +9,8 @@ $msg = array();
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-	<h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
-	<div class="edusharing_rendering_content_wrapper" >
+	<h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
+	<div class="edusharing_rendering_content_wrapper">
         <div id="edusharing_htmlobject"><?php echo $content; ?></div>
 	</div>
 	<?php echo $metadata; ?>

@@ -57,41 +57,6 @@ class Plattform
 	} // end function error
 
 
-
-	/**
-	 *
-	 */
-	public static function isError($p_err)
-	{
-		/*
-		 * @FIXME PHP Strict standards:  Non-static method MDB2::isError() should not be called statically -> Plattform::isError() must be dynamic too.
-		 */
-		if (DBMC::isError($p_err))
-		{
-			mc_Debug::error($p_err, $p_err->getUserInfo());
-			return true;
-		}
-
-		return false;
-	} // end function isError
-
-
-
-	/**
-	 *
-	 */
-	public static function isOk($p_err)
-	{
-		if (Plattform::isError($p_err))
-		{
-			return false;
-		}
-
-		return true;
-	} // end function isOk
-
-
-
 	/**
 	 *
 	 */

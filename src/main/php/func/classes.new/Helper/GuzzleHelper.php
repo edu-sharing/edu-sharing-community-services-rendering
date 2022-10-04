@@ -33,7 +33,8 @@ class GuzzleHelper {
                 foreach(getallheaders() as $key => $value) {
                     if(strcasecmp(substr($key, 0, strlen("X-B3-")), "X-B3-") == 0 ||
                         strcasecmp(substr($key, 0, strlen("X-OT-")), "X-OT-") == 0 ||
-                        strcasecmp($key, "X-Request-Id") == 0
+                        strcasecmp($key, "X-Request-Id") == 0 ||
+                        strcasecmp($key, "X-Client-Trace-Id") == 0
                     ) {
                         $request = $request->withAddedHeader($key, $value);
                     }

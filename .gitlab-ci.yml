@@ -8,6 +8,8 @@ cache:
   paths:
     - .m2/repository/
 
+before_script:
+  - cat version.php | sed -E "s|.*'RS_VERSION'.*'(.*)'.*|\1|" | tail -n 1 > .VERSION
 
 deploy:
   stage: deploy
@@ -19,10 +21,7 @@ deploy:
 
 deploy_release:
   image: php:8.0-fpm
-
   stage: deploy
-  before_script:
-    - cat version.php | sed -E "s|.*'RS_VERSION'.*'(.*)'.*|\1|" | tail -n 1 > .VERSION
   artifacts:
     name: 
       edu-sharing-renderingservice_release_$(cat .VERSION)_$(date +"%Y-%m-%d")${CI_COMMIT_SHORT_SHA}

@@ -45,6 +45,7 @@ $Translate
     ->addTranslation('fr', 'Object does not exist in repository', 'L`objet demandé n`a pas été trouvé.')
     ->addTranslation('fr', 'Error fetching object properties', 'Il y avait une erreur de charger les caractéristiques de l`objet')
     ->addTranslation('fr', 'Resource is waiting for conversion.', 'Ressource est prêt pour la conversion.')
+    ->addTranslation('fr', 'conversionError', 'There was an error during conversion.')
     ->addTranslation('fr', 'Postition in queue', 'Position dans la file d`attente')
     ->addTranslation('fr', 'Video player cannot play back this video.', 'Le lecteur vidéo ne peut pas lire la vidéo.')
     ->addTranslation('fr', 'Fit image size to browser window (esc)', 'redimensionner l`image pour fenêtre de navigateur (esc)')

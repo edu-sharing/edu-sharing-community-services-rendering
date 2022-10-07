@@ -708,8 +708,12 @@ class ESObject {
             $stmt -> bindValue(':objectid', $this -> id, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);
             $stmt -> bindValue(':error', '%ERROR%');
-            if($resolution)
+
+            if($resolution){
                 $stmt -> bindValue(':resolution', $resolution);
+            }
+
+            $stmt -> execute();
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
             if(!$result){
                 return false;

@@ -81,6 +81,7 @@ $Translate
     ->addTranslation('en', 'createdBy', 'Created by')
     ->addTranslation('en', 'goToCourse', 'Go to course')
     ->addTranslation('en', 'inConversionQueue', 'Format is being converted.')
+    ->addTranslation('en', 'conversionError', 'There was an error during conversion.')
     ->addTranslation('en', 'Postition in queue', 'Postition in queue')
     ->addTranslation('en', 'Resource is waiting for conversion.', 'Resource is waiting for conversion.')
     ->addTranslation('en', 'ViewerJS_Actual Size', 'Actual Size')

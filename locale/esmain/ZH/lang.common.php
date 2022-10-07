@@ -34,6 +34,7 @@ $Translate
 	->addTranslation('zh', 'authored_by', '由')
 	->addTranslation('zh', 'author', '作者')
     ->addTranslation('zh', 'Resource is being converted for your view ...','资源正在转换 ...')
+    ->addTranslation('zh', 'conversionError', 'There was an error during conversion.')
     ->addTranslation('zh', 'Loading player ...','播放器载入中...')
     ->addTranslation('zh', 'No usage-information retrieved.', '没有获取使用信息')
     ->addTranslation('zh', 'back','退回')

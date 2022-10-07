@@ -100,8 +100,12 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
 
         $template_data['authString'] = 'token='.Config::get('token').'&'.session_name().'='.session_id();
 
-        if(Config::get('showMetadata'))
+        if(Config::get('showMetadata')){
             $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+        }
+        if ($this->esObject->conversionFailed(self::FORMAT_AUDIO_MP3)){
+            $template_data['error'] = 'error';
+        }
         $template_data['title'] = $this -> esObject->getTitle();
         echo $this->getTemplate()->render('/module/audio/dynamic', $template_data);
         return true;

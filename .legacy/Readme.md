@@ -16,3 +16,5 @@ Note: You might need to chown/chmod on your current directory so that the render
 After install succeeded, register it in the admin tools of your repository via url: `http://localhost:8081/application/esmain/metadata.php`
 
 If loading of repo data fails, go into `conf/esmain/app-local.properties.xml` and replace the local adress with your external ip in the key `authenticationwebservice`
+
+Note: You might have to run `composer install --ignore-platform-reqs` in your project folder.

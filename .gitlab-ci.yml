@@ -22,7 +22,7 @@ deploy_release:
 
   stage: deploy
   before_script:
-    - cat version.php | sed -E "s|.*'RS_VERSION'.*'(.*)'.*|\1|" | tail -n 1) > .VERSION
+    - cat version.php | sed -E "s|.*'RS_VERSION'.*'(.*)'.*|\1|" | tail -n 1 > .VERSION
   artifacts:
     name: 
       edu-sharing-renderingservice_release_$(cat .VERSION)_$(date +"%Y-%m-%d")${CI_COMMIT_SHORT_SHA}

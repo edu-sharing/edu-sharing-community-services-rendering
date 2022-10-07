@@ -22,7 +22,7 @@ deploy_release:
 
   stage: deploy
   artifacts:
-    name: "edu-sharing-renderingservice_release$(date +\"%Y-%m-%d\")${CI_COMMIT_SHORT_SHA}"
+    name: "edu-sharing-renderingservice_release_$(cat version.php | sed -E \"s|.*'RS_VERSION'.*'(.*)'.*|\1|\" | tail -n 1)_$(date +\"%Y-%m-%d\")${CI_COMMIT_SHORT_SHA}"
     paths:
       - ./
   script:
@@ -34,7 +34,9 @@ deploy_release:
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install --prefer-install=dist
     - date=$(date --iso-8601=seconds)
-    - 'echo "Date: $date" > application/esmain/build.version'
+    - version=$(cat version.php | sed -E "s|.*'RS_VERSION'.*'(.*)'.*|\1|" | tail -n 1)
+    - 'echo "Version: $version" > application/esmain/build.version'
+    - 'echo "Date: $date" >> application/esmain/build.version'
     - 'echo "Commit: $CI_COMMIT_SHORT_SHA / $CI_COMMIT_REF_NAME" >> application/esmain/build.version'
     - rm -rf .[!.]* ..?*
     - rm -f pom.xml

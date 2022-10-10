@@ -27,8 +27,7 @@ deploy_release:
     - 'echo "Commit: $CI_COMMIT_SHORT_SHA / $CI_COMMIT_REF_NAME" >> application/esmain/build.version'
   artifacts:
     name: 
-      edu-sharing-renderingservice_release_$(head -n 1 application/esmain/build.version | cut -c10-
-)$(date +"%Y-%m-%d")${CI_COMMIT_SHORT_SHA}
+      edu-sharing-renderingservice_release_$(head -n 1 application/esmain/build.version | cut -c10-)$(date +"%Y-%m-%d")${CI_COMMIT_SHORT_SHA}
     paths:
       - ./
   script:

@@ -460,7 +460,7 @@ function run($installedVersion) {
             $stmt = $pdo->exec($h5p_ddl);
 
             if ($pdo -> getDriver() == 'mysql') {
-                $alterTable = 'ALTER TABLE h5p_contents ALTER COLUMN parameters longtext;';
+                $alterTable = 'ALTER TABLE h5p_contents MODIFY parameters LONGTEXT;';
                 $stm = $pdo->exec($alterTable);
             }
 

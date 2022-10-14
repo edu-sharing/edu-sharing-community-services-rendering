@@ -427,28 +427,30 @@ class ESObject {
             return true;
         }
 
-        if ($this -> getNode() -> remote -> repository -> repositoryType == 'YOUTUBE') {
-            Logger::getLogger('de.metaventis.esrender.index') -> info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "YOUTUBE", using module "url".');
-            $this -> module -> setName('url');
-            $this -> module -> loadModuleData();
-            $this -> moduleId = $this -> module -> getModuleId();
-            return true;
-        }
+        if(!empty($this -> getNode() -> remote)) {
+            if ($this->getNode()->remote->repository->repositoryType == 'YOUTUBE') {
+                Logger::getLogger('de.metaventis.esrender.index')->info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "YOUTUBE", using module "url".');
+                $this->module->setName('url');
+                $this->module->loadModuleData();
+                $this->moduleId = $this->module->getModuleId();
+                return true;
+            }
 
-        if ($this -> getNode() -> remote -> repository -> repositoryType == 'PIXABAY') {
-            Logger::getLogger('de.metaventis.esrender.index') -> info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "PIXABAY", using module "url".');
-            $this -> module -> setName('url');
-            $this -> module -> loadModuleData();
-            $this -> moduleId = $this -> module -> getModuleId();
-            return true;
-        }
+            if ($this->getNode()->remote->repository->repositoryType == 'PIXABAY') {
+                Logger::getLogger('de.metaventis.esrender.index')->info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "PIXABAY", using module "url".');
+                $this->module->setName('url');
+                $this->module->loadModuleData();
+                $this->moduleId = $this->module->getModuleId();
+                return true;
+            }
 
-        if ($this -> getNode() -> remote -> repository -> repositoryType == 'LEARNINGAPPS') {
-            Logger::getLogger('de.metaventis.esrender.index') -> info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
-            $this -> module -> setName('learningapps');
-            $this -> module -> loadModuleData();
-            $this -> moduleId = $this -> module -> getModuleId();
-            return true;
+            if ($this->getNode()->remote->repository->repositoryType == 'LEARNINGAPPS') {
+                Logger::getLogger('de.metaventis.esrender.index')->info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
+                $this->module->setName('learningapps');
+                $this->module->loadModuleData();
+                $this->moduleId = $this->module->getModuleId();
+                return true;
+            }
         }
 
         if ($this -> getNodeProperty('ccm:replicationsource') == 'oai:dmglib.org') {

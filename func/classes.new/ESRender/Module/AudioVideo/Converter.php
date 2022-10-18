@@ -1,7 +1,7 @@
 <?php
 //error_reporting(E_ERROR);
 require_once (__DIR__ . '/../../../../../conf.inc.php');
-require_once (__DIR__ . '/../../../../../modules/video/config.php');
+require_once (__DIR__ . '/../../../../../conf/audio-video.conf.php');
 require_once (__DIR__ . '/../../../../../modules/video/mod_video.php');
 
 
@@ -113,7 +113,7 @@ class Converter {
             case 'audio' :
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), DIRECTORY_SEPARATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
                 $filename = explode(DIRECTORY_SEPARATOR, $conv->ESOBJECT_CONVERSION_FILENAME);
-                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end($filename) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . ESRender_Module_AudioVideo_Abstract::FORMAT_AUDIO_MP3 . '.log';
+                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end($filename) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . AUDIO_FORMATS[0] . '.log';
                 $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.mp3';
                 exec($this -> timeout  . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-f mp3 -y" . " " .  $tmpName . " " ."2>>" . $logfile, $whatever, $code);
                 //exec($this -> timeout  . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-f mp3 -y" . " " . $tmpName, $output, $code);
@@ -125,16 +125,14 @@ class Converter {
                 $filename = explode(DIRECTORY_SEPARATOR, $conv->ESOBJECT_CONVERSION_FILENAME);
                 $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end($filename) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . $conv -> ESOBJECT_CONVERSION_FORMAT . '_' . $conv -> ESOBJECT_CONVERSION_RESOLUTION . '.log';
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
-                    case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_MP4 :
+                    case 'mp4' :
                         $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.mp4';
                         exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a aac -b:a 160k" . " " . $tmpName . " " ."2>>" . $logfile, $output, $code);
-                        //exec($this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a libmp3lame -b:a 128k" . " " . $tmpName, $output, $code);
                         $this->setConversionStatus($code, $conv, $tmpName,$output);
                         break;
-                    case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_WEBM :
+                    case 'webm' :
                         $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.webm';
                         exec($this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . ",ih)'\" -c:a libvorbis -b:a 128k" . " " . $tmpName . " " ."2>>" . $logfile, $output, $code);
-                        //exec($this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . ",ih)'\" -c:a libvorbis -b:a 128k" . " " . $tmpName, $output, $code);
                         $this->setConversionStatus($code, $conv, $tmpName,$output);
                         break; 
                     default :

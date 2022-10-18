@@ -1,5 +1,7 @@
 <?php
     global $Locale, $Translate, $MC_URL;
+    require_once (__DIR__ . '/../../../../conf/audio-video.conf.php');
+
     $errMsg = new Phools_Message_Default('Video player cannot play back this video.');
     $conversionMsg = new Phools_Message_Default('inConversionQueue');
     $licid = uniqid();
@@ -8,9 +10,10 @@
         $styleVideo .= 'width:'.(int)$_REQUEST['width'] . 'px';
     }
 
-    $defaultRes = ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_M;
+    $defaultRes = VIDEO_DEFAULT_RESOLUTION;
+    $videoResolutions = VIDEO_RESOLUTIONS;
     if ( empty($url[$defaultRes]) ){
-        $defaultRes = ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S;
+        $defaultRes = $videoResolutions[0];
     }
 
 ?>
@@ -39,7 +42,9 @@
                 </ul>
             </div>
         </div>
-    <?php echo $footer?>
+    <?php if (isset($footer)){
+            echo $footer;
+        } ?>
     <p id="e_<?php echo $videoObjectIdentifier ?>" style="display: none;"><?php echo $errMsg -> localize($Locale, $Translate);?></p>
 </div>
 <script>
@@ -74,11 +79,11 @@
 
         const downLink = navigator.connection.downlink;
 
-        let resolution = '<?php echo ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S; ?>';
+        let resolution = '<?php echo $videoResolutions[0]; ?>';
         if (downLink >= 5){
-            resolution = '<?php echo ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_L; ?>';
+            resolution = '<?php echo end($videoResolutions); ?>';
         }else if (downLink >= 2){
-            // FORMAT_VIDEO_RESOLUTIONS_M is already set as default, so we can skip the rest
+            // VIDEO_DEFAULT_RESOLUTION is already set, so we can skip the rest
             return;
         }
 

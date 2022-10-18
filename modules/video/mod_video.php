@@ -22,10 +22,10 @@
  */
 
 // load plugin config
-$configFile = dirname(__FILE__).'/config.php';
+$configFile = dirname(__FILE__).'/../../conf/audio-video.conf.php';
 // first install -> file might not exists, init it with the example
 if(!file_exists($configFile)) {
-    copy(dirname(__FILE__).'/config.example.php', $configFile);
+    copy(dirname(__FILE__).'/../../conf/audio-video.conf.php.example', $configFile);
 }
 require_once($configFile);
 
@@ -41,13 +41,11 @@ include_once (MC_ROOT_PATH.'func/classes.new/ESRender/Module/AudioVideo/Helper.p
  * @subpackage classes.new
  */
 class mod_video
-extends ESRender_Module_AudioVideo_Abstract
-{
+extends ESRender_Module_AudioVideo_Abstract {
 
-    protected $filename;
+    protected string $filename;
 
-    protected function prepareRenderData($getDefaultData = true, $showMetadata = true)
-    {
+    protected function prepareRenderData($getDefaultData = true, $showMetadata = true) {
     	global $MC_URL;
 
     	$template_data = array();
@@ -58,13 +56,14 @@ extends ESRender_Module_AudioVideo_Abstract
             $template_data['css'] = false;
         }
 
-        $ext = $this -> getExtensionByFormat($this->getVideoFormatByRequestingDevice());
+        $ext = $this->getVideoFormatByRequestingDevice();
         $template_data['ext'] = $ext;
         $template_data['url'] = array();
-        foreach(array(ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S, ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_M, ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_L) as $resolution) {
+        foreach(VIDEO_RESOLUTIONS as $resolution) {
             $link = '';
-            if(file_exists($outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($ext), $resolution)))
+            if(file_exists($outputFilename = $this -> getOutputFilename($ext, $resolution))){
                 $link = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext, $resolution)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');
+            }
             $template_data['url'][$resolution] = $link;
         }
 
@@ -87,18 +86,6 @@ extends ESRender_Module_AudioVideo_Abstract
         $filename = str_replace('/',DIRECTORY_SEPARATOR, $filename);
         return $filename;
     }
-    
-    
-    protected function getExtensionByFormat($format) {
-        switch($format) {
-            case self::FORMAT_VIDEO_WEBM:
-                return self::FORMAT_VIDEO_WEBM_EXT;
-            break;
-            default:
-                return self::FORMAT_VIDEO_MP4_EXT;
-            break;
-        }
-    }
 
     /**
      * Helper-method to allow re-using inline-templates in inline() and
@@ -107,8 +94,7 @@ extends ESRender_Module_AudioVideo_Abstract
      * @param array $template_data
      * @throws Exception
      */
-    protected function renderInlineTemplate(array $template_data)
-    {
+    protected function renderInlineTemplate(array $template_data) {
         $inline_template = 'module/video/inline';
         $Template = $this->getTemplate();
         return $Template->render($inline_template, $template_data);
@@ -119,8 +105,7 @@ extends ESRender_Module_AudioVideo_Abstract
      * (non-PHPdoc)
      * @see ESRender_Module_Base::dynamic()
      */
-    final public function dynamic()
-    {
+    final public function dynamic() {
     	global $Locale, $ROOT_URI;
     	$template_data = $this->prepareRenderData( false);
 
@@ -150,8 +135,7 @@ extends ESRender_Module_AudioVideo_Abstract
      * (non-PHPdoc)
      * @see ESRender_Module_Base::dynamic()
      */
-    final public function embed()
-    {
+    final public function embed() {
         global $Locale, $ROOT_URI;
         $template_data = $this->prepareRenderData(true, false);
         $template_data['ajax_url'] =
@@ -178,8 +162,7 @@ extends ESRender_Module_AudioVideo_Abstract
      * (non-PHPdoc)
      * @see ESRender_Module_Base::inline()
      */
-    final public function inline()
-    {
+    final public function inline() {
     	if($_REQUEST['displayoption'] == 'min') {
     		$template_data = $this->prepareRenderData( false);
     	} else {
@@ -198,9 +181,9 @@ extends ESRender_Module_AudioVideo_Abstract
     final public function locked() {
     	    	
         $template = $this->getTemplate();
-        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion()  . '_' . $this -> esObject->getId() . '_' . $this-> getVideoFormatByRequestingDevice() . '_' . ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S . '.log';
+        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion()  . '_' . $this -> esObject->getId() . '_' . $this-> getVideoFormatByRequestingDevice() . '_' . VIDEO_RESOLUTIONS[0] . '.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
-        $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice(), ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S);
+        $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice(), VIDEO_RESOLUTIONS[0]);
         if(empty($progress) || is_array($progress))
             $progress = '0';
         echo $template->render('/module/video/lock', array('callback' => mc_Request::fetch('callback', 'CHAR'),

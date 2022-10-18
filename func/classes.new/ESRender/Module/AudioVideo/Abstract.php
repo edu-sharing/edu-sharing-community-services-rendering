@@ -1,6 +1,12 @@
 <?php
 
-require_once (__DIR__ . '/../../../../../conf/audio-video.conf.php');
+// load audio-video config
+$configFile = dirname(__FILE__).'/../../../../../conf/audio-video.conf.php';
+// first install -> file might not exists, init it with the example
+if(!file_exists($configFile)) {
+    copy(dirname(__FILE__).'/../../../../../conf/audio-video.conf.php.example', $configFile);
+}
+require_once($configFile);
 
 /**
  *

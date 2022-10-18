@@ -2,7 +2,7 @@
 
 const AUDIO_FORMATS = array('mp3');
 
-const VIDEO_FORMATS = array('mp4', 'webm');
+const VIDEO_FORMATS = array('mp4', 'webm'); // currently only mp4 & webm supported
 const VIDEO_RESOLUTIONS = array('360', '720', '1080');
 const VIDEO_DEFAULT_RESOLUTION = '720';
 

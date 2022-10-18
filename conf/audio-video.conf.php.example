@@ -1,0 +1,11 @@
+<?php
+
+const AUDIO_FORMATS = array('mp3');
+
+const VIDEO_FORMATS = array('mp4', 'webm');
+const VIDEO_RESOLUTIONS = array('360', '720', '1080');
+
+//define('FFMPEG_BINARY', 'C:\ffmpeg\bin\ffmpeg.exe');
+define('FFMPEG_BINARY', '/var/www/html/rendering-service/vendor/lib/converter/ffmpeg');
+define('EXEC_TIMEOUT', 3600);
+define('OPTION_THREADS', 1);

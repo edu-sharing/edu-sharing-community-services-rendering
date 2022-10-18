@@ -14,7 +14,8 @@ class Loginmanager {
 		define('SESSION_LIFETIME_MINUTES', 30);
 
 		$showLoginError = false;
-		
+        $showTimeout = false;
+
 		if(!empty($_SESSION['expire']) && time() > $_SESSION['expire']) {
 			$_SESSION['loggedin'] = 0;
 			$showTimeout = true;
@@ -35,7 +36,7 @@ class Loginmanager {
 			}
 		}
 		
-		if(!$_SESSION['loggedin']) {
+		if(isset($_SESSION['loggedin']) && !$_SESSION['loggedin']) {
 			
 			$err = '';
 	

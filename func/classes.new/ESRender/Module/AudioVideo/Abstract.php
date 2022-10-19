@@ -79,7 +79,7 @@ extends ESRender_Module_ContentNode_Abstract {
                      * */
                     $outputFilename = $this -> getOutputFilename($format);
                     if (!file_exists($outputFilename) && !$this->esObject->conversionFailed($format)) {
-                        if (!$this->esObject->inConversionQueue($format)) {
+                        if (!$this->esObject->inConversionQueue($format) && !$this->esObject->conversionFailed($format)) {
                             $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $this->esObject->getMimeType());
                         }
                         //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'

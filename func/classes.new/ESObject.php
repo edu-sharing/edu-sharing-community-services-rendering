@@ -612,15 +612,18 @@ class ESObject {
             $sql .= ")";
             $stmt = $pdo -> prepare($sql);
             foreach($arr as $key => $value) {
-                if($key === 'ESOBJECT_CONVERSION_OBJECT_ID')
+                if($key === 'ESOBJECT_CONVERSION_OBJECT_ID'){
                     $type = PDO::PARAM_INT;
-                else
+                }
+                else{
                     $type = PDO::PARAM_STR;
+                }
                 $stmt -> bindValue(':'.$key, $value, $type);
             }
             $result = $stmt -> execute();
-            if(!$result)
+            if(!$result){
                 throw new Exception('Error storing conversion entry in DB.' . print_r($pdo -> errorInfo(), true));
+            }
             return true;
          } catch (PDOException $e) {
              throw new Exception($e -> getMessage());
@@ -677,8 +680,9 @@ class ESObject {
         $pdo = RsPDO::getInstance();
         try {
             $sql = 'SELECT "ESOBJECT_CONVERSION_OBJECT_ID" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format';
-            if($resolution)
+            if($resolution){
                 $sql .= ' AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution';
+            }
 
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':objectid', $this -> id, PDO::PARAM_INT);

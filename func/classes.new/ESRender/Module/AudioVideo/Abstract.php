@@ -98,7 +98,7 @@ extends ESRender_Module_ContentNode_Abstract {
                     foreach (VIDEO_RESOLUTIONS as $resolution) {
                         $outputFilename = $this -> getOutputFilename($format, $resolution);
                         if (!file_exists($outputFilename) && !$this->esObject->conversionFailed($format)) {
-                            if (!$this->esObject->inConversionQueue($format, $resolution)) {
+                            if (!$this->esObject->inConversionQueue($format, $resolution) && $this->esObject->getId() > 0) {
                                 $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $this->esObject->getMimeType(),$resolution);
                             }
                             //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'

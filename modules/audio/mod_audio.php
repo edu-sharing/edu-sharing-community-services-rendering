@@ -40,9 +40,9 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
      * (non-PHPdoc)
      * @see ESRender_Module_AudioVideo_Abstract::getOutputFilename()
      */
-    protected function getOutputFilename($format = AUDIO_FORMATS[0], $resolution = NULL) {
+    protected function getOutputFilename($format = null, $resolution = NULL) {
         $filename = $this->getCacheFileName();
-        return $filename .= '.' . $format;
+        return $filename .= '.' . AUDIO_FORMATS[0];
     }
 
     protected function prepareRenderData($getDefaultData = true, $showMetadata = true) {
@@ -56,7 +56,7 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
             $data['css'] = false;
         }
         
-        $object_url = dirname($this -> esObject->getPath()) . '/' . basename($this->getOutputFilename($this)) . '?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
+        $object_url = dirname($this -> esObject->getPath()) . '/' . basename($this->getOutputFilename()) . '?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         $data['audio_url'] = $object_url;
         return $data;
     }

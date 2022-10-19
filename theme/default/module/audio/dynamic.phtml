@@ -12,7 +12,7 @@ $msg['conversionError'] = new Phools_Message_Default('conversionError');
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
 	<h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
 	<div class="edusharing_rendering_content_wrapper" role="main">
-        <?php if ($error == 'error') {
+        <?php if (isset($error) && $error == 'error') {
             echo '<p class="error-msg">'.$msg['conversionError']->localize($Locale, $Translate).'</p>';
         } ?>
 		<div id="edusharing_rendering_content"></div>

@@ -40,15 +40,15 @@ class Converter {
         $this -> logger -> info('Converter: Starting up.');
     }
     private function setThreads() {
-        if(defined('OPTION_THREADS'))
-            $this -> threads = "-threads " . OPTION_THREADS;
+        if(defined('FFMPEG_THREADS'))
+            $this -> threads = "-threads " . FFMPEG_THREADS;
         else
             $this -> threads = "-threads 1";
     }
     
     private function setTimeout() {
-        if(defined('EXEC_TIMEOUT') && strpos(strtolower(PHP_OS), 'win') === false)
-            $this -> timeout = "timeout " . EXEC_TIMEOUT . " ";
+        if(defined('FFMPEG_EXEC_TIMEOUT') && strpos(strtolower(PHP_OS), 'win') === false)
+            $this -> timeout = "timeout " . FFMPEG_EXEC_TIMEOUT . " ";
     }
 
     public function startup() {
@@ -223,7 +223,7 @@ class Converter {
         if(empty($this -> timeout))
             return;
         
-        $timeoutThreshold = time() - EXEC_TIMEOUT;
+        $timeoutThreshold = time() - FFMPEG_EXEC_TIMEOUT;
 
         $sql = 'SELECT "ESOBJECT_CONVERSION_OBJECT_ID", "ESOBJECT_CONVERSION_FORMAT", "ESOBJECT_CONVERSION_RESOLUTION" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_STATUS" = :status AND "ESOBJECT_CONVERSION_TIME" <= :threshold';
         $pdo = RsPDO::getInstance();

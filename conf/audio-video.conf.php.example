@@ -2,11 +2,10 @@
 
 const AUDIO_FORMATS = array('mp3');
 
-const VIDEO_FORMATS = array('mp4', 'webm'); // currently only mp4 & webm supported
+const VIDEO_FORMATS = array('mp4', 'webm'); // select mp4 & webm OR only mp4
 const VIDEO_RESOLUTIONS = array('360', '720', '1080');
-const VIDEO_DEFAULT_RESOLUTION = '720';
+const VIDEO_DEFAULT_RESOLUTION = '720';  // chrome/webkit will choose resolution by connection-speed
 
-//define('FFMPEG_BINARY', 'C:\ffmpeg\bin\ffmpeg.exe');
 define('FFMPEG_BINARY', '/var/www/html/rendering-service/vendor/lib/converter/ffmpeg');
 define('EXEC_TIMEOUT', 3600);
 define('OPTION_THREADS', 1);

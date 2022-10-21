@@ -174,7 +174,10 @@ class ESObject {
     }
 
     public function getNode() {
-        return $this -> data -> node;
+        if (isset($this -> data -> node)){
+            return $this -> data -> node;
+        }
+        return false;
     }
 
     public function getNodeProperty($key) {
@@ -513,19 +516,22 @@ class ESObject {
 
         $this -> id = 0;
         $this -> moduleId = 0;
-        $this -> title = $this -> getNode() -> title;
-        $this -> name = $this -> getNode() -> name;
-        if(empty($this -> title))
-            $this -> title = $this -> name;
-        $this -> repId = $this -> getNode() -> ref -> repo;
-        $this -> objectId = $this -> getNode() -> ref -> id;
-        $this -> version = $this -> getNode() -> content -> version;
-        $this -> mimetype = $this -> getNode() -> mimetype;
+        if (!empty($this -> getNode())){
+            $this -> title = $this -> getNode() -> title;
+            $this -> name = $this -> getNode() -> name;
+            $this -> repId = $this -> getNode() -> ref -> repo;
+            $this -> objectId = $this -> getNode() -> ref -> id;
+            $this -> version = $this -> getNode() -> content -> version;
+            $this -> mimetype = $this -> getNode() -> mimetype;
+            $this -> hash = $this -> getNode() -> content -> hash;
+        }
         $this -> path = '';
-        $this -> hash = $this -> getNode() -> content -> hash;
-
-        if(empty($this -> hash))
+        if(empty($this -> title)){
+            $this -> title = $this -> name;
+        }
+        if(empty($this -> hash)){
             $this -> hash = 0;
+        }
 
         $ressourcetype = $this -> getNodeProperty('ccm:ccressourcetype');
         if (!empty($ressourcetype)) {

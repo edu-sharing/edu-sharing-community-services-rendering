@@ -124,15 +124,19 @@ class Converter {
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), DIRECTORY_SEPARATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
                 $filename = explode(DIRECTORY_SEPARATOR, $conv->ESOBJECT_CONVERSION_FILENAME);
                 $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end($filename) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . $conv -> ESOBJECT_CONVERSION_FORMAT . '_' . $conv -> ESOBJECT_CONVERSION_RESOLUTION . '.log';
+
+
+                $conversion_resolution = $conv -> ESOBJECT_CONVERSION_RESOLUTION;
+                $source_video = $conv -> ESOBJECT_CONVERSION_FILENAME;
+
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
                     case 'mp4' :
                         $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.mp4';
-                        if($conv -> ESOBJECT_CONVERSION_RESOLUTION == VIDEO_RESOLUTIONS[0]){
-                            // don't crop the smallest resolution
-                            $ffmpeg_command = $this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a aac -b:a 160k" . " " . $tmpName . " " ."2>>" . $logfile;
+                        if($this->checkResolution($source_video, $conversion_resolution)){
+                            $ffmpeg_command = $this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $source_video . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conversion_resolution . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a aac -b:a 160k" . " " . $tmpName . " " ."2>>" . $logfile;
                         }else{
-                            // crop will return an error if the requested resolution is larger than the source and prevent upscaling
-                            $ffmpeg_command = $this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"crop=iw:'max(ih," . $conv -> ESOBJECT_CONVERSION_RESOLUTION . ")'\",\"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . ",ih)'\" -c:a aac -b:a 160k" . " " . $tmpName . " " ."2>>" . $logfile;
+                            $this->setConversionStatus('upscale', $conv, $tmpName,'no upscaling');
+                            break;
                         }
                         //error_log($ffmpeg_command);
                         exec($ffmpeg_command,$output, $code);
@@ -140,15 +144,16 @@ class Converter {
                         break;
                     case 'webm' :
                         $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.webm';
-                        if($conv -> ESOBJECT_CONVERSION_RESOLUTION == VIDEO_RESOLUTIONS[0]){
-                            $ffmpeg_command = $this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . ",ih)'\" -c:a libvorbis -b:a 128k" . " " . $tmpName . " " ."2>>" . $logfile;
+                        if($this->checkResolution($source_video, $conversion_resolution)){
+                            $ffmpeg_command = $this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $source_video . " -vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(" . $conversion_resolution . ",ih)'\" -c:a libvorbis -b:a 128k" . " " . $tmpName . " " ."2>>" . $logfile;
                         }else{
-                            $ffmpeg_command = $this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"crop=iw:'max(ih," . $conv -> ESOBJECT_CONVERSION_RESOLUTION . ")'\",\"scale=-1:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . ",ih)'\" -c:a libvorbis -b:a 128k" . " " . $tmpName . " " ."2>>" . $logfile;
+                            $this->setConversionStatus('upscale', $conv, $tmpName,'no upscaling');
+                            break;
                         }
                         //error_log($ffmpeg_command);
                         exec($ffmpeg_command,$output, $code);
                         $this->setConversionStatus($code, $conv, $tmpName,$output);
-                        break; 
+                        break;
                     default :
                     	$this->logger->error('Unhandled format: '.$conv -> ESOBJECT_CONVERSION_FORMAT);
                         throw new Exception('Unhandled format.');
@@ -164,8 +169,31 @@ class Converter {
 
     }
 
+    protected function checkResolution($source_video, $conversion_resolution){
+        $getVideoData = FFMPEG_BINARY . ' -i ' . $source_video . ' -vstats 2>&1';
+        $output = shell_exec($getVideoData);
+
+        $regex_sizes = "/Video: ([^\r\n]*), ([^,]*), ([0-9]{1,4})x([0-9]{1,4})/";
+        if (preg_match($regex_sizes, $output, $regs)) {
+            $codec = $regs [1] ? $regs [1] : null;
+            $source_width = $regs [3] ? $regs [3] : null;
+            $source_height = $regs [4] ? $regs [4] : null;
+        }
+        if ($source_height >= $conversion_resolution){
+            return true;
+        }else {
+            foreach (VIDEO_RESOLUTIONS as $resolution){
+                if ($resolution < $source_height){
+                    continue;
+                }
+                return $resolution == $conversion_resolution;
+            }
+            return false;
+        }
+    }
+
     protected function setConversionStatus($code, $conv, $tmpName, $output){
-        error_log('conversionStatus: '.print_r($code . ' ('. $conv -> ESOBJECT_CONVERSION_OBJECT_ID .')', true));
+        //error_log('conversionStatus: '.print_r($code . ' ('. $conv -> ESOBJECT_CONVERSION_OBJECT_ID .')', true));
         if ($code !== 0) {
             $this->logger-> error("Error Converting ". $conv-> ESOBJECT_CONVERSION_OBJECT_ID . " (" . $conv -> ESOBJECT_CONVERSION_FILENAME .")" );
             $this->logger-> error($output);
@@ -174,7 +202,7 @@ class Converter {
             $this->logger-> debug($output);
         }
         $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
-        if($code > 0) {
+        if($code > 0 || $output == 'no upscaling') {
             if(file_exists($tmpName)){
                 unlink($tmpName);
             }

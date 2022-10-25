@@ -35,7 +35,7 @@ require_once (dirname(__FILE__) . '/H5PContentHandler.php');
 global $MC_URL;
 
 $pUrl = parse_url($MC_URL);
-define('DOMAIN', $pUrl['scheme'] . '://' . $pUrl['host'] . ':' . $pUrl['port']);
+define('DOMAIN', $pUrl['scheme'] . '://' . $pUrl['host']); // port only if specified!!!!!!
 define('PATH', $pUrl['path'] . '/modules/cache/h5p');
 define('DIR', $pUrl['path']);
 

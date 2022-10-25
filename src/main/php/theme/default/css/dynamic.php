@@ -138,6 +138,14 @@ h1.edusharing_rendering_metadata_header_title {
     overflow: hidden;
 }
 
+.edusharing_rendering_wrapper .error-msg{
+    background-color: lightcoral;
+    border-radius: 16px;
+    padding: 5px 10px;
+    width: fit-content;
+    margin: 12px auto;
+}
+
 .edusharing_rendering_content_wrapper {
 	text-align: center;
 	margin: 30px 20px;

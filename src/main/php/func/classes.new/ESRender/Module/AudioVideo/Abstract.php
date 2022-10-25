@@ -1,5 +1,13 @@
 <?php
 
+// load audio-video config
+$configFile = dirname(__FILE__).'/../../../../../conf/audio-video.conf.php';
+// first install -> file might not exists, init it with the example
+if(!file_exists($configFile)) {
+    copy(dirname(__FILE__).'/../../../../../conf/audio-video.conf.php.example', $configFile);
+}
+require_once($configFile);
+
 /**
  *
  *
@@ -7,21 +15,6 @@
  */
 abstract class ESRender_Module_AudioVideo_Abstract
 extends ESRender_Module_ContentNode_Abstract {
-
-    /**
-     * Format constants
-     *
-     * @var string
-     */
-    const FORMAT_VIDEO_MP4 = 'FORMAT_VIDEO_MP4';
-    const FORMAT_VIDEO_MP4_EXT = 'mp4';
-    const FORMAT_VIDEO_WEBM = 'FORMAT_VIDEO_WEBM';
-    const FORMAT_VIDEO_WEBM_EXT = 'webm';
-    const FORMAT_AUDIO_MP3 = 'FORMAT_AUDIO_MP3';
-    const FORMAT_AUDIO_MP3_EXT = 'mp3';
-    const FORMAT_VIDEO_RESOLUTIONS_S = '144';
-    const FORMAT_VIDEO_RESOLUTIONS_M = '360';
-    const FORMAT_VIDEO_RESOLUTIONS_L = '720';
 
     /**
      *
@@ -32,27 +25,16 @@ extends ESRender_Module_ContentNode_Abstract {
      * @return string
      */
     abstract protected function getOutputFilename($ext, $resolution = NULL);
-   
-    protected function getVideoFormats() {  
-    	    	
-    	switch($this->getVideoFormatByRequestingDevice()) {
-    		case self::FORMAT_VIDEO_MP4:
-    			return array(self::FORMAT_VIDEO_MP4, self::FORMAT_VIDEO_WEBM);
-    		break;
-    		case self::FORMAT_VIDEO_WEBM:
-    			return array(self::FORMAT_VIDEO_WEBM, self::FORMAT_VIDEO_MP4);
-    		break;
-    		default:
-    			return array();
-    	}
-    }
-    
+
     protected function getVideoFormatByRequestingDevice() {
-    	if(isset($_REQUEST['videoFormat']) && $_REQUEST['videoFormat'] == self::FORMAT_VIDEO_WEBM_EXT) {
-    		return self::FORMAT_VIDEO_WEBM;
-    	}
-    	return self::FORMAT_VIDEO_MP4;
+        foreach (VIDEO_FORMATS as $format){
+            if(isset($_REQUEST['videoFormat']) && $_REQUEST['videoFormat'] == $format) {
+                return $format;
+            }
+        }
+        return VIDEO_FORMATS[0];
     }
+
 
     /**
      * (non-PHPdoc)
@@ -89,39 +71,41 @@ extends ESRender_Module_ContentNode_Abstract {
 
         switch($type) {
             case 'audio':
-                $formats = array(self::FORMAT_AUDIO_MP3);
-                foreach ($formats as $format) {
+                //$formats = array(self::FORMAT_AUDIO_MP3);
+                foreach (AUDIO_FORMATS as $format) {
                     /*
                      * if there is no output file add object to conversion queue if needed
                      * for failed conversions skip this
                      * */
-                    $outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($format));
+                    $outputFilename = $this -> getOutputFilename($format);
                     if (!file_exists($outputFilename) && !$this->esObject->conversionFailed($format)) {
-                        if (!$this->esObject->inConversionQueue($format)) {
+                        if (!$this->esObject->inConversionQueue($format) && !$this->esObject->conversionFailed($format)) {
                             $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $this->esObject->getMimeType());
                         }
                         //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
-                        if ($formats[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED))
+                        if (AUDIO_FORMATS[0] == $format && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED))
                             $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
                     }
                 }
             break;
             case 'video':
-                $formats = $this->getVideoFormats();
-                foreach ($formats as $format) {
+                //$formats = $this->getVideoFormats();
+                foreach (VIDEO_FORMATS as $format) {
                     /*
                      * if there is no output file add object to conversion queue if needed
                      * for failed conversions skip this
                      * */
-                    foreach (array(self::FORMAT_VIDEO_RESOLUTIONS_S, self::FORMAT_VIDEO_RESOLUTIONS_M, self::FORMAT_VIDEO_RESOLUTIONS_L) as $resolution) {
-                        $outputFilename = $this -> getOutputFilename($this->getExtensionByFormat($format), $resolution);
+                    foreach (VIDEO_RESOLUTIONS as $resolution) {
+                        $outputFilename = $this -> getOutputFilename($format, $resolution);
                         if (!file_exists($outputFilename) && !$this->esObject->conversionFailed($format)) {
-                            if (!$this->esObject->inConversionQueue($format, $resolution)) {
+                            if (!$this->esObject->inConversionQueue($format, $resolution) && $this->esObject->getId() > 0) {
                                 $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $this->esObject->getMimeType(),$resolution);
                             }
                             //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
-                            if ($formats[0] == $format && $resolution == ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_RESOLUTIONS_S && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED))
+                            if (VIDEO_FORMATS[0] == $format && $resolution == VIDEO_RESOLUTIONS[0] && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED)){
                                 $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
+                            }
+
                         }
                     }
                 }

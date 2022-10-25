@@ -283,7 +283,7 @@ function render(array $options)
         $Logger->info('Successfully initialized instance.');
 
         // check if original is deleted
-        if ($ESObject->getNode()->originalId == null && in_array("ccm:collection_io_reference", $ESObject->getNode()->aspects)) {
+        if(in_array("ccm:collection_io_reference", $ESObject -> getNode()->aspects) && $ESObject -> getNode() -> originalId == null) {
             $Logger->info('The object to which this collection object refers is no longer present.');
             $ESObject->renderOriginalDeleted(mc_Request::fetch('display', 'CHAR', 'dynamic'), $Template);
         }

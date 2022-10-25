@@ -304,7 +304,7 @@ function run($installedVersion) {
         }
 
         if(version_compare ( '4.1.0', $installedVersion ) > 0) {
-            file_put_contents(MC_ROOT_PATH . 'modules/video/config.php', 'define(\'OPTION_THREADS\', 1);', FILE_APPEND | LOCK_EX);
+            file_put_contents(MC_ROOT_PATH . 'modules/video/config.php', 'define(\'FFMPEG_THREADS\', 1);', FILE_APPEND | LOCK_EX);
 
             $pdo = RsPDO::getInstance();
 
@@ -457,6 +457,11 @@ function run($installedVersion) {
             $pdo = RsPDO::getInstance();
             $h5p_ddl = file_get_contents(dirname(__FILE__, 3). DIRECTORY_SEPARATOR. 'install' . DIRECTORY_SEPARATOR . '_tmpl' . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR . 'h5p.ddl');
             $stmt = $pdo->exec($h5p_ddl);
+
+            if ($pdo -> getDriver() == 'mysql') {
+                $alterTable = 'ALTER TABLE h5p_contents MODIFY parameters LONGTEXT;';
+                $stm = $pdo->exec($alterTable);
+            }
 
             // clear h5p cache !!!!!!!NOT WORKING YET
             //\h5p_install\sweep_h5p();

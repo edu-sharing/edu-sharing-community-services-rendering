@@ -1,18 +1,18 @@
 [application]
 ; url for client requests (accessible from the internet)
-application_url_client=http://127.0.0.1/rsCLI
+application_url_client=http://127.0.0.1/rendering-service
 ; url for requests from repository
-application_url_repository=http://127.0.0.1:80/rsCLI
+application_url_repository=http://127.0.0.1:80/rendering-service
 ; ip of the server
 application_host=127.0.0.1
 ; root directory of the rendering service application
-application_root=C:\xampp\htdocs\rsCLI
+application_root=/var/www/html/rendering-service
 ; cache directory
-application_cache=C:\xampp\cache\test
+application_cache=/var/cache/rendering-service
 ; save cache directory (optional)
 application_cache_save=
 ; path to the ffmpeg binary
-application_ffmpeg=C:\ffmpeg-20190522-8f6e651-win64-static\bin\ffmpeg.exe
+application_ffmpeg=/var/www/html/rendering-service/vendor/lib/converter/ffmpeg
 
 [database]
 ; driver (mysql or pgsql)
@@ -22,11 +22,11 @@ db_host=localhost
 ; db port
 db_port=3306
 ; db name
-db_name=rendertest
+db_name=renderingservice
 ; db user
-db_user=root
+db_user=renderingservice
 ; db password
-db_password=
+db_password=renderingservice
 ;
 db_statements=true
 

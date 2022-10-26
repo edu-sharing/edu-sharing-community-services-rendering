@@ -34,42 +34,38 @@ require_once ('../../vendor/autoload.php');
  * @subpackage classes.new
  */
 class mod_office
-	extends mod_doc
-{
+	extends mod_doc {
     static $CONVERTED_POSTFIX_PDF = '_converted.pdf';
     static $CONVERTED_POSTFIX_ODP = '_converted.odp';
+
     public function __construct($Name, ESRender_Application_Interface $RenderApplication, ESObject $p_esobject, Logger $Logger, Phools_Template_Interface $Template) {
         parent::__construct($Name, $RenderApplication, $p_esobject, $Logger, $Template);
         $this->doctype = DOCTYPE_PDF;
     }
+
     public function instanceExists() {
         return file_exists($this -> esObject -> getPath(). mod_office::$CONVERTED_POSTFIX_PDF) || file_exists($this -> esObject -> getPath(). mod_office::$CONVERTED_POSTFIX_ODP);
     }
+
     final public function createInstance() {
         $this->getLogger()->info('Creating office instance');
+
         if (!parent::createInstance()) {
             return false;
         }
+
         $mimetype = $this->esObject->getMimetype();
-        if(
-            $mimetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-            $mimetype == 'application/vnd.oasis.opendocument.text') {
+        if( $mimetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || $mimetype == 'application/vnd.oasis.opendocument.text') {
             $this->convertPDF($this->getCacheFileName(), $this->getCacheFileName() . mod_office::$CONVERTED_POSTFIX_PDF);
             $this->convertedPath = $this -> esObject -> getPath() . mod_office::$CONVERTED_POSTFIX_PDF;
-        } else if (
-            $mimetype == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-        ) {
+        } else if ($mimetype == 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
             $this->convertPresentation($this->getCacheFileName(), $this->getCacheFileName() . mod_office::$CONVERTED_POSTFIX_ODP);
             $this->convertedPath = $this -> esObject -> getPath() . mod_office::$CONVERTED_POSTFIX_ODP;
-        } else if (
-            $mimetype == 'application/vnd.ms-powerpoint'
-        ) {
+        } else if ($mimetype == 'application/vnd.ms-powerpoint') {
             // we can't convert them
             $this->doctype = DOCTYPE_UNKNOWN;
             return true;
-        } else if (
-            $mimetype == 'application/vnd.oasis.opendocument.presentation'
-        ) {
+        } else if ($mimetype == 'application/vnd.oasis.opendocument.presentation') {
             rename($this->getCacheFileName(), $this->getCacheFileName() . mod_office::$CONVERTED_POSTFIX_ODP);
             $this->convertedPath = $this -> esObject -> getPath() . mod_office::$CONVERTED_POSTFIX_ODP;
         } else {
@@ -78,11 +74,13 @@ class mod_office
         @unlink($this->getCacheFileName());
         return true;
     }
+
     public function convertPresentation($src, $dest) {
         $reader = $this->getReader($src);
         $objWriter = $this->getWriter($reader);
         $objWriter->save($dest);
     }
+
     public function convertPDF($src, $dest) {
         $this->getLogger()->info('Converting to pdf: ' . $src. ' -> ' . $dest);
         $rendererLibraryPath = realpath('../../vendor/dompdf/dompdf');
@@ -92,6 +90,7 @@ class mod_office
         $objWriter = $this->getWriter($reader);
         $objWriter->save($dest);
     }
+
     private function getWriter($reader) {
         $mimetype = $this->esObject->getMimetype();
         if(
@@ -106,6 +105,7 @@ class mod_office
         }
         throw new \Exception('No office document writer found for mimetype ' . $mimetype);
     }
+
     private function getReader($src) {
         $mimetype = $this->esObject->getMimetype();
         if($mimetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
@@ -122,8 +122,7 @@ class mod_office
         throw new \Exception('No office document reader found for mimetype ' . $mimetype);
     }
 
-    public static function canProcess($esObject)
-    {
+    public static function canProcess($esObject) {
         // echo $esObject->getMimetype();
         $supported = [
             'application/vnd.oasis.opendocument.text',
@@ -137,5 +136,6 @@ class mod_office
         }
         return parent::canProcess($esObject);
     }
+
 }
 

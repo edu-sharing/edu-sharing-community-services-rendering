@@ -64,7 +64,12 @@ extends ESRender_Module_ContentNode_Abstract {
         if(Config::get('hasContentLicense') === true) {
 
             if($this->getDoctype() == DOCTYPE_PDF) {
-                $template_data['content'] = ($this->convertedPath ? $this->convertedPath : $this -> esObject -> getPath()) . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+                if (ENABLE_VIEWER_JS){
+                    $template_data['content'] = ($this->convertedPath ? $this->convertedPath : $this -> esObject -> getPath()) . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+
+                }else{
+                    $template_data['content'] = $this -> esObject -> getPath() . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+                }
                 $template_data['url'] = $this -> esObject->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
             }
 

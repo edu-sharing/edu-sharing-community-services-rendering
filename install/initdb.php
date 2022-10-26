@@ -207,8 +207,11 @@ extends Step {
         $this -> createTables();
         $this -> loadTableContent();
 
-        $setVersion = "INSERT INTO VERSION (VERSION_VNUMBER, VERSION_TYPE) VALUES ('".RS_VERSION."', 'install');";
-        $stm = $this->pdo->exec($setVersion);
+        $sql = 'INSERT INTO "VERSION" ("VERSION_VNUMBER", "VERSION_TYPE") VALUES (:version, :type)';
+        $stmt = $this -> pdo -> prepare($sql);
+        $stmt -> bindValue(':version', RS_VERSION);
+        $stmt -> bindValue(':type', 'install');
+        $stmt -> execute();
 
         if ($this -> db_drvr == 'mysql') {
             $alterTable = 'ALTER TABLE h5p_contents MODIFY parameters LONGTEXT;';

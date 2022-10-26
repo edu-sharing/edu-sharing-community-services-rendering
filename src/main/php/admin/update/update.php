@@ -465,7 +465,22 @@ function run($installedVersion) {
 
             // clear h5p cache !!!!!!!NOT WORKING YET
             //\h5p_install\sweep_h5p();
+        }
 
+        if(version_compare ( '7.0.0-RC29', $installedVersion ) > 0){
+            $oldConfigFile = dirname(__FILE__, 3) . '/conf/video.config.php';
+            $newConfigFile = dirname(__FILE__, 3) . '/conf/audio-video.conf.php';
+            if(file_exists($oldConfigFile) && !file_exists($newConfigFile)) {
+                include_once $oldConfigFile;
+                if (defined(VIDEO_FFMPEG_BINARY)){
+                    $configTemplate = dirname(__FILE__, 3). '/install/_tmpl/conf/audio-video.conf.php';
+                    $str = file_get_contents($configTemplate);
+                    $str = str_replace('[[[TOKEN_FFMPEG_EXEC]]]', VIDEO_FFMPEG_BINARY, $str);
+                    file_put_contents($newConfigFile, $str);
+
+                    unlink($oldConfigFile);
+                }
+            }
         }
 
     } catch ( Exception $e ) {

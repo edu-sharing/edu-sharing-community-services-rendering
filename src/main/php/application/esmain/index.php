@@ -210,29 +210,7 @@ function render(array $options)
         Config::set('token', md5(uniqid()));
 
         if (!$skipSslVerification) { //testing
-            $ts = mc_Request::fetch('ts', 'CHAR');
-            if (empty($ts)) {
-                $Logger->error('Missing request-param "timestamp".');
-                throw new ESRender_Exception_MissingRequestParam('timestamp');
-            }
-
-            if (empty($_GET['sig'])) {
-                $Logger->error('Missing request-param "sig".');
-                throw new ESRender_Exception_MissingRequestParam('sig');
-            }
-
-            try {
-                $pubkeyid = openssl_get_publickey($homeRep->prop_array['public_key']);
-                $signature = rawurldecode($_GET['sig']);
-                $signature = base64_decode($signature);
-                $ok = openssl_verify($data->node->ref->repo . $data->node->ref->id . $ts, $signature, $pubkeyid, 'sha1WithRSAEncryption');
-            } catch (Exception $e) {
-                throw new ESRender_Exception_SslVerification('Error checking signature');
-            }
-
-            if ($ok != 1) {
-                throw new ESRender_Exception_SslVerification('SSL signature check failed');
-            }
+            require_once "validate_signature.php";
 
             $now = microtime(true) * 1000;
 

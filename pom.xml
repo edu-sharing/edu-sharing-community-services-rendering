@@ -28,7 +28,7 @@
   <properties>
 
     <!-- release-2 -->
-    <bom.repository.version>7.0.0-RC28</bom.repository.version>
+    <bom.repository.version>7.0.0-RC29</bom.repository.version>
 
   </properties>
 

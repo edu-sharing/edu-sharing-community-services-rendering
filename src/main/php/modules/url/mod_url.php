@@ -26,7 +26,10 @@ extends ESRender_Module_NonContentNode_Abstract {
             $embedding = $this->getH5PEmbedding();
         }else if ($type === RemoteObjectType::$TYPE_PREZI) {
             $embedding = $this->getPreziEmbedding();
-        }else{
+        }else if ($this->isLti13ToolObject()){
+            $embedding = $this->getLti13ToolEmbedding();
+        }
+        else{
             $embedding = '';
         }
         return $embedding;
@@ -160,6 +163,14 @@ extends ESRender_Module_NonContentNode_Abstract {
         return false;
     }
 
+    protected function isLti13ToolObject() {
+        if(in_array('ccm:ltitool_node', $this -> esObject -> getNode() -> aspects)) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     protected function getLinkEmbedding() {
         $htm =  '<script> if (typeof single != "undefined") location.href="'.$this -> getUrl().'";</script>';    
         $htm .= '<a href="' . $this -> getUrl() . '" target="_blank"><es:title xmlns:es="http://edu-sharing.net/object" >' . htmlspecialchars($this -> getUrl(), ENT_QUOTES, 'UTF-8') . '</es:title></a>';
@@ -204,6 +215,12 @@ extends ESRender_Module_NonContentNode_Abstract {
     protected function getImageEmbedding($footer = '')
     {
         return '<div><img title="' . $this -> esObject->getTitle() . '" alt="' . $this -> esObject->getTitle() . '" src="' . $this->getUrl() . '" style="max-width: 100%">
+            ' . $footer . '</div>';
+    }
+
+    protected function getLti13ToolEmbedding($footer = ''){
+        return '<div>
+            <iframe src="'. $this->getUrl().'&editMode=true" style="max-width: 100%;width:100%;height: 100%;"></iframe>
             ' . $footer . '</div>';
     }
 
@@ -290,6 +307,13 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getUrl() {
+
+        if($this->isLti13ToolObject()) {
+            $result = html_entity_decode($this -> esObject -> getNodeProperty("virtual:ltitool_start_resourcelink"));
+            Logger::getLogger('de.metaventis.esrender.index') -> info('ltitool_start_resourcelink:'.$result);
+            return $result;
+        }
+
         $urlProp = $this -> esObject -> getNodeProperty($this -> getUrlProperty());
        if(!empty($urlProp)){
            if (is_array($urlProp)){

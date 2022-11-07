@@ -26,7 +26,7 @@ extends ESRender_Module_NonContentNode_Abstract {
             $embedding = $this->getH5PEmbedding();
         }else if ($type === RemoteObjectType::$TYPE_PREZI) {
             $embedding = $this->getPreziEmbedding();
-        }else if ($this->isLti13ToolObject()){
+        }else if ($this -> esObject -> isLti13ToolObject()){
             $embedding = $this->getLti13ToolEmbedding();
         }
         else{
@@ -161,14 +161,6 @@ extends ESRender_Module_NonContentNode_Abstract {
             }
         }
         return false;
-    }
-
-    protected function isLti13ToolObject() {
-        if(in_array('ccm:ltitool_node', $this -> esObject -> getNode() -> aspects)) {
-            return true;
-        }else{
-            return false;
-        }
     }
 
     protected function getLinkEmbedding() {
@@ -308,8 +300,8 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function getUrl() {
 
-        if($this->isLti13ToolObject()) {
-            $result = html_entity_decode($this -> esObject -> getNodeProperty("virtual:ltitool_start_resourcelink"));
+        if($this -> esObject -> isLti13ToolObject()) {
+            $result = html_entity_decode($this->esObject->getData() -> nodeUrls ->generateLtiResourceLink);
             Logger::getLogger('de.metaventis.esrender.index') -> info('ltitool_start_resourcelink:'.$result);
             return $result;
         }

@@ -469,6 +469,14 @@ class ESObject {
             return true;
         }
 
+        if($this -> isLti13ToolObject()){
+            Logger::getLogger('de.metaventis.esrender.index') -> info('isLti13ToolObject, using module "url".');
+            $this -> module -> setName('url');
+            $this -> module -> loadModuleData();
+            $this -> moduleId = $this -> module -> getModuleId();
+            return true;
+        }
+
         $wwwurl = $this -> getNodeProperty('ccm:wwwurl');
 
         if ($this -> getNodeProperty('ccm:replicationsource') == 'DE.FWU' && !empty($wwwurl)) {
@@ -515,6 +523,14 @@ class ESObject {
         $this -> moduleId = $this -> module -> getModuleId();
 
         return true;
+    }
+
+    public function isLti13ToolObject() {
+        if(in_array('ccm:ltitool_node', $this->getNode() -> aspects)) {
+            return true;
+        }else{
+            return false;
+        }
     }
 
     final public function setDataByNode() {

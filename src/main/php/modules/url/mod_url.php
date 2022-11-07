@@ -212,7 +212,7 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function getLti13ToolEmbedding($footer = ''){
         return '<div>
-            <iframe src="'. $this->getUrl().'&editMode=true" style="max-width: 100%;width:100%;height: 100%;"></iframe>
+            <iframe src="'. $this->getUrl().'&editMode=false" style="max-width: 100%;width:100%;height: 100%;"></iframe>
             ' . $footer . '</div>';
     }
 

@@ -20,6 +20,8 @@ $DATAPROTECTIONREGULATION_CONFIG = [
     ]
 ];
 
+DEFINE("ENABLE_VIEWER_JS", true); # toggle viewer.js for office documents
+
 $ESRENDER_SESSION_NAME = 'ESSID';
 
 # ERROR HANDLING

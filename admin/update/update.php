@@ -469,6 +469,13 @@ function run($installedVersion) {
 
         }
 
+        if(version_compare ( '6.0.101', $installedVersion ) > 0) {
+            $fileContents = file_get_contents ( MC_ROOT_PATH . 'conf/system.conf.php' );
+            $fileContents .= PHP_EOL . 'DEFINE("ENABLE_VIEWER_JS", true); # toggle viewer.js for office documents' . PHP_EOL;
+            file_put_contents ( MC_ROOT_PATH . 'conf/system.conf.php', $fileContents );
+        }
+
+
     } catch ( Exception $e ) {
         error_log ( print_r ( $e, true ) );
         return false;

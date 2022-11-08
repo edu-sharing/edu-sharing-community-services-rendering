@@ -123,17 +123,20 @@ class mod_office
     }
 
     public static function canProcess($esObject) {
-        // echo $esObject->getMimetype();
-        $supported = [
-            'application/vnd.oasis.opendocument.text',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            // 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            // 'application/vnd.oasis.opendocument.presentation',
-            // 'application/vnd.ms-powerpoint',
-        ];
-        if(in_array($esObject->getMimetype(), $supported)) {
-            return true;
+        if (ENABLE_VIEWER_JS){
+            // echo $esObject->getMimetype();
+            $supported = [
+                'application/vnd.oasis.opendocument.text',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                // 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                // 'application/vnd.oasis.opendocument.presentation',
+                // 'application/vnd.ms-powerpoint',
+            ];
+            if(in_array($esObject->getMimetype(), $supported)) {
+                return true;
+            }
         }
+
         return parent::canProcess($esObject);
     }
 

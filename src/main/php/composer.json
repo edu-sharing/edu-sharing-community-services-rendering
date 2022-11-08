@@ -2,13 +2,14 @@
   "name": "${composer.vendor}/community-services-rendering",
   "version": "${composer.version}",
   "type": "project",
-  "description": "The rendering service brings edu-sharing objects to devices. Therefore it will convert objects, render them together with the respective license and check for viewing permissions",
+  "description": "The rendering service brings edu-sharing objects to devices. Therefore it will convert objects, render them together with the respective ../../../.legacy/license and check for viewing permissions",
   "minimum-stability": "stable",
-  "license": "GNU General Public License, version 2",
+  "homepage": "http://www.edu-sharing.com/",
+  "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "metaVentis GmbH",
-      "email": "support@edu-sharing.net"
+      "homepage": "http://www.metaventis.com/"
     }
   ],
   "config": {

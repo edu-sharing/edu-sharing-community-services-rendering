@@ -201,12 +201,17 @@ extends Step {
      *
      */
     function process($post) {
+        require_once MC_BASE_DIR . '/version.php';
+
         $dbName = $this -> getDbName();
         $this -> createTables();
         $this -> loadTableContent();
 
+        $setVersion = "INSERT INTO VERSION (VERSION_VNUMBER, VERSION_TYPE) VALUES ('".RS_VERSION."', 'install');";
+        $stm = $this->pdo->exec($setVersion);
+
         if ($this -> db_drvr == 'mysql') {
-            $alterTable = 'ALTER TABLE h5p_contents MODIFY parameters longtext;';
+            $alterTable = 'ALTER TABLE h5p_contents MODIFY parameters LONGTEXT;';
             $stm = $this->pdo->exec($alterTable);
         }
 

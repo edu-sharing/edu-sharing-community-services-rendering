@@ -174,7 +174,10 @@ class ESObject {
     }
 
     public function getNode() {
-        return $this -> data -> node;
+        if (isset($this -> data -> node)){
+            return $this -> data -> node;
+        }
+        return false;
     }
 
     public function getNodeProperty($key) {
@@ -435,28 +438,28 @@ class ESObject {
             return true;
         }
 
-        if(!empty($this -> getNode() -> remote)){
-            if ($this -> getNode() -> remote -> repository -> repositoryType == 'YOUTUBE') {
-                Logger::getLogger('de.metaventis.esrender.index') -> info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "YOUTUBE", using module "url".');
-                $this -> module -> setName('url');
-                $this -> module -> loadModuleData();
-                $this -> moduleId = $this -> module -> getModuleId();
+        if(!empty($this -> getNode() -> remote)) {
+            if ($this->getNode()->remote->repository->repositoryType == 'YOUTUBE') {
+                Logger::getLogger('de.metaventis.esrender.index')->info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "YOUTUBE", using module "url".');
+                $this->module->setName('url');
+                $this->module->loadModuleData();
+                $this->moduleId = $this->module->getModuleId();
                 return true;
             }
 
-            if ($this -> getNode() -> remote -> repository -> repositoryType == 'PIXABAY') {
-                Logger::getLogger('de.metaventis.esrender.index') -> info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "PIXABAY", using module "url".');
-                $this -> module -> setName('url');
-                $this -> module -> loadModuleData();
-                $this -> moduleId = $this -> module -> getModuleId();
+            if ($this->getNode()->remote->repository->repositoryType == 'PIXABAY') {
+                Logger::getLogger('de.metaventis.esrender.index')->info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "PIXABAY", using module "url".');
+                $this->module->setName('url');
+                $this->module->loadModuleData();
+                $this->moduleId = $this->module->getModuleId();
                 return true;
             }
 
-            if ($this -> getNode() -> remote -> repository -> repositoryType == 'LEARNINGAPPS') {
-                Logger::getLogger('de.metaventis.esrender.index') -> info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
-                $this -> module -> setName('learningapps');
-                $this -> module -> loadModuleData();
-                $this -> moduleId = $this -> module -> getModuleId();
+            if ($this->getNode()->remote->repository->repositoryType == 'LEARNINGAPPS') {
+                Logger::getLogger('de.metaventis.esrender.index')->info('Property {http://www.campuscontent.de/model/1.0}remoterepositorytype equals "LEARNINGAPPS", using module "learningapps".');
+                $this->module->setName('learningapps');
+                $this->module->loadModuleData();
+                $this->moduleId = $this->module->getModuleId();
                 return true;
             }
         }
@@ -521,19 +524,21 @@ class ESObject {
 
         $this -> id = 0;
         $this -> moduleId = 0;
-        $this -> title = $this -> getNode() -> title;
-        $this -> name = $this -> getNode() -> name;
-        if(empty($this -> title))
-            $this -> title = $this -> name;
-        $this -> repId = $this -> getNode() -> ref -> repo;
-        $this -> objectId = $this -> getNode() -> ref -> id;
-        $this -> version = $this -> getNode() -> content -> version;
-        $this -> mimetype = $this -> getNode() -> mimetype;
+            $this -> title = $this -> getNode() -> title;
+            $this -> name = $this -> getNode() -> name;
+            $this -> repId = $this -> getNode() -> ref -> repo;
+            $this -> objectId = $this -> getNode() -> ref -> id;
+            $this -> version = $this -> getNode() -> content -> version;
+            $this -> mimetype = $this -> getNode() -> mimetype;
+            $this -> hash = $this -> getNode() -> content -> hash;
+        }
         $this -> path = '';
-        $this -> hash = $this -> getNode() -> content -> hash;
-
-        if(empty($this -> hash))
+        if(empty($this -> title)){
+            $this -> title = $this -> name;
+        }
+        if(empty($this -> hash)){
             $this -> hash = 0;
+        }
 
         $ressourcetype = $this -> getNodeProperty('ccm:ccressourcetype');
         if (!empty($ressourcetype)) {
@@ -620,15 +625,18 @@ class ESObject {
             $sql .= ")";
             $stmt = $pdo -> prepare($sql);
             foreach($arr as $key => $value) {
-                if($key === 'ESOBJECT_CONVERSION_OBJECT_ID')
+                if($key === 'ESOBJECT_CONVERSION_OBJECT_ID'){
                     $type = PDO::PARAM_INT;
-                else
+                }
+                else{
                     $type = PDO::PARAM_STR;
+                }
                 $stmt -> bindValue(':'.$key, $value, $type);
             }
             $result = $stmt -> execute();
-            if(!$result)
+            if(!$result){
                 throw new Exception('Error storing conversion entry in DB.' . print_r($pdo -> errorInfo(), true));
+            }
             return true;
          } catch (PDOException $e) {
              throw new Exception($e -> getMessage());
@@ -685,8 +693,9 @@ class ESObject {
         $pdo = RsPDO::getInstance();
         try {
             $sql = 'SELECT "ESOBJECT_CONVERSION_OBJECT_ID" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format';
-            if($resolution)
+            if($resolution){
                 $sql .= ' AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution';
+            }
 
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':objectid', $this -> id, PDO::PARAM_INT);
@@ -718,8 +727,12 @@ class ESObject {
             $stmt -> bindValue(':objectid', $this -> id, PDO::PARAM_INT);
             $stmt -> bindValue(':format', $format);
             $stmt -> bindValue(':error', '%ERROR%');
-            if($resolution)
+
+            if($resolution){
                 $stmt -> bindValue(':resolution', $resolution);
+            }
+
+            $stmt -> execute();
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
             if(!$result){
                 return false;

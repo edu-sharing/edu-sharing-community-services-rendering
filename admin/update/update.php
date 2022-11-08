@@ -469,6 +469,11 @@ function run($installedVersion) {
 
         }
 
+        if(version_compare ( '6.0.101', $installedVersion ) > 0) {
+            file_put_contents(MC_ROOT_PATH . 'conf/system.conf.php', 'DEFINE("ENABLE_VIEWER_JS", true); # toggle viewer.js for office documents', FILE_APPEND | LOCK_EX);
+        }
+
+
     } catch ( Exception $e ) {
         error_log ( print_r ( $e, true ) );
         return false;

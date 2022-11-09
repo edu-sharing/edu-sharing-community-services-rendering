@@ -524,6 +524,7 @@ class ESObject {
 
         $this -> id = 0;
         $this -> moduleId = 0;
+        if (!empty($this -> getNode())){
             $this -> title = $this -> getNode() -> title;
             $this -> name = $this -> getNode() -> name;
             $this -> repId = $this -> getNode() -> ref -> repo;

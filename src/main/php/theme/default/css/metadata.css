@@ -92,7 +92,7 @@
     font-size: 90%;
 }
 
-.edusharing_rendering_metadata_body .mds_collection_feedback{
+.edusharing_rendering_metadata_body .mds_material_feedback{
     background: #4D799A;
     width: 60%;
     max-width: 220px;
@@ -102,30 +102,25 @@
     transition: 0.5s ease-in-out;
 }
 
-.edusharing_rendering_metadata_body .mds_collection_feedback:hover{
-    background: #679ac2;
-    transform: scale(1.05);
-}
-
-.edusharing_rendering_metadata_body .mds_collection_feedback .mdsValue{
+.edusharing_rendering_metadata_body .mds_material_feedback .mdsValue{
     width: 100%;
     margin: 4px auto;
 }
 
-.edusharing_rendering_metadata_body .mds_collection_feedback a{
+.edusharing_rendering_metadata_body .mds_material_feedback a{
     color: #fff;
     font-weight: 500;
     display: flex;
     justify-content: center;
     padding: 4px 0;
 }
-.edusharing_rendering_metadata_body .mds_collection_feedback a:hover,
-.edusharing_rendering_metadata_body .mds_collection_feedback a:visited{
+.edusharing_rendering_metadata_body .mds_material_feedback a:hover,
+.edusharing_rendering_metadata_body .mds_material_feedback a:visited{
     color: #fff;
     text-decoration: none;
 }
 
-.edusharing_rendering_metadata_body .mds_collection_feedback a i{
+.edusharing_rendering_metadata_body .mds_material_feedback a i{
     padding-right: 8px;
 }
 

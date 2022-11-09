@@ -79,32 +79,15 @@ extends ESRender_Module_Base
                 $this -> esObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $this -> esObject -> getObjectVersion();
             $url .= $path . $params;
 
-            $handle = fopen($cacheFile, "wb");
-
-            if(false === $handle || empty($cacheFile)) {
-                $Logger->error('Cannot open handle for ' . $cacheFile);
-                return false;
-            }
-
-            // @TODO: this does not obey proxy
-            $remotehandle = fopen($url, "rb");
-            if($remotehandle === false) {
-                fclose($handle);
-                $Logger->error('Cannot open ' . $url);
-                return false;
-            }
-
-            $transferedBytes = stream_copy_to_stream($remotehandle,$handle);
-
-            if($transferedBytes === false) {
-                fclose($handle);
-                fclose($remotehandle);
+            try {
+                $client = GuzzleHelper::getClient();
+                $client->get($url, [
+                    'sink' => $cacheFile
+                ]);
+            } catch(Exception $e){
+                $Logger->error('Exception while fetching content: ' . $e->getMessage());
                 $Logger->error('Error fetching content from ' . $url);
-                return false;
             }
-
-            fclose($remotehandle);
-            fclose($handle);
 
             $Logger->info('Stored content in file "'.$cacheFile.'". ');
 

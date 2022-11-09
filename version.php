@@ -1,2 +1,2 @@
 <?php
-define('RS_VERSION', '6.0.100');
+define('RS_VERSION', '6.0.101');

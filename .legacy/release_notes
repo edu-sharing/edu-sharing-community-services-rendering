@@ -1,5 +1,8 @@
+v6.0.101
+- new config to enable viewer.js for office documents (ENABLE_VIEWER_JS in conf/system.conf)
+
 v6.0.100
-- new video/audio config-file
+- new video/audio config-file (/conf/audio-video.conf.php)
 - video resolutions & formats now configurable
 
 v6.0.99

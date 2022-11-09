@@ -28,17 +28,12 @@
     "dompdf/dompdf": "^1.0",
     "phpoffice/phpspreadsheet": "^1.18",
     "phpoffice/phppresentation": "^0.9.0",
-    "phpoffice/phpword": "^0.18.2",
-    "${composer.vendor}/community-repository-rest-client": "${org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.range}"
+    "phpoffice/phpword": "^0.18.2"
   },
   "repositories": [
     {
       "type": "composer",
       "url": "https://repo.packagist.org"
-    },
-    {
-      "type": "artifact",
-      "url": "../../../repository/Backend/services/rest/client/php/target"
     },
     {
       "type": "composer",

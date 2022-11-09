@@ -88,52 +88,9 @@
     <plugins>
 
       <plugin>
-        <groupId>org.codehaus.gmavenplus</groupId>
-        <artifactId>gmavenplus-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>community-repository-backend-services-rest-client</id>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <scripts>
-                <!--suppress UnresolvedMavenProperty -->
-                <script><![CDATA[
-                  def version = project.properties['org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.version']
-                  ${git.semver}
-                  project.properties.setProperty('org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.range', semver)
-                ]]></script>
-              </scripts>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
-          <execution>
-            <id>empty</id>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <phase>initialize</phase>
-            <configuration>
-              <includeEmptyDirs>true</includeEmptyDirs>
-              <outputDirectory>../repository/Backend/services/rest/client/php/target</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/templates</directory>
-                  <excludes>
-                    <exclude>version*</exclude>
-                  </excludes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
           <execution>
             <id>resources</id>
             <goals>
@@ -161,6 +118,26 @@
               <composerJsonPath>${project.build.directory}/php/composer.json</composerJsonPath>
               <withDev>false</withDev>
               <withOptimisedAutoloader>false</withOptimisedAutoloader>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>repository</id>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <includeArtifactIds>
+                edu_sharing-community-repository-backend-services-rest-client-php
+              </includeArtifactIds>
+              <outputDirectory>${project.build.directory}/php/vendor/${composer.vendor}/community-repository-rest-client</outputDirectory>
             </configuration>
           </execution>
         </executions>

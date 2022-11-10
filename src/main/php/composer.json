@@ -2,13 +2,14 @@
   "name": "${composer.vendor}/community-services-rendering",
   "version": "${composer.version}",
   "type": "project",
-  "description": "The rendering service brings edu-sharing objects to devices. Therefore it will convert objects, render them together with the respective license and check for viewing permissions",
+  "description": "The rendering service brings edu-sharing objects to devices. Therefore it will convert objects, render them together with the respective ../../../.legacy/license and check for viewing permissions",
   "minimum-stability": "stable",
-  "license": "GNU General Public License, version 2",
+  "homepage": "http://www.edu-sharing.com/",
+  "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "metaVentis GmbH",
-      "email": "support@edu-sharing.net"
+      "homepage": "http://www.metaventis.com/"
     }
   ],
   "config": {
@@ -28,8 +29,7 @@
     "phpoffice/phppresentation": "^0.9.0",
     "phpoffice/phpspreadsheet": "^1.18",
     "phpoffice/phpword": "^0.18.2",
-    "mathjax/mathjax": "^2.7.5",
-    "${composer.vendor}/community-repository-rest-client": "${org.edu_sharing:edu_sharing-community-repository-backend-services-rest-client-php:zip.range}"
+    "mathjax/mathjax": "^2.7.5"
   },
   "require-dev": {
     "vimeo/psalm": "~4.27.0"
@@ -38,10 +38,6 @@
     {
       "type": "composer",
       "url": "https://repo.packagist.org"
-    },
-    {
-      "type": "artifact",
-      "url": "../../../repository/Backend/services/rest/client/php/target"
     },
     {
       "type": "composer",

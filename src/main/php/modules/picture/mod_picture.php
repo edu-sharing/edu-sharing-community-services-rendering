@@ -226,8 +226,10 @@ extends ESRender_Module_ContentNode_Abstract {
         $f_path = $this -> esObject -> getFilePath();
         $ObjectFilename = str_replace('\\', '/', $f_path);
 
-        if ($this -> esObject -> getNode() -> remote -> repository -> repositoryType == 'PIXABAY' && filesize($ObjectFilename) == 0) {
-            $ObjectFilename = $this -> esObject -> getNode() -> properties -> {'ccm:thumbnailurl'}[0];
+        if(!empty($this->esObject->getNode()->remote)) {
+            if ($this->esObject->getNode()->remote->repository->repositoryType == 'PIXABAY' && filesize($ObjectFilename) == 0) {
+                $ObjectFilename = $this->esObject->getNode()->properties->{'ccm:thumbnailurl'}[0];
+            }
         }
         return $this -> convertImage($ObjectFilename, $this -> getImageFilename());
     }

@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:8.0-apache
 RUN set -eux \
 	&& apt-get update -y \
 	&& apt-get install -y --no-install-recommends \
@@ -29,5 +29,7 @@ RUN set -eux \
     && docker-php-ext-enable opcache \
     && a2enmod rewrite \
     && a2enmod headers \
-    && ln -s $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
+    && ln -s $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini \
+    && sed -i 's/display_errors = .*/display_errors = Off/' $PHP_INI_DIR/php.ini
+
 RUN mkdir /var/cache/esrender/ && chmod -R 777 /var/cache/esrender/

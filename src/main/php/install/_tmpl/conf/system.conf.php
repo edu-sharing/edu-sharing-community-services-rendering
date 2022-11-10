@@ -13,6 +13,8 @@ DEFINE("ENABLE_METADATA_INLINE_RENDERING", true);
 # Default config for dataprotection dialog (the key must be a regex matching the given url, and the value is an array of name + url. First index match will win)
 $DATAPROTECTIONREGULATION_CONFIG = ["enabled" => false, "modules" => [], "urls" => ['/.*/' => ["name" => "Example", "url" => "http://example"]]];
 
+DEFINE("ENABLE_VIEWER_JS", true); # toggle viewer.js for office documents
+
 $ESRENDER_SESSION_NAME = 'ESSID';
 
 # ERROR HANDLING

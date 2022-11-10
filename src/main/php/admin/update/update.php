@@ -304,7 +304,7 @@ function run($installedVersion) {
         }
 
         if(version_compare ( '4.1.0', $installedVersion ) > 0) {
-            file_put_contents(MC_ROOT_PATH . 'modules/video/config.php', 'define(\'OPTION_THREADS\', 1);', FILE_APPEND | LOCK_EX);
+            file_put_contents(MC_ROOT_PATH . 'modules/video/config.php', 'define(\'FFMPEG_THREADS\', 1);', FILE_APPEND | LOCK_EX);
 
             $pdo = RsPDO::getInstance();
 
@@ -458,10 +458,35 @@ function run($installedVersion) {
             $h5p_ddl = file_get_contents(dirname(__FILE__, 3). DIRECTORY_SEPARATOR. 'install' . DIRECTORY_SEPARATOR . '_tmpl' . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR . 'h5p.ddl');
             $stmt = $pdo->exec($h5p_ddl);
 
+            if ($pdo -> getDriver() == 'mysql') {
+                $alterTable = 'ALTER TABLE h5p_contents MODIFY parameters LONGTEXT;';
+                $stm = $pdo->exec($alterTable);
+            }
+
             // clear h5p cache !!!!!!!NOT WORKING YET
             //\h5p_install\sweep_h5p();
-
         }
+
+        if(version_compare ( '7.0.0-RC29', $installedVersion ) > 0){
+            $oldConfigFile = dirname(__FILE__, 3) . '/conf/video.config.php';
+            $newConfigFile = dirname(__FILE__, 3) . '/conf/audio-video.conf.php';
+            if(file_exists($oldConfigFile) && !file_exists($newConfigFile)) {
+                include_once $oldConfigFile;
+                if (defined(VIDEO_FFMPEG_BINARY)){
+                    $configTemplate = dirname(__FILE__, 3). '/install/_tmpl/conf/audio-video.conf.php';
+                    $str = file_get_contents($configTemplate);
+                    $str = str_replace('[[[TOKEN_FFMPEG_EXEC]]]', VIDEO_FFMPEG_BINARY, $str);
+                    file_put_contents($newConfigFile, $str);
+
+                    unlink($oldConfigFile);
+                }
+            }
+        }
+
+        if(version_compare ( '6.0.101', $installedVersion ) > 0) {
+            file_put_contents(MC_ROOT_PATH . 'conf/system.conf.php', 'DEFINE("ENABLE_VIEWER_JS", true); # toggle viewer.js for office documents', FILE_APPEND | LOCK_EX);
+        }
+
 
     } catch ( Exception $e ) {
         error_log ( print_r ( $e, true ) );

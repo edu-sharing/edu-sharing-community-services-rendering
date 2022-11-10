@@ -69,10 +69,11 @@ if (empty($options['c'])) {
     $replace = array($config['application_url_client'], $config['application_root'], $config['application_cache']);
     replaceValuesInFile($file, $needle, $replace);
 
-    $videoConf = $config['application_root'] . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . 'video.config.php';
-    $copied = copy($confTemplateDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . 'video.config.php', $videoConf);
-    if($copied)
-        echo '[OK] Copy ' . $confTemplateDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'video' . DIRECTORY_SEPARATOR . 'config.php' . PHP_EOL;
+    $videoConf =  $confDir . DIRECTORY_SEPARATOR . 'audio-video.conf.php';
+    $copied = copy($confTemplateDir . DIRECTORY_SEPARATOR . 'audio-video.conf.php', $videoConf);
+    if($copied){
+        echo '[OK] Copy ' . $confTemplateDir . DIRECTORY_SEPARATOR . 'audio-video.conf.php' . PHP_EOL;
+    }
     replaceValuesInFile($videoConf, '[[[TOKEN_FFMPEG_EXEC]]]', $config['application_ffmpeg']);
 
     //database

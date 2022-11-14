@@ -148,7 +148,7 @@ function render(array $options)
             Config::set('forcePreview', true);
 
         Config::set('hasContentLicense', false);
-        if (in_array('ccm:collection_io_reference', $data->node->aspects)) {
+        if (in_array('ccm:collection_io_reference', $data->node->aspects) && !empty($data->node->accessOriginal)) {
             // is it a licensed node? check the original for access (new since 5.1)
             if ($data->node->originalRestrictedAccess) {
                 Config::set('hasContentLicense', @in_array('ReadAll', $data->node->accessOriginal) === true);
@@ -157,7 +157,7 @@ function render(array $options)
                 // LEGACY! Remove this Behaviour in future releases, only included for back compat
                 Config::set('hasContentLicense', in_array('ReadAll', $data->node->accessOriginal));
             } else {
-                // otherwise, the collection concept allows access so we give the user access simply depending on the collection entry
+                // otherwise, the collection concept allows access, so we give the user access simply depending on the collection entry
                 Config::set('hasContentLicense', in_array('ReadAll', $data->node->access));
             }
         } else {

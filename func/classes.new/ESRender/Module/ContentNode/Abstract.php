@@ -42,11 +42,13 @@ extends ESRender_Module_Base
 
         $this->filename = $this-> esObject ->getObjectIdVersion();
 
+        $module = $this->esObject->module->getName();
+        if (!ENABLE_VIEWER_JS && strpos($module, 'office') !== false){
+            $module = 'doc';
+        }
+
         // real path
-        $this->render_path = $CC_RENDER_PATH . DIRECTORY_SEPARATOR
-            . $this-> esObject ->module->getName()
-            .DIRECTORY_SEPARATOR
-            .$upath;
+        $this->render_path = $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . $upath;
 
         if ( ! file_exists($this->render_path) )
         {

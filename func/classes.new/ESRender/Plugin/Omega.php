@@ -50,8 +50,11 @@ class ESRender_Plugin_Omega
         if($esObject->getUser()->primaryAffiliation === 'teacher') {
             $role = 'teacher';
         }
-
-        if ($esObject->getNodeProperty('ccm:replicationsource') == 'DE.FWU')  {
+        $hasLocalContent = !$esObject->getNodeProperty('cclom:location') && $esObject->getContentHash() != null;
+        if($hasLocalContent) {
+            $logger->info('Object has local content, will not trigger omega api!');
+        }
+        if ($esObject->getNodeProperty('ccm:replicationsource') == 'DE.FWU' && !$hasLocalContent)  {
 
             if($esObject->getNodeProperty('cclom:format') == ''){
                 $logger->info('Format is empty!');

@@ -7,6 +7,7 @@
 if(!isset($Logger)) {
     $Logger = require_once(MC_LIB_PATH . 'Log/init.php');
 }
+global $ts;
 $ts = mc_Request::fetch('ts', 'CHAR');
 if (empty($ts)) {
     $Logger->error('Missing request-param "timestamp".');

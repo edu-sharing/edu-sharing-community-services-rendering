@@ -36,7 +36,7 @@ class Loginmanager {
 			}
 		}
 		
-		if(isset($_SESSION['loggedin']) && !$_SESSION['loggedin']) {
+		if(!isset($_SESSION['loggedin']) || !$_SESSION['loggedin']) {
 			
 			$err = '';
 	

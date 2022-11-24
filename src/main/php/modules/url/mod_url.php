@@ -228,13 +228,17 @@ extends ESRender_Module_NonContentNode_Abstract {
                 </div>';
     }
     else if ($type->isYoutube()) {
-        $parsedUrl = parse_url($this -> getUrl());
-        $paramsArr = explode('&', $parsedUrl['query']);
-        foreach ($paramsArr as $param) {
-            $item = explode('=', $param);
-            $params[$item[0]] = $item[1];
+        if (strpos($this -> getUrl(), 'youtu.be/') !== false) {
+            $vidId = basename($this->getUrl());
+        }else{
+            $parsedUrl = parse_url($this -> getUrl());
+            $paramsArr = explode('&', $parsedUrl['query']);
+            foreach ($paramsArr as $param) {
+                $item = explode('=', $param);
+                $params[$item[0]] = $item[1];
+            }
+            $vidId = $params['v'];
         }
-        $vidId = $params['v'];
         return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
                     <div class="videoWrapperInner" style="'.($videoWrapperInnerStyle).'">
                         <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . '" id="' . $objId . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video"></iframe>

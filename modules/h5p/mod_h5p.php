@@ -140,7 +140,7 @@ extends ESRender_Module_ContentNode_Abstract {
                 $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
             }
 
-            $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id().'&token=' . $requestData['token'];
+            $template_data['iframeurl'] = $m_path . '.html?' . session_name() . '=' . session_id();
             $template_data['title'] = $this->esObject->getTitle();
             $template_data['h5pId'] = $content['id'];
             $template_data['h5pApi'] = $content['id'];

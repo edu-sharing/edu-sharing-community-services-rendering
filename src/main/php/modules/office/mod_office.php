@@ -21,7 +21,7 @@
  */
 
 include_once ('../../conf.inc.php');
-include_once ('../../modules/doc/mod_doc.php');
+require_once ('../doc/mod_doc.php');
 require_once ('../../vendor/autoload.php');
 
 

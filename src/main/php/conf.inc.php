@@ -43,6 +43,7 @@ Phools_Autoload::register();
 require_once (dirname(__FILE__) . '/conf/system.conf.php');
 require_once(dirname(__FILE__) . '/func/classes.new/Helper/GuzzleHelper.php');
 require_once(dirname(__FILE__) . '/func/classes.new/Helper/ProxyHelper.php');
+require_once(dirname(__FILE__) . '/func/classes.new/Request.class.php');
 
 require_once ($ROOT_PATH."conf/db.conf.php");
 require_once ($ROOT_PATH."conf/defines.conf.php");

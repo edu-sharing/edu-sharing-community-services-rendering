@@ -24,7 +24,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: *");
-include_once('../../conf.inc.php');
+require_once('../../conf.inc.php');
 require_once(dirname(__FILE__) . '/../../func/classes.new/ESRender/DataProtectionRegulation/DataProtectionHandler.php');
 
 require_once(MC_LIB_PATH . 'ESApp.php');

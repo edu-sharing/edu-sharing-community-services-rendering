@@ -1,5 +1,7 @@
 <?php
 
+require_once "../Base.php";
+
 /**
  * Base-class for all modules handling objects, which contain binary data,
  * e.g. video/audio/images.

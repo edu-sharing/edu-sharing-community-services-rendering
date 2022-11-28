@@ -65,6 +65,7 @@
                 <directory name="modules" />
                 <referencedClass name="Phools_*" />
                 <referencedClass name="ESRender_*" />
+                <referencedClass name="RsPDO" />
                 <referencedClass name="SysMsg" />
             </errorLevel>
         </UndefinedClass>

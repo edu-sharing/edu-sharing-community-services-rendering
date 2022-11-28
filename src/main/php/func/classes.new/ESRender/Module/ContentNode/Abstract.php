@@ -42,11 +42,13 @@ extends ESRender_Module_Base
 
         $this->filename = $this-> esObject ->getObjectIdVersion();
 
+        $module = $this->esObject->module->getName();
+        if (!ENABLE_VIEWER_JS && strpos($module, 'office') !== false){
+            $module = 'doc';
+        }
+
         // real path
-        $this->render_path = $CC_RENDER_PATH . DIRECTORY_SEPARATOR
-            . $this-> esObject ->module->getName()
-            .DIRECTORY_SEPARATOR
-            .$upath;
+        $this->render_path = $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . $upath;
 
         if ( ! file_exists($this->render_path) )
         {
@@ -79,32 +81,15 @@ extends ESRender_Module_Base
                 $this -> esObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $this -> esObject -> getObjectVersion();
             $url .= $path . $params;
 
-            $handle = fopen($cacheFile, "wb");
-
-            if(false === $handle || empty($cacheFile)) {
-                $Logger->error('Cannot open handle for ' . $cacheFile);
-                return false;
-            }
-
-            // @TODO: this does not obey proxy
-            $remotehandle = fopen($url, "rb");
-            if($remotehandle === false) {
-                fclose($handle);
-                $Logger->error('Cannot open ' . $url);
-                return false;
-            }
-
-            $transferedBytes = stream_copy_to_stream($remotehandle,$handle);
-
-            if($transferedBytes === false) {
-                fclose($handle);
-                fclose($remotehandle);
+            try {
+                $client = GuzzleHelper::getClient();
+                $client->get($url, [
+                    'sink' => $cacheFile
+                ]);
+            } catch(Exception $e){
+                $Logger->error('Exception while fetching content: ' . $e->getMessage());
                 $Logger->error('Error fetching content from ' . $url);
-                return false;
             }
-
-            fclose($remotehandle);
-            fclose($handle);
 
             $Logger->info('Stored content in file "'.$cacheFile.'". ');
 

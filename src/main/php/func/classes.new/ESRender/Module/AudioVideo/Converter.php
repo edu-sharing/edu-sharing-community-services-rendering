@@ -1,6 +1,7 @@
 <?php
 //error_reporting(E_ERROR);
 require_once (__DIR__ . '/../../../../../conf.inc.php');
+require_once (__DIR__ . '/../../../../../conf/audio-video.conf.php');
 require_once (__DIR__ . '/../../../../../modules/video/mod_video.php');
 
 
@@ -36,15 +37,15 @@ class Converter {
         $this -> logger -> info('Converter: Starting up.');
     }
     private function setThreads() {
-        if(defined('VIDEO_OPTION_THREADS'))
-            $this -> threads = "-threads " . VIDEO_OPTION_THREADS;
+        if(defined('FFMPEG_THREADS'))
+            $this -> threads = "-threads " . FFMPEG_THREADS;
         else
             $this -> threads = "-threads 1";
     }
     
     private function setTimeout() {
-        if(defined('VIDEO_EXEC_TIMEOUT') && strpos(strtolower(PHP_OS), 'win') === false)
-            $this -> timeout = "timeout " . VIDEO_EXEC_TIMEOUT . " ";
+        if(defined('FFMPEG_EXEC_TIMEOUT') && strpos(strtolower(PHP_OS), 'win') === false)
+            $this -> timeout = "timeout " . FFMPEG_EXEC_TIMEOUT . " ";
     }
 
     public function startup() {
@@ -109,10 +110,10 @@ class Converter {
             case 'audio' :
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), DIRECTORY_SEPARATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
                 $filename = explode(DIRECTORY_SEPARATOR, $conv->ESOBJECT_CONVERSION_FILENAME);
-                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end($filename) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . ESRender_Module_AudioVideo_Abstract::FORMAT_AUDIO_MP3 . '.log';
+                $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end($filename) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . AUDIO_FORMATS[0] . '.log';
                 $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.mp3';
-                exec($this -> timeout  . VIDEO_FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-f mp3 -y" . " " .  $tmpName . " " ."2>>" . $logfile, $whatever, $code);
-                //exec($this -> timeout  . VIDEO_FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-f mp3 -y" . " " . $tmpName, $output, $code);
+                exec($this -> timeout  . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-f mp3 -y" . " " .  $tmpName . " " ."2>>" . $logfile, $whatever, $code);
+                //exec($this -> timeout  . FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " " . "-f mp3 -y" . " " . $tmpName, $output, $code);
                 $this->setConversionStatus($code, $conv, $tmpName, $output);
 
                 break; 
@@ -120,19 +121,36 @@ class Converter {
                 $conv -> ESOBJECT_CONVERSION_FILENAME = str_replace(array('\\','/'), DIRECTORY_SEPARATOR, $conv -> ESOBJECT_CONVERSION_FILENAME);
                 $filename = explode(DIRECTORY_SEPARATOR, $conv->ESOBJECT_CONVERSION_FILENAME);
                 $logfile = dirname(__FILE__) . '/../../../../../log/conversion/' . end($filename) . '_' . $conv->ESOBJECT_CONVERSION_OBJECT_ID . '_' . $conv -> ESOBJECT_CONVERSION_FORMAT . '_' . $conv -> ESOBJECT_CONVERSION_RESOLUTION . '.log';
+
+
+                $conversion_resolution = $conv -> ESOBJECT_CONVERSION_RESOLUTION;
+                $source_video = $conv -> ESOBJECT_CONVERSION_FILENAME;
+
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
-                    case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_MP4 :
+                    case 'mp4' :
                         $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.mp4';
-                        exec($this -> timeout . VIDEO_FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a libmp3lame -b:a 128k" . " " . $tmpName . " " ."2>>" . $logfile, $output, $code);
-                        //exec($this -> timeout . VIDEO_FFMPEG_BINARY . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a libmp3lame -b:a 128k" . " " . $tmpName, $output, $code);
+                        if($this->checkResolution($source_video, $conversion_resolution)){
+                            $ffmpeg_command = $this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $source_video . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conversion_resolution . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a aac -b:a 160k" . " " . $tmpName . " " ."2>>" . $logfile;
+                        }else{
+                            $this->setConversionStatus('upscale', $conv, $tmpName,'no upscaling');
+                            break;
+                        }
+                        //error_log($ffmpeg_command);
+                        exec($ffmpeg_command,$output, $code);
                         $this->setConversionStatus($code, $conv, $tmpName,$output);
                         break;
-                    case ESRender_Module_AudioVideo_Abstract::FORMAT_VIDEO_WEBM :
+                    case 'webm' :
                         $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.webm';
-                        exec($this -> timeout  . VIDEO_FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . ",ih)'\" -c:a libvorbis -b:a 128k" . " " . $tmpName . " " ."2>>" . $logfile, $output, $code);
-                        //exec($this -> timeout  . VIDEO_FFMPEG_BINARY  . " " . "-i" . " " . $conv -> ESOBJECT_CONVERSION_FILENAME . " -vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(" . $conv -> ESOBJECT_CONVERSION_RESOLUTION . ",ih)'\" -c:a libvorbis -b:a 128k" . " " . $tmpName, $output, $code);
+                        if($this->checkResolution($source_video, $conversion_resolution)){
+                            $ffmpeg_command = $this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $source_video . " -vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(" . $conversion_resolution . ",ih)'\" -c:a libvorbis -b:a 128k" . " " . $tmpName . " " ."2>>" . $logfile;
+                        }else{
+                            $this->setConversionStatus('upscale', $conv, $tmpName,'no upscaling');
+                            break;
+                        }
+                        //error_log($ffmpeg_command);
+                        exec($ffmpeg_command,$output, $code);
                         $this->setConversionStatus($code, $conv, $tmpName,$output);
-                        break; 
+                        break;
                     default :
                     	$this->logger->error('Unhandled format: '.$conv -> ESOBJECT_CONVERSION_FORMAT);
                         throw new Exception('Unhandled format.');
@@ -148,8 +166,31 @@ class Converter {
 
     }
 
+    protected function checkResolution($source_video, $conversion_resolution){
+        $getVideoData = FFMPEG_BINARY . ' -i ' . $source_video . ' -vstats 2>&1';
+        $output = shell_exec($getVideoData);
+
+        $regex_sizes = "/Video: ([^\r\n]*), ([^,]*), ([0-9]{1,4})x([0-9]{1,4})/";
+        if (preg_match($regex_sizes, $output, $regs)) {
+            $codec = $regs [1] ? $regs [1] : null;
+            $source_width = $regs [3] ? $regs [3] : null;
+            $source_height = $regs [4] ? $regs [4] : null;
+        }
+        if ($source_height >= $conversion_resolution){
+            return true;
+        }else {
+            foreach (VIDEO_RESOLUTIONS as $resolution){
+                if ($resolution < $source_height){
+                    continue;
+                }
+                return $resolution == $conversion_resolution;
+            }
+            return false;
+        }
+    }
+
     protected function setConversionStatus($code, $conv, $tmpName, $output){
-        error_log('conversionStatus: '.print_r($code . ' ('. $conv -> ESOBJECT_CONVERSION_OBJECT_ID .')', true));
+        //error_log('conversionStatus: '.print_r($code . ' ('. $conv -> ESOBJECT_CONVERSION_OBJECT_ID .')', true));
         if ($code !== 0) {
             $this->logger-> error("Error Converting ". $conv-> ESOBJECT_CONVERSION_OBJECT_ID . " (" . $conv -> ESOBJECT_CONVERSION_FILENAME .")" );
             $this->logger-> error($output);
@@ -158,7 +199,7 @@ class Converter {
             $this->logger-> debug($output);
         }
         $object = new ESObject($conv -> ESOBJECT_CONVERSION_OBJECT_ID);
-        if($code > 0) {
+        if($code > 0 || $output == 'no upscaling') {
             if(file_exists($tmpName)){
                 unlink($tmpName);
             }
@@ -221,7 +262,7 @@ class Converter {
         if(empty($this -> timeout))
             return;
         
-        $timeoutThreshold = time() - VIDEO_EXEC_TIMEOUT;
+        $timeoutThreshold = time() - FFMPEG_EXEC_TIMEOUT;
 
         $sql = 'SELECT "ESOBJECT_CONVERSION_OBJECT_ID", "ESOBJECT_CONVERSION_FORMAT", "ESOBJECT_CONVERSION_RESOLUTION" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_STATUS" = :status AND "ESOBJECT_CONVERSION_TIME" <= :threshold';
         $pdo = RsPDO::getInstance();

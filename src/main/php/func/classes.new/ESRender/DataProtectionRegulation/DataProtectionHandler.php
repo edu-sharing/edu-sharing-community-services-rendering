@@ -171,6 +171,9 @@ class DataProtectionHandler
         if($this->privacy) {
             $type = new RemoteObjectType($this->node);
             ob_start();
+            /**
+             * @psalm-suppress UndefinedFunction
+             */
             render(["skipDataProtection" => true]);
             $content = ob_get_clean();
             return $this->template->render('/data_protection/dynamic', [

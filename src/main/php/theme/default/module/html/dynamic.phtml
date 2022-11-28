@@ -11,9 +11,9 @@ $msg['showDocument'] = new Phools_Message_Default('showDocument');
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-    <h1 class="edusharing_rendering_content_title"><?php echo $title ?></h1>
+    <h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
     <div class="edusharing_rendering_content_wrapper" role="main">
-        <iframe title="<?php echo $title?>" src="<?php echo $url ?>" width="90%" height="800" allowfullscreen style="display: block; margin: 0 auto;"></iframe>
+        <iframe title="<?php echo htmlentities($title,ENT_QUOTES,'UTF-8')?>" src="<?php echo $url ?>" width="90%" height="800" frameBorder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe>
         <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href"><?php echo $msg['showDocument']->localize($Locale, $Translate);?></a>
     </div>
     <?php echo $metadata; ?>

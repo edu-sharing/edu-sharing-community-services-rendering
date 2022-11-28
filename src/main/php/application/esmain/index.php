@@ -139,16 +139,16 @@ function render(array $options)
             Config::set('forcePreview', true);
 
         Config::set('hasContentLicense', false);
-        if (in_array('ccm:collection_io_reference', $data->node->aspects)) {
+        if (in_array('ccm:collection_io_reference', $data->node->aspects) && !empty($data->node->accessOriginal)) {
             // is it a licensed node? check the original for access (new since 5.1)
             if ($data->node->originalRestrictedAccess) {
                 Config::set('hasContentLicense', @in_array('ReadAll', $data->node->accessOriginal) === true);
-            } else if (@in_array('Read', $data->node->accessOriginal) === true) {
+            } else if (!empty($data->node->accessOriginal) && @in_array('Read', $data->node->accessOriginal) === true) {
                 //Has the user alf permissions on the node? -> check if he also has read_all permissions
                 // LEGACY! Remove this Behaviour in future releases, only included for back compat
                 Config::set('hasContentLicense', in_array('ReadAll', $data->node->accessOriginal));
             } else {
-                // otherwise, the collection concept allows access so we give the user access simply depending on the collection entry
+                // otherwise, the collection concept allows access, so we give the user access simply depending on the collection entry
                 Config::set('hasContentLicense', in_array('ReadAll', $data->node->access));
             }
         } else {
@@ -210,29 +210,7 @@ function render(array $options)
         Config::set('token', md5(uniqid()));
 
         if (!$skipSslVerification) { //testing
-            $ts = mc_Request::fetch('ts', 'CHAR');
-            if (empty($ts)) {
-                $Logger->error('Missing request-param "timestamp".');
-                throw new ESRender_Exception_MissingRequestParam('timestamp');
-            }
-
-            if (empty($_GET['sig'])) {
-                $Logger->error('Missing request-param "sig".');
-                throw new ESRender_Exception_MissingRequestParam('sig');
-            }
-
-            try {
-                $pubkeyid = openssl_get_publickey($homeRep->prop_array['public_key']);
-                $signature = rawurldecode($_GET['sig']);
-                $signature = base64_decode($signature);
-                $ok = openssl_verify($data->node->ref->repo . $data->node->ref->id . $ts, $signature, $pubkeyid, 'sha1WithRSAEncryption');
-            } catch (Exception $e) {
-                throw new ESRender_Exception_SslVerification('Error checking signature');
-            }
-
-            if ($ok != 1) {
-                throw new ESRender_Exception_SslVerification('SSL signature check failed');
-            }
+            require_once "validate_signature.php";
 
             $now = microtime(true) * 1000;
 
@@ -283,7 +261,7 @@ function render(array $options)
         $Logger->info('Successfully initialized instance.');
 
         // check if original is deleted
-        if ($ESObject->getNode()->originalId == null && in_array("ccm:collection_io_reference", $ESObject->getNode()->aspects)) {
+        if(in_array("ccm:collection_io_reference", $ESObject -> getNode()->aspects) && $ESObject -> getNode() -> originalId == null) {
             $Logger->info('The object to which this collection object refers is no longer present.');
             $ESObject->renderOriginalDeleted(mc_Request::fetch('display', 'CHAR', 'dynamic'), $Template);
         }
@@ -369,6 +347,23 @@ function render(array $options)
             }
 
             $Module->instanceUnlock();
+        } else {
+            $lockAquireWait = 0;
+            while($Module->instanceLocked()) {
+                $Logger->info(
+                    'Instance of module ' . $moduleName . ' / id ' .
+                    $ESObject->getObjectID(). ' is currently locked, waiting... (' . $lockAquireWait . 'ms)'
+                );
+                // wait 200ms
+                $lockAquireWait += 200;
+                usleep(200000);
+                if($lockAquireWait > 60000) {
+                    $Logger->error('Node ' . $ESObject->getObjectID() . ' did not unlock, giving up - exit.');
+                    throw new Exception('Node is currently locked or processed by another instance.');
+                }
+            }
+            // this method sounds like it just returns but it will also (re-) init the current module based on the database values
+            $Module->instanceExists();
         }
 
         $ESObject->update();

@@ -287,7 +287,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
     /**
      * (non-PHPdoc)
      * @param $p_kind
-     * @param null $locked
+     * @param $locked
      * @return bool
      * @throws Exception
      * @see ESRender_Module_Interface::process()

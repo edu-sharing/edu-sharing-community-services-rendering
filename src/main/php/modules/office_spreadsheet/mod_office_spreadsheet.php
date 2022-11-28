@@ -91,16 +91,17 @@ class mod_office_spreadsheet
         throw new \Exception('No office document reader found for mimetype ' . $mimetype);
     }
 
-    public static function canProcess($esObject)
-    {
-        $supported = [
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.ms-excel',
-            'application/vnd.oasis.opendocument.spreadsheet',
-            'text/csv',
-        ];
-        if(in_array($esObject->getMimetype(), $supported)) {
-            return true;
+    public static function canProcess($esObject) {
+        if (ENABLE_VIEWER_JS){
+            $supported = [
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.ms-excel',
+                'application/vnd.oasis.opendocument.spreadsheet',
+                'text/csv',
+            ];
+            if(in_array($esObject->getMimetype(), $supported)) {
+                return true;
+            }
         }
         return parent::canProcess($esObject);
     }

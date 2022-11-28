@@ -64,7 +64,12 @@ extends ESRender_Module_ContentNode_Abstract {
         if(Config::get('hasContentLicense') === true) {
 
             if($this->getDoctype() == DOCTYPE_PDF) {
-                $template_data['content'] = ($this->convertedPath ? $this->convertedPath : $this -> esObject -> getPath()) . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+                if (ENABLE_VIEWER_JS){
+                    $template_data['content'] = ($this->convertedPath ? $this->convertedPath : $this -> esObject -> getPath()) . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+
+                }else{
+                    $template_data['content'] = $this -> esObject -> getPath() . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
+                }
                 $template_data['url'] = $this -> esObject->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
             }
 
@@ -136,6 +141,18 @@ extends ESRender_Module_ContentNode_Abstract {
         }
         else if($this->getDoctype() === DOCTYPE_PDF) {
             echo $this -> renderTemplate($this -> getThemeByDoctype().'embed', false);
+            return true;
+        }
+        else return parent::embed();
+    }
+
+    final protected function inline() {
+        if($this->getDoctype() === DOCTYPE_HTML || $this->getDoctype() === DOCTYPE_TEXT) {
+            echo $this -> renderTemplate($this -> getThemeByDoctype().'inline', false);
+            return true;
+        }
+        else if($this->getDoctype() === DOCTYPE_PDF) {
+            echo $this -> renderTemplate($this -> getThemeByDoctype().'inline', false);
             return true;
         }
         else return parent::embed();
@@ -244,5 +261,59 @@ extends ESRender_Module_ContentNode_Abstract {
                 return false;
         }
     }*/
+
+    /**
+     * Test if this object already exists for this module. This method
+     * checks only ESRender's ESOBJECT-table to for existance of this
+     * object. Override this method to implement module-specific behaviour
+     * (@see modules/moodle/mod_moodle.php).
+     *
+     * (non-PHPdoc)
+     * @see ESRender_Module_Interface::instanceExists()
+     */
+    public function instanceExists() {
+        $Logger = $this -> getLogger();
+
+        $pdo = RsPDO::getInstance();
+
+        try {
+            $sql = 'SELECT * FROM "ESOBJECT" ' . 'WHERE "ESOBJECT_REP_ID" = :repid ' . 'AND "ESOBJECT_CONTENT_HASH" = :contenthash ' . 'AND "ESOBJECT_OBJECT_ID" = :objectid';
+
+            $stmt = $pdo -> prepare($sql);
+            $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
+            $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
+            $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
+            $stmt -> execute();
+
+            $result = $stmt -> fetch(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                $this -> esObject -> setInstanceData($result);
+
+                // check if cache exists
+                global $CC_RENDER_PATH;
+                $module = $this -> esObject -> getModule();
+                $src_file =  $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $module->getName() . DIRECTORY_SEPARATOR . $this->esObject->getSubUri_file();
+                $src_file .= DIRECTORY_SEPARATOR . $this->esObject->getObjectIdVersion();
+                if ((is_file($src_file)) || (is_readable($src_file))) {
+                    $Logger -> debug('Instance exists.');
+                    return true;
+                }else{
+                    $Logger -> debug('No cache, deleting from DB...');
+                    try {
+                        $this->esObject->deleteFromDb();
+                    } catch (Exception $e) {
+                        $Logger -> debug('Could not delete from DB: ' . $e);
+                    }
+                    return false;
+                }
+            }
+
+            $Logger -> debug('Instance does not exist.');
+            return false;
+        } catch (PDOException $e) {
+            throw new Exception($e -> getMessage());
+        }
+    }
 
 }

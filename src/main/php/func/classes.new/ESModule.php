@@ -149,9 +149,14 @@ class ESModule {
 			//throw new Exception('Cannot load module having empty module-name.');
 		}
 
-        Logger::getLogger('de.metaventis.esrender.index') -> info('Mimetype is "'.$MimeType.'", using module "'.$result -> ESMODULE_NAME.'".');
+        $modName = $result -> ESMODULE_NAME;
+        if (!ENABLE_VIEWER_JS && $modName == 'office'){
+            $modName = 'doc';
+        }
 
-		$this->ESMODULE_NAME = $result -> ESMODULE_NAME;
+        Logger::getLogger('de.metaventis.esrender.index') -> info('Mimetype is "'.$MimeType.'", using module "'.$modName.'".');
+
+		$this->ESMODULE_NAME = $modName;
 
 		return true;
 	}

@@ -376,6 +376,11 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
     margin-top: 8px;
 }
 
+.edusharing_rendering_content_footer_top .license {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .edusharing_rendering_content_footer_top .license_permalink, .edusharing_rendering_content_footer_top .license {
     margin-right: 40px;
 }

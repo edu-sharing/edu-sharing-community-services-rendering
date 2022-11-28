@@ -116,6 +116,8 @@ private $content = NULL;
         // Check if library exists.
         $content['library']['libraryId'] = $this->H5PCore->h5pF->getLibraryId($content['library']['machineName'], $content['library']['majorVersion'], $content['library']['minorVersion']);
         if (!$content['library']['libraryId']) {
+            // TODO: Check validity
+            /** @psalm-suppress all */
             $this->H5PCore->h5pF->setErrorMessage(__('No such library.', $this->plugin_slug));
             return FALSE;
         }

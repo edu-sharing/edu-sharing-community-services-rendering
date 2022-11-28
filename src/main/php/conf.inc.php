@@ -48,10 +48,12 @@ require_once ($ROOT_PATH."conf/db.conf.php");
 require_once ($ROOT_PATH."conf/defines.conf.php");
 require_once ($ROOT_PATH."conf/custom.conf.php");
 require_once ($ROOT_PATH."conf/extlib.conf.php");
-require_once ($ROOT_PATH."conf/video.config.php");
 
-if (@phpversion() < '7.1.0') {
-	die('This version of edu-sharing only supports PHP 7.1.0 or higher.');
+/**
+ * @psalm-suppress ParadoxicalCondition
+ */
+if (version_compare(PHP_VERSION, '7.1.0') < 0) {
+    die('This version of edu-sharing only supports PHP 7.1.0 or higher.');
 }
 
 $GLOBALS['_MCFORM'] = array_merge($_GET, $_POST);

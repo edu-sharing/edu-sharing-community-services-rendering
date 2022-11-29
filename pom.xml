@@ -52,6 +52,40 @@
 
     </profile>
 
+    <profile>
+
+      <id>php.no_psalm</id>
+
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>env.PHP_NO_PSALM</name>
+        </property>
+      </activation>
+
+      <build>
+
+        <plugins>
+
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>assembly</id>
+                <configuration>
+                  <skip>true</skip>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+
+      </build>
+
+    </profile>
+
   </profiles>
 
   <build>
@@ -155,7 +189,9 @@
               <includeArtifactIds>
                 edu_sharing-community-repository-backend-services-rest-client-php
               </includeArtifactIds>
-              <outputDirectory>${project.build.directory}/php/vendor/${composer.vendor}/community-repository-rest-client</outputDirectory>
+              <outputDirectory>
+                ${project.build.directory}/php/vendor/${composer.vendor}/community-repository-rest-client
+              </outputDirectory>
             </configuration>
           </execution>
         </executions>

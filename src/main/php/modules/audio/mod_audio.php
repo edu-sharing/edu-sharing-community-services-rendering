@@ -23,6 +23,7 @@
 
 include_once ('../../conf.inc.php');
 include_once (MC_ROOT_PATH.'func/classes.new/ESRender/Module/AudioVideo/Helper.php');
+require_once ('../../vendor/autoload.php');
 
 /**
  * handles

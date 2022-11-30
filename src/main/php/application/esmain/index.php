@@ -122,6 +122,7 @@ function render(array $options)
 
 
         // Display parameters
+
         Config::set('showMetadata', true);
         if (mc_Request::fetch('showMetadata', 'CHAR') === 'false')
             Config::set('showMetadata', false);
@@ -305,6 +306,18 @@ function render(array $options)
         // create new object instance if not existent
         if (!$Module->instanceExists()
             && !$Module->instanceLocked()) {
+            // handle fatal errors: unlock instance in this case
+            function shutDownFunction($Logger, $ESObject, $Module) {
+                $error = error_get_last();
+                // Fatal error, E_ERROR === 1
+                if ($error['type'] === E_ERROR) {
+                    $Logger->error('Fatal PHP Error while creating new object-instance.');
+                    $Logger->error($error);
+                    $Module->instanceUnlock();
+                    $ESObject->deleteFromDb();
+                }
+            }
+            register_shutdown_function('shutDownFunction', $Logger, $ESObject, $Module);
 
             //ensure that instance is not created several times
             $Module->instanceLock();
@@ -335,7 +348,7 @@ function render(array $options)
             } catch (Exception $e) {
                 $Logger->error('Error while creating new object-instance.');
                 $Logger->error($e);
-
+                $Module->instanceUnlock();
                 $ESObject->deleteFromDb();
 
                 throw new Exception('Error creating instance.');

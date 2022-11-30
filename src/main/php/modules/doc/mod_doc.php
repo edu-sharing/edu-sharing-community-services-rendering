@@ -26,7 +26,7 @@
  */
 
 include_once ('../../conf.inc.php');
-require_once ('../../vendor/autoload.php');
+require_once (__DIR__ . '/../../vendor/autoload.php');
 
 define('DOCTYPE_PDF', 'DOCTYPE_PDF');
 define('DOCTYPE_ODF', 'DOCTYPE_ODF');

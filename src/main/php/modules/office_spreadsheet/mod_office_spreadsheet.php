@@ -20,9 +20,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-include_once ('../../conf.inc.php');
-require_once ('../doc/mod_doc.php');
-require_once ('../../vendor/autoload.php');
+include_once (__DIR__ . '/../../conf.inc.php');
+require_once (__DIR__ . '/../doc/mod_doc.php');
+require_once (__DIR__ . '/../../vendor/autoload.php');
 
 
 /**

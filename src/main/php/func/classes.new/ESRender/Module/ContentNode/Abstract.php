@@ -1,6 +1,6 @@
 <?php
 
-require_once "../Base.php";
+require_once __DIR__ . "/../Base.php";
 
 /**
  * Base-class for all modules handling objects, which contain binary data,

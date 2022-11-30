@@ -67,6 +67,8 @@
                 <referencedClass name="ESRender_*" />
                 <referencedClass name="esrender_module_contentnode_abstract" />
                 <referencedClass name="ESObject" />
+                <referencedClass name="Config" />
+                <referencedClass name="ESApp" />
                 <referencedClass name="RsPDO" />
                 <referencedClass name="SysMsg" />
             </errorLevel>
@@ -79,6 +81,7 @@
         <InvalidThrow>
             <errorLevel type="info">
                 <directory name="modules" />
+                <file name="application/esmain/index.php" />
             </errorLevel>
         </InvalidThrow>
     </issueHandlers>

@@ -129,6 +129,8 @@ class ESModule {
 	 */
 	final public function setModuleByMimetype($p_mimetype)
 	{
+        global $VIEWER_JS_CONFIG;
+
 	    // use only MIME's "type/subtype" specification, skip optional parameters
 		$MimeTypeParts = explode(';', $p_mimetype);
 		$MimeType = $MimeTypeParts[0];
@@ -150,8 +152,9 @@ class ESModule {
 		}
 
         $modName = $result -> ESMODULE_NAME;
-        if (!ENABLE_VIEWER_JS && $modName == 'office'){
-            $modName = 'doc';
+        if (!ENABLE_VIEWER_JS && $modName == 'office' ||
+            ENABLE_VIEWER_JS && !in_array($modName, $VIEWER_JS_CONFIG) ){
+                $modName = 'doc';
         }
 
         Logger::getLogger('de.metaventis.esrender.index') -> info('Mimetype is "'.$MimeType.'", using module "'.$modName.'".');

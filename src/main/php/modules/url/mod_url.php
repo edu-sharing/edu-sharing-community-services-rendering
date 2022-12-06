@@ -122,6 +122,8 @@ extends ESRender_Module_NonContentNode_Abstract {
             $embedding = $this->getH5PEmbedding($footer);
         }else if ($type === RemoteObjectType::$TYPE_PREZI) {
             $embedding = $this->getPreziEmbedding($footer);
+        }else if ($this -> esObject -> isLti13ToolObject()){
+            $embedding = $this->getLti13ToolEmbedding();
         }else {
             $license = $this -> esObject->getLicense();
             if (!empty($license))

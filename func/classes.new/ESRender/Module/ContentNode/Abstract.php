@@ -43,8 +43,13 @@ extends ESRender_Module_Base
         $this->filename = $this-> esObject ->getObjectIdVersion();
 
         $module = $this->esObject->module->getName();
+        $viewer_js_modules = [
+            'pdf',
+            'office',
+            'spreadsheet'
+        ];
         if (!ENABLE_VIEWER_JS && strpos($module, 'office') !== false ||
-            ENABLE_VIEWER_JS && !in_array($module, $VIEWER_JS_CONFIG) ){
+            ENABLE_VIEWER_JS && in_array($module, $viewer_js_modules) && !in_array($module, $VIEWER_JS_CONFIG) ){
                 $module = 'doc';
         }
 

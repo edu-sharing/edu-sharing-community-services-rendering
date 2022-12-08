@@ -152,8 +152,13 @@ class ESModule {
 		}
 
         $modName = $result -> ESMODULE_NAME;
+        $viewer_js_modules = [
+            'pdf',
+            'office',
+            'spreadsheet'
+        ];
         if (!ENABLE_VIEWER_JS && $modName == 'office' ||
-            ENABLE_VIEWER_JS && !in_array($modName, $VIEWER_JS_CONFIG) ){
+            ENABLE_VIEWER_JS && in_array($modName, $viewer_js_modules) && !in_array($modName, $VIEWER_JS_CONFIG) ){
                 $modName = 'doc';
         }
 

@@ -244,7 +244,9 @@ img.edusharing_rendering_content_preview {
 }
 
 .es_progressbar_container {
-	border: 5px solid #555 !important;
+    background-color: #fff;
+	border: 1px solid #6f6f6f !important;
+    border-radius: 12px;
 	width: 100%;
 	text-align: left !important;
 	box-sizing: content-box;
@@ -252,7 +254,8 @@ img.edusharing_rendering_content_preview {
 }
 
 .es_progressbar_progress {
-	border-right: 1px solid #fff;
+    background-color: #48708e;
+    border-radius: 12px;
 }
 
 .renderservice_message {

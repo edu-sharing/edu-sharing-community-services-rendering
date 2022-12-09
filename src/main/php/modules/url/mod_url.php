@@ -14,6 +14,8 @@ extends ESRender_Module_NonContentNode_Abstract {
         $type = $remoteType->getType();
         if(Config::get('urlEmbedding')) {
             $embedding = Config::get('urlEmbedding');
+        }else if ($this -> esObject -> isLti13ToolObject()){
+            $embedding = $this->getLti13ToolEmbedding();
         }else if ($type === RemoteObjectType::$TYPE_VIDEO) {
             $embedding = $this->getVideoEmbedding();
         }else if ($type === RemoteObjectType::$TYPE_AUDIO) {
@@ -26,8 +28,6 @@ extends ESRender_Module_NonContentNode_Abstract {
             $embedding = $this->getH5PEmbedding();
         }else if ($type === RemoteObjectType::$TYPE_PREZI) {
             $embedding = $this->getPreziEmbedding();
-        }else if ($this -> esObject -> isLti13ToolObject()){
-            $embedding = $this->getLti13ToolEmbedding();
         }
         else{
             $embedding = '';
@@ -110,7 +110,9 @@ extends ESRender_Module_NonContentNode_Abstract {
 
         if(Config::get('urlEmbedding')) {
             $embedding = Config::get('urlEmbedding') . $footer;
-        } else if ($type === RemoteObjectType::$TYPE_VIDEO) {
+        }else if ($this -> esObject -> isLti13ToolObject()){
+            $embedding = $this->getLti13ToolEmbedding();
+        }else if ($type === RemoteObjectType::$TYPE_VIDEO) {
             $embedding = $this -> getVideoEmbedding(mc_Request::fetch('width', 'INT', 600), $footer);
         }else if ($type === RemoteObjectType::$TYPE_VIDEO) {
             $embedding = $this->getAudioEmbedding($footer);
@@ -122,8 +124,6 @@ extends ESRender_Module_NonContentNode_Abstract {
             $embedding = $this->getH5PEmbedding($footer);
         }else if ($type === RemoteObjectType::$TYPE_PREZI) {
             $embedding = $this->getPreziEmbedding($footer);
-        }else if ($this -> esObject -> isLti13ToolObject()){
-            $embedding = $this->getLti13ToolEmbedding();
         }else {
             $license = $this -> esObject->getLicense();
             if (!empty($license))
@@ -214,8 +214,15 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function getLti13ToolEmbedding($footer = ''){
         return '<div>
-            <iframe src="'. $this->getUrl().'&editMode=false" style="max-width: 100%;width:100%;height: 100%;"></iframe>
+            <iframe src="'. $this->getUrl().'&editMode=false&launchPresentation=iframe" style="max-width: 100%;width:100%;height: 100%;"></iframe>
             ' . $footer . '</div>';
+
+        /**
+         *   protected function getLti13ToolEmbedding($footer = ''){
+        return '<div> <iframe src="'. $this->getUrl().'&editMode=false" style="max-width: 100%;width:100%;height: 100%;" onLoad="this.style.height=contentWindow.document.documentElement.scrollHeigh>
+        }
+
+         */
     }
 
     protected function getVideoEmbedding($width = NULL, $footer = '') {

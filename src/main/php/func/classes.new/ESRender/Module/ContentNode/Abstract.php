@@ -31,7 +31,7 @@ extends ESRender_Module_Base
      * @see ESRender_Module_Base::createInstance()
      */
     public function createInstance() {
-    	global $CC_RENDER_PATH;
+    	global $CC_RENDER_PATH, $VIEWER_JS_CONFIG;;
         ini_set('memory_limit', '4000M');
         $Logger = $this->getLogger();
 
@@ -43,8 +43,14 @@ extends ESRender_Module_Base
         $this->filename = $this-> esObject ->getObjectIdVersion();
 
         $module = $this->esObject->module->getName();
-        if (!ENABLE_VIEWER_JS && strpos($module, 'office') !== false){
-            $module = 'doc';
+        $viewer_js_modules = [
+            'pdf',
+            'office',
+            'spreadsheet'
+        ];
+        if (!ENABLE_VIEWER_JS && strpos($module, 'office') !== false ||
+            ENABLE_VIEWER_JS && in_array($module, $viewer_js_modules) && !in_array($module, $VIEWER_JS_CONFIG) ){
+                $module = 'doc';
         }
 
         // real path

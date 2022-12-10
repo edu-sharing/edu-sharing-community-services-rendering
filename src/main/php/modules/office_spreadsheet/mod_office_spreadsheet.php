@@ -92,7 +92,9 @@ class mod_office_spreadsheet
     }
 
     public static function canProcess($esObject) {
-        if (ENABLE_VIEWER_JS){
+        global $VIEWER_JS_CONFIG;
+
+        if (ENABLE_VIEWER_JS && in_array('spreadsheet', $VIEWER_JS_CONFIG)){
             $supported = [
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'application/vnd.ms-excel',

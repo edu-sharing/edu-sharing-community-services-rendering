@@ -82,6 +82,7 @@
             <errorLevel type="info">
                 <directory name="modules" />
                 <file name="application/esmain/index.php" />
+                <file name="application/esmain/validate_signature.php" />
             </errorLevel>
         </InvalidThrow>
     </issueHandlers>

@@ -123,7 +123,9 @@ class mod_office
     }
 
     public static function canProcess($esObject) {
-        if (ENABLE_VIEWER_JS){
+        global $VIEWER_JS_CONFIG;
+
+        if (ENABLE_VIEWER_JS && in_array('office', $VIEWER_JS_CONFIG)){
             // echo $esObject->getMimetype();
             $supported = [
                 'application/vnd.oasis.opendocument.text',

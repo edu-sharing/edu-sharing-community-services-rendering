@@ -59,13 +59,15 @@ extends ESRender_Module_ContentNode_Abstract {
 
     protected function renderTemplate($TemplateName, $showMetadata = true) {
 
+        global $VIEWER_JS_CONFIG;
+
         $template_data = parent::prepareRenderData($showMetadata);
         $template_data['previewUrl'] = $this -> esObject->getPreviewUrl();
 
         if(Config::get('hasContentLicense') === true) {
 
             if($this->getDoctype() == DOCTYPE_PDF) {
-                if (ENABLE_VIEWER_JS){
+                if (ENABLE_VIEWER_JS && in_array('pdf', $VIEWER_JS_CONFIG)){
                     $template_data['content'] = ($this->convertedPath ? $this->convertedPath : $this -> esObject -> getPath()) . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
 
                 }else{

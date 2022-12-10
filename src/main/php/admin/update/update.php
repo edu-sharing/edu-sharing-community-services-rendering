@@ -487,6 +487,15 @@ function run($installedVersion) {
             file_put_contents(MC_ROOT_PATH . 'conf/system.conf.php', 'DEFINE("ENABLE_VIEWER_JS", true); # toggle viewer.js for office documents', FILE_APPEND | LOCK_EX);
         }
 
+        if(version_compare ( '6.0.102', $installedVersion ) > 0) {
+            $viewer_js_conf = "VIEWER_JS_CONFIG = [
+                'pdf',
+                //'office',
+                //'spreadsheet'
+            ];";
+            file_put_contents(MC_ROOT_PATH . 'conf/system.conf.php', $viewer_js_conf, FILE_APPEND | LOCK_EX);
+        }
+
 
     } catch ( Exception $e ) {
         error_log ( print_r ( $e, true ) );

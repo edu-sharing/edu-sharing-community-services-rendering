@@ -171,17 +171,20 @@ extends ESRender_Module_AudioVideo_Abstract {
      * 
      */
     final public function locked() {
-    	    	
+
         $template = $this->getTemplate();
-        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion()  . '_' . $this -> esObject->getId() . '_' . $this-> getVideoFormatByRequestingDevice() . '_' . VIDEO_RESOLUTIONS[0] . '.log';
+        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . '_' . $this -> esObject->getObjectVersion()  . '_' . $this -> esObject->getId() . '_' . $this-> getVideoFormatByRequestingDevice() . '_' . VIDEO_RESOLUTIONS[0] . '.log';
         $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
         $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue($this-> getVideoFormatByRequestingDevice(), VIDEO_RESOLUTIONS[0]);
-        if(empty($progress) || is_array($progress))
+        if(empty($progress) || is_array($progress)){
             $progress = '0';
-        echo $template->render('/module/video/lock', array('callback' => mc_Request::fetch('callback', 'CHAR'),
-        												'authString' => 'token='.Config::get('token').'&'.session_name().'='.session_id(),
-        												'progress' => $progress,
-        												'positionInConversionQueue' => $positionInConversionQueue));
+        }
+        echo $template->render('/module/video/lock', array(
+                                                                'callback' => mc_Request::fetch('callback', 'CHAR'),
+                                                                'authString' => 'token='.Config::get('token').'&'.session_name().'='.session_id(),
+                                                                'progress' => $progress,
+                                                                'positionInConversionQueue' => $positionInConversionQueue)
+                                                            );
         return true;
     }
 

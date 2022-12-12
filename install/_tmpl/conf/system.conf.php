@@ -21,6 +21,7 @@ $DATAPROTECTIONREGULATION_CONFIG = [
 ];
 
 DEFINE("ENABLE_VIEWER_JS", true); # toggle viewer.js for office documents
+$VIEWER_JS_CONFIG = ["pdf"]; # office and spreadsheet also available
 
 $ESRENDER_SESSION_NAME = 'ESSID';
 

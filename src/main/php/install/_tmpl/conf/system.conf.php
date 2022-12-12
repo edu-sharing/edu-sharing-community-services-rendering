@@ -14,6 +14,7 @@ DEFINE("ENABLE_METADATA_INLINE_RENDERING", true);
 $DATAPROTECTIONREGULATION_CONFIG = ["enabled" => false, "modules" => [], "urls" => ['/.*/' => ["name" => "Example", "url" => "http://example"]]];
 
 DEFINE("ENABLE_VIEWER_JS", true); # toggle viewer.js for office documents
+$VIEWER_JS_CONFIG = ["pdf"]; # office and spreadsheet also available
 
 $ESRENDER_SESSION_NAME = 'ESSID';
 

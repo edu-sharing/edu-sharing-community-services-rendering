@@ -1,11 +1,12 @@
 <?php 
-global $Locale, $Translate;
+global $Locale, $Translate, $esObject;
 $msg = array();
 $msg['toDownload'] = new Phools_Message_Default('toDownload');
 $msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
 $msg['cannotOpenObject'] = new Phools_Message_Default('cannotOpenObject');
 $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText');
 $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
+$msg['goToLogin'] = new Phools_Message_Default('goToLogin');
 
 ?>
 
@@ -19,6 +20,9 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
         <?php
         if(Config::get('hasContentLicense') === false) {
             echo '<h3>' . $msg['hasNoContentLicense']->localize($Locale, $Translate) . '</h3>';
+            if($loginAvailable) {
+                echo '<h3><a href="/edu-sharing/components/login">' . $msg['goToLogin']->localize($Locale, $Translate) .'</a></h3>';
+            }
         } else if(Config::get('showDownloadAdvice'))
             echo '<div id="edusharing_downloadadvice"><h3>' . $msg['cannotOpenObject']->localize($Locale, $Translate) . '</h3>' .
 		         '<h4>' . $msg['cannotOpenObjectText']->localize($Locale, $Translate) . '</h4></div>';

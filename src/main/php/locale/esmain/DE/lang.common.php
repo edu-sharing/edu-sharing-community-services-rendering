@@ -60,6 +60,7 @@ $Translate
     ->addTranslation('de', 'showDocument', 'Dokument anzeigen')
     ->addTranslation('de', 'showInLearningAppsOrg', 'In learningapps.org öffnen')
     ->addTranslation('de', 'hasNoContentLicense', 'Sie dürfen den Inhalt aufgrund von Lizenzbeschränkungen nicht verwenden.')
+    ->addTranslation('de', 'goToLogin', 'Anmelden')
     ->addTranslation('de', 'startScorm', 'SCORM starten')
     ->addTranslation('de', 'Omega plugin error', 'Fehler bei der Medienquelle')
     ->addTranslation('de', 'API respsonse is empty', 'Antwort der API ist leer')

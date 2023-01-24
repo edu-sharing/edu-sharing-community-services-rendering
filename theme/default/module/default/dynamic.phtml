@@ -21,7 +21,9 @@ $msg['goToLogin'] = new Phools_Message_Default('goToLogin');
         if(Config::get('hasContentLicense') === false) {
             echo '<h3>' . $msg['hasNoContentLicense']->localize($Locale, $Translate) . '</h3>';
             if($loginAvailable) {
-                echo '<h3><a href="/edu-sharing/components/login">' . $msg['goToLogin']->localize($Locale, $Translate) .'</a></h3>';
+                echo '<h3><a href="/edu-sharing/components/login?next=' .
+                    urlencode("components/render/{$node->ref->id}")
+                    . '">' . $msg['goToLogin']->localize($Locale, $Translate) .'</a></h3>';
             }
         } else if(Config::get('showDownloadAdvice'))
             echo '<div id="edusharing_downloadadvice"><h3>' . $msg['cannotOpenObject']->localize($Locale, $Translate) . '</h3>' .

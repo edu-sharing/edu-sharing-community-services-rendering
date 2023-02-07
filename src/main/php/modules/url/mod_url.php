@@ -213,8 +213,8 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getLti13ToolEmbedding($footer = ''){
-        return '<div>
-            <iframe src="'. $this->getUrl().'&editMode=false&launchPresentation=iframe" style="max-width: 100%;width:100%;height: 100%;"></iframe>
+        return '<script>var ltiIFrame = document.getElementById("ltiframe");ltiIFrame.height=(window.innerHeight-ltiIFrame.getBoundingClientRect().top)+"px";</script><div>
+            <iframe id="ltiframe" src="'. $this->getUrl().'&editMode=false&launchPresentation=iframe" style="border:none;;max-width: 100%;width:100%;"></iframe>
             ' . $footer . '</div>';
 
         /**

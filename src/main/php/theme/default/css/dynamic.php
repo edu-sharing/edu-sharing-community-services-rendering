@@ -283,7 +283,6 @@ a.edusharing_rendering_content {
   background-color: #4f7a98;
   display: inline-block;
   margin-top: 20px;
-  text-transform: uppercase;
   font-weight: 600;
 }
 

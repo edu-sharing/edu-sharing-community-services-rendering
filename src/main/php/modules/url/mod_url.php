@@ -213,8 +213,8 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getLti13ToolEmbedding($footer = ''){
-        return '<div>
-            <iframe src="'. $this->getUrl().'&editMode=false&launchPresentation=iframe" style="max-width: 100%;width:100%;height: 100%;"></iframe>
+        return '<script>var ltiIFrame = document.getElementById("ltiframe");ltiIFrame.height=(window.innerHeight-ltiIFrame.getBoundingClientRect().top)+"px";</script><div>
+            <iframe id="ltiframe" src="'. $this->getUrl().'&editMode=false&launchPresentation=iframe" style="border:none;;max-width: 100%;width:100%;"></iframe>
             ' . $footer . '</div>';
 
         /**
@@ -269,18 +269,7 @@ extends ESRender_Module_NonContentNode_Abstract {
                     '.$footer.'
                 </div>';
     }
-    else if (strpos($this -> getUrl(), VIDEO_TOKEN_YOUTUBE_ALT) !== false) {
-        $vidId = basename($this -> getUrl());
-        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Youtube', 'https://policies.google.com/privacy?hl='.$Locale->getLanguageTwoLetters(), 'www.youtube-nocookie.com', 'YOUTUBE');
-        return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
-                    <div class="videoWrapperInner" style="'.($this->dataProtection?'':$videoWrapperInnerStyle).'">
-                       '.$this->dataProtection.'
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ($this->dataProtection?'display:none':'') . '" id="' . $objId . '" data-src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="" frameborder="0" allowfullscreen class="embedded_video"></iframe>
-                    </div>
-                    '.$footer.'
-                </div>';
-    }
-    else if (strpos($this -> getUrl(), VIDEO_TOKEN_VIMEO) !== false) {
+    else if ($type->isVimeo()) {
         $urlArr = explode('/', $this -> getUrl());
         if (substr_count($this -> getUrl(), '/') == 4 ){
             $token = end($urlArr);

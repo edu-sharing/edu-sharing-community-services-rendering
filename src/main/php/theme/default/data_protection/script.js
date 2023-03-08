@@ -31,9 +31,11 @@ function continueDataRegulation(event, id = null) {
     });
 }
 jQuery( document ).ready(() => {
-    document.querySelectorAll('.dataProtectionRegulationsButton').forEach(b =>
-        b.addEventListener('click', evt =>
-            replaceData(event, b.getAttribute('data-id'), b.getAttribute('data-content'))
-        )
-    );
+    document.querySelectorAll('.dataProtectionRegulationsButton').forEach(b => {
+        if (b.hasAttribute('data-id')) {
+            b.addEventListener('click', evt =>
+                replaceData(event, b.getAttribute('data-id'), b.getAttribute('data-content'))
+            )
+        }
+    });
 });

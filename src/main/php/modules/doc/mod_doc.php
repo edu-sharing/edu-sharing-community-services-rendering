@@ -67,7 +67,7 @@ extends ESRender_Module_ContentNode_Abstract {
         if(Config::get('hasContentLicense') === true) {
 
             if($this->getDoctype() == DOCTYPE_PDF) {
-                if (ENABLE_VIEWER_JS && in_array('pdf', $VIEWER_JS_CONFIG)){
+                if (ENABLE_VIEWER_JS && isset($VIEWER_JS_CONFIG) && in_array('pdf', $VIEWER_JS_CONFIG)) {
                     $template_data['content'] = ($this->convertedPath ? $this->convertedPath : $this -> esObject -> getPath()) . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
 
                 }else{

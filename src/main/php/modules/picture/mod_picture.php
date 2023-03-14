@@ -57,11 +57,17 @@ extends ESRender_Module_ContentNode_Abstract {
                 return true;
             }
 
+            if($this->isGif($SourceFile)) {
+                copy($SourceFile, $DestinationFile . '.' . self::EXTENSION_GIF);
+                return true;
+            }
+
             list($origWidth, $origHeight, $type) = getimagesize($SourceFile);
 
             switch ($type) {
                 case IMAGETYPE_GIF:
-                    $nGif = new GIF_eXG($SourceFile,0);
+                    //$nGif = new GIF_eXG($SourceFile,0);
+                    $tmpFile = imagecreatefromgif($SourceFile);
                     break;
                 case IMAGETYPE_JPEG:
                     $tmpFile = imagecreatefromjpeg($SourceFile);
@@ -106,6 +112,7 @@ extends ESRender_Module_ContentNode_Abstract {
                 }
 
                 /*if gif, use separate rescale function and continue*/
+                /*
                 if($type == IMAGETYPE_GIF) {
                     $conversionSuccess = $nGif->resize($DestinationFile . '_' . $l . '.' . $this -> getFileExtension($type), $width, $height, 1, 1);
                     if (!$conversionSuccess)
@@ -113,6 +120,7 @@ extends ESRender_Module_ContentNode_Abstract {
                     $Logger->debug('Resized gif');
                     continue;
                 }
+                */
 
                 $newImage = imagecreatetruecolor($width, $height);
                 imageAlphaBlending($newImage, false);
@@ -181,6 +189,10 @@ extends ESRender_Module_ContentNode_Abstract {
             if($this->isSvg($file)){
                 return self::EXTENSION_SVG;
             }
+
+            if($this->isGif($file)){
+                return self::EXTENSION_GIF;
+            }
             
             $type = exif_imagetype ($file);
         }
@@ -238,6 +250,10 @@ extends ESRender_Module_ContentNode_Abstract {
         return strpos(@mime_content_type($filePath), 'image/svg') !== false;
     }
 
+    public function isGif($filePath) {
+        return strpos(@mime_content_type($filePath), 'image/gif') !== false;
+    }
+
     private function getImageUrl($width = null) {
         $fileExtension = $this -> getFileExtension(null, $this -> esObject -> getFilePath());
         return $this -> esObject -> getPath() . $this -> getFlavour($width, $fileExtension) . '.' . $fileExtension . '?' . session_name() . '=' . session_id().'&token=' . Config::get('token');
@@ -249,7 +265,7 @@ extends ESRender_Module_ContentNode_Abstract {
     private function getFlavour($width, $fileExtension) {
         global $CC_RENDER_PATH;
 
-        if($fileExtension === self::EXTENSION_SVG)
+        if($fileExtension === self::EXTENSION_SVG || $fileExtension === self::EXTENSION_GIF)
             return '';
 
         $flavours = array();

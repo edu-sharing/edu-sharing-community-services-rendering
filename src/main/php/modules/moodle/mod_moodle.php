@@ -118,7 +118,7 @@ extends ESRender_Module_ContentNode_Abstract {
 			return false;
 		}
 
-        $user_givenname = !empty($this -> esObject -> getData() -> user->user_givenname) ? $this -> esObject -> getData() -> user->user_givenname : 'Moodle';
+        $user_givenname = !empty($this -> esObject -> getData() -> user->profile->firstName) ? $this -> esObject -> getData() -> user->profile->firstName : 'Moodle';
         $user_surname = !empty($this -> esObject -> getData() -> user->profile->lastName) ? $this -> esObject -> getData() -> user->profile->lastName : 'Nutzer';
         $user_email = !empty($this -> esObject -> getData() -> user->profile->email) ? $this -> esObject -> getData() -> user->profile->email : $this->esObject->getData()->user->authorityName;
 

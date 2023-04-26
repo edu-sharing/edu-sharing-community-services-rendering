@@ -16,7 +16,7 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
 	<div class="edusharing_rendering_content_wrapper" role="main">
 
 
-        <?php if (ENABLE_VIEWER_JS && in_array('pdf', $VIEWER_JS_CONFIG)){
+        <?php if (ENABLE_VIEWER_JS && isset($VIEWER_JS_CONFIG) && in_array('pdf', $VIEWER_JS_CONFIG)){
             if(Config::get('forcePreview')) {
                 if(Config::get('showDownloadAdvice')) {
                     echo '<div id="edusharing_downloadadvice"><h3>' . $msg['cannotOpenObject']->localize($Locale, $Translate) . '</h3>' .

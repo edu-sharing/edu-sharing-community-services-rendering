@@ -7,7 +7,7 @@
  */
 
 class mod_url
-extends ESRender_Module_NonContentNode_Abstract {
+    extends ESRender_Module_NonContentNode_Abstract {
 
     private function getEmbedding() {
         $remoteType = new RemoteObjectType($this->esObject);
@@ -36,24 +36,24 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function dynamic() {
-    	if (!$this -> validate()) {
-    		return false;
-    	}
+        if (!$this -> validate()) {
+            return false;
+        }
         $embedding = $this->getEmbedding();
 
-    	$Template = $this -> getTemplate();
-    	$tempArray = array(
-    	    'embedding' => $embedding,
+        $Template = $this -> getTemplate();
+        $tempArray = array(
+            'embedding' => $embedding,
             'url' => $this->getUrl(),
             'previewUrl' => $this -> esObject->getPreviewUrl()
         );
-    	if(Config::get('showMetadata'))
-    		$tempArray['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
-    	
-    	$tempArray['title'] = $this -> esObject->getTitle();
-    	echo $Template -> render('/module/url/dynamic', $tempArray);
-    
-    	return true;
+        if(Config::get('showMetadata'))
+            $tempArray['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
+
+        $tempArray['title'] = $this -> esObject->getTitle();
+        echo $Template -> render('/module/url/dynamic', $tempArray);
+
+        return true;
     }
 
     protected function embed() {
@@ -84,7 +84,7 @@ extends ESRender_Module_NonContentNode_Abstract {
 
         return true;
     }
-    
+
     protected function inline() {
         if (!$this -> validate()) {
             return false;
@@ -132,10 +132,10 @@ extends ESRender_Module_NonContentNode_Abstract {
         }
 
         $data = array('embedding' => $embedding);
-                
+
         $Template = $this -> getTemplate();
         echo $Template -> render('/module/url/inline', $data);
-        
+
         return true;
     }
 
@@ -146,7 +146,7 @@ extends ESRender_Module_NonContentNode_Abstract {
         }
         return true;
     }
-    
+
     protected function isYoutubeRemoteObject() {
         if (!empty($this -> esObject -> getNode() -> remote)){
             if($this -> esObject -> getNode() -> remote -> repository -> repositoryType  == 'YOUTUBE'){
@@ -166,15 +166,15 @@ extends ESRender_Module_NonContentNode_Abstract {
     }
 
     protected function getLinkEmbedding() {
-        $htm =  '<script> if (typeof single != "undefined") location.href="'.$this -> getUrl().'";</script>';    
+        $htm =  '<script> if (typeof single != "undefined") location.href="'.$this -> getUrl().'";</script>';
         $htm .= '<a href="' . $this -> getUrl() . '" target="_blank"><es:title xmlns:es="http://edu-sharing.net/object" >' . htmlspecialchars($this -> getUrl(), ENT_QUOTES, 'UTF-8') . '</es:title></a>';
-        return $htm;         
+        return $htm;
     }
 
     protected function getH5PEmbedding($footer = '') {
         $htm = '<div style="max-width:100%"><iframe src="'.$this->getUrl().'" width="800px" height="500px" frameborder="0" allowfullscreen="allowfullscreen"></iframe>';
         $htm .= '<script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>'. $footer.'</div>';
-        return $htm;         
+        return $htm;
     }
 
     protected function getPreziEmbedding($footer = '') {
@@ -202,7 +202,7 @@ extends ESRender_Module_NonContentNode_Abstract {
         $html = '<div class="edusharing_audio_wrapper">';
         $html .= '<img alt="" class="edusharing_audio_bg" src="'. $this->esObject->getNode()->preview->url.'">';
         $html .= '<div class="edusharing_audio_img"><img alt="" src="'. $this->esObject->getNode()->preview->url.'"></div>';
-        $html .= '<video style="max-width:100%" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls" oncontextmenu="return false;"></video>' . $footer . '</div>';
+        $html .= '<video style="max-width:100%" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls"></video>' . $footer . '</div>';
         return $html;
     }
 
@@ -227,67 +227,67 @@ extends ESRender_Module_NonContentNode_Abstract {
 
     protected function getVideoEmbedding($width = NULL, $footer = '') {
 
-    global $MC_URL, $Locale;
+        global $MC_URL, $Locale;
 
-    if(empty($width)) {
-        $width = 800;
-    }
-    $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
-    //16:9
-    $height = $width * 0.5625;
-    $objId = $this -> esObject -> getObjectID();
-    $videoWrapperInnerStyle = 'position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;';
-    $type = new RemoteObjectType($this->esObject);
-    //wrappers needed to handle max width
-    if($this -> isYoutubeRemoteObject()){
-        $vidId = $this -> esObject -> getNode() -> remote -> id;
-        $src = '';
-        $src = 'www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1';
-        return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
+        if(empty($width)) {
+            $width = 800;
+        }
+        $dataProtectionRegulationHandler = new ESRender_DataProtectionRegulation_Handler();
+        //16:9
+        $height = $width * 0.5625;
+        $objId = $this -> esObject -> getObjectID();
+        $videoWrapperInnerStyle = 'position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;';
+        $type = new RemoteObjectType($this->esObject);
+        //wrappers needed to handle max width
+        if($this -> isYoutubeRemoteObject()){
+            $vidId = $this -> esObject -> getNode() -> remote -> id;
+            $src = '';
+            $src = 'www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1';
+            return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
                     <div class="videoWrapperInner" style="'.$videoWrapperInnerStyle.'">
                         <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . '" id="' . $objId . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="'.$src.'" frameborder="0" allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
-    }
-    else if ($type->isYoutube()) {
-        if (strpos($this -> getUrl(), 'youtu.be/') !== false) {
-            $vidId = basename($this->getUrl());
-        }else{
-            $parsedUrl = parse_url($this -> getUrl());
-            $paramsArr = explode('&', $parsedUrl['query']);
-            foreach ($paramsArr as $param) {
-                $item = explode('=', $param);
-                $params[$item[0]] = $item[1];
-            }
-            $vidId = $params['v'];
         }
-        return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
+        else if ($type->isYoutube()) {
+            if (strpos($this -> getUrl(), 'youtu.be/') !== false) {
+                $vidId = basename($this->getUrl());
+            }else{
+                $parsedUrl = parse_url($this -> getUrl());
+                $paramsArr = explode('&', $parsedUrl['query']);
+                foreach ($paramsArr as $param) {
+                    $item = explode('=', $param);
+                    $params[$item[0]] = $item[1];
+                }
+                $vidId = $params['v'];
+            }
+            return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
                     <div class="videoWrapperInner" style="'.($videoWrapperInnerStyle).'">
                         <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . '" id="' . $objId . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
-    }
-    else if ($type->isVimeo()) {
-        $urlArr = explode('/', $this -> getUrl());
-        $vidId = end($urlArr);
-        $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Vimeo', 'https://help.vimeo.com/hc/de/sections/203915088-Datenschutz', 'player.vimeo.com', 'VIMEO');
-        return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
+        }
+        else if ($type->isVimeo()) {
+            $urlArr = explode('/', $this -> getUrl());
+            $vidId = end($urlArr);
+            $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Vimeo', 'https://help.vimeo.com/hc/de/sections/203915088-Datenschutz', 'player.vimeo.com', 'VIMEO');
+            return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
                     <div class="videoWrapperInner" style="'.$videoWrapperInnerStyle.'">
                         <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . '" id="' . $objId . '" src="//player.vimeo.com/video/' . $vidId . '" src="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
-    } else {
-        $type = $this -> esObject->getMimeType();
-        if(pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'mp4' || pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'webm') {
-            $type = 'video/' . pathinfo($this -> getUrl(), PATHINFO_EXTENSION);
-        }
-        $identifier = uniqid();
-        return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
+        } else {
+            $type = $this -> esObject->getMimeType();
+            if(pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'mp4' || pathinfo($this -> getUrl(), PATHINFO_EXTENSION) === 'webm') {
+                $type = 'video/' . pathinfo($this -> getUrl(), PATHINFO_EXTENSION);
+            }
+            $identifier = uniqid();
+            return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
                 <div id="videoWrapperInner_'.$objId.'" class="videoWrapperInner" style="position: relative; padding-top: 25px;' . '">
-                    <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;background: transparent url(\''.$this->esObject->getPreviewUrl().'\') 50% 50% / cover no-repeat;" oncontextmenu="return false;" controlsList="nodownload">
+                    <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;background: transparent url(\''.$this->esObject->getPreviewUrl().'\') 50% 50% / cover no-repeat;" controlsList="nodownload">
                         <source src="' . $this -> getUrl() . '" type="' . $type . '"></source>
                     </video>
                 </div>
@@ -305,13 +305,13 @@ extends ESRender_Module_NonContentNode_Abstract {
         }
 
         $urlProp = $this -> esObject -> getNodeProperty($this -> getUrlProperty());
-       if(!empty($urlProp)){
-           if (is_array($urlProp)){
-               $urlProp = $urlProp[0];
-           }
-           return html_entity_decode($urlProp);
-       }
-       return false;
+        if(!empty($urlProp)){
+            if (is_array($urlProp)){
+                $urlProp = $urlProp[0];
+            }
+            return html_entity_decode($urlProp);
+        }
+        return false;
     }
 
 
@@ -321,8 +321,8 @@ extends ESRender_Module_NonContentNode_Abstract {
      * @var string
      */
     var $UrlProperty = 'ccm:wwwurl';
-                        
-     /**
+
+    /**
      * Set the name of the property which should contain the url of interest.
      *
      * @param string $UrlProperty
@@ -341,7 +341,7 @@ extends ESRender_Module_NonContentNode_Abstract {
      * @return string
      */
     protected function getUrlProperty() {
-      return $this -> UrlProperty;
+        return $this -> UrlProperty;
     }
 
 }

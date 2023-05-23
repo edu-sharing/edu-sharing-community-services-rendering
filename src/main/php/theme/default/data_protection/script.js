@@ -1,7 +1,7 @@
 function replaceData(event, id, html) {
-    console.log(event, id, html);
     event.preventDefault();
-    jQuery('#' + id + '-data').html(html);
+    const htmlElement = document.getElementById(id + '-data');
+    htmlElement.innerHTML = html;
     jQuery('#' + id + '-data').show();
     jQuery('#' + id + '-privacy').hide();
 }

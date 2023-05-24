@@ -88,7 +88,7 @@ extends ESRender_Module_ContentNode_Abstract {
 			$this->cacheCourseId($courseId);
 			return true;
 		}
-		$logger->error('Error restoring course to moodle - ' . $httpcode . ' ' . json_decode($resp)->exception);
+		$logger->error('Error restoring course to moodle - ' . $httpcode . ' ' . $resp);
 		return false;
 	}
 

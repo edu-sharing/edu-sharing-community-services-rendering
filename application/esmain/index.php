@@ -401,6 +401,7 @@ function render(array $options)
             'src_root' => $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR,
             'TOU' => $Module->getTimesOfUsage(),// times of usage (0:forbidden, -1:unlimited)
             'check' => parse_url($ESObject->getPathfile(), PHP_URL_PATH),
+            'cache_check' => parse_url($ESObject -> getSubUri_file() . '/' . $ESObject -> getObjectIdVersion(), PHP_URL_PATH),
             'display_kind' => mc_Request::fetch('display', 'CHAR', 'dynamic'),// real module path, independent from cache
             'moduleRoot' => realpath(dirname(__FILE__) . '/../../modules/' . $moduleName),
             'token' => Config::get('token'),

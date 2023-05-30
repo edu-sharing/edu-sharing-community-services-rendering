@@ -1,21 +1,21 @@
 <?php
-    global $Locale, $Translate, $MC_URL;
-    require_once (__DIR__ . '/../../../../conf/audio-video.conf.php');
+global $Locale, $Translate, $MC_URL;
+require_once (__DIR__ . '/../../../../conf/audio-video.conf.php');
 
-    $errMsg = new Phools_Message_Default('Video player cannot play back this video.');
-    $conversionMsg = new Phools_Message_Default('inConversionQueue');
-    $settingsLabel = new Phools_Message_Default('Set video resolution');
-    $licid = uniqid();
-    $styleVideo = 'max-width: 100%;';
-    if(isset($_REQUEST['width']) && !empty($_REQUEST['width'])){
-        $styleVideo .= 'width:'.(int)$_REQUEST['width'] . 'px';
-    }
+$errMsg = new Phools_Message_Default('Video player cannot play back this video.');
+$conversionMsg = new Phools_Message_Default('inConversionQueue');
+$settingsLabel = new Phools_Message_Default('Set video resolution');
+$licid = uniqid();
+$styleVideo = 'max-width: 100%;';
+if(isset($_REQUEST['width']) && !empty($_REQUEST['width'])){
+    $styleVideo .= 'width:'.(int)$_REQUEST['width'] . 'px';
+}
 
-    $defaultRes = VIDEO_DEFAULT_RESOLUTION;
-    $videoResolutions = VIDEO_RESOLUTIONS;
-    if ( empty($url[$defaultRes]) ){
-        $defaultRes = $videoResolutions[0];
-    }
+$defaultRes = VIDEO_DEFAULT_RESOLUTION;
+$videoResolutions = VIDEO_RESOLUTIONS;
+if ( empty($url[$defaultRes]) ){
+    $defaultRes = $videoResolutions[0];
+}
 ?>
 
 <style>
@@ -26,29 +26,29 @@
         }
     ?>
 </style>
-    <div class="edusharing_rendering_content_video_wrapper">
-        <video src="<?php echo $url[$defaultRes]?>" style="<?php echo $styleVideo?>" data-tap-disabled="true" id="<?php echo $videoObjectIdentifier?>" data-licid="<?php echo $licid;?>" controls controlsList="nodownload" oncontextmenu="return false;"></video>
-        <div id="edusharing_rendering_content_video_options_container_<?php echo $videoObjectIdentifier ?>" class="edusharing_rendering_content_video_options_container">
-            <button id="edusharing_rendering_content_video_options_button<?php echo $videoObjectIdentifier ?>" class="edusharing_rendering_content_video_options" aria-label="<?php echo $settingsLabel->localize($Locale, $Translate) ?>" aria-haspopup="true">
-                <i class="material-icons edusharing_rendering_content_video_options_toggle">settings</i>
-            </button>
-            <div class="edusharing_rendering_content_video_options_content">
-                <ul role="menu" id="edusharing_rendering_content_video_options_resolutions_<?php echo $videoObjectIdentifier ?>" class="edusharing_rendering_content_video_options_resolutions" aria-labelledby="edusharing_rendering_content_video_options_button<?php echo $videoObjectIdentifier ?>">
-                    <?php
-                    foreach($url as $res => $u) {
-                        if (!empty($u)) {
-                            echo '<li role="menuitemradio" aria-checked="' . ($res == $defaultRes ? 'true' : 'false') . '" tabindex="0" class="option_' . $videoObjectIdentifier . '" id="option_' . $videoObjectIdentifier . '-' . $res . '" data-url="' . $u . '">' . ($res == $defaultRes ? '<i class="material-icons" aria-hidden="true">done</i>' : '') . $res . 'p</li>';
-                        } else {
-                            echo '<li role="menuitemradio" disabled="true" aria-disabled="true" aria-checked="false" class="edusharing_rendering_content_video_options_resolutions_converting" title="' . $conversionMsg->localize($Locale, $Translate) . '">' . $res . 'p</li>';
-                        }
+<div class="edusharing_rendering_content_video_wrapper">
+    <video src="<?php echo $url[$defaultRes]?>" style="<?php echo $styleVideo?>" data-tap-disabled="true" id="<?php echo $videoObjectIdentifier?>" data-licid="<?php echo $licid;?>" controls controlsList="nodownload" oncontextmenu="return false;"></video>
+    <div id="edusharing_rendering_content_video_options_container_<?php echo $videoObjectIdentifier ?>" class="edusharing_rendering_content_video_options_container">
+        <button id="edusharing_rendering_content_video_options_button<?php echo $videoObjectIdentifier ?>" class="edusharing_rendering_content_video_options" aria-label="<?php echo $settingsLabel->localize($Locale, $Translate) ?>" aria-haspopup="true">
+            <i class="material-icons edusharing_rendering_content_video_options_toggle">settings</i>
+        </button>
+        <div class="edusharing_rendering_content_video_options_content">
+            <ul role="menu" id="edusharing_rendering_content_video_options_resolutions_<?php echo $videoObjectIdentifier ?>" class="edusharing_rendering_content_video_options_resolutions" aria-labelledby="edusharing_rendering_content_video_options_button<?php echo $videoObjectIdentifier ?>">
+                <?php
+                foreach($url as $res => $u) {
+                    if (!empty($u)) {
+                        echo '<li role="menuitemradio" aria-checked="' . ($res == $defaultRes ? 'true' : 'false') . '" tabindex="0" class="option_' . $videoObjectIdentifier . '" id="option_' . $videoObjectIdentifier . '-' . $res . '" data-url="' . $u . '">' . ($res == $defaultRes ? '<i class="material-icons" aria-hidden="true">done</i>' : '') . $res . 'p</li>';
+                    } else {
+                        echo '<li role="menuitemradio" disabled="true" aria-disabled="true" aria-checked="false" class="edusharing_rendering_content_video_options_resolutions_converting" title="' . $conversionMsg->localize($Locale, $Translate) . '">' . $res . 'p</li>';
                     }
-                    ?>
-                </ul>
-            </div>
+                }
+                ?>
+            </ul>
         </div>
+    </div>
     <?php if (isset($footer)){
-            echo $footer;
-        } ?>
+        echo $footer;
+    } ?>
     <p id="e_<?php echo $videoObjectIdentifier ?>" style="display: none;"><?php echo $errMsg->localize($Locale, $Translate); ?></p>
 </div>
 
@@ -60,7 +60,6 @@
         $('.option_<?php echo $videoObjectIdentifier ?>').click(function() {
             onOptionClick(this);
         });
-
         $('#edusharing_rendering_content_video_options_button<?php echo $videoObjectIdentifier ?>').click(function() {
             const content = $(this).parent().find('.edusharing_rendering_content_video_options_content');
             if (content.is(':visible')) {
@@ -92,8 +91,8 @@
                 case 'Tab':
                     closeMenu();
                     $(menuButtonSelector).focus();
-                    // Don't call `preventDefault`, so the tab action is executed as if the menu
-                    // button had the focus at the time of the key press and the menu was collapsed.
+                    /* Don't call `preventDefault`, so the tab action is executed as if the menu
+                     button had the focus at the time of the key press and the menu was collapsed. */
                     break;
             }
         });
@@ -115,7 +114,7 @@
             video.load();
             video.play();
             closeMenu();
-            setTimeout(() => { // Don't trigger another button click
+            setTimeout(() => { /* Don't trigger another button click */
                 $(menuButtonSelector).focus();
             });
         }
@@ -158,7 +157,7 @@
         }
 
         function setResByConnection() {
-            // navigator.connection not yet supported by all browsers, so check it first
+            /* navigator.connection not yet supported by all browsers, so check it first */
             if (!navigator.connection) {
                 return;
             }
@@ -167,9 +166,9 @@
 
             let resolution = '<?php echo $videoResolutions[0]; ?>';
             if (downLink >= 5) {
-            resolution = '<?php echo end($videoResolutions); ?>';
+                resolution = '<?php echo end($videoResolutions); ?>';
             } else if (downLink >= 2) {
-            // VIDEO_DEFAULT_RESOLUTION is already set, so we can skip the rest
+                /* VIDEO_DEFAULT_RESOLUTION is already set, so we can skip the rest */
                 return;
             }
 

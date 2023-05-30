@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This product Copyright 2010 metaVentis GmbH.  For detailed notice,
  * see the "NOTICE" file with this distribution.
@@ -187,6 +186,7 @@ if (empty($_SESSION['esrender']['check'])) {
 $l_check = sanitizePath($l_check);
 
 $dest_path = parse_url($l_dest, PHP_URL_PATH);
+$dest_path = substr($l_check, 0, strpos($l_check, 'modules/cache') + 14) . $dest_path;
 
 if (strpos($dest_path, $l_check) !== 0) {
     header('HTTP/1.0 400 Bad Request');
@@ -209,7 +209,7 @@ if (empty($_SESSION['esrender']['display_kind'])) {
 
 // preparing $src_file here to send any 404-header before the included
 $_SESSION['esrender']['mod_path'] = sanitizePath($_SESSION['esrender']['mod_path']);
-$sub_file = substr($l_dest, strlen($_SESSION['esrender']['mod_path']));
+$sub_file = substr($dest_path, strlen($_SESSION['esrender']['mod_path']));
 $src_file = $_SESSION['esrender']['src_root'] . $sub_file;
 
 $src_file = strtok($src_file, '?');

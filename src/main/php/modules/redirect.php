@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This product Copyright 2010 metaVentis GmbH.  For detailed notice,
  * see the "NOTICE" file with this distribution.
@@ -108,6 +107,9 @@ if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST[
 // start session to read object-data
 if (!empty($_GET[$ESRENDER_SESSION_NAME])) {
     $l_sid = $_GET[$ESRENDER_SESSION_NAME];
+} else if(!empty($_COOKIE[$ESRENDER_SESSION_NAME])) {
+    //header('HTTP/1.0 400 Bad Request');
+    $l_sid = $_COOKIE[$ESRENDER_SESSION_NAME];
 } else if(!empty($_SERVER['HTTP_REFERER'])) {
     $parts = parse_url($_SERVER['HTTP_REFERER']);
     parse_str($parts['query'], $query);
@@ -117,9 +119,6 @@ if (!empty($_GET[$ESRENDER_SESSION_NAME])) {
         header('HTTP/1.0 400 Bad Request');
         $l_sid = cc_rd_debug('esrender session missing');
     }
-} else if(!empty($_COOKIE[$ESRENDER_SESSION_NAME])) {
-    //header('HTTP/1.0 400 Bad Request');
-    $l_sid = $_COOKIE[$ESRENDER_SESSION_NAME];
 } else {
     header('HTTP/1.0 400 Bad Request');
     $l_sid = cc_rd_debug('esrender session missing');
@@ -187,13 +186,23 @@ if (empty($_SESSION['esrender']['check'])) {
 $l_check = sanitizePath($l_check);
 
 $dest_path = parse_url($l_dest, PHP_URL_PATH);
+$dest_path = sanitizePath($CC_RENDER_PATH . DIRECTORY_SEPARATOR . $dest_path);
 
-if (strpos($dest_path, $l_check) !== 0) {
+$dest_path = realpath($dest_path);
+
+if ($dest_path === false ||
+    strpos($dest_path, $CC_RENDER_PATH) !== 0 ||
+    (
+        strlen($_SESSION['esrender']['cache_check']) === 0 ||
+        strpos($dest_path, $_SESSION['esrender']['cache_check']) === false
+    ) && (
+        strpos($dest_path, '/h5p/libraries') === false &&
+        strpos($dest_path, '/h5p/content') === false
+    )
+) {
     header('HTTP/1.0 400 Bad Request');
     cc_rd_debug('Permission denied (path access check failed)');
 }
-
-$dest_path = sanitizePath($dest_path);
 
 if (empty($_SESSION['esrender']['file_name'])) {
     $file_name = basename($_SESSION['esrender']['mod_path']);
@@ -208,12 +217,12 @@ if (empty($_SESSION['esrender']['display_kind'])) {
 }
 
 // preparing $src_file here to send any 404-header before the included
+/*
 $_SESSION['esrender']['mod_path'] = sanitizePath($_SESSION['esrender']['mod_path']);
-$sub_file = substr($l_dest, strlen($_SESSION['esrender']['mod_path']));
+$sub_file = substr($dest_path, strlen($_SESSION['esrender']['mod_path']));
 $src_file = $_SESSION['esrender']['src_root'] . $sub_file;
-
-$src_file = strtok($src_file, '?');
-
+$src_file = strtok($src_file, '?');*/
+$src_file = $dest_path;
 if ((!is_file($src_file)) || (!is_readable($src_file))) {
     header("HTTP/1.0 404 Not Found");
     trigger_error('Source-file "' . $src_file . '" not found.', E_USER_ERROR);

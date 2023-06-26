@@ -371,11 +371,11 @@ font-family: 'Open Sans', Arial, sans-serif;
 }
 .dataProtectionRegulations .dataProtectionRegulationsContainer {
 position: absolute;
-width: calc(100% - 40px);
+width: 100%;
 z-index: 1;
 color: #fff;
 text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-padding: 15px 20px;
+padding: 0;
 backdrop-filter: blur(4px);
 background-color: rgba(0, 0, 0, 0.6);
 left: 0;
@@ -383,9 +383,17 @@ bottom: 0;
 }
 .dataProtectionRegulations .dataProtectionRegulationsHeading,
 .dataProtectionRegulations .dataProtectionRegulationsContainer > * {
+padding: 0 5px;
 display: block;
 text-align: center;
 }
+.dataProtectionRegulations .dataProtectionRegulationsContainer > *:first-child {
+padding-top: 20px;
+}
+.dataProtectionRegulations .dataProtectionRegulationsContainer > *:last-child {
+padding-bottom: 10px;
+}
+
 .dataProtectionRegulations .dataProtectionRegulationsContainer a:not(.btn) {
 color: #b6d8fc;
 text-decoration: underline;

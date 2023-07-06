@@ -99,6 +99,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $messagesArray = array_values($this->H5PFramework->getMessages('error'));
         $h5p_error = end($messagesArray);
         $Logger -> warn('There was a problem with the H5P-file ('.$this->esObject->getObjectID().'): '.$h5p_error->code);
+        $Logger -> warn(print_r($h5p_error, true));
 
         @rmdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
         return false;

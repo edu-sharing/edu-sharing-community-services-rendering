@@ -108,6 +108,8 @@ if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST[
 // start session to read object-data
 if (!empty($_GET[$ESRENDER_SESSION_NAME])) {
     $l_sid = $_GET[$ESRENDER_SESSION_NAME];
+} else if(!empty($_COOKIE[$ESRENDER_SESSION_NAME])) {
+    $l_sid = $_COOKIE[$ESRENDER_SESSION_NAME];
 } else if(!empty($_SERVER['HTTP_REFERER'])) {
     $parts = parse_url($_SERVER['HTTP_REFERER']);
     parse_str($parts['query'], $query);

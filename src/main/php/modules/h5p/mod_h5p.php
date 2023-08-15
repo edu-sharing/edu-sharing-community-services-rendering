@@ -207,7 +207,7 @@ extends ESRender_Module_ContentNode_Abstract {
                 data.statement = JSON.stringify(event.data.statement);
                 //console.log("Sending xApi-Event to Repo");
                 event.data.statement.object.id = "'.$this -> esObject -> getPath().'";
-                event.data.statement.object.definition.name = {"en-US": "'.$this->esObject->getTitle().'"};
+                event.data.statement.object.definition.name = '.json_encode(["en-US" => $this->esObject->getTitle()]).';
                 const nodeID = "'.$this->esObject->getObjectID().'";
                 let xhr = new XMLHttpRequest();
                 xhr.open("POST", "'.Config::get('baseUrl').'/rest/node/v1/nodes/-home-/"+nodeID+"/xapi", true);

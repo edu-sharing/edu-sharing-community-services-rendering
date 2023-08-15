@@ -186,18 +186,25 @@ if (empty($_SESSION['esrender']['check'])) {
 $l_check = sanitizePath($l_check);
 
 $dest_path = parse_url($l_dest, PHP_URL_PATH);
-$dest_path = sanitizePath($CC_RENDER_PATH . DIRECTORY_SEPARATOR . $dest_path);
+if(isset($_GET["MODULE"])) {
+    $dest_path = sanitizePath($MC_DOCROOT . DIRECTORY_SEPARATOR . "modules" . DIRECTORY_SEPARATOR . $_GET["MODULE"] . DIRECTORY_SEPARATOR . $dest_path);
+
+} else {
+    $dest_path = sanitizePath($CC_RENDER_PATH . DIRECTORY_SEPARATOR . $dest_path);
+}
 
 $dest_path = realpath($dest_path);
 
 if ($dest_path === false ||
-    strpos($dest_path, $CC_RENDER_PATH) !== 0 ||
-    (
-        strlen($_SESSION['esrender']['cache_check']) === 0 ||
-        strpos($dest_path, $_SESSION['esrender']['cache_check']) === false
-    ) && (
-        strpos($dest_path, '/h5p/libraries') === false &&
-        strpos($dest_path, '/h5p/content') === false
+    (strpos($dest_path, $MC_DOCROOT) !== 0 && isset($_GET["MODULE"])) && (
+        strpos($dest_path, $CC_RENDER_PATH) !== 0 ||
+        (
+            strlen($_SESSION['esrender']['cache_check']) === 0 ||
+            strpos($dest_path, $_SESSION['esrender']['cache_check']) === false
+        ) && (
+            strpos($dest_path, '/h5p/libraries') === false &&
+            strpos($dest_path, '/h5p/content') === false
+        )
     )
 ) {
     header('HTTP/1.0 400 Bad Request');

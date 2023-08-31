@@ -70,17 +70,7 @@ function addContentHeaders($src_file){
     header('Access-Control-Allow-Origin: *');
 }
 
-
-/*
- * h5p stuff
- * */
-if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST['ID'], '..') === false) {
-
-    $_SESSION['esrender']['check'] = $_REQUEST['ID'];
-
-    $rs_name = substr($MC_URL, strrpos($MC_URL, "/") + 1);
-    $src_file = str_replace('/'.$rs_name.'/modules/cache', $CC_RENDER_PATH, $_REQUEST['ID']);
-
+function sendFile($src_file) {
     $filesize = filesize($src_file);
 
     $path_parts = pathinfo($src_file);
@@ -100,6 +90,21 @@ if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST[
         }
         fclose($fd);
     }
+}
+/*
+ * h5p stuff
+ * */
+if($_REQUEST['ID'] === 'h5p-resizer.js' && $_REQUEST['MODULE'] === 'h5p') {
+    sendFile($MC_DOCROOT . '/modules/h5p/' . $_REQUEST['ID']);
+    exit();
+} else if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST['ID'], '..') === false) {
+
+    $_SESSION['esrender']['check'] = $_REQUEST['ID'];
+
+    $rs_name = substr($MC_URL, strrpos($MC_URL, "/") + 1);
+    $src_file = str_replace('/'.$rs_name.'/modules/cache', $CC_RENDER_PATH, $_REQUEST['ID']);
+
+    sendFile($src_file);
     exit();
 
 }

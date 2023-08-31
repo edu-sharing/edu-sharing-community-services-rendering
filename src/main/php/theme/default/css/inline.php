@@ -401,11 +401,6 @@ width: 100%;
 margin-top: 8px;
 }
 
-.edusharing_rendering_content_footer_top .license {
-display: flex;
-flex-wrap: wrap;
-}
-
 .edusharing_rendering_content_footer_top .license_permalink, .edusharing_rendering_content_footer_top .license {
 margin-right: 40px;
 }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.edu_sharing</groupId>
+    <artifactId>edu_sharing-community-services-rendering</artifactId>
+    <version>git</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>edu_sharing-community-services-rendering-deploy-docker</artifactId>
+  <packaging>pom</packaging>
+
+  <name>edu_sharing-community-services-rendering-deploy-docker</name>
+
+  <properties>
+    <postgresql.version.major>13</postgresql.version.major>
+    <postgresql.version.minor>9</postgresql.version.minor>
+    <postgresql.version.patch>0</postgresql.version.patch>
+    <postgresql.version>${postgresql.version.major}.${postgresql.version.minor}.${postgresql.version.patch}</postgresql.version>
+
+    <php.version.major>8</php.version.major>
+    <php.version.minor>1</php.version.minor>
+    <php.version.patch>12</php.version.patch>
+    <php.version>${php.version.major}.${php.version.minor}.${php.version.patch}</php.version>
+
+    <phpredis.version>5.3.7</phpredis.version>
+
+    <docker.from.apache.server>
+      dockerio.mirror.docker.edu-sharing.com/php:${php.version}-apache
+    </docker.from.apache.server>
+
+    <docker.edu_sharing.communty.common.repository>
+      ${docker.registry}/community/common
+    </docker.edu_sharing.communty.common.repository>
+
+    <docker.edu_sharing.community.common.postgresql>
+      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-postgresql:${postgresql.version}
+    </docker.edu_sharing.community.common.postgresql>
+
+    <docker.edu_sharing.community.common.postgresql.exporter>
+      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-postgresql-exporter:0.11.1
+    </docker.edu_sharing.community.common.postgresql.exporter>
+
+    <docker.edu_sharing.community.common.minideb>
+      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-minideb:11
+    </docker.edu_sharing.community.common.minideb>
+  </properties>
+
+  <modules>
+    <module>compose</module>
+    <module>build</module>
+    <module>helm</module>
+  </modules>
+</project>

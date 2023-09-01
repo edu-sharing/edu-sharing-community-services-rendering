@@ -33,6 +33,10 @@
     <!-- release-2 -->
     <bom.repository.version>${project.version}</bom.repository.version>
 
+    <docker.repository>community</docker.repository>
+    <docker.prefix>edu_sharing-community-services-rendering</docker.prefix>
+    <helm.prefix>edu_sharing-community-services-rendering</helm.prefix>
+
   </properties>
 
   <profiles>
@@ -54,185 +58,7 @@
       </properties>
 
     </profile>
-
-    <profile>
-
-      <id>php.no_psalm</id>
-
-      <activation>
-        <activeByDefault>false</activeByDefault>
-        <property>
-          <name>env.PHP_NO_PSALM</name>
-        </property>
-      </activation>
-
-      <build>
-
-        <plugins>
-
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>assembly</id>
-                <configuration>
-                  <skip>true</skip>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-        </plugins>
-
-      </build>
-
-    </profile>
-
   </profiles>
-
-  <build>
-
-    <resources>
-
-      <resource>
-        <directory>src/main/php</directory>
-        <filtering>false</filtering>
-        <excludes>
-          <exclude>install/_tmpl/sql/VERSION.sql</exclude>
-          <exclude>admin/update/update.php</exclude>
-          <exclude>composer.json</exclude>
-        </excludes>
-      </resource>
-
-      <resource>
-        <directory>src/main/php</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>install/_tmpl/sql/VERSION.sql</include>
-          <include>admin/update/update.php</include>
-          <include>composer.json</include>
-        </includes>
-      </resource>
-
-      <resource>
-        <directory>src/main/templates</directory>
-        <filtering>true</filtering>
-      </resource>
-
-    </resources>
-
-    <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>resources</id>
-            <goals>
-              <goal>resources</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <outputDirectory>${project.build.directory}/php</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>uk.co.codezen</groupId>
-        <artifactId>composer-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>install</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <phpPath>php</phpPath>
-              <composerJsonPath>${project.build.directory}/php/composer.json</composerJsonPath>
-              <withDev>true</withDev>
-              <withOptimisedAutoloader>false</withOptimisedAutoloader>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>assembly</id>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <phase>verify</phase>
-            <configuration>
-              <workingDirectory>${project.build.directory}/php</workingDirectory>
-              <executable>${project.build.directory}/php/vendor/bin/psalm</executable>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>repository</id>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <includeArtifactIds>
-                edu_sharing-community-repository-backend-services-rest-client-php
-              </includeArtifactIds>
-              <outputDirectory>
-                ${project.build.directory}/php/vendor/${composer.vendor}/community-repository-rest-client
-              </outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/bin.xml</descriptor>
-          </descriptors>
-        </configuration>
-        <executions>
-          <execution>
-            <id>assembly</id>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <phase>package</phase>
-          </execution>
-        </executions>
-      </plugin>
-
-    </plugins>
-
-  </build>
-
-  <dependencies>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>edu_sharing-community-repository-backend-services-rest-client-php</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-    </dependency>
-
-  </dependencies>
 
   <dependencyManagement>
 
@@ -248,11 +74,67 @@
 
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>edu_sharing-community-services-rendering</artifactId>
+        <artifactId>edu_sharing-community-services-rendering-service</artifactId>
         <version>${project.version}</version>
         <type>tar.gz</type>
         <classifier>bin</classifier>
       </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-services-rendering-service-deploy-docker-compose</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-services-rendering-deploy-docker-compose</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-services-rendering-deploy-docker-helm-bundle</artifactId>
+        <version>${project.version}</version>
+        <type>tar.gz</type>
+        <classifier>bin</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-services-rendering-deploy-docker-helm-service</artifactId>
+        <version>${project.version}</version>
+        <type>tar.gz</type>
+        <classifier>bin</classifier>
+      </dependency>
+
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-services-rendering-deploy-docker-helm-postgresql</artifactId>
+        <version>${project.version}</version>
+        <type>tar.gz</type>
+        <classifier>bin</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-services-rendering-deploy-docker-helm-rediscluster</artifactId>
+        <version>${project.version}</version>
+        <type>tar.gz</type>
+        <classifier>bin</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-services-rendering-deploy-docker-helm-service</artifactId>
+        <version>${project.version}</version>
+        <type>tar.gz</type>
+        <classifier>bin</classifier>
+      </dependency>
+
+
 
     </dependencies>
 
@@ -287,5 +169,10 @@
     </repository>
 
   </repositories>
+
+  <modules>
+    <module>service</module>
+    <module>deploy</module>
+  </modules>
 
 </project>

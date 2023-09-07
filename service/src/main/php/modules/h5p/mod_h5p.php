@@ -98,7 +98,8 @@ extends ESRender_Module_ContentNode_Abstract {
 
         $messagesArray = array_values($this->H5PFramework->getMessages('error'));
         $h5p_error = end($messagesArray);
-        $Logger -> debug('There was a problem with the H5P-file ('.$this->esObject->getObjectID().'): '.$h5p_error->code);
+        $Logger -> warn('There was a problem with the H5P-file ('.$this->esObject->getObjectID().'): '.$h5p_error->code);
+        $Logger -> warn(print_r($h5p_error, true));
 
         @rmdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->esObject->getObjectID()));
         return false;
@@ -206,7 +207,7 @@ extends ESRender_Module_ContentNode_Abstract {
                 data.statement = JSON.stringify(event.data.statement);
                 //console.log("Sending xApi-Event to Repo");
                 event.data.statement.object.id = "'.$this -> esObject -> getPath().'";
-                event.data.statement.object.definition.name = {"en-US": "'.$this->esObject->getTitle().'"};
+                event.data.statement.object.definition.name = '.json_encode(["en-US" => $this->esObject->getTitle()]).';
                 const nodeID = "'.$this->esObject->getObjectID().'";
                 let xhr = new XMLHttpRequest();
                 xhr.open("POST", "'.Config::get('baseUrl').'/rest/node/v1/nodes/-home-/"+nodeID+"/xapi", true);

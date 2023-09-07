@@ -1,4 +1,6 @@
-Options FollowSymLinks
-RewriteEngine Off
 
-RewriteRule ^.* redirect.php?ID=%{REQUEST_URI}&%{QUERY_STRING}
+Options FollowSymLinks
+RewriteEngine On
+
+# RewriteRule ^.* ../redirect.php?ID=%{REQUEST_URI}&%{QUERY_STRING}
+RewriteRule (^.*) ../redirect.php?ID=$1&$2&MODULE=h5p [PT,B,QSA]

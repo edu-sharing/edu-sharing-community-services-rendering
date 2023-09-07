@@ -65,6 +65,7 @@
                 <directory name="modules" />
                 <referencedClass name="Phools_*" />
                 <referencedClass name="ESRender_*" />
+                <referencedClass name="mod_*" />
                 <referencedClass name="esrender_module_contentnode_abstract" />
                 <referencedClass name="ESObject" />
                 <referencedClass name="Config" />
@@ -76,8 +77,14 @@
         <InvalidScope>
             <errorLevel type="info">
                 <directory name="admin/view" />
+                <directory name="modules" />
             </errorLevel>
         </InvalidScope>
+        <MissingDependency>
+            <errorLevel type="info">
+                <directory name="modules" />
+            </errorLevel>
+        </MissingDependency>
         <InvalidThrow>
             <errorLevel type="info">
                 <directory name="modules" />

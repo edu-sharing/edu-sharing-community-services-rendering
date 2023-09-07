@@ -1,7 +1,7 @@
 function replaceData(event, id, html) {
-    console.log(event, id, html);
     event.preventDefault();
-    jQuery('#' + id + '-data').html(html);
+    const htmlElement = document.getElementById(id + '-data');
+    htmlElement.innerHTML = html;
     jQuery('#' + id + '-data').show();
     jQuery('#' + id + '-privacy').hide();
 }
@@ -31,9 +31,11 @@ function continueDataRegulation(event, id = null) {
     });
 }
 jQuery( document ).ready(() => {
-    document.querySelectorAll('.dataProtectionRegulationsButton').forEach(b =>
-        b.addEventListener('click', evt =>
-            replaceData(event, b.getAttribute('data-id'), b.getAttribute('data-content'))
-        )
-    );
+    document.querySelectorAll('.dataProtectionRegulationsButton').forEach(b => {
+        if (b.hasAttribute('data-id')) {
+            b.addEventListener('click', evt =>
+                replaceData(event, b.getAttribute('data-id'), b.getAttribute('data-content'))
+            )
+        }
+    });
 });

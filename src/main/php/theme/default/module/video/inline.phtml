@@ -60,13 +60,8 @@ if ( empty($url[$defaultRes]) ){
         $('.option_<?php echo $videoObjectIdentifier ?>').click(function() {
             onOptionClick(this);
         });
-        $('#edusharing_rendering_content_video_options_button<?php echo $videoObjectIdentifier ?>').click(function() {
-            const content = $(this).parent().find('.edusharing_rendering_content_video_options_content');
-            if (content.is(':visible')) {
-                closeMenu();
-            } else {
-                openMenu();
-            }
+        $('#edusharing_rendering_content_video_options_button<?php echo $videoObjectIdentifier ?>').on("click", function() {
+            $(this).parent().find('.edusharing_rendering_content_video_options_content').toggle();
         });
 
         $('.option_<?php echo $videoObjectIdentifier ?>').keydown((event) => {

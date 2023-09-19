@@ -113,7 +113,6 @@ if($_REQUEST['ID'] === 'h5p-resizer.js' && $_REQUEST['MODULE'] === 'h5p') {
 if (!empty($_GET[$ESRENDER_SESSION_NAME])) {
     $l_sid = $_GET[$ESRENDER_SESSION_NAME];
 } else if(!empty($_COOKIE[$ESRENDER_SESSION_NAME])) {
-    //header('HTTP/1.0 400 Bad Request');
     $l_sid = $_COOKIE[$ESRENDER_SESSION_NAME];
 } else if(!empty($_SERVER['HTTP_REFERER'])) {
     $parts = parse_url($_SERVER['HTTP_REFERER']);

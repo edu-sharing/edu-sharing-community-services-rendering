@@ -231,7 +231,7 @@ class cacheCleaner
     }
 }
 
-$cleaner = new cacheCleaner(isset($argc) ? $argv[1] : null);
+$cleaner = new cacheCleaner(isset($argc) && isset($argv[1]) ? $argv[1] : null);
 $cleaner->renderPath = $CC_RENDER_PATH;
 if (!empty($CC_RENDER_PATH_SAFE)) {
     $cleaner->renderPathSave = $CC_RENDER_PATH_SAFE;

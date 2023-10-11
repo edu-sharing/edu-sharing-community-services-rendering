@@ -99,7 +99,7 @@ class cacheCleaner
                     $this->logger->info($e->getMessage());
                 }
                 if ($h5pID === null) {
-                    $this->logger->warning('No entry found in h5p_contents for object:' . $esobject->getObjectID() . "-v" . $esobject->getContentHash());
+                    $this->logger->info('No entry found in h5p_contents for object:' . $esobject->getObjectID() . "-v" . $esobject->getContentHash());
                 } else {
                     $this->logger->info('h5pID: ' . $h5pID);
                     try {
@@ -219,12 +219,21 @@ class cacheCleaner
         $sql = 'SELECT * FROM "ESOBJECT" WHERE "ESOBJECT_ESMODULE_ID" = ' . $moduleId;
         $results = $this->pdo->query($sql)->fetchAll();
         if (count($results) === 0) {
-            $this->logger->info('Nothing to clear for module ' . $this->module . '.');
+            $this->logger->info('No entries in ESOBJECT found for module ' . $this->module . '. If applicable, invalid data remnants will be deleted.');
             return;
         }
         foreach ($results as $esObject) {
             $this->deleteUndemandedObject($esObject["ESOBJECT_ID"]);
         }
+        // Clean up all remaining data
+        $cachePath = $this->renderPath . DIRECTORY_SEPARATOR . $this->module;
+        is_dir($cachePath) && $this->removeDir($cachePath);
+        $truncateLibs = $this->pdo->prepare('TRUNCATE TABLE "h5p_contents_libraries"');
+        $truncateLibs->execute();
+        $truncateContent = $this->pdo->prepare('TRUNCATE TABLE "h5p_contents"');
+        $truncateContent->execute();
+        $truncateAllLibs = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries"');
+        $truncateAllLibs->execute();
     }
 }
 

@@ -220,7 +220,6 @@ class cacheCleaner
         $results = $this->pdo->query($sql)->fetchAll();
         if (count($results) === 0) {
             $this->logger->info('No entries in ESOBJECT found for module ' . $this->module . '. If applicable, invalid data remnants will be deleted.');
-            return;
         }
         foreach ($results as $esObject) {
             $this->deleteUndemandedObject($esObject["ESOBJECT_ID"]);
@@ -234,6 +233,12 @@ class cacheCleaner
         $truncateContent->execute();
         $truncateAllLibs = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries"');
         $truncateAllLibs->execute();
+        $truncateLibsLibs = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries_libraries"');
+        $truncateLibsLibs->execute();
+        $truncateLibsLangs = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries_languages"');
+        $truncateLibsLangs->execute();
+        $truncateHubCache = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries_hub_cache"');
+        $truncateHubCache->execute();
     }
 }
 

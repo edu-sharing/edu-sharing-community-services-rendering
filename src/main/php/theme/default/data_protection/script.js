@@ -38,4 +38,12 @@ jQuery( document ).ready(() => {
             )
         }
     });
+    const downloadUrl = document.getElementById("esRenderDownloadUrl");
+    if(downloadUrl) {
+        function registerDownloadUrl() {
+           try{window.ngRender.setDownloadUrl(downloadUrl.value);}catch(err){console.log(err)}
+        }
+        registerDownloadUrl();
+        setTimeout(registerDownloadUrl, 1000);
+    }
 });

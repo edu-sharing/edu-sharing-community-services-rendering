@@ -86,13 +86,16 @@ class ESRender_Plugin_Omega
         ])->getStatusCode();
     }
 
-    protected function evaluateResponse($response = null, $esObject) {
+    protected function evaluateResponse($responseString = null, $esObject) {
 
-        if(empty($response)){
+        if(empty($responseString)){
             throw new ESRender_Exception_Omega('API respsonse is empty');
         }
 
-        $response = json_decode($response);
+        $response = json_decode($responseString);
+        if(!$response) {
+            throw new ESRender_Exception_Omega('Invalid JSON-Data from Sodis API: ' . $responseString);
+        }
 
         if($response->get->identifier !== $esObject->getNodeProperty('ccm:replicationsourceid')){
             throw new ESRender_Exception_Omega('Wrong identifier');
@@ -144,16 +147,16 @@ class ESRender_Plugin_Omega
         }
         $url = $this->url . '?token_id=' . $replicationSourceId . '&role=' . $role . '&user=' . $this->user;
         $client = GuzzleHelper::getClient();
-		$preExec = microtime(true);
+        $preExec = microtime(true);
         $response = $client->get($url, [
             'headers' => [
                 'User-Agent' => $_SERVER['HTTP_USER_AGENT']
             ],
             'http_errors' => false
         ]);
-		$postExec = microtime(true);
-		$diff = $postExec - $preExec;
-		$logger->debug('Omega API request took '. $diff .' seconds');
+        $postExec = microtime(true);
+        $diff = $postExec - $preExec;
+        $logger->debug('Omega API request took '. $diff .' seconds');
         $logger->info('Called ' . $url . ' got ' . $response->getBody());
         return $response->getBody();
     }

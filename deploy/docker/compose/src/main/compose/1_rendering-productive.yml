@@ -2,6 +2,9 @@ version: '3.7'
 
 services:
 
+  services-rendering-cache:
+    restart: unless-stopped
+
   services-rendering-database:
     restart: unless-stopped
 

@@ -135,7 +135,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 90 );
+		curl_setopt($ch, CURLOPT_TIMEOUT, 600 );
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$resp = curl_exec($ch);
 		echo curl_error($ch);

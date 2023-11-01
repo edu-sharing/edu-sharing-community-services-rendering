@@ -93,29 +93,27 @@ class cacheCleaner
                 try {
                     $query = "SELECT id FROM h5p_contents WHERE title='" . $esobject->getObjectID() . "-v" . $esobject->getContentHash() . "'";
                     $statement = $this->pdo->query($query);
-                    $h5pID = $statement->fetchAll(\PDO::FETCH_OBJ)[0]->id;
+                    $contentResult = $statement->fetchAll(\PDO::FETCH_OBJ);
+                    $h5pID = ! empty($contentResult) ? $contentResult[0]->id : null;
                 } catch (PDOException $e) {
                     $this->logger->info($e->getMessage());
                 }
-
-                $this->logger->info('h5pID: ' . $h5pID);
-
-                //delete h5p entry
-                try {
-                    $query_libraries = "DELETE FROM h5p_contents_libraries WHERE content_id = " . $h5pID;
-                    $statement_libraries = $this->pdo->query($query_libraries);
-                    $results_libraries = $statement_libraries->execute();
-
-                    $query = "DELETE FROM h5p_contents WHERE title='" . $esobject->getObjectID() . "-v" . $esobject->getContentHash() . "'";
-                    $statement = $this->pdo->query($query);
-                    $result = $statement->execute();
-                    $this->logger->info('deleted h5p-' . $h5pID . ' from db.');
-                } catch (PDOException $e) {
-                    $this->logger->info($e->getMessage());
-                }
-
-                //delete cache folder
-                if ($h5pID) {
+                if ($h5pID === null) {
+                    $this->logger->info('No entry found in h5p_contents for object:' . $esobject->getObjectID() . "-v" . $esobject->getContentHash());
+                } else {
+                    $this->logger->info('h5pID: ' . $h5pID);
+                    try {
+                        $query_libraries = "DELETE FROM h5p_contents_libraries WHERE content_id = " . $h5pID;
+                        $statement_libraries = $this->pdo->query($query_libraries);
+                        $statement_libraries->execute();
+                        $query = "DELETE FROM h5p_contents WHERE title='" . $esobject->getObjectID() . "-v" . $esobject->getContentHash() . "'";
+                        $statement = $this->pdo->query($query);
+                        $statement->execute();
+                        $this->logger->info('deleted h5p-' . $h5pID . ' from db.');
+                    } catch (PDOException $e) {
+                        $this->logger->info($e->getMessage());
+                    }
+                    //delete cache folder
                     $dirPath = $this->renderPath . DIRECTORY_SEPARATOR . $module->getName() . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $h5pID;
                     if (!$this->removeDir($dirPath)) {
                         $this->logger->info('could not delete ' . $dirPath);
@@ -123,7 +121,6 @@ class cacheCleaner
                         $this->logger->info('deleted ' . $dirPath);
                     }
                 }
-
             }
 
             //delete cache folder
@@ -222,12 +219,26 @@ class cacheCleaner
         $sql = 'SELECT * FROM "ESOBJECT" WHERE "ESOBJECT_ESMODULE_ID" = ' . $moduleId;
         $results = $this->pdo->query($sql)->fetchAll();
         if (count($results) === 0) {
-            $this->logger->info('Nothing to clear for module ' . $this->module . '.');
-            return;
+            $this->logger->info('No entries in ESOBJECT found for module ' . $this->module . '. If applicable, invalid data remnants will be deleted.');
         }
         foreach ($results as $esObject) {
             $this->deleteUndemandedObject($esObject["ESOBJECT_ID"]);
         }
+        // Clean up all remaining data
+        $cachePath = $this->renderPath . DIRECTORY_SEPARATOR . $this->module;
+        is_dir($cachePath) && $this->removeDir($cachePath);
+        $truncateLibs = $this->pdo->prepare('TRUNCATE TABLE "h5p_contents_libraries"');
+        $truncateLibs->execute();
+        $truncateContent = $this->pdo->prepare('TRUNCATE TABLE "h5p_contents"');
+        $truncateContent->execute();
+        $truncateAllLibs = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries"');
+        $truncateAllLibs->execute();
+        $truncateLibsLibs = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries_libraries"');
+        $truncateLibsLibs->execute();
+        $truncateLibsLangs = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries_languages"');
+        $truncateLibsLangs->execute();
+        $truncateHubCache = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries_hub_cache"');
+        $truncateHubCache->execute();
     }
 }
 

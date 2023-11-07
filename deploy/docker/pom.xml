@@ -35,7 +35,9 @@
     <docker.edu_sharing.communty.common.repository>
       ${docker.registry}/community/common
     </docker.edu_sharing.communty.common.repository>
-
+    <docker.edu_sharing.community.common.redis>
+      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-redis:6.2.7
+    </docker.edu_sharing.community.common.redis>
     <docker.edu_sharing.community.common.postgresql>
       ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-postgresql:${postgresql.version}
     </docker.edu_sharing.community.common.postgresql>

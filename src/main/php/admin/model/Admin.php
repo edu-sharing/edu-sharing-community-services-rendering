@@ -10,14 +10,9 @@
  		
  		
  		switch($_REQUEST['action']) {
- 			case 'dbtool':
- 				$this -> initDbtool();
- 				exit();
- 			break;
  			case 'doupdate':
  				$this -> initUpdate(true);
  				exit();
- 			break;
  			case 'update':
  				$this -> initUpdate();
  				exit();
@@ -32,11 +27,6 @@
  	
  	private function initUpdate($do = false) {
  		$updater = new Updater($do);
- 	}
- 	
- 	private function initDbtool() {
- 		global $MC_URL;
- 		header('Location: ' . $MC_URL . '/admin/vendor/adminer-4.8.0.php', TRUE, 302);
  	}
 
      private function initH5ptool() {

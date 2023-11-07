@@ -148,6 +148,7 @@ extends ESRender_Module_Base
        		$data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
        $data['previewUrl'] = $this-> esObject ->getPreviewUrl();
        $data['title'] = $this-> esObject ->getTitle();
+       $data['node'] = $this-> esObject ->getNode();
        $user = $this -> esObject -> getUser();
        $data['loginAvailable'] = empty($user -> userName) || $user -> isGuest;
        echo $this->getTemplate()->render('/module/default/dynamic', $data);

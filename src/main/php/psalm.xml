@@ -106,7 +106,6 @@
             <directory name="admin/cli" />
             <directory name="func/extern" />
             <directory name="vendor" />
-            <directory name="admin/vendor" />
             <directory name="modules/lti/ims-blti" />
             <!-- module seems unused, may delete it entirely? -->
             <directory name="func/classes.new/ESRender/Form" />

@@ -2,4 +2,6 @@
 Options FollowSymLinks
 RewriteEngine On
 
-RewriteRule ^.* ../redirect.php?ID=%{REQUEST_URI}&%{QUERY_STRING}
+# breaks on apache 2.4.56 or later
+# RewriteRule ^.* ../redirect.php?ID=%{REQUEST_URI}&%{QUERY_STRING}
+RewriteRule (^.*) ../redirect.php?ID=$1&$2 [PT,B,QSA]

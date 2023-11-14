@@ -139,25 +139,6 @@
       </plugin>
 
       <plugin>
-        <groupId>uk.co.codezen</groupId>
-        <artifactId>composer-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>install</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <phpPath>php</phpPath>
-              <composerJsonPath>${project.build.directory}/php/composer.json</composerJsonPath>
-              <withDev>true</withDev>
-              <withOptimisedAutoloader>false</withOptimisedAutoloader>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <executions>
@@ -170,6 +151,39 @@
             <configuration>
               <workingDirectory>${project.build.directory}/php</workingDirectory>
               <executable>${project.build.directory}/php/vendor/bin/psalm</executable>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>uk.co.codezen</groupId>
+        <artifactId>composer-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>repository1</id>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <phpPath>php</phpPath>
+              <composerJsonPath>${project.build.directory}/php/composer.json</composerJsonPath>
+              <withDev>true</withDev>
+              <withOptimisedAutoloader>false</withOptimisedAutoloader>
+            </configuration>
+          </execution>
+          <execution>
+            <id>repository2</id>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <phase>verify</phase>
+            <configuration>
+              <phpPath>php</phpPath>
+              <composerJsonPath>${project.build.directory}/php/composer.json</composerJsonPath>
+              <withDev>false</withDev>
+              <withOptimisedAutoloader>false</withOptimisedAutoloader>
             </configuration>
           </execution>
         </executions>

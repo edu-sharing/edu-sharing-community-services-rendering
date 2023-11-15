@@ -11,6 +11,10 @@ class ESRender_Plugin_Omega
     protected $url;
     protected $user;
     protected $validateUrls;
+    /**
+     * comma seperated list of whitelisted prefix
+     */
+    protected $identifierPrefixWhitelist;
 
     /**
      * warning: new signature!
@@ -20,7 +24,8 @@ class ESRender_Plugin_Omega
     public function __construct($options = [
         "url" => '',
         "user" => 'dabiplus',
-        "validateUrls" => true
+        "validateUrls" => true,
+        "identifierPrefixWhitelist" => ''
     ]) {
         parent::__construct($options);
     }
@@ -56,6 +61,24 @@ class ESRender_Plugin_Omega
         if($hasLocalContent) {
             $logger->info('Object has local content, will not trigger omega api!');
         }
+        $hasWhitelist = isset($this->identifierPrefixWhitelist) && strlen($this->identifierPrefixWhitelist) > 0;
+
+        if($hasWhitelist) {
+            $repId = $esObject->getNodeProperty('ccm:replicationsourceid');
+            $inWhitelist = false;
+            foreach (explode(',', $this->identifierPrefixWhitelist) as $prefix) {
+                $prefix = trim($prefix);
+                if($prefix == substr($repId, 0, strlen($prefix))) {
+                    $inWhitelist = true;
+                    break;
+                }
+            }
+            if(!$inWhitelist) {
+                $logger->info("Object $repId not in whitelist array, will not trigger omega api!");
+                return;
+            }
+        }
+
         if ($esObject->getNodeProperty('ccm:replicationsource') == 'DE.FWU' && !$hasLocalContent)  {
 
             if($esObject->getNodeProperty('cclom:format') == ''){

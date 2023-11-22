@@ -194,10 +194,13 @@ class mod_url
 
     protected function getAudioEmbedding($footer = '')
     {
+        $vidId = uniqid('vid_');
         $html = '<div class="edusharing_audio_wrapper">';
         $html .= '<img alt="" class="edusharing_audio_bg" src="'. $this->esObject->getNode()->preview->url.'">';
         $html .= '<div class="edusharing_audio_img"><img alt="" src="'. $this->esObject->getNode()->preview->url.'"></div>';
-        $html .= '<video style="max-width:100%" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls" oncontextmenu="return false;"></video>' . $footer . '</div>';
+        $html .= '<video style="max-width:100%" data-eduid="' . $vidId . '" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls" oncontextmenu="return false;"></video>' . $footer . '</div>';
+        $html .= '<script>let vid = document.querySelector("[data-eduid=' . $vidId .']"); const timeStamps = window.location.hash.substring(1); if (timeStamps !== "") {vid.src = vid.src + "#" + timeStamps;}</script>';
+
         return $html;
     }
 

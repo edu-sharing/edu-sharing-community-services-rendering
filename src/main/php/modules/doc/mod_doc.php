@@ -65,8 +65,6 @@ class mod_doc
         $template_data               = parent::prepareRenderData($showMetadata);
         $template_data['previewUrl'] = $this->esObject->getPreviewUrl();
 
-        // get the initial page from the es object
-        $initialPage = 1;
         // get the rights from the es object
         $hasDownloadRight       = true;
         $hasPrintRight          = true;
@@ -83,9 +81,6 @@ class mod_doc
                 }
                 $esOptions                = ['allowDownload' => $removePrintAndDownload ? 0 : 1];
                 $template_data['content'] .= '&esOptions=' . base64_encode(json_encode($esOptions));
-                if ($initialPage > 1) {
-                    $template_data['content'] .= '#page=' . $initialPage;
-                }
                 $template_data['url'] = $this->esObject->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
             }
             if ($this->getDoctype() == DOCTYPE_HTML) {

@@ -1,13 +1,26 @@
+<?php
+global $MC_URL, $Locale, $Translate;
+$msg = array();
+$msg['toDownload'] = new Phools_Message_Default('toDownload');
+$msg['cannotOpenObject'] = new Phools_Message_Default('cannotOpenObject');
+$msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText');
+?>
+
 <style>
     <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
 </style>
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
     <div class="edusharing_rendering_content_wrapper" >
-            <?php echo '<div class="edusharing_rendering_content edusharing_rendering_content_embedded">' .
-                '<iframe title="' . $title . '" src="' . $content . '" width="100%" height="100%" style="border: none;">' .
-                '</iframe>'.
-                '</div>';
-        ?>
+        <iframe id="docFrame" src="<?php echo $MC_URL; ?>/vendor/js/pdfJS/index.php?file=<?php echo $content; ?>" style="width:100%;height:100%;min-height:calc(100vh - 150px);mborder: none;">
+            <h3><?php echo $msg['cannotOpenObject']->localize($Locale, $Translate); ?></h3>
+            <h4><?php echo $msg['cannotOpenObjectText']->localize($Locale, $Translate); ?></h4>
+        </iframe>
+        <script>
+            const page = window.location.hash.substring(1);
+            if (page !== null && page.includes("page=")) {
+                const docFrame = document.getElementById("docFrame");
+                docFrame.src = docFrame.src + "#" + page;
+            }
+        </script>
     </div>
-    <?php echo $footer?>
 </div>

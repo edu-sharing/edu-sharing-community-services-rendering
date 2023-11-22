@@ -57,6 +57,12 @@ if ( empty($url[$defaultRes]) ){
         const menuContainerSelector = '#edusharing_rendering_content_video_options_container_<?php echo $videoObjectIdentifier ?>';
         const menuButtonSelector = '#edusharing_rendering_content_video_options_button<?php echo $videoObjectIdentifier ?>';
 
+        const timeStamps = window.location.hash.substring(1);
+        if (timeStamps !== "") {
+            const video = document.getElementById('<?php echo $videoObjectIdentifier ?>');
+            video.src = video.src + '#' + timeStamps;
+        }
+
         $('.option_<?php echo $videoObjectIdentifier ?>').click(function() {
             onOptionClick(this);
         });

@@ -2,8 +2,22 @@ function replaceData(event, id, html) {
     event.preventDefault();
     const htmlElement = document.getElementById(id + '-data');
     htmlElement.innerHTML = html;
-    jQuery('#' + id + '-data').show();
-    jQuery('#' + id + '-privacy').hide();
+    if (typeof addParameters === 'function') {
+        addParameters(id + '-data');
+        jQuery('#' + id + '-data').show();
+        jQuery('#' + id + '-privacy').hide();
+    } else {
+        const getJsScript = document.getElementById('eduGetJS');
+        let script = document.createElement('script');
+        script.setAttribute('src', getJsScript.getAttribute('src').replace('getJS.php', 'dataProtectionHelper.js'));
+        script.setAttribute('type', 'text/javascript');
+        document.head.appendChild(script);
+        script.addEventListener('load', () => {
+            addParameters(id + '-data');
+            jQuery('#' + id + '-data').show();
+            jQuery('#' + id + '-privacy').hide();
+        })
+    }
 }
 function continueDataRegulation(event, id = null) {
     event.preventDefault();

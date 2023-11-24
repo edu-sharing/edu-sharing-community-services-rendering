@@ -19,6 +19,10 @@ $licid = uniqid();
 <script>
     var obj_<?php echo $licid;?> = document.querySelector("[data-licid='<?php echo $licid;?>']");
     var wrapper_<?php echo $licid;?> = obj_<?php echo $licid;?>.parentNode;
+    const timeStamps = window.location.hash.substring(1);
+    if (timeStamps !== "") {
+        obj_<?php echo $licid;?>.src = obj_<?php echo $licid;?>.src + '#' + timeStamps;
+    }
     if((' ' + wrapper_<?php echo $licid?>.className + ' ').indexOf(' edu_wrapper ') > -1) {
 	    var objWidth_<?php echo $licid;?> = obj_<?php echo $licid;?>.clientWidth + 'px';
 	    for (var i = 0; i < wrapper_<?php echo $licid;?>.childNodes.length; i++) {

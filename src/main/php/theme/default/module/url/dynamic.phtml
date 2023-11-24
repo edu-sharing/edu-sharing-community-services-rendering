@@ -30,8 +30,11 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 </div>
 
 <?php
-$downloadUrl = Config::get('downloadUrl');
-if(!empty($downloadUrl))
-    echo '<script>setTimeout(function() {try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){console.log(err)}}, 1000);</script>';
+if (!$dataProtection) {
+    $downloadUrl = Config::get('downloadUrl');
+    if(!empty($downloadUrl)) {
+        echo '<script>setTimeout(function() {try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){console.log(err)}}, 1000);</script>';
+    }
+}
 ?>
 

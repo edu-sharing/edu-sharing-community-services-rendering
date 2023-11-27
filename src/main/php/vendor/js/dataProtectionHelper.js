@@ -7,7 +7,13 @@ const addParameters = (id) => {
             return false;
         })
         if (hash.includes('t=')) {
-            videoElement.setAttribute('src', videoElement.getAttribute('src') + hash);
+            if(videoElement.hasAttribute("src")) {
+                videoElement.setAttribute('src', videoElement.getAttribute('src') + hash);
+            }
+            const tags = videoElement.getElementsByTagName("source");
+            if(tags.length > 0) {
+                videoElement.setAttribute('src', tags[0].getAttribute('src') + hash);
+            }
         }
     }
 }

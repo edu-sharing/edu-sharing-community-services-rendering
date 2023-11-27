@@ -40,6 +40,7 @@
                 <referencedVariable name="$ROOT_URI" />
                 <referencedVariable name="$INTERNAL_URL" />
                 <referencedVariable name="$CC_RENDER_PATH" />
+                <referencedVariable name="$CUSTOM_CONTENT_URL" />
                 <referencedVariable name="$homeRep" />
             </errorLevel>
         </UndefinedGlobalVariable>

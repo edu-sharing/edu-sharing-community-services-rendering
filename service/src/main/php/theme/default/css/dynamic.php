@@ -4,12 +4,6 @@ header("Content-type: text/css");
 global $MC_URL;?>
 */
 
-body {
-padding: 0;
-margin: 0;
-height: auto !important;
-}
-
 .edusharing_rendering_cursor_pointer {
 cursor: pointer;
 }

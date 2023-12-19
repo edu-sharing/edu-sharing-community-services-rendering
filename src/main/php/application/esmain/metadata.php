@@ -63,7 +63,7 @@ $element -> appendChild($entry);
 $entry = getEntryElement($dom, 'trustedclient', $hc -> prop_array['trustedclient']);
 $element -> appendChild($entry);
 
-$entry = getEntryElement($dom, 'contenturl', $cep_url);
+$entry = getEntryElement($dom, 'contenturl', $CUSTOM_CONTENT_URL ? $CUSTOM_CONTENT_URL : $cep_url);
 $element -> appendChild($entry);
 
 $entry = getEntryElement($dom, 'public_key', $hc -> prop_array['public_key']);

@@ -4,6 +4,7 @@
 $MC_URL = '[[[TOKEN_URL]]]';
 $INTERNAL_URL = '';
 $MC_DOCROOT= '[[[TOKEN_DOCROOT]]]';
+$CUSTOM_CONTENT_URL = '';
 
 # RENDER PATH SETTINGS
 # required ends with a slash

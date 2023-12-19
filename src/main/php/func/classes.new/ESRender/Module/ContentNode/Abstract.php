@@ -97,6 +97,7 @@ extends ESRender_Module_Base
             } catch(Exception $e){
                 $Logger->error('Exception while fetching content: ' . $e->getMessage());
                 $Logger->error('Error fetching content from ' . $url);
+                return false;
             }
 
             $Logger->info('Stored content in file "'.$cacheFile.'". ');

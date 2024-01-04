@@ -97,7 +97,9 @@ extends ESRender_Module_ContentNode_Abstract {
                      * */
                     foreach (VIDEO_RESOLUTIONS as $resolution) {
                         $outputFilename = $this -> getOutputFilename($format, $resolution);
-                        if (!file_exists($outputFilename) && !$this->esObject->conversionFailed($format)) {
+                        $fileExists = file_exists($outputFilename);
+                        $copyInProgress = $fileExists && $this->esObject->currentlyInConversion($format, $resolution);
+                        if (!$fileExists && !$this->esObject->conversionFailed($format)) {
                             if (!$this->esObject->inConversionQueue($format, $resolution) && $this->esObject->getId() > 0) {
                                 $this->esObject->addToConversionQueue($format, $this->getCacheFileName(), $outputFilename, $this->esObject->getMimeType(),$resolution);
                             }
@@ -105,7 +107,11 @@ extends ESRender_Module_ContentNode_Abstract {
                             if (VIDEO_FORMATS[0] == $format && $resolution == VIDEO_RESOLUTIONS[0] && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED)){
                                 $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
                             }
-
+                        } elseif ($copyInProgress) {
+                            //show lock screen (progress bar) but not in display mode 'window' and 'dynamic'
+                            if (VIDEO_FORMATS[0] == $format && $resolution == VIDEO_RESOLUTIONS[0] && ($p_kind != ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC && $p_kind != ESRender_Application_Interface::DISPLAY_MODE_EMBED)){
+                                $p_kind = ESRender_Application_Interface::DISPLAY_MODE_LOCKED;
+                            }
                         }
                     }
                 }

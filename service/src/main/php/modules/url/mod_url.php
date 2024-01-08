@@ -35,6 +35,14 @@ class mod_url
         return $embedding;
     }
 
+    private function getIsBehindDataProtection(): bool {
+        global $DATAPROTECTIONREGULATION_CONFIG;
+        if (!isset($DATAPROTECTIONREGULATION_CONFIG)) {
+            $DATAPROTECTIONREGULATION_CONFIG = ["enabled" => false];
+        }
+        return $DATAPROTECTIONREGULATION_CONFIG["enabled"];
+    }
+
     protected function dynamic() {
         if (!$this -> validate()) {
             return false;
@@ -51,6 +59,7 @@ class mod_url
             $tempArray['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
 
         $tempArray['title'] = $this -> esObject->getTitle();
+        $tempArray['dataProtection'] = $this->getIsBehindDataProtection();
         echo $Template -> render('/module/url/dynamic', $tempArray);
 
         return true;
@@ -134,7 +143,7 @@ class mod_url
         $data = array('embedding' => $embedding);
 
         $Template = $this -> getTemplate();
-        echo $Template -> render('/module/url/inline', $data);
+        echo utf8_decode($Template -> render('/module/url/inline', $data));
 
         return true;
     }
@@ -199,10 +208,15 @@ class mod_url
 
     protected function getAudioEmbedding($footer = '')
     {
+        $vidId = uniqid('vid_');
         $html = '<div class="edusharing_audio_wrapper">';
         $html .= '<img alt="" class="edusharing_audio_bg" src="'. $this->esObject->getNode()->preview->url.'">';
         $html .= '<div class="edusharing_audio_img"><img alt="" src="'. $this->esObject->getNode()->preview->url.'"></div>';
-        $html .= '<video style="max-width:100%" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls"></video>' . $footer . '</div>';
+        $html .= '<video style="max-width:100%" data-eduid="' . $vidId . '" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls"></video>' . $footer . '</div>';
+        if (!$this->getIsBehindDataProtection()) {
+            $html .= '<script>let vid = document.querySelector("[data-eduid=' . $vidId .']"); const timeStamps = window.location.hash.substring(1); if (timeStamps !== "") {vid.src = vid.src + "#" + timeStamps; vid.addEventListener("oncontextmenu", (e) => {e.preventDefault(); return false;})}</script>';
+        }
+
         return $html;
     }
 

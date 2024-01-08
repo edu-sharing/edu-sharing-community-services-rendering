@@ -55,7 +55,8 @@
  $Plugin = new ESRender_Plugin_Omega([
     'url' => '',
     'user' => '',
-    'validateUrls' => true
+    'validateUrls' => true,
+    'identifierPrefixWhitelist' => ''
  ]);
  $Plugins[] = $Plugin;
  

@@ -280,7 +280,7 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
+        <updatePolicy>never</updatePolicy>
       </snapshots>
     </repository>
 
@@ -293,7 +293,7 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
+        <updatePolicy>never</updatePolicy>
       </snapshots>
     </repository>
 

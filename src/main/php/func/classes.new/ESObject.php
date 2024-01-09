@@ -705,6 +705,28 @@ class ESObject {
         }
     }
 
+    public function currentlyInConversion($format, $resolution = null) {
+        try {
+            $pdo = RsPDO::getInstance();
+            $sql = 'SELECT "ESOBJECT_CONVERSION_OBJECT_ID" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format AND "ESOBJECT_CONVERSION_STATUS" = :inconversion  AND "ESOBJECT_CONVERSION_RESOLUTION" = :resolution';
+            $stmt = $pdo->prepare($sql);
+            $stmt -> bindValue(':objectid', $this -> id, PDO::PARAM_INT);
+            $stmt -> bindValue(':format', $format);
+            $stmt -> bindValue(':inconversion', 'CONVERSION_STATUS_PROCESSING');
+            $stmt -> bindValue(':resolution', $resolution);
+            $stmt -> execute();
+            $result = $stmt -> fetch(PDO::FETCH_ASSOC);
+            if(!$result){
+                return false;
+            }else{
+                return true;
+            }
+        } catch (Exception $exception) {
+            error_log($exception->getMessage());
+            return false;
+        }
+    }
+
     public function inConversionQueue($format, $resolution = null) {
 
         $pdo = RsPDO::getInstance();

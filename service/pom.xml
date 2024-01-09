@@ -173,17 +173,6 @@
 
   </build>
 
-  <dependencies>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>edu_sharing-community-repository-backend-services-rest-client-php</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-    </dependency>
-
-  </dependencies>
-
 
   <profiles>
 

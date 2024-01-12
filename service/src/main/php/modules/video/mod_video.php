@@ -52,6 +52,9 @@ extends ESRender_Module_AudioVideo_Abstract {
         $template_data['ext'] = $ext;
         $template_data['url'] = array();
         foreach(VIDEO_RESOLUTIONS as $resolution) {
+            if (! ESRender_Module_AudioVideo_Helper::checkResolution($this->getCacheFileName(), $resolution)) {
+                continue;
+            }
             $link = '';
             if(file_exists($outputFilename = $this -> getOutputFilename($ext, $resolution))){
                 $link = dirname($this -> esObject->getPath()) . '/' . basename($this -> getOutputFilename($ext, $resolution)) . '?' . session_name() . '=' . session_id().'&token='.Config::get('token');

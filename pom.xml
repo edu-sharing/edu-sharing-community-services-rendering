@@ -28,7 +28,7 @@
   <properties>
 
     <!-- release-2 -->
-    <bom.repository.version>8.1.1-RC12</bom.repository.version>
+    <bom.repository.version>8.1.1-RC13</bom.repository.version>
 
   </properties>
 

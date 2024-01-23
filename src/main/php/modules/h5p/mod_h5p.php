@@ -116,7 +116,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
         $Logger -> info('H5P found: '.$this->esObject->getObjectID()."-".$contentHash);
-        $this->H5PFramework->id = $results[0]->id;
+        $this->H5PFramework->id = $results[count($results) - 1]->id;
 
         try {
             $content = $this->H5PCore->loadContent($this->H5PFramework->id);
@@ -418,7 +418,7 @@ extends ESRender_Module_ContentNode_Abstract {
         $pdo = RsPDO::getInstance();
 
         try {
-            $sql = 'SELECT * FROM "ESOBJECT" ' . 'WHERE "ESOBJECT_REP_ID" = :repid ' . 'AND "ESOBJECT_CONTENT_HASH" = :contenthash ' . 'AND "ESOBJECT_OBJECT_ID" = :objectid';
+            $sql = 'SELECT * FROM "ESOBJECT" ' . 'WHERE "ESOBJECT_REP_ID" = :repid ' . 'AND "ESOBJECT_CONTENT_HASH" = :contenthash ' . 'AND "ESOBJECT_OBJECT_ID" = :objectid' . ' ORDER BY "ESOBJECT_ID" DESC';;
 
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
@@ -426,7 +426,7 @@ extends ESRender_Module_ContentNode_Abstract {
             $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
             $stmt -> execute();
 
-            $result = $stmt -> fetch(PDO::FETCH_ASSOC);
+            $result = $stmt -> fetchAll(PDO::FETCH_ASSOC)[0] ?? false;
 
             if ($result) {
                 $this -> esObject -> setInstanceData($result);

@@ -40,9 +40,7 @@ RUN set -eux \
     && a2enmod headers \
     && ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini \
     && apt-get clean \
-    && rm -r /var/lib/apt/lists/*
-
-RUN set -eux \
+    && rm -r /var/lib/apt/lists/* \
     && curl -L -o /tmp/phpredis.tar.gz https://github.com/phpredis/phpredis/archive/${phpredis.version}.tar.gz \
     && mkdir -p /usr/src/php/ext/redis \
     && tar -C /usr/src/php/ext/redis -xzf /tmp/phpredis.tar.gz --strip 1 \
@@ -80,21 +78,13 @@ COPY assets/init.sh /usr/local/bin/
 COPY assets/cron.sh /usr/local/bin/
 
 RUN set -eux \
-	&& find /usr/local/bin -type f -name '*.sh' -exec chmod +x {} \;
-
-########################################################################################################################
-
-RUN set -eux \
+	&& find /usr/local/bin -type f -name '*.sh' -exec chmod +x {} \; \
     && addgroup --gid 1000 appuser \
     && adduser --uid 1000 --gid 1000 --disabled-password appuser \
-    && adduser www-data appuser
-
-RUN set -eux \
+    && adduser www-data appuser \
     && mkdir -p $RS_CACHE/config \
     && mkdir -p $RS_CACHE/data \
-	&& chown -R appuser:appuser /etc/apache2 $RS_ROOT $RS_CACHE $PHP_INI_DIR
-
-RUN set -eux \
+	&& chown -R appuser:appuser /etc/apache2 $RS_ROOT $RS_CACHE $PHP_INI_DIR \
     && chmod u+s /usr/sbin/cron
 
 USER appuser
@@ -110,10 +100,10 @@ VOLUME [ "/var/cache/esrender/config", "/var/cache/esrender/data" ]
 
 ########################################################################################################################
 
-LABEL git.branch=${git.branch}
-LABEL git.closest.tag.name=${git.closest.tag.fixed}
-LABEL git.commit.id=${git.commit.id}
-LABEL git.dirty=${git.dirty}
-LABEL mvn.project.artifactId=${project.artifactId}
-LABEL mvn.project.groupId=${project.groupId}
-LABEL mvn.project.version=${project.version}
+LABEL git.branch=${git.branch} \
+git.closest.tag.name=${git.closest.tag.fixed} \
+git.commit.id=${git.commit.id} \
+git.dirty=${git.dirty} \
+mvn.project.artifactId=${project.artifactId} \
+mvn.project.groupId=${project.groupId} \
+mvn.project.version=${project.version}

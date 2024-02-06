@@ -277,10 +277,13 @@ extends ESRender_Module_ContentNode_Abstract {
              if(strpos($file, '.' . $fileExtension) !== false) {
                  if(empty($tmpFile))
                     $tmpFile = $file;
-                 $array = explode('_', str_replace('.' . $fileExtension, '', $file));
-                 $flavours[] = intval(end($array));
-             }
-         }
+                $array = explode('_', str_replace('.' . $fileExtension, '', $file));
+                $cacheVersion = $array[count($array) - 2];
+                if($this -> esObject -> getVersion() == $cacheVersion) {
+                    $flavours[] = intval(end($array));
+                }
+            }
+        }
 
          if(empty($flavours))
              throw new Exception('No image binary found.');

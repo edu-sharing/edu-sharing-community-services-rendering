@@ -12,9 +12,17 @@ $id = uniqid();
 <div class="edusharing_rendering_wrapper h5p-org-content-wrapper" vocab="http://schema.org/" typeof="WebPage">
     <h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
     <div class="edusharing_rendering_content_wrapper" >
+        <i id="edusharing_toggle_fullscreen" class="btn material-icons">fullscreen</i>
         <?php if(empty($h5p_new)){ ?>
-            <iframe src="<?php echo $iframeurl?>" style="width:85%;border:none" allowfullscreen="allowfullscreen" frameBorder="0" scrolling="no"></iframe>
+            <iframe src="<?php echo $iframeurl?>" style="width:85%;border:none"
+                    class="edusharing_rendering_fullscreen_wrapper"
+                    allowfullscreen="allowfullscreen"
+                    allowusermedia allow="camera"
+                    frameBorder="0"
+                    scrolling="no"></iframe>
             <script src="<?php echo $MC_URL; ?>/modules/h5p/h5p-resizer.js" charset="UTF-8"></script>
+            <script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
+            <script src="<?php echo $MC_URL?>/theme/default/js/fullscreen.js"></script>
         <?php }else{ ?>
             <h3><?php echo $h5p_new?></h3>
         <?php } ?>

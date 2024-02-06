@@ -11,6 +11,10 @@ class ESRender_Plugin_Omega
     protected $url;
     protected $user;
     protected $validateUrls;
+    /**
+     * comma seperated list of whitelisted prefix
+     */
+    protected $identifierPrefixWhitelist;
 
     /**
      * warning: new signature!
@@ -20,7 +24,8 @@ class ESRender_Plugin_Omega
     public function __construct($options = [
         "url" => '',
         "user" => 'dabiplus',
-        "validateUrls" => true
+        "validateUrls" => true,
+        "identifierPrefixWhitelist" => ''
     ]) {
         parent::__construct($options);
     }
@@ -56,6 +61,24 @@ class ESRender_Plugin_Omega
         if($hasLocalContent) {
             $logger->info('Object has local content, will not trigger omega api!');
         }
+        $hasWhitelist = isset($this->identifierPrefixWhitelist) && strlen($this->identifierPrefixWhitelist) > 0;
+
+        if($hasWhitelist) {
+            $repId = $esObject->getNodeProperty('ccm:replicationsourceid');
+            $inWhitelist = false;
+            foreach (explode(',', $this->identifierPrefixWhitelist) as $prefix) {
+                $prefix = trim($prefix);
+                if($prefix == substr($repId, 0, strlen($prefix))) {
+                    $inWhitelist = true;
+                    break;
+                }
+            }
+            if(!$inWhitelist) {
+                $logger->info("Object $repId not in whitelist array, will not trigger omega api!");
+                return;
+            }
+        }
+
         if ($esObject->getNodeProperty('ccm:replicationsource') == 'DE.FWU' && !$hasLocalContent)  {
 
             if($esObject->getNodeProperty('cclom:format') == ''){
@@ -86,13 +109,16 @@ class ESRender_Plugin_Omega
         ])->getStatusCode();
     }
 
-    protected function evaluateResponse($response = null, $esObject) {
+    protected function evaluateResponse($responseString = null, $esObject) {
 
-        if(empty($response)){
+        if(empty($responseString)){
             throw new ESRender_Exception_Omega('API respsonse is empty');
         }
 
-        $response = json_decode($response);
+        $response = json_decode($responseString);
+        if(!$response) {
+            throw new ESRender_Exception_Omega('Invalid JSON-Data from Sodis API: ' . $responseString);
+        }
 
         if($response->get->identifier !== $esObject->getNodeProperty('ccm:replicationsourceid')){
             throw new ESRender_Exception_Omega('Wrong identifier');
@@ -144,16 +170,16 @@ class ESRender_Plugin_Omega
         }
         $url = $this->url . '?token_id=' . $replicationSourceId . '&role=' . $role . '&user=' . $this->user;
         $client = GuzzleHelper::getClient();
-		$preExec = microtime(true);
+        $preExec = microtime(true);
         $response = $client->get($url, [
             'headers' => [
                 'User-Agent' => $_SERVER['HTTP_USER_AGENT']
             ],
             'http_errors' => false
         ]);
-		$postExec = microtime(true);
-		$diff = $postExec - $preExec;
-		$logger->debug('Omega API request took '. $diff .' seconds');
+        $postExec = microtime(true);
+        $diff = $postExec - $preExec;
+        $logger->debug('Omega API request took '. $diff .' seconds');
         $logger->info('Called ' . $url . ' got ' . $response->getBody());
         return $response->getBody();
     }

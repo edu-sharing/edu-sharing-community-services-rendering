@@ -457,3 +457,11 @@ margin-top: 0 !important;
 .dataProtectionRegulationsDialog {
 border-radius: 5px;
 }
+.h5p-org-content-wrapper #edusharing_toggle_fullscreen {
+    position: absolute;
+    overflow: hidden;
+    width: 54px;
+    padding: 0px 8px;
+    top: 23px;
+    right: 20px;
+}

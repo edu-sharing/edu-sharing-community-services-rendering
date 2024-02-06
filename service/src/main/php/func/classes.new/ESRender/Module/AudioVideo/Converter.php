@@ -3,7 +3,7 @@
 require_once (__DIR__ . '/../../../../../conf.inc.php');
 require_once (__DIR__ . '/../../../../../conf/audio-video.conf.php');
 require_once (__DIR__ . '/../../../../../modules/video/mod_video.php');
-
+require_once ('Helper.php');
 
 /*
  *
@@ -129,7 +129,7 @@ class Converter {
                 switch( $conv -> ESOBJECT_CONVERSION_FORMAT) {
                     case 'mp4' :
                         $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.mp4';
-                        if($this->checkResolution($source_video, $conversion_resolution)){
+                        if(ESRender_Module_AudioVideo_Helper::checkResolution($source_video, $conversion_resolution)){
                             $ffmpeg_command = $this -> timeout . FFMPEG_BINARY . " " . "-i" . " " . $source_video . " -f mp4 -vcodec libx264" . " " . $this->threads . " " . "-crf 24 -preset veryfast -vf \"scale=-2:'min(" . $conversion_resolution . "\,if(mod(ih\,2)\,ih-1\,ih))'\" -c:a aac -b:a 160k" . " " . $tmpName . " " ."2>>" . $logfile;
                         }else{
                             $this->setConversionStatus('upscale', $conv, $tmpName,'no upscaling');
@@ -141,7 +141,7 @@ class Converter {
                         break;
                     case 'webm' :
                         $tmpName = CC_RENDER_PATH . '/tmp_conversion/' . uniqid($conv->ESOBJECT_CONVERSION_OBJECT_ID, true) . '.webm';
-                        if($this->checkResolution($source_video, $conversion_resolution)){
+                        if(ESRender_Module_AudioVideo_Helper::checkResolution($source_video, $conversion_resolution)){
                             $ffmpeg_command = $this -> timeout  . FFMPEG_BINARY  . " " . "-i" . " " . $source_video . " -vcodec libvpx" . " " . $this->threads ." " . "-crf 40 -b:v 0 -deadline realtime -cpu-used 8 -vf \"scale=-1:'min(" . $conversion_resolution . ",ih)'\" -c:a libvorbis -b:a 128k" . " " . $tmpName . " " ."2>>" . $logfile;
                         }else{
                             $this->setConversionStatus('upscale', $conv, $tmpName,'no upscaling');
@@ -164,29 +164,6 @@ class Converter {
 
         return true;
 
-    }
-
-    protected function checkResolution($source_video, $conversion_resolution){
-        $getVideoData = FFMPEG_BINARY . ' -i ' . $source_video . ' -vstats 2>&1';
-        $output = shell_exec($getVideoData);
-
-        $regex_sizes = "/Video: ([^\r\n]*), ([^,]*), ([0-9]{1,4})x([0-9]{1,4})/";
-        if (preg_match($regex_sizes, $output, $regs)) {
-            $codec = $regs [1] ? $regs [1] : null;
-            $source_width = $regs [3] ? $regs [3] : null;
-            $source_height = $regs [4] ? $regs [4] : null;
-        }
-        if ($source_height >= $conversion_resolution){
-            return true;
-        }else {
-            foreach (VIDEO_RESOLUTIONS as $resolution){
-                if ($resolution < $source_height){
-                    continue;
-                }
-                return $resolution == $conversion_resolution;
-            }
-            return false;
-        }
     }
 
     protected function setConversionStatus($code, $conv, $tmpName, $output){

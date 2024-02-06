@@ -9,19 +9,22 @@ require_once(__DIR__ . '/../RsPDO.php');
 
 class cacheCleaner
 {
-
     private $logger;
     private $pass = 0;
     public $renderPath = '';
     public $renderPathSave = '';
     private $pdo = null;
+    private $module;
 
-    public function __construct()
+    public function __construct($module)
     {
         $this->initLogger();
         $this->pdo = RsPDO::getInstance();
         $this->logger->info('######## cacheCleaner initialized ########');
-
+        $this->module = $module;
+        if ($this->module !== null) {
+            $this->logger->info('Module is set to ' . $module . '. All content of this type will be cleared from the cache');
+        }
     }
 
     private function dirSize($directory)
@@ -39,22 +42,23 @@ class cacheCleaner
         $this->logger = require_once(MC_LIB_PATH . 'Log/init.php');
     }
 
-    private function deleteUndemandedObject()
+    private function deleteUndemandedObject($esObjectId = null)
     {
         try {
-            $sql = 'SELECT "ESTRACK_ESOBJECT_ID", MAX("ESTRACK_TIME") FROM "ESTRACK" GROUP BY "ESTRACK_ESOBJECT_ID" ORDER BY MAX("ESTRACK_TIME") ASC LIMIT 1 OFFSET 0';
-            $stmt = $this->pdo->query($sql);
-            if($stmt){
-                $esObjectId = $stmt->fetchObject()->ESTRACK_ESOBJECT_ID;
-            }else{
-                $this->logger->error('query error: '.print_r($stmt, true));
-            }
+            if ($esObjectId === null) {
+                $sql = 'SELECT "ESTRACK_ESOBJECT_ID", MAX("ESTRACK_TIME") FROM "ESTRACK" GROUP BY "ESTRACK_ESOBJECT_ID" ORDER BY MAX("ESTRACK_TIME") ASC LIMIT 1 OFFSET 0';
+                $stmt = $this->pdo->query($sql);
+                if($stmt){
+                    $esObjectId = $stmt->fetchObject()->ESTRACK_ESOBJECT_ID;
+                }else{
+                    $this->logger->error('query error: '.print_r($stmt, true));
+                }
 
-            if (empty($esObjectId)) {
-                $this->logger->info('Could not get result from ESTRACK.');
-                return false;
+                if (empty($esObjectId)) {
+                    $this->logger->info('Could not get result from ESTRACK.');
+                    return false;
+                }
             }
-
             $this->logger->info('esObjectId: ' . $esObjectId);
 
             $sql = 'SELECT * FROM "ESOBJECT" WHERE "ESOBJECT_ID" = :esobject_id';
@@ -89,29 +93,27 @@ class cacheCleaner
                 try {
                     $query = "SELECT id FROM h5p_contents WHERE title='" . $esobject->getObjectID() . "-v" . $esobject->getContentHash() . "'";
                     $statement = $this->pdo->query($query);
-                    $h5pID = $statement->fetchAll(\PDO::FETCH_OBJ)[0]->id;
+                    $contentResult = $statement->fetchAll(\PDO::FETCH_OBJ);
+                    $h5pID = ! empty($contentResult) ? $contentResult[0]->id : null;
                 } catch (PDOException $e) {
                     $this->logger->info($e->getMessage());
                 }
-
-                $this->logger->info('h5pID: ' . $h5pID);
-
-                //delete h5p entry
-                try {
-                    $query_libraries = "DELETE FROM h5p_contents_libraries WHERE content_id = " . $h5pID;
-                    $statement_libraries = $this->pdo->query($query_libraries);
-                    $results_libraries = $statement_libraries->execute();
-
-                    $query = "DELETE FROM h5p_contents WHERE title='" . $esobject->getObjectID() . "-v" . $esobject->getContentHash() . "'";
-                    $statement = $this->pdo->query($query);
-                    $result = $statement->execute();
-                    $this->logger->info('deleted h5p-' . $h5pID . ' from db.');
-                } catch (PDOException $e) {
-                    $this->logger->info($e->getMessage());
-                }
-
-                //delete cache folder
-                if ($h5pID) {
+                if ($h5pID === null) {
+                    $this->logger->info('No entry found in h5p_contents for object:' . $esobject->getObjectID() . "-v" . $esobject->getContentHash());
+                } else {
+                    $this->logger->info('h5pID: ' . $h5pID);
+                    try {
+                        $query_libraries = "DELETE FROM h5p_contents_libraries WHERE content_id = " . $h5pID;
+                        $statement_libraries = $this->pdo->query($query_libraries);
+                        $statement_libraries->execute();
+                        $query = "DELETE FROM h5p_contents WHERE title='" . $esobject->getObjectID() . "-v" . $esobject->getContentHash() . "'";
+                        $statement = $this->pdo->query($query);
+                        $statement->execute();
+                        $this->logger->info('deleted h5p-' . $h5pID . ' from db.');
+                    } catch (PDOException $e) {
+                        $this->logger->info($e->getMessage());
+                    }
+                    //delete cache folder
                     $dirPath = $this->renderPath . DIRECTORY_SEPARATOR . $module->getName() . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $h5pID;
                     if (!$this->removeDir($dirPath)) {
                         $this->logger->info('could not delete ' . $dirPath);
@@ -119,7 +121,6 @@ class cacheCleaner
                         $this->logger->info('deleted ' . $dirPath);
                     }
                 }
-
             }
 
             //delete cache folder
@@ -176,37 +177,74 @@ class cacheCleaner
 
     public function cleanUp($forceDelete = false)
     {
+        if ($this->module !== null) {
+            $this->cleanUpByModule();
+        } else {
+            try {
+                $availableSpace = disk_total_space($this->renderPath);
+                $cacheSize = $this->dirSize($this->renderPath);
+                if (!empty($this->renderPathSave)) {
+                    $availableSpace += disk_total_space($this->renderPathSave);
+                    $cacheSize += $this->dirSize($this->renderPathSave);
+                }
+                $diskUsageRatio = $cacheSize / $availableSpace;
+                $this->logger->info('#### cleanup (pass ' . ++$this->pass . ')');
+                $this->logger->info('available disk space: ' . round($availableSpace / pow(1024, 3), 2) . 'GiB');
+                $this->logger->info('size of cache: ' . round($cacheSize / pow(1024, 3), 2) . 'GiB');
+                $this->logger->info('disk usage: ' . round($diskUsageRatio * 100, 2) . '%');
 
-        try {
-            $availableSpace = disk_total_space($this->renderPath);
-            $cacheSize = $this->dirSize($this->renderPath);
-            if (!empty($this->renderPathSave)) {
-                $availableSpace += disk_total_space($this->renderPathSave);
-                $cacheSize += $this->dirSize($this->renderPathSave);
+                if ($diskUsageRatio > RATIO_MAX || $forceDelete) {
+                    if ($this->deleteUndemandedObject())
+                        $this->cleanUp($forceDelete);
+                } else {
+                    echo "Current Disk Usage Ratio < Configured Ratio (" . $diskUsageRatio . " < " . RATIO_MAX . "). Stopping...";
+                }
+
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage());
             }
-            $diskUsageRatio = $cacheSize / $availableSpace;
-            $this->logger->info('#### cleanup (pass ' . ++$this->pass . ')');
-            $this->logger->info('available disk space: ' . round($availableSpace / pow(1024, 3), 2) . 'GiB');
-            $this->logger->info('size of cache: ' . round($cacheSize / pow(1024, 3), 2) . 'GiB');
-            $this->logger->info('disk usage: ' . round($diskUsageRatio * 100, 2) . '%');
-
-            if ($diskUsageRatio > RATIO_MAX || $forceDelete) {
-                if ($this->deleteUndemandedObject())
-                    $this->cleanUp($forceDelete);
-            } else {
-                echo "Current Disk Usage Ratio < Configured Ratio (" . $diskUsageRatio . " < " . RATIO_MAX . "). Stopping...";
-            }
-
-        } catch (Exception $e) {
-            $this->logger->error($e->getMessage());
         }
-
     }
 
+    private function cleanUpByModule() {
+        // Get module ID
+        $sql = 'SELECT "ESMODULE_ID" FROM "ESMODULE" WHERE "ESMODULE_NAME" = :name';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':name', $this->module);
+        $stmt->execute();
+        $result = $stmt->fetchObject();
+        $moduleId = $result->ESMODULE_ID;
+
+        //retrieve all objects with the given module id
+        $sql = 'SELECT * FROM "ESOBJECT" WHERE "ESOBJECT_ESMODULE_ID" = ' . $moduleId;
+        $results = $this->pdo->query($sql)->fetchAll();
+        if (count($results) === 0) {
+            $this->logger->info('No entries in ESOBJECT found for module ' . $this->module . '. If applicable, invalid data remnants will be deleted.');
+        }
+        foreach ($results as $esObject) {
+            $this->deleteUndemandedObject($esObject["ESOBJECT_ID"]);
+        }
+        // Clean up all remaining data
+        $cachePath = $this->renderPath . DIRECTORY_SEPARATOR . $this->module;
+        is_dir($cachePath) && $this->removeDir($cachePath);
+        $truncateLibs = $this->pdo->prepare('TRUNCATE TABLE "h5p_contents_libraries"');
+        $truncateLibs->execute();
+        $truncateContent = $this->pdo->prepare('TRUNCATE TABLE "h5p_contents"');
+        $truncateContent->execute();
+        $truncateAllLibs = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries"');
+        $truncateAllLibs->execute();
+        $truncateLibsLibs = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries_libraries"');
+        $truncateLibsLibs->execute();
+        $truncateLibsLangs = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries_languages"');
+        $truncateLibsLangs->execute();
+        $truncateHubCache = $this->pdo->prepare('TRUNCATE TABLE "h5p_libraries_hub_cache"');
+        $truncateHubCache->execute();
+    }
 }
 
-$cleaner = new cacheCleaner();
+$cleaner = new cacheCleaner(isset($argc) && isset($argv[1]) ? $argv[1] : null);
 $cleaner->renderPath = $CC_RENDER_PATH;
-if (!empty($CC_RENDER_PATH_SAFE))
+if (!empty($CC_RENDER_PATH_SAFE)) {
     $cleaner->renderPathSave = $CC_RENDER_PATH_SAFE;
+}
 $cleaner->cleanUp();

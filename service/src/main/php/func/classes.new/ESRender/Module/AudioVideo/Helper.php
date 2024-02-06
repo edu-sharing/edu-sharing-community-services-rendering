@@ -49,4 +49,24 @@ class ESRender_Module_AudioVideo_Helper {
         }
     }
 
+    public static function checkResolution($source_video, $conversion_resolution): bool {
+        $getVideoData = FFMPEG_BINARY . ' -i ' . $source_video . ' -vstats 2>&1';
+        $output = shell_exec($getVideoData);
+        $regex_sizes = "/Video: ([^\r\n]*), ([^,]*), ([0-9]{1,4})x([0-9]{1,4})/";
+        if (preg_match($regex_sizes, $output, $regs)) {
+            $source_height = $regs [4] ?: null;
+            if ($source_height >= $conversion_resolution){
+                return true;
+            }else {
+                foreach (VIDEO_RESOLUTIONS as $resolution){
+                    if ($resolution < $source_height){
+                        continue;
+                    }
+                    return $resolution == $conversion_resolution;
+                }
+                return false;
+            }
+        }
+        return false;
+    }
 }

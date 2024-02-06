@@ -20,18 +20,21 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 			echo $embedding;
 		}?>
         <?php
-        if(!$dataProtection) { ?>
+        //if(!$dataProtection) { ?>
 		    <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content edusharing_rendering_content-origin" id="edusharing_rendering_content_href"><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
         <?php
-        }
+        //}
         ?>
 	</div>
 	<?php echo $metadata; ?>
 </div>
 
 <?php
-$downloadUrl = Config::get('downloadUrl');
-if(!empty($downloadUrl))
-    echo '<script>setTimeout(function() {try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){console.log(err)}}, 1000);</script>';
+if (!$dataProtection) {
+    $downloadUrl = Config::get('downloadUrl');
+    if(!empty($downloadUrl)) {
+        echo '<script>setTimeout(function() {try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){console.log(err)}}, 1000);</script>';
+    }
+}
 ?>
 

@@ -66,10 +66,9 @@ class mod_doc
         $template_data['previewUrl'] = $this->esObject->getPreviewUrl();
 
         // get the rights from the es object
-        $hasDownloadRight       = true;
-        $hasPrintRight          = true;
+        $hasDownloadRight       = $this->esObject->hasPermission('DownloadContent');
+        $hasPrintRight          = $this->esObject->hasPermission('Print');
         $removePrintAndDownload = !$hasDownloadRight || !$hasPrintRight;
-
         if (Config::get('hasContentLicense') === true) {
 
             if ($this->getDoctype() == DOCTYPE_PDF) {

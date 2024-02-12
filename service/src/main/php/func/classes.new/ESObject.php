@@ -920,5 +920,17 @@ class ESObject {
     }
 
 
-
+    /**
+     * returns true if the user has the given permission on the node
+     * will obey license check for objects inside collections
+     */
+    public function hasPermission(string $permission) {
+        if (in_array('ccm:collection_io_reference', $this->getNode()->aspects)) {
+            // is it a licensed node? check the original for access (new since 5.1)
+            if ($this->getNode()->originalRestrictedAccess) {
+                return in_array($permission, $this->getNode()->accessOriginal);
+            }
+        }
+        return in_array($permission, $this->getNode()->access);
+    }
 }

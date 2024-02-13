@@ -1,24 +1,24 @@
 <?php
 /**
  * This product Copyright 2010 metaVentis GmbH.  For detailed notice,
-* see the "NOTICE" file with this distribution.
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-*/
+ * see the "NOTICE" file with this distribution.
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
 
 require_once (dirname(__FILE__) . '/../../conf.inc.php');
 
@@ -41,13 +41,15 @@ define('DIR', $pUrl['path']);
 
 
 class mod_h5p
-extends ESRender_Module_ContentNode_Abstract {
+    extends ESRender_Module_ContentNode_Abstract {
 
     private $H5PFramework;
     private $H5PCore;
     private $H5PValidator;
     private $H5PStorage;
     private static $settings = array();
+
+    private bool $wasModifiedCheckPerformed = false;
 
     public function __construct($Name, ESRender_Application_Interface $RenderApplication, ESObject $p_esobject, Logger $Logger, Phools_Template_Interface $Template) {
         global $CC_RENDER_PATH;
@@ -105,7 +107,7 @@ extends ESRender_Module_ContentNode_Abstract {
         return false;
     }
 
-	protected function renderTemplate($TemplateName, $getDefaultData = true, $showMetadata = true) {
+    protected function renderTemplate($TemplateName, $getDefaultData = true, $showMetadata = true) {
         global $db;
         $Logger = $this -> getLogger();
         $contentHash = $this->esObject->getContentHash();
@@ -145,7 +147,7 @@ extends ESRender_Module_ContentNode_Abstract {
         } catch(Exception $e) {
             var_dump($e);
         }
-	}
+    }
 
     private function add_assets($content) {
 
@@ -207,7 +209,7 @@ extends ESRender_Module_ContentNode_Abstract {
                 data.statement = JSON.stringify(event.data.statement);
                 //console.log("Sending xApi-Event to Repo");
                 event.data.statement.object.id = "'.$this -> esObject -> getPath().'";
-                event.data.statement.object.definition.name = {"en-US": "'.$this->esObject->getTitle().'"};
+                event.data.statement.object.definition.name = '.json_encode(["en-US" => $this->esObject->getTitle()]).';
                 const nodeID = "'.$this->esObject->getObjectID().'";
                 let xhr = new XMLHttpRequest();
                 xhr.open("POST", "'.Config::get('baseUrl').'/rest/node/v1/nodes/-home-/"+nodeID+"/xapi", true);
@@ -279,12 +281,12 @@ extends ESRender_Module_ContentNode_Abstract {
             'title' => $content['title'],
             //'displayOptions' => array(), //$core->getDisplayOptionsForView($content['disable'], 0) // not needed here
             'displayOptions' => [
-                                    "frame" => true, // Show frame and buttons below H5P
-                                    "export"=> false, // Display download button
-                                    "embed"=> false, // Display embed button
-                                    "copyright"=> true, // Display copyright button
-                                    "icon"=> true // Display H5P icon
-                                ],
+                "frame" => true, // Show frame and buttons below H5P
+                "export"=> false, // Display download button
+                "embed"=> false, // Display embed button
+                "copyright"=> true, // Display copyright button
+                "icon"=> true // Display H5P icon
+            ],
             'metadata' => $content['metadata'],
             'contentUserData' => array(
                 0 => array(
@@ -304,44 +306,44 @@ extends ESRender_Module_ContentNode_Abstract {
             'postUserStatistics' => false,
             'ajaxPath' => '',     // Only used by older Content Types
             'ajax' => array(
-                    'setFinished' => '',
-                    'contentUserData' => ''
-                ),
+                'setFinished' => '',
+                'contentUserData' => ''
+            ),
             'saveFreq' => false,
             'siteUrl'=> DOMAIN,
             'l10n' => array(
                 'H5P' => [
-                      "fullscreen"=> "Fullscreen",
-                      "disableFullscreen"=> "Disable fullscreen",
-                      "download"=> "Download",
-                      "copyrights"=> "Rights of use",
-                      "embed"=> "Embed",
-                      "size"=> "Size",
-                      "showAdvanced"=> "Show advanced",
-                      "hideAdvanced"=> "Hide advanced",
-                      "advancedHelp"=> "Include this script on your website if you want dynamic sizing of the embedded content:",
-                      "copyrightInformation"=> "Rights of use",
-                      "close"=> "Close",
-                      "title"=> "Title",
-                      "author"=> "Author",
-                      "year"=> "Year",
-                      "source"=> "Source",
-                      "license"=> "License",
-                      "thumbnail"=> "Thumbnail",
-                      "noCopyrights"=> "No copyright information available for this content.",
-                      "downloadDescription"=> "Download this content as a H5P file.",
-                      "copyrightsDescription"=> "View copyright information for this content.",
-                      "embedDescription"=> "View the embed code for this content.",
-                      "h5pDescription"=> "Visit H5P.org to check out more cool content.",
-                      "contentChanged"=> "This content has changed since you last used it.",
-                      "startingOver"=> "You'll be starting over.",
-                      "by"=> "by",
-                      "showMore"=> "Show more",
-                      "showLess"=> "Show less",
-                      "subLevel"=> "Sublevel",
-                      "reuse"=> "Reuse",
-                      "reuseContent"=> "Reuse Content",
-                      "contentType"=> "Content Type"
+                    "fullscreen"=> "Fullscreen",
+                    "disableFullscreen"=> "Disable fullscreen",
+                    "download"=> "Download",
+                    "copyrights"=> "Rights of use",
+                    "embed"=> "Embed",
+                    "size"=> "Size",
+                    "showAdvanced"=> "Show advanced",
+                    "hideAdvanced"=> "Hide advanced",
+                    "advancedHelp"=> "Include this script on your website if you want dynamic sizing of the embedded content:",
+                    "copyrightInformation"=> "Rights of use",
+                    "close"=> "Close",
+                    "title"=> "Title",
+                    "author"=> "Author",
+                    "year"=> "Year",
+                    "source"=> "Source",
+                    "license"=> "License",
+                    "thumbnail"=> "Thumbnail",
+                    "noCopyrights"=> "No copyright information available for this content.",
+                    "downloadDescription"=> "Download this content as a H5P file.",
+                    "copyrightsDescription"=> "View copyright information for this content.",
+                    "embedDescription"=> "View the embed code for this content.",
+                    "h5pDescription"=> "Visit H5P.org to check out more cool content.",
+                    "contentChanged"=> "This content has changed since you last used it.",
+                    "startingOver"=> "You'll be starting over.",
+                    "by"=> "by",
+                    "showMore"=> "Show more",
+                    "showLess"=> "Show less",
+                    "subLevel"=> "Sublevel",
+                    "reuse"=> "Reuse",
+                    "reuseContent"=> "Reuse Content",
+                    "contentType"=> "Content Type"
                 ],
             ),
             'hubIsEnabled' => false,
@@ -375,32 +377,32 @@ extends ESRender_Module_ContentNode_Abstract {
         }
     }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see ESRender_Module_ContentNode_Abstract::inline()
-	 */
-	protected function inline() {
-		echo $this -> renderTemplate('/module/h5p/inline');
-		return true;
-	}
+    /**
+     * (non-PHPdoc)
+     * @see ESRender_Module_ContentNode_Abstract::inline()
+     */
+    protected function inline() {
+        echo $this -> renderTemplate('/module/h5p/inline');
+        return true;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see ESRender_Module_ContentNode_Abstract::dynamic()
-	 */
-	protected function dynamic() {
+    /**
+     * (non-PHPdoc)
+     * @see ESRender_Module_ContentNode_Abstract::dynamic()
+     */
+    protected function dynamic() {
         echo $this -> renderTemplate('/module/h5p/dynamic');
         return true;
-	}
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see ESRender_Module_ContentNode_Abstract::embed()
-	 */
-	protected function embed() {
+    /**
+     * (non-PHPdoc)
+     * @see ESRender_Module_ContentNode_Abstract::embed()
+     */
+    protected function embed() {
         echo $this -> renderTemplate('/module/h5p/embed');
         return true;
-	}
+    }
 
 
     /**
@@ -414,7 +416,6 @@ extends ESRender_Module_ContentNode_Abstract {
      */
     public function instanceExists() {
         $Logger = $this -> getLogger();
-
         $pdo = RsPDO::getInstance();
 
         try {
@@ -425,17 +426,22 @@ extends ESRender_Module_ContentNode_Abstract {
             $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
             $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
             $stmt -> execute();
+            $allResults = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+            if (! $this->wasModifiedCheckPerformed && count($allResults) > 0 && $this->wasObjectLatelyModified()) {
+                $Logger->info("Clearing recently added object's cache to trigger new instance creation");
+                foreach ($allResults as $current) {
+                    $this->clearPotentiallyBrokenObject($current);
+                }
+                return false;
+            }
 
-            $result = $stmt -> fetchAll(PDO::FETCH_ASSOC)[0] ?? false;
+            $result = count($allResults) > 0 ? $allResults[0] : false;
 
             if ($result) {
                 $this -> esObject -> setInstanceData($result);
 
                 // check if cache exists
-                global $CC_RENDER_PATH;
-                $module = $this -> esObject -> getModule();
-                $src_file =  $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $module->getName() . DIRECTORY_SEPARATOR . $this->esObject->getSubUri_file();
-                $src_file .= DIRECTORY_SEPARATOR . $this->esObject->getObjectIdVersion();
+                $src_file = $this->getCacheFile();
                 if ((is_file($src_file)) || (is_readable($src_file))) {
                     $Logger -> debug('Instance exists.');
                     return true;
@@ -457,4 +463,74 @@ extends ESRender_Module_ContentNode_Abstract {
         }
     }
 
+    /**
+     * Function wasObjectLatelyModified
+     *
+     * checks if the object was modified within the last 6 hours.
+     *
+     * @return bool
+     */
+    private function wasObjectLatelyModified(): bool {
+        $Logger       = $this->getLogger();
+        $modifiedDate = $this->esObject->getData()->node->modifiedAt;
+        $this->wasModifiedCheckPerformed = true;
+        $currentDateTime = new DateTime();
+        try {
+            $modifiedDateTime = new DateTime($modifiedDate);
+        } catch (Exception $exception) {
+            unset($exception);
+            $Logger->error('Could not parse modified date.');
+            return false;
+        }
+        $diffInSecs = $currentDateTime->getTimestamp() - $modifiedDateTime->getTimestamp();
+
+        return $diffInSecs < $H5P_DISABLE_CACHE_DELAY;
+    }
+
+    /**
+     * Function clearPotentiallyBrokenObject
+     *
+     * clears lately modified objects from cache
+     * This is a somewhat ugly yet necessary bugfix
+     * Due to the async save method used the connector to persist H5P in the repo
+     * unfinished data can be handed to the rendering service from the repo.
+     * After a certain period of time we can be quite sure that the data will be fine and no
+     * longer need to clean the object's cache.
+     *
+     * @param array $esObjectEntry
+     * @return void
+     */
+    private function clearPotentiallyBrokenObject(array $esObjectEntry): void {
+        global $CC_RENDER_PATH;
+        $pdo = RsPDO::getInstance();
+        $esObjectSql = 'DELETE FROM "ESOBJECT" WHERE "ESOBJECT_ID" = :objectid';
+        $esObjectStmt = $pdo->prepare($esObjectSql);
+        $esObjectStmt -> bindValue(':objectid', $esObjectEntry['ESOBJECT_ID']);
+        $esObjectStmt -> execute();
+        $trackingSql = 'DELETE FROM "ESTRACK" WHERE "ESTRACK_ESOBJECT_ID" = :objectid';
+        $trackingStmt = $pdo->prepare($trackingSql);
+        $trackingStmt -> bindValue(':objectid', $esObjectEntry['ESOBJECT_ID']);
+        $trackingStmt -> execute();
+        $fileLocation = $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . $esObjectEntry['ESOBJECT_PATH']
+            . DIRECTORY_SEPARATOR . $esObjectEntry['ESOBJECT_OBJECT_ID'];
+        if (! empty ($esObjectEntry['ESOBJECT_OBJECT_VERSION'])) {
+            $fileLocation .= '_' . $esObjectEntry['ESOBJECT_OBJECT_VERSION'];
+        }
+        unlink($fileLocation);
+    }
+
+    /**
+     * Function getCacheFile
+     *
+     * returns the location of the cached h5p file
+     *
+     * @return string
+     */
+    private function getCacheFile(): string {
+        global $CC_RENDER_PATH;
+        $module = $this -> esObject -> getModule();
+        $file =  $CC_RENDER_PATH . DIRECTORY_SEPARATOR . $module->getName() . DIRECTORY_SEPARATOR . $this->esObject->getSubUri_file();
+        $file .= DIRECTORY_SEPARATOR . $this->esObject->getObjectIdVersion();
+        return $file;
+    }
 }

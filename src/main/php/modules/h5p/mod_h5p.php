@@ -471,6 +471,7 @@ class mod_h5p
      * @return bool
      */
     private function wasObjectLatelyModified(): bool {
+        global $H5P_DISABLE_CACHE_DELAY;
         $Logger       = $this->getLogger();
         $modifiedDate = $this->esObject->getData()->node->modifiedAt;
         $this->wasModifiedCheckPerformed = true;

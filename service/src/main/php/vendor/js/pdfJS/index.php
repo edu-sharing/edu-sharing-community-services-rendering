@@ -17,10 +17,7 @@ if (!empty($sessid)) {
     session_id($sessid);
 }
 
-$allowDownloadAndPrint = true;
-if (isset($_GET['esObject'])) {
-    $allowDownloadAndPrint = false;
-}
+$allowDownloadAndPrint = !isset($_GET['esObject']);
 
 try {
     if (!session_start()) {

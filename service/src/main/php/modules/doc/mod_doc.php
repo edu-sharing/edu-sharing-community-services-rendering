@@ -60,7 +60,7 @@ class mod_doc
 
     protected function renderTemplate($TemplateName, $showMetadata = true) {
 
-        global $VIEWER_JS_CONFIG;
+        global $VIEWER_JS_CONFIG, $MC_URL;
 
         $template_data               = parent::prepareRenderData($showMetadata);
         $template_data['previewUrl'] = $this->esObject->getPreviewUrl();
@@ -72,14 +72,17 @@ class mod_doc
         if (Config::get('hasContentLicense') === true) {
 
             if ($this->getDoctype() == DOCTYPE_PDF) {
-                if (ENABLE_VIEWER_JS && isset($VIEWER_JS_CONFIG) && in_array('pdf', $VIEWER_JS_CONFIG)) {
-                    $template_data['content'] = ($this->convertedPath ? $this->convertedPath : $this->esObject->getPath()) . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
-
+                $template_data['allowPrintAndDownload'] = !$removePrintAndDownload;
+                if (!$removePrintAndDownload) {
+                    if (ENABLE_VIEWER_JS && isset($VIEWER_JS_CONFIG) && in_array('pdf', $VIEWER_JS_CONFIG)) {
+                        $template_data['content'] = ($this->convertedPath ?: $this->esObject->getPath()) . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
+                    } else {
+                        $template_data['content'] = $this->esObject->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
+                    }
                 } else {
-                    $template_data['content'] = $this->esObject->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
+                    $template_data['content'] = '&esObject=' . base64_encode($this->esObject->getId());
+                    $template_data['content'] .= '&esAjax=' . base64_encode($MC_URL . '/vendor/js/pdfJS/data.php?object=');
                 }
-                $esOptions                = ['allowDownload' => $removePrintAndDownload ? 0 : 1];
-                $template_data['content'] .= '&esOptions=' . base64_encode(json_encode($esOptions));
                 $template_data['url'] = $this->esObject->getPath() . '?' . session_name() . '=' . session_id() . '&token=' . Config::get('token');
             }
             if ($this->getDoctype() == DOCTYPE_HTML) {

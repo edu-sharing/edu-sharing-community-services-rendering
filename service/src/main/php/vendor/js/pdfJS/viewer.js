@@ -404,16 +404,13 @@ const PDFViewerApplication = {
     } : null;
     const queryString = document.location.search.substring(1);
     const params = (0, _ui_utils.parseQueryString)(queryString);
-    let esOptions = params.get("esoptions") ?? null;
-    if (esOptions !== null) {
-      let optionsDecoded = atob(esOptions);
-      let optionsObject = JSON.parse(optionsDecoded);
-      let allowPrintAndDownload = optionsObject.allowDownload ?? 1;
-      if (allowPrintAndDownload === 0) {
-        _app_options.AppOptions.set('textLayerMode', _ui_utils.TextLayerMode.DISABLE);
-        _app_options.AppOptions.set('annotationMode', _pdfjsLib.AnnotationMode.DISABLE);
-      }
+    // mvchange
+    let esObject = params.get("esobject") ?? null;
+    if (esObject !== null) {
+      _app_options.AppOptions.set('textLayerMode', _ui_utils.TextLayerMode.DISABLE);
+      _app_options.AppOptions.set('annotationMode', _pdfjsLib.AnnotationMode.DISABLE);
     }
+    // mvchange
     const altTextManager = appConfig.altTextDialog ? new _webAlt_text_manager.AltTextManager(appConfig.altTextDialog, container, this.overlayManager, eventBus) : null;
     const pdfViewer = new _pdf_viewer.PDFViewer({
       container,
@@ -549,7 +546,23 @@ const PDFViewerApplication = {
     const queryString = document.location.search.substring(1);
     const params = (0, _ui_utils.parseQueryString)(queryString);
     file = params.get("file") ?? _app_options.AppOptions.get("defaultUrl");
+    // mvchange
+    let esObject = params.get("esobject") ?? null;
+    let esAjax = params.get("esajax") ?? null;
+    let esData = "";
+    if (esObject !== null && esAjax !== null) {
+      const decodedUrl = atob(esAjax);
+      let result = await fetch(decodedUrl + esObject);
+      let esJson = await result.json();
+      if (esJson.error === null) {
+        esData = esJson.data;
+      } else {
+        console.error("Fetching data failed due to internal server error");
+      }
+      file = false;
+    }
     token = params.get("token") ?? '';
+    // mvchange
     validateFileURL(file);
     const fileInput = appConfig.openFileInput;
     fileInput.value = null;
@@ -605,11 +618,23 @@ const PDFViewerApplication = {
         });
       }
     }, true);
+    // mvchange
     if (file) {
       this.open({
         url: file + '&token=' + token
       });
-    } else {
+    } else if (esData !== "") {
+      const raw = atob(esData);
+      let uint8Array = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) {
+        uint8Array[i] = raw.charCodeAt(i);
+      }
+      this.open({
+        data: uint8Array
+      });
+    }
+    // mvchange
+    else {
       this._hideViewBookmark();
     }
   },
@@ -13813,13 +13838,19 @@ function renderProgress(index, total, l10n) {
     progressPerc.textContent = msg;
   });
 }
-window.addEventListener("keydown", function (event) {
-  if (event.keyCode === 80 && (event.ctrlKey || event.metaKey) && !event.altKey && (!event.shiftKey || window.chrome || window.opera)) {
-    window.print();
-    event.preventDefault();
-    event.stopImmediatePropagation();
-  }
-}, true);
+const urlParams = new URLSearchParams(window.location.search);
+// mvchange
+const hasObject = urlParams.get('esobject') === null;
+if (! hasObject) {
+  window.addEventListener("keydown", function (event) {
+    if (event.keyCode === 80 && (event.ctrlKey || event.metaKey) && !event.altKey && (!event.shiftKey || window.chrome || window.opera)) {
+      window.print();
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, true);
+}
+// mvchange
 if ("onbeforeprint" in window) {
   const stopPropagationIfNeeded = function (event) {
     if (event.detail !== "custom") {

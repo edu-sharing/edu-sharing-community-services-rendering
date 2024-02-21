@@ -927,8 +927,11 @@ class ESObject {
     public function hasPermission(string $permission) {
         if (in_array('ccm:collection_io_reference', $this->getNode()->aspects)) {
             // is it a licensed node? check the original for access (new since 5.1)
-            if ($this->getNode()->originalRestrictedAccess) {
-                return in_array($permission, $this->getNode()->accessOriginal);
+            // accessEffective is introduced in 9.1!
+            if ($this->getNode()->accessEffective) {
+                print_r($this->getNode()->accessEffective);
+                print_r("Request: " . $permission);
+                return in_array($permission, $this->getNode()->accessEffective);
             }
         }
         return in_array($permission, $this->getNode()->access);

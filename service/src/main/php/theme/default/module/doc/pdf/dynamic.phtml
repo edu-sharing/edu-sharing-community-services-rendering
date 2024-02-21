@@ -1,9 +1,16 @@
 <?php 
-global $Locale, $Translate, $VIEWER_JS_CONFIG;
+global $Locale, $Translate, $VIEWER_JS_CONFIG, $MC_URL;
 $msg = array();
 $msg['toDownload'] = new Phools_Message_Default('toDownload');
 $msg['cannotOpenObject'] = new Phools_Message_Default('cannotOpenObject');
 $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText');
+?>
+
+<?php
+if (!$allowPrintAndDownload) {
+    echo '<script src="'.$MC_URL.'/vendor/js/pdfJS/espdf.js"></script>';
+    echo '<script src="'.$MC_URL.'/vendor/js/pdfJS/espdfglobal.js"></script>';
+}
 ?>
 
 <style>

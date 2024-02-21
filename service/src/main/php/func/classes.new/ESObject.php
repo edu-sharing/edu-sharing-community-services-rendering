@@ -929,8 +929,6 @@ class ESObject {
             // is it a licensed node? check the original for access (new since 5.1)
             // accessEffective is introduced in 9.1!
             if ($this->getNode()->accessEffective) {
-                print_r($this->getNode()->accessEffective);
-                print_r("Request: " . $permission);
                 return in_array($permission, $this->getNode()->accessEffective);
             }
         }

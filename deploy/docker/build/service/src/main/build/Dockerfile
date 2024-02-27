@@ -15,6 +15,7 @@ RUN set -eux \
         libjpeg62-turbo-dev \
         libpng-dev \
         libpq-dev \
+        libwebp-dev \
         libxml2-dev \
         libzip-dev \
         mariadb-client \
@@ -26,7 +27,7 @@ RUN set -eux \
         xmlstarlet \
         zip \
     && docker-php-ext-install -j$(nproc) soap \
-    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
+    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ --with-webp=/usr/include/\
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-configure exif \
     && docker-php-ext-install -j$(nproc) exif \

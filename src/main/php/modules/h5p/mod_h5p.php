@@ -31,6 +31,7 @@ require_once (dirname(__FILE__) . '/../../vendor/lib/h5p-core/h5p-metadata.class
 
 require_once (dirname(__FILE__) . '/H5PFramework.php');
 require_once (dirname(__FILE__) . '/H5PContentHandler.php');
+require_once __DIR__ . '/../../func/classes.new/Helper/CacheCleanerClass.php';
 
 global $MC_URL;
 
@@ -503,21 +504,12 @@ class mod_h5p
      */
     private function clearPotentiallyBrokenObject(array $esObjectEntry): void {
         global $CC_RENDER_PATH;
-        $pdo = RsPDO::getInstance();
-        $esObjectSql = 'DELETE FROM "ESOBJECT" WHERE "ESOBJECT_ID" = :objectid';
-        $esObjectStmt = $pdo->prepare($esObjectSql);
-        $esObjectStmt -> bindValue(':objectid', $esObjectEntry['ESOBJECT_ID']);
-        $esObjectStmt -> execute();
-        $trackingSql = 'DELETE FROM "ESTRACK" WHERE "ESTRACK_ESOBJECT_ID" = :objectid';
-        $trackingStmt = $pdo->prepare($trackingSql);
-        $trackingStmt -> bindValue(':objectid', $esObjectEntry['ESOBJECT_ID']);
-        $trackingStmt -> execute();
-        $fileLocation = $CC_RENDER_PATH . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . $esObjectEntry['ESOBJECT_PATH']
-            . DIRECTORY_SEPARATOR . $esObjectEntry['ESOBJECT_OBJECT_ID'];
-        if (! empty ($esObjectEntry['ESOBJECT_OBJECT_VERSION'])) {
-            $fileLocation .= '_' . $esObjectEntry['ESOBJECT_OBJECT_VERSION'];
+        $cacheCleanerLogic = new CacheCleanerClass(null, $this->getLogger());
+        $cacheCleanerLogic->renderPath = $CC_RENDER_PATH;
+        if (!empty($CC_RENDER_PATH_SAFE)) {
+            $cacheCleanerLogic->renderPathSave = $CC_RENDER_PATH_SAFE;
         }
-        unlink($fileLocation);
+        $cacheCleanerLogic->deleteUndemandedObject($esObjectEntry['ESOBJECT_ID']);
     }
 
     /**

@@ -22,7 +22,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: {{ include "edusharing_common_lib.names.name" . }}-job-init
-        image: {{ include "edusharing_common_lib.images.image" . }}{{ .Values.job.cachecleaner.image.name }}:{{ .Values.job.cachecleaner.image.tag }}
+        image: {{ include "edusharing_common_lib.images.image" . }}{{ .Values.job.init.image.name }}:{{ .Values.job.init.image.tag }}
         imagePullPolicy: {{ .Values.global.image.pullPolicy }}
         command: ["init.sh"]
         envFrom:

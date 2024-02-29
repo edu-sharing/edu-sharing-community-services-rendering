@@ -308,7 +308,7 @@ job:
   init:
 
     image:
-      name: ${docker.prefix}-deploy-docker-services-rendering-build-service
+      name: ${docker.prefix}-deploy-docker-build-service
       tag: ${docker.tag}
 
     podAnnotations: {}
@@ -333,7 +333,7 @@ job:
   cachecleaner:
 
     image:
-      name: ${docker.prefix}-deploy-docker-services-rendering-build-service
+      name: ${docker.prefix}-deploy-docker-build-service
       tag: ${docker.tag}
 
     podAnnotations: {}

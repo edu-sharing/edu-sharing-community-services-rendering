@@ -50,7 +50,7 @@
     </docker.edu_sharing.community.common.redis.tag>
 
     <docker.edu_sharing.community.common.redis.exporter.name>
-      edu_sharing-community-common-docker-redis-exporter
+      edu_sharing-community-common-docker-redis-export
     </docker.edu_sharing.community.common.redis.exporter.name>
 
     <docker.edu_sharing.community.common.redis.exporter.tag>

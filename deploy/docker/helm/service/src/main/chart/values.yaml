@@ -60,7 +60,7 @@ global:
 nameOverride: edusharing-services-rendering-service
 
 image:
-  name: ${docker.prefix}-deploy-docker-services-rendering-build-service
+  name: ${docker.prefix}-deploy-docker-build-service
   tag: ${docker.tag}
 
 ########################################################################################################################

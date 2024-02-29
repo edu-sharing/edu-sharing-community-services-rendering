@@ -1,16 +1,13 @@
-{{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
 apiVersion: batch/v1
-{{- else }}
-apiVersion: batch/v1beta1
-{{- end }}
 kind: CronJob
 metadata:
-  name: {{ include "edusharing_services_rendering.name" . }}-cachecleaner
-  labels: {{ include "edusharing_services_rendering.labels.app" . | nindent 4 }}
+  name: {{ include "edusharing_common_lib.names.name" . }}-cachecleaner
+  labels: {{ include "edusharing_common_lib.labels.app" . | nindent 4 }}
     app.kubernetes.io/component: cachecleaner
 spec:
   concurrencyPolicy: Forbid
   schedule: {{ .Values.job.cachecleaner.schedule | quote }}
+  suspend: {{ .Values.job.cachecleaner.suspend }}
   successfulJobsHistoryLimit: 1
   jobTemplate:
     spec:
@@ -26,8 +23,8 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-          - name: {{ include "edusharing_services_rendering.name" . }}-job-cachecleaner
-            image: {{ include "edusharing_services_rendering.image" . }}{{ .Values.image.prefix }}-deploy-docker-services-rendering-build-service:{{ .Values.image.tag }}
+          - name: {{ include "edusharing_common_lib.names.name" . }}-job-cachecleaner
+            image: {{ include "edusharing_common_lib.images.image" . }}{{ .Values.job.cachecleaner.image.name }}:{{ .Values.job.cachecleaner.image.tag }}
             imagePullPolicy: {{ .Values.global.image.pullPolicy }}
             args: ["php", "func/classes.new/Helper/cacheCleaner.php"]
             {{- $patroni := merge .Values.config.database.patroni .Values.global.patroni }}
@@ -41,9 +38,9 @@ spec:
             {{- end }}
             envFrom:
             - configMapRef:
-                name: {{ include "edusharing_services_rendering.name" . }}-env
+                name: {{ include "edusharing_common_lib.names.name" . }}-env
             - secretRef:
-                name: {{ include "edusharing_services_rendering.name" . }}-env
+                name: {{ include "edusharing_common_lib.names.name" . }}-env
             volumeMounts:
             - name: share-config
               mountPath: /var/cache/esrender/config

@@ -42,7 +42,7 @@ RUN set -eux \
     && ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini \
     && apt-get clean \
     && rm -r /var/lib/apt/lists/* \
-    && curl -L -o /tmp/phpredis.tar.gz https://github.com/phpredis/phpredis/archive/${phpredis.version}.tar.gz \
+    && curl -L -o /tmp/phpredis.tar.gz https://github.com/phpredis/phpredis/archive/5.3.7.tar.gz \
     && mkdir -p /usr/src/php/ext/redis \
     && tar -C /usr/src/php/ext/redis -xzf /tmp/phpredis.tar.gz --strip 1 \
     && rm -r /tmp/phpredis.tar.gz \

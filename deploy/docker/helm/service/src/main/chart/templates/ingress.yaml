@@ -2,8 +2,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "edusharing_services_rendering.name" . }}
-  labels: {{ include "edusharing_services_rendering.labels.app" . | nindent 4 }}
+  name: {{ include "edusharing_common_lib.names.name" . }}
+  labels: {{ include "edusharing_common_lib.labels.app" . | nindent 4 }}
   {{- with merge .Values.ingress.annotations .Values.global.cluster.cert.annotations }}
   annotations: {{ toYaml . | nindent 4 }}
   {{- end }}
@@ -24,7 +24,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ include "edusharing_services_rendering.name" $ }}
+            name: {{ include "edusharing_common_lib.names.name" $ }}
             port:
               number: {{ $.Values.service.port.api.external }}
       {{- end }}

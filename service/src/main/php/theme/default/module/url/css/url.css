@@ -4,6 +4,10 @@
 	display: flex;
 	overflow: hidden;
 }
+.videoWrapperInner {
+	position: relative;
+	padding-top: 25px;
+}
 .edusharing_audio_wrapper .edusharing_audio_bg {
 	position: absolute;
 	left: -25px;
@@ -35,4 +39,5 @@
 	bottom: 0;
 	width: 100%;
 	box-shadow: none;
+	max-width: 100%;
 }

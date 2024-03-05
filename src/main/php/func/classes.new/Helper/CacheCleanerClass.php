@@ -91,7 +91,7 @@ class CacheCleanerClass
 
                 //get h5p-ID for the directory name
                 try {
-                    $query = "SELECT id FROM h5p_contents WHERE title='" . $esobject->getObjectID() . "-v" . $esobject->getContentHash() . "'";
+                    $query = "SELECT id FROM h5p_contents WHERE title='" . $esobject->getObjectID() . "-" . $esobject->getContentHash() . "'";
                     $statement = $this->pdo->query($query);
                     $contentResult = $statement->fetchAll(\PDO::FETCH_OBJ);
                     $h5pID = ! empty($contentResult) ? $contentResult[0]->id : null;
@@ -99,14 +99,14 @@ class CacheCleanerClass
                     $this->logger->info($e->getMessage());
                 }
                 if ($h5pID === null) {
-                    $this->logger->info('No entry found in h5p_contents for object:' . $esobject->getObjectID() . "-v" . $esobject->getContentHash());
+                    $this->logger->info('No entry found in h5p_contents for object:' . $esobject->getObjectID() . "-" . $esobject->getContentHash());
                 } else {
                     $this->logger->info('h5pID: ' . $h5pID);
                     try {
                         $query_libraries = "DELETE FROM h5p_contents_libraries WHERE content_id = " . $h5pID;
                         $statement_libraries = $this->pdo->query($query_libraries);
                         $statement_libraries->execute();
-                        $query = "DELETE FROM h5p_contents WHERE title='" . $esobject->getObjectID() . "-v" . $esobject->getContentHash() . "'";
+                        $query = "DELETE FROM h5p_contents WHERE title='" . $esobject->getObjectID() . "-" . $esobject->getContentHash() . "'";
                         $statement = $this->pdo->query($query);
                         $statement->execute();
                         $this->logger->info('deleted h5p-' . $h5pID . ' from db.');

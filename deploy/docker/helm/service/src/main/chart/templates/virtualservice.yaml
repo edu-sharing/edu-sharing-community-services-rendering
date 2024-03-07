@@ -3,26 +3,26 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ include "edusharing_services_rendering.name" . }}-internal
-  labels: {{ include "edusharing_services_rendering.labels.app" . | nindent 4 }}
+  name: {{ include "edusharing_common_lib.names.name" . }}-internal
+  labels: {{ include "edusharing_common_lib.labels.app" . | nindent 4 }}
 spec:
   hosts:
-  - {{ include "edusharing_services_rendering.name" . }}
+  - {{ include "edusharing_common_lib.names.name" . }}
   http:
   - route:
     - destination:
-        host: {{ include "edusharing_services_rendering.name" . }}
+        host: {{ include "edusharing_common_lib.names.name" . }}
       weight: 100
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ include "edusharing_services_rendering.name" . }}-external
-  labels: {{ include "edusharing_services_rendering.labels.app" . | nindent 4 }}
+  name: {{ include "edusharing_common_lib.names.name" . }}-external
+  labels: {{ include "edusharing_common_lib.labels.app" . | nindent 4 }}
 spec:
   hosts: {{ toYaml .Values.ingress.hosts | nindent 4 }}
   gateways:
-  - {{ include "edusharing_services_rendering.name" . }}
+  - {{ include "edusharing_common_lib.names.name" . }}
   http:
   {{- range .Values.ingress.paths }}
   - match:
@@ -30,7 +30,7 @@ spec:
         prefix: {{ . }}
     route:
     - destination:
-        host: {{ include "edusharing_services_rendering.name" $ }}
+        host: {{ include "edusharing_common_lib.names.name" $ }}
         port:
           number: {{ $.Values.service.port.api.external }}
       weight: 100

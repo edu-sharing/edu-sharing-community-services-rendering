@@ -71,7 +71,6 @@
   <modules>
     <module>bundle</module>
     <module>service</module>
-    <module>postgresql</module>
-    <module>rediscluster</module>
   </modules>
+
 </project>

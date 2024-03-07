@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   services-rendering-cache:
-    image: "${docker.edu_sharing.community.common.redis}"
+    image: "${docker.registry}/${docker.common}/${docker.edu_sharing.community.common.redis.name}:${docker.edu_sharing.community.common.redis.tag}"
     container_name: "services-rendering-cache_${COMPOSE_PROJECT_NAME}"
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
@@ -11,7 +11,7 @@ services:
       - 6379
 
   services-rendering-database:
-    image: "${docker.edu_sharing.community.common.postgresql}"
+    image: "${docker.registry}/${docker.common}/${docker.edu_sharing.community.common.postgresql.name}:${docker.edu_sharing.community.common.postgresql.tag}"
     container_name: "services-rendering-database_${COMPOSE_PROJECT_NAME}"
     environment:
       POSTGRESQL_DATABASE: "${SERVICES_RENDERING_DATABASE_NAME:-rendering}"

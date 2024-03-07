@@ -16,39 +16,83 @@
   <name>edu_sharing-community-services-rendering-deploy-docker</name>
 
   <properties>
-    <postgresql.version.major>13</postgresql.version.major>
-    <postgresql.version.minor>9</postgresql.version.minor>
-    <postgresql.version.patch>0</postgresql.version.patch>
-    <postgresql.version>${postgresql.version.major}.${postgresql.version.minor}.${postgresql.version.patch}</postgresql.version>
 
-    <php.version.major>8</php.version.major>
-    <php.version.minor>1</php.version.minor>
-    <php.version.patch>12</php.version.patch>
-    <php.version>${php.version.major}.${php.version.minor}.${php.version.patch}</php.version>
+    <docker.edu_sharing.community.common.apache.exporter.name>
+      edu_sharing-community-common-docker-apache-exporter
+    </docker.edu_sharing.community.common.apache.exporter.name>
 
-    <phpredis.version>5.3.7</phpredis.version>
+    <docker.edu_sharing.community.common.apache.exporter.tag>
+      0.11.0
+    </docker.edu_sharing.community.common.apache.exporter.tag>
+
+    <docker.edu_sharing.community.common.varnish.name>
+      edu_sharing-community-common-docker-varnish
+    </docker.edu_sharing.community.common.varnish.name>
+
+    <docker.edu_sharing.community.common.varnish.tag>
+      0.35.0
+    </docker.edu_sharing.community.common.varnish.tag>
+
+    <docker.edu_sharing.community.common.varnish.exporter.name>
+      edu_sharing-community-common-docker-varnish-exporter
+    </docker.edu_sharing.community.common.varnish.exporter.name>
+
+    <docker.edu_sharing.community.common.varnish.exporter.tag>
+      0.35.0
+    </docker.edu_sharing.community.common.varnish.exporter.tag>
+
+    <docker.edu_sharing.community.common.redis.name>
+      edu_sharing-community-common-docker-redis
+    </docker.edu_sharing.community.common.redis.name>
+
+    <docker.edu_sharing.community.common.redis.tag>
+      6.2.7
+    </docker.edu_sharing.community.common.redis.tag>
+
+    <docker.edu_sharing.community.common.redis.exporter.name>
+      edu_sharing-community-common-docker-redis-export
+    </docker.edu_sharing.community.common.redis.exporter.name>
+
+    <docker.edu_sharing.community.common.redis.exporter.tag>
+      1.45.0
+    </docker.edu_sharing.community.common.redis.exporter.tag>
+
+    <docker.edu_sharing.community.common.redis-cluster.name>
+      edu_sharing-community-common-docker-redis-cluster
+    </docker.edu_sharing.community.common.redis-cluster.name>
+
+    <docker.edu_sharing.community.common.redis-cluster.tag>
+      6.2.7
+    </docker.edu_sharing.community.common.redis-cluster.tag>
+
+    <docker.edu_sharing.community.common.postgresql.name>
+      edu_sharing-community-common-docker-postgresql
+    </docker.edu_sharing.community.common.postgresql.name>
+
+    <docker.edu_sharing.community.common.postgresql.tag>
+      13.9.0
+    </docker.edu_sharing.community.common.postgresql.tag>
+
+    <docker.edu_sharing.community.common.postgresql.exporter.name>
+      edu_sharing-community-common-docker-postgresql-exporter
+    </docker.edu_sharing.community.common.postgresql.exporter.name>
+
+    <docker.edu_sharing.community.common.postgresql.exporter.tag>
+      0.11.1
+    </docker.edu_sharing.community.common.postgresql.exporter.tag>
+
+    <docker.edu_sharing.community.common.minideb.name>
+      edu_sharing-community-common-docker-minideb
+    </docker.edu_sharing.community.common.minideb.name>
+
+    <docker.edu_sharing.community.common.minideb.tag>
+      11
+    </docker.edu_sharing.community.common.minideb.tag>
 
     <docker.from.apache.server>
-      dockerio.mirror.docker.edu-sharing.com/php:${php.version}-apache
+      dockerio.mirror.docker.edu-sharing.com/php:8.1.12-apache
     </docker.from.apache.server>
 
-    <docker.edu_sharing.communty.common.repository>
-      ${docker.registry}/community/common
-    </docker.edu_sharing.communty.common.repository>
-    <docker.edu_sharing.community.common.redis>
-      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-docker-redis:6.2.7
-    </docker.edu_sharing.community.common.redis>
-    <docker.edu_sharing.community.common.postgresql>
-      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-docker-postgresql:${postgresql.version}
-    </docker.edu_sharing.community.common.postgresql>
-
-    <docker.edu_sharing.community.common.postgresql.exporter>
-      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-docker-postgresql-exporter:0.11.1
-    </docker.edu_sharing.community.common.postgresql.exporter>
-
-    <docker.edu_sharing.community.common.minideb>
-      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-docker-minideb:11
-    </docker.edu_sharing.community.common.minideb>
   </properties>
 
   <modules>
@@ -56,4 +100,5 @@
     <module>build</module>
     <module>helm</module>
   </modules>
+
 </project>

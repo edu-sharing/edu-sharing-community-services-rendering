@@ -21,6 +21,10 @@ edusharing_services_rendering_postgresql:
 
   enabled: true
 
+  image:
+    name: ${docker.edu_sharing.community.common.postgresql.name}
+    tag: ${docker.edu_sharing.community.common.postgresql.tag}
+
   nameOverride: *postgresqlNameOverride
 
   service:
@@ -32,17 +36,67 @@ edusharing_services_rendering_postgresql:
     database: &postgresqlConfigDatabase rendering
     username: &postgresqlConfigUsername rendering
 
+  init:
+
+    permission:
+
+      image:
+        name: ${docker.edu_sharing.community.common.minideb.name}
+        tag: ${docker.edu_sharing.community.common.minideb.tag}
+
+  job:
+
+    dump:
+
+      image:
+        name: ${docker.edu_sharing.community.common.postgresql.name}
+        tag: ${docker.edu_sharing.community.common.postgresql.tag}
+
+  sidecar:
+
+    metrics:
+
+      image:
+        name: ${docker.edu_sharing.community.common.postgresql.exporter.name}
+        tag: ${docker.edu_sharing.community.common.postgresql.exporter.tag}
+
 ########################################################################################################################
 
 edusharing_services_rendering_rediscluster:
 
   enabled: true
 
+  image:
+    name: ${docker.edu_sharing.community.common.redis-cluster.name}
+    tag: ${docker.edu_sharing.community.common.redis-cluster.tag}
+
   nameOverride: &redisclusterNameOverride edusharing-services-rendering-rediscluster
 
   service:
     port:
       api: &redisclusterServicePortApi 6379
+
+  init:
+
+    permission:
+
+      image:
+        name: ${docker.edu_sharing.community.common.minideb.name}
+        tag: ${docker.edu_sharing.community.common.minideb.tag}
+
+    sysctl:
+
+      image:
+        name: ${docker.edu_sharing.community.common.minideb.name}
+        tag: ${docker.edu_sharing.community.common.minideb.tag}
+
+  sidecar:
+
+    metrics:
+
+      image:
+        name: ${docker.edu_sharing.community.common.redis.exporter.name}
+        tag: ${docker.edu_sharing.community.common.redis.exporter.tag}
 
 ########################################################################################################################
 

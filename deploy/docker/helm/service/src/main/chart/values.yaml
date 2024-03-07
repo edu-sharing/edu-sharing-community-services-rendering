@@ -34,11 +34,12 @@ global:
     pullSecrets: []
     registry: ${docker.registry}
     repository: ${docker.repository}
+    common: ${docker.common}
 
   metrics:
     scrape:
-      interval: 10s
-      timeout: 10s
+      interval: 60s
+      timeout: 60s
     servicemonitor:
       enabled: false
 
@@ -59,7 +60,7 @@ global:
 nameOverride: edusharing-services-rendering-service
 
 image:
-  prefix: ${docker.prefix}
+  name: ${docker.prefix}-deploy-docker-build-service
   tag: ${docker.tag}
 
 ########################################################################################################################
@@ -283,6 +284,10 @@ init:
 
   permission:
 
+    image:
+      name: ${docker.edu_sharing.community.common.minideb.name}
+      tag: "${docker.edu_sharing.community.common.minideb.tag}"
+
     resources:
 
       limits:
@@ -301,6 +306,10 @@ init:
 job:
 
   init:
+
+    image:
+      name: ${docker.prefix}-deploy-docker-build-service
+      tag: ${docker.tag}
 
     podAnnotations: {}
 
@@ -323,6 +332,10 @@ job:
 
   cachecleaner:
 
+    image:
+      name: ${docker.prefix}-deploy-docker-build-service
+      tag: ${docker.tag}
+
     podAnnotations: {}
 
     resources:
@@ -335,6 +348,7 @@ job:
         memory: 2Gi
 
     schedule: "0 * * * *"
+    suspend: false
 
     securityContext:
 
@@ -351,6 +365,10 @@ sidecar:
   metrics:
 
     enabled: true
+
+    image:
+      name: ${docker.edu_sharing.community.common.apache.exporter.name}
+      tag: ${docker.edu_sharing.community.common.apache.exporter.tag}
 
     relabelings: []
 
@@ -370,6 +388,10 @@ sidecar:
       runAsUser: 1000
 
   proxyCache:
+
+    image:
+      name: ${docker.edu_sharing.community.common.varnish.name}
+      tag: ${docker.edu_sharing.community.common.varnish.tag}
 
     startupProbe:
 
@@ -412,6 +434,10 @@ sidecar:
       runAsUser: 101
 
   proxyMetrics:
+
+    image:
+      name: ${docker.edu_sharing.community.common.varnish.exporter.name}
+      tag: ${docker.edu_sharing.community.common.varnish.exporter.tag}
 
     relabelings: []
 

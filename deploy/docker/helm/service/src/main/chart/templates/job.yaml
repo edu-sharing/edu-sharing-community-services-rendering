@@ -1,12 +1,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "edusharing_services_rendering.name" . }}-init
+  name: {{ include "edusharing_common_lib.names.name" . }}-init
   annotations:
     "helm.sh/hook": "post-install,post-upgrade"
     "helm.sh/hook-weight": "1"
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
-  labels: {{ include "edusharing_services_rendering.labels.app" . | nindent 4 }}
+  labels: {{ include "edusharing_common_lib.labels.app" . | nindent 4 }}
     app.kubernetes.io/component: init
 spec:
   completions: 1
@@ -21,15 +21,15 @@ spec:
     spec:
       restartPolicy: OnFailure
       containers:
-      - name: {{ include "edusharing_services_rendering.name" . }}-job-init
-        image: {{ include "edusharing_services_rendering.image" . }}{{ .Values.image.prefix }}-deploy-docker-services-rendering-build-service:{{ .Values.image.tag }}
+      - name: {{ include "edusharing_common_lib.names.name" . }}-job-init
+        image: {{ include "edusharing_common_lib.images.image" . }}{{ .Values.job.init.image.name }}:{{ .Values.job.init.image.tag }}
         imagePullPolicy: {{ .Values.global.image.pullPolicy }}
         command: ["init.sh"]
         envFrom:
         - configMapRef:
-            name: {{ include "edusharing_services_rendering.name" . }}-env
+            name: {{ include "edusharing_common_lib.names.name" . }}-env
         - secretRef:
-            name: {{ include "edusharing_services_rendering.name" . }}-env
+            name: {{ include "edusharing_common_lib.names.name" . }}-env
         {{- with .Values.job.init.resources }}
         resources: {{ toYaml . | nindent 10 }}
         {{- end }}

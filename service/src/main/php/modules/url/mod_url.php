@@ -212,7 +212,7 @@ class mod_url
         $html = '<div class="edusharing_audio_wrapper">';
         $html .= '<img alt="" class="edusharing_audio_bg" src="'. $this->esObject->getNode()->preview->url.'">';
         $html .= '<div class="edusharing_audio_img"><img alt="" src="'. $this->esObject->getNode()->preview->url.'"></div>';
-        $html .= '<video style="max-width:100%" data-eduid="' . $vidId . '" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls"></video>' . $footer . '</div>';
+        $html .= '<video data-eduid="' . $vidId . '" src="' . $this->getUrl() . '" type="' . $this -> esObject->getMimeType() . '" controls="controls"></video>' . $footer . '</div>';
         if (!$this->getIsBehindDataProtection()) {
             $html .= '<script>let vid = document.querySelector("[data-eduid=' . $vidId .']"); const timeStamps = window.location.hash.substring(1); if (timeStamps !== "") {vid.src = vid.src + "#" + timeStamps; vid.addEventListener("oncontextmenu", (e) => {e.preventDefault(); return false;})}</script>';
         }
@@ -250,16 +250,15 @@ class mod_url
         //16:9
         $height = $width * 0.5625;
         $objId = $this -> esObject -> getObjectID();
-        $videoWrapperInnerStyle = 'position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;';
         $type = new RemoteObjectType($this->esObject);
         //wrappers needed to handle max width
         if($this -> isYoutubeRemoteObject()){
             $vidId = $this -> esObject -> getNode() -> remote -> id;
             $src = '';
             $src = 'www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1';
-            return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
-                    <div class="videoWrapperInner" style="'.$videoWrapperInnerStyle.'">
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . '" id="' . $objId . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="'.$src.'" frameborder="0" allowfullscreen class="embedded_video"></iframe>
+            return $this->getInlineStyle($width) . '<div class="videoWrapperOuter">
+                    <div class="videoWrapperInner">
+                        <iframe id="' . $objId . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" src="'.$src.'" frameborder="0" allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
@@ -276,9 +275,9 @@ class mod_url
                 }
                 $vidId = $params['v'];
             }
-            return '<div class="videoWrapperOuter" style="max-width:' . $width . 'px;">
-                    <div class="videoWrapperInner" style="'.($videoWrapperInnerStyle).'">
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . '" id="' . $objId . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video"></iframe>
+            return $this->getInlineStyle($width) . '<div class="videoWrapperOuter">
+                    <div class="videoWrapperInner">
+                        <iframe " id="' . $objId . '" src="//www.youtube-nocookie.com/embed/' . $vidId . '?modestbranding=1" frameborder="0" allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
@@ -287,9 +286,9 @@ class mod_url
             $urlArr = explode('/', $this -> getUrl());
             $vidId = end($urlArr);
             $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Vimeo', 'https://help.vimeo.com/hc/de/sections/203915088-Datenschutz', 'player.vimeo.com', 'VIMEO');
-            return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-                    <div class="videoWrapperInner" style="'.$videoWrapperInnerStyle.'">
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . '" id="' . $objId . '" src="//player.vimeo.com/video/' . $vidId . '" src="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video"></iframe>
+            return $this->getInlineStyle($width) . '<div class="videoWrapperOuter">
+                    <div class="videoWrapperInner">
+                        <iframe id="' . $objId . '" src="//player.vimeo.com/video/' . $vidId . '" src="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="embedded_video"></iframe>
                     </div>
                     '.$footer.'
                 </div>';
@@ -299,15 +298,23 @@ class mod_url
                 $type = 'video/' . pathinfo($this -> getUrl(), PATHINFO_EXTENSION);
             }
             $identifier = uniqid();
-            return '<div class="videoWrapperOuter" style="max-width:'.$width.'px;">
-                <div id="videoWrapperInner_'.$objId.'" class="videoWrapperInner" style="position: relative; padding-top: 25px;' . '">
-                    <video id="'.$identifier.'" data-tap-disabled="true" controls style="max-width: 100%;background: transparent url(\''.$this->esObject->getPreviewUrl().'\') 50% 50% / cover no-repeat;" controlsList="nodownload">
+            return $this->getInlineStyle($width) . '<div class="videoWrapperOuter" >
+                <div id="videoWrapperInner_'.$objId.'" class="videoWrapperInner">
+                    <video id="'.$identifier.'" data-tap-disabled="true" controls controlsList="nodownload">
                         <source src="' . $this -> getUrl() . '" type="' . $type . '"></source>
                     </video>
                 </div>
                 '.$footer.'
             </div>';
         }
+    }
+    private function getInlineStyle(int $width) {
+        return '<style>
+            .videoWrapperOuter {max-width: '. $width . 'px;}
+            .videoWrapperInner {position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;}
+            .videoWrapperInner > video {max-width: 100%;background: transparent url(\''.$this->esObject->getPreviewUrl().'\') 50% 50% / cover no-repeat;}
+            .videoWrapperInner > iframe {position: absolute; top: 0; left: 0; width: 100%; height: 100%;}
+            </style>';
     }
 
     protected function getUrl() {

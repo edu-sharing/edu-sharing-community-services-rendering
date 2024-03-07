@@ -1,6 +1,6 @@
 variables:
   COMMON_BIND_HOST: "0.0.0.0"
-  DEPLOY_DOCKER_HELM: "false"
+  DEPLOY_DOCKER_HELM: "true"
   DEPLOY_TIMESTAMP: "$DEPLOY_TIMESTAMP"
   DOCKER_DRIVER: "$DIND_DRIVER"
   DOCKER_HOST: "$DIND_HOST"
@@ -33,5 +33,10 @@ deploy:
     - curl -sSL https://packages.sury.org/php/README.txt | bash -x
     - apt-get update -y
     - apt-get install -y php8.1 php8.1-curl php8.1-dom php8.1-gd php8.1-mbstring php8.1-xml php8.1-zip
+    - pushd /tmp
+    - wget https://get.helm.sh/helm-v3.14.2-linux-amd64.tar.gz
+    - tar -xzvf helm-v3.14.2-linux-amd64.tar.gz
+    - ./linux-amd64/helm repo add edu-sharing https://artifacts.edu-sharing.com/repository/helm
+    - popd
   script:
     - mvn $MAVEN_CLI -s .mvn/settings.xml deploy

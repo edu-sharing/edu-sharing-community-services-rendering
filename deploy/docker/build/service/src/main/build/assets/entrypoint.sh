@@ -122,11 +122,6 @@ until [[ $(curl -sSf -w "%{http_code}\n" -o /dev/null -H 'Accept: application/js
 	sleep 3
 done
 
-until [[ $(curl -sSf -w "%{http_code}\n" -o /dev/null -H 'Accept: application/json' "${repository_service_base}/rest/_about/status/SEARCH?timeoutSeconds=3") -eq 200 ]]; do
-	echo >&2 "Waiting for ${repository_service_host} search ..."
-	sleep 3
-done
-
 ########################################################################################################################
 
 sed -i 's|^Listen \([0-9]+\)|Listen '"${my_bind}"':\1|g' /etc/apache2/ports.conf

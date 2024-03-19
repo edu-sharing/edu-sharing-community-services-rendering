@@ -1,40 +1,40 @@
 <div class="license" style="max-width: 100%">
-<?php
+    <?php
 
-global $Locale, $Translate;
-$msg = array();
-$msg['customLicense'] = new Phools_Message_Default('custom license');
-$msg['authored_by'] = new Phools_Message_Default('authored_by');
-$msg['published_under_a'] = new Phools_Message_Default('published under a');
+    global $Locale, $Translate;
+    $msg = array();
+    $msg['customLicense'] = new Phools_Message_Default('custom license');
+    $msg['authored_by'] = new Phools_Message_Default('authored_by');
+    $msg['published_under_a'] = new Phools_Message_Default('published under a');
 
-$licenceContent =  Config::get('licensePre', '');
+    $licenceContent =  Config::get('licensePre', '');
 
-$licenceContent .= '<a class="license_permalink" href="'.$license_permalink.'" target="_blank" title="'.htmlentities($license_filename).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
-                    . htmlentities($license_filename)
-                    . '</es:title></a>'
-                    . '&nbsp;';
-if(!empty($license_author)) {
-    if(!is_array($license_author)){
-        $license_author = [$license_author];
+    $licenceContent .= '<a class="license_permalink" href="'.$license_permalink.'" target="_blank" title="'.htmlentities($license_filename).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
+        . htmlentities($license_filename)
+        . '</es:title></a>'
+        . htmlentities('&nbsp;');
+    if(!empty($license_author)) {
+        if(!is_array($license_author)){
+            $license_author = [$license_author];
+        }
+        $licenceContent .= '<br/>' . htmlentities($msg['authored_by']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8')
+            . htmlentities('&nbsp;')
+            . '<span class="author">'
+            . htmlentities(implode(', ',$license_author), ENT_QUOTES, 'utf-8') . '</span>'
+            . htmlentities('&nbsp;');
     }
-    $licenceContent .= '<br/>' . htmlentities($msg['authored_by']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8')
-                    . '&nbsp;'
-                    . '<span class="author">'
-                    . htmlentities(implode(', ',$license_author), ENT_QUOTES, 'utf-8') . '</span>'
-                    . '&nbsp;';
-}
-$licenceContent .=  htmlentities($msg['published_under_a']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8')
-                    . '&nbsp;';
-                    if(!empty($license_icon_url)) {
-                        $licenceContent .= '<a target="_blank" class="license_link" href="' . htmlspecialchars($license_url, ENT_QUOTES, 'utf-8') . '">';
-                        $licenceContent .= '<img class="license_icon" style="height: 16px" src="' . htmlspecialchars($license_icon_url, ENT_QUOTES, 'utf-8') . '" />';
-                        $licenceContent .= '</a>';    
-                    } else { 
-                        $licenceContent .= $msg['customLicense']->localize($Locale, $Translate);
-                    }
+    $licenceContent .=  htmlentities(htmlentities($msg['published_under_a']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8'))
+        . htmlentities('&nbsp;');
+    if(!empty($license_icon_url)) {
+        $licenceContent .= '<a target="_blank" class="license_link" href="' . htmlspecialchars($license_url, ENT_QUOTES, 'utf-8') . '">';
+        $licenceContent .= '<img class="license_icon" style="height: 16px" src="' . htmlspecialchars($license_icon_url, ENT_QUOTES, 'utf-8') . '" />';
+        $licenceContent .= '</a>';
+    } else {
+        $licenceContent .= $msg['customLicense']->localize($Locale, $Translate);
+    }
 
-$licenceContent .= Config::get('licensePost', '');
+    $licenceContent .= Config::get('licensePost', '');
 
-echo $licenceContent;
-?>
+    echo $licenceContent;
+    ?>
 </div>

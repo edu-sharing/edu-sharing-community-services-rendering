@@ -260,6 +260,7 @@ ul.edusharing_rendering_content_video_options_resolutions
 }
 
 .edusharing_rendering_content_footer_top .license_permalink, .edusharing_rendering_content_footer_top .license {
+    text-align: left;
     margin-right: 40px;
 }
 

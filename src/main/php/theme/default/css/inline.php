@@ -401,8 +401,14 @@ width: 100%;
 margin-top: 8px;
 }
 
-.edusharing_rendering_content_footer_top .license_permalink, .edusharing_rendering_content_footer_top .license {
-margin-right: 40px;
+.edusharing_rendering_content_footer_top .license {
+display: flex;
+flex-wrap:wrap;
+align-items: center;
+}
+
+.edusharing_rendering_content_footer_top .license .license_link {
+display: inline-flex;
 }
 
 video, audio {

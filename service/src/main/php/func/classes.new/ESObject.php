@@ -498,6 +498,8 @@ class ESObject {
                 Logger::getLogger('de.metaventis.esrender.index') -> info('Could not set module by resource-type/-version, using default ("doc") module.');
                 $this -> module -> setName('doc');
             }
+        } else if ($this -> mimetype == 'audio/mp4') {
+            $this->module->setName('audio');
         } else {
             if (!$this -> module -> setModuleByMimetype($this -> mimetype)) {
                 Logger::getLogger('de.metaventis.esrender.index') -> info('Could not set module by mimetype "'.$this->mimetype.'" using default ("doc") module.');

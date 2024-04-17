@@ -15,6 +15,7 @@ class CacheCleanerClass
     public $renderPathSave = '';
     private $pdo = null;
     private $module;
+    private bool $useEnvFreeSpace;
 
     public function __construct($module, $logger = null)
     {
@@ -25,10 +26,15 @@ class CacheCleanerClass
         if ($this->module !== null) {
             $this->logger->info('Module is set to ' . $module . '. All content of this type will be cleared from the cache');
         }
+        $this->useEnvFreeSpace = getenv('SERVICES_RENDERING_SERVICE_CACHE_CLEANER_USE_DISK_SIZE') == true;
+        $this->logger->info('Using disk size: ' . $this->useEnvFreeSpace);
     }
 
     private function dirSize($directory)
     {
+        if ($this->useEnvFreeSpace) {
+            return disk_total_space($directory) - disk_free_space($directory);
+        }
         $size = 0;
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory)) as $file) {
             if ($file->getFileName() !== '..' && $file->getFileName() !== '.')

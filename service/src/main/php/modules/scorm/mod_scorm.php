@@ -19,7 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-
+set_time_limit(300);
 if (!defined('MOODLE_BASE_DIR') && file_exists(dirname(__FILE__).'/config.php')) {
     require_once dirname(__FILE__). '/config.php';
 }
@@ -65,8 +65,8 @@ extends ESRender_Module_ContentNode_Abstract {
 
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30 );
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 300 );
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$resp = curl_exec($ch);
 		echo curl_error($ch);

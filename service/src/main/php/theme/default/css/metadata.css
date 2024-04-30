@@ -45,16 +45,19 @@
     padding: 5px 10px;
     margin-left: 10px;
 }
-.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div {
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div,
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div > a {
     display: flex;
     align-items: center;
     gap: 5px;
+    text-decoration: none;
+    color: #383838;
 }
-.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div > div{
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div .value-group{
     display: flex;
     flex-direction: column;
 }
-.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div > img{
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div img{
     height: 45px;
     width: auto;
 }

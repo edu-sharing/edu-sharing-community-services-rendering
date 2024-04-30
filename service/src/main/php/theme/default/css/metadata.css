@@ -45,6 +45,22 @@
     padding: 5px 10px;
     margin-left: 10px;
 }
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div > div{
+    display: flex;
+    flex-direction: column;
+}
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div > img{
+    height: 45px;
+    width: auto;
+}
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div .value-description{
+    font-size: 80%;
+}
 
 .edusharing_rendering_metadata_body .mdsWidget_vcard .mdsValue {
     display: inline-flex;

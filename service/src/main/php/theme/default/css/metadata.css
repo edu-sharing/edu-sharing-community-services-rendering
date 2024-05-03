@@ -21,7 +21,9 @@
     margin: 15px 0 0 15px;
     line-height: 1.5;
 }
-
+.edusharing_rendering_metadata_body .mdsWidget .mdsWidgetContent{
+    padding-left: 0;
+}
 .edusharing_rendering_metadata_body .mdsWidget:not(.mdsWidget_tinyMCE)  .mdsWidgetContent{
     white-space: pre-line;
 }
@@ -84,9 +86,13 @@
     font-weight: 600;
     font-style: normal;
     margin: 25px 0 -10px 0;
-    color: #000;
+    color: #222;
+    border-bottom: 1px solid #eeee;
+    font-size: 105%;
 }
-
+.edusharing_rendering_metadata_body .mdsContributorGroup {
+    padding: 0 15px;
+}
 .edusharing_rendering_metadata_body .mdsContributorGroup .mdsWidgetCaption,
 .edusharing_rendering_metadata_body .mdsContributorGroup .mdsValue{
     margin-left: 0;

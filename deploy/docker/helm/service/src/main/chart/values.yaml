@@ -332,6 +332,9 @@ job:
 
   cachecleaner:
 
+    config:
+      useDiskSize: true
+
     image:
       name: ${docker.prefix}-deploy-docker-build-service
       tag: ${docker.tag}

@@ -11,7 +11,7 @@ class ESRender_License {
         $author = str_replace('[#]', ', ', $esobject -> getNodeProperty('ccm:lifecyclecontributer_authorFN'));
         $authorFreeText = str_replace('[#]', ', ', $esobject -> getNodeProperty('ccm:author_freetext'));
         if($author && $authorFreeText) {
-            $this -> author = implode(' & ', $author) . ' & ' . $authorFreeText;
+            $this -> author = (is_array($author) ? implode(' & ', $author) : $author) . ' & ' . $authorFreeText;
         } else if($author) {
             $this -> author = $author;
         } else if($authorFreeText) {

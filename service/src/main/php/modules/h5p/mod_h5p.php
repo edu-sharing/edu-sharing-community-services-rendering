@@ -89,9 +89,6 @@ class mod_h5p
 
         if($this->H5PValidator->isValidPackage()){
             $title = $this->esObject->getTitle();
-            if (!empty($this->H5PValidator->h5pC->mainJsonData['title'])) {
-                $title = $this->H5PValidator->h5pC->mainJsonData['title'];
-            }
             $this->H5PStorage->savePackage(array('title' => $this->esObject->getObjectID()."-".$contentHash, 'disable' => 0));
             $query = 'UPDATE h5p_contents SET updated_at = CURRENT_TIMESTAMP, description = '.$db->quote($title).' WHERE id = '.$this->H5PCore->loadContent($this->H5PFramework->id)['id'];
             $db -> query($query);

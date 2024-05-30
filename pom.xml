@@ -28,7 +28,7 @@
   <properties>
 
     <!-- release-2 -->
-    <bom.repository.version>8.1.9-RC0</bom.repository.version>
+    <bom.repository.version>8.1.9</bom.repository.version>
 
   </properties>
 

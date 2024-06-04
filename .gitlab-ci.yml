@@ -32,7 +32,7 @@ deploy:
   before_script:
     - curl -sSL https://packages.sury.org/php/README.txt | bash -x
     - apt-get update -y
-    - apt-get install -y php8.1 php8.1-curl php8.1-dom php8.1-gd php8.1-mbstring php8.1-xml php8.1-zip
+    - apt-get install -y php8.3 php8.3-curl php8.3-dom php8.3-gd php8.3-mbstring php8.3-xml php8.3-zip
     - pushd /tmp
     - wget https://get.helm.sh/helm-v3.14.2-linux-amd64.tar.gz
     - tar -xzvf helm-v3.14.2-linux-amd64.tar.gz

@@ -56,6 +56,9 @@ cursor: pointer;
 }
 
 div.edusharing_rendering_content_video_options_content {
+background-color: black;
+opacity: .7;
+border-radius: .5em;
 display: none;
 }
 

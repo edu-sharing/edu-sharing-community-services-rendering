@@ -892,7 +892,7 @@ class ESObject {
 
     public function getVersion(): string
     {
-        return $this->version;
+        return $this->version ?? '';
     }
 
     public function getResourceVersion(): string

@@ -17,7 +17,7 @@
         if(!is_array($license_author)){
             $license_author = [$license_author];
         }
-        $licenceContent .= '<br/>' . htmlentities($msg['authored_by']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8')
+        $licenceContent .= htmlentities($msg['authored_by']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8')
             . htmlentities('&nbsp;')
             . '<span class="author">'
             . htmlentities(implode(', ',$license_author), ENT_QUOTES, 'utf-8') . '</span>'

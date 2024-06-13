@@ -14,14 +14,14 @@
   ],
   "config": {
     "platform": {
-      "php": "8.1"
+      "php": "8.3"
     },
     "preferred-install": "dist",
     "sort-packages": true,
     "optimize-autoloader": true
   },
   "require": {
-    "php": ">=8.1",
+    "php": ">=8.3",
     "curl/curl": "~2.0",
     "guzzlehttp/guzzle": "~7.4.1",
     "apache/log4php": "~2.3.0",

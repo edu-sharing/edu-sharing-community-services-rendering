@@ -236,14 +236,23 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         $Logger = $this -> getLogger();
 
         $pdo = RsPDO::getInstance();
+        $hasVersion = !empty($this->esObject -> getVersion());
 
         try {
-            $sql = 'SELECT * FROM "ESOBJECT" ' . 'WHERE "ESOBJECT_REP_ID" = :repid ' . 'AND "ESOBJECT_CONTENT_HASH" = :contenthash ' . 'AND "ESOBJECT_OBJECT_ID" = :objectid ';
+            $sql = 'SELECT * FROM "ESOBJECT" ' .
+                'WHERE "ESOBJECT_REP_ID" = :repid ' .
+                'AND "ESOBJECT_CONTENT_HASH" = :contenthash ' .
+                'AND "ESOBJECT_OBJECT_ID" = :objectid ';
+
+            if ($hasVersion) {
+                $sql .= 'AND "ESOBJECT_OBJECT_VERSION" = :version';
+            }
 
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
             $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
             $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
+            $hasVersion && $stmt -> bindValue(':version', $this->esObject -> getVersion());
             $stmt -> execute();
             
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);

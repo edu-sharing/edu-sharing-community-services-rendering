@@ -245,6 +245,7 @@ config:
   http:
     client:
       content:
+        ## @param config.http.client.content.url Set url-pattern to retrieve content (for virtual domains)
         url: ""
       proxy:
         ## @param config.http.client.proxy.nonproxyhosts Set list of non-proxy hosts in http client
@@ -259,6 +260,7 @@ config:
         proxypass: ""
     server:
       host:
+        ## @param config.http.server.host.dynamic Enable dynamic url generation (for virtual domains)
         dynamic: false
 
   override:

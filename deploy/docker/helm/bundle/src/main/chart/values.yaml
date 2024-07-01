@@ -2,15 +2,19 @@
 # GLOBAL
 ########################################################################################################################
 
+## @section Global parameters
 global:
 
   patroni:
+    ## @param global.patroni.name Name of patroni
     name: &postgresqlNameOverride edusharing-services-rendering-postgresql
 
 ########################################################################################################################
 # LOCAL
 ########################################################################################################################
 
+## @section Local parameters
+## @param nameOverride Override name
 nameOverride: edusharing-services-rendering
 
 ########################################################################################################################
@@ -19,21 +23,27 @@ nameOverride: edusharing-services-rendering
 
 edusharing_services_rendering_postgresql:
 
+  ## @param edusharing_services_rendering_postgresql.enabled Enable postgresql rendering service
   enabled: true
 
   image:
+    ## @param edusharing_services_rendering_postgresql.image.name  Set postgresql rendering service image name
     name: ${docker.edu_sharing.community.common.postgresql.name}
+    ## @param edusharing_services_rendering_postgresql.image.tag  Set postgresql rendering service image tag
     tag: ${docker.edu_sharing.community.common.postgresql.tag}
 
+  ## @param edusharing_services_rendering_postgresql.nameOverride Override edusharing postgresql rendering service name
   nameOverride: *postgresqlNameOverride
 
   service:
     port:
+      ## @param edusharing_services_rendering_postgresql.service.port.api Set port for postgresql rendering service api
       api: &postgresqlServicePortApi 5432
 
   config:
-
+    ## @param edusharing_services_rendering_postgresql.config.database Set postgresql rendering service database name
     database: &postgresqlConfigDatabase rendering
+    ## @param edusharing_services_rendering_postgresql.config.username Set postgresql rendering service database username
     username: &postgresqlConfigUsername rendering
 
   init:
@@ -41,7 +51,9 @@ edusharing_services_rendering_postgresql:
     permission:
 
       image:
+        ## @param edusharing_services_rendering_postgresql.init.permission.image.name Set postgresql rendering service init permission container name
         name: ${docker.edu_sharing.community.common.minideb.name}
+        ## @param edusharing_services_rendering_postgresql.init.permission.image.tag Set postgresql rendering service init permission container tag
         tag: ${docker.edu_sharing.community.common.minideb.tag}
 
   job:
@@ -49,7 +61,9 @@ edusharing_services_rendering_postgresql:
     dump:
 
       image:
+        ## @param edusharing_services_rendering_postgresql.job.dump.image.name Set postgresql rendering service dump job container name
         name: ${docker.edu_sharing.community.common.postgresql.name}
+        ## @param edusharing_services_rendering_postgresql.job.dump.image.tag Set postgresql rendering service dump job container tag
         tag: ${docker.edu_sharing.community.common.postgresql.tag}
 
   sidecar:
@@ -57,23 +71,30 @@ edusharing_services_rendering_postgresql:
     metrics:
 
       image:
+        ## @param edusharing_services_rendering_postgresql.sidecar.metrics.image.name Set postgresql rendering service metrics sidecar name
         name: ${docker.edu_sharing.community.common.postgresql.exporter.name}
+        ## @param edusharing_services_rendering_postgresql.sidecar.metrics.image.tag Set postgresql rendering service metrics sidecar tag
         tag: ${docker.edu_sharing.community.common.postgresql.exporter.tag}
 
 ########################################################################################################################
 
 edusharing_services_rendering_rediscluster:
 
+  ## @param edusharing_services_rendering_rediscluster.enabled Enable rediscluster rendering service
   enabled: true
 
   image:
+    ## @param edusharing_services_rendering_rediscluster.image.name  Set rediscluster rendering service image name
     name: ${docker.edu_sharing.community.common.redis-cluster.name}
+    ## @param edusharing_services_rendering_rediscluster.image.tag  Set rediscluster rendering service image tag
     tag: ${docker.edu_sharing.community.common.redis-cluster.tag}
 
+  ## @param edusharing_services_rendering_rediscluster.nameOverride Override edusharing rediscluster rendering service name
   nameOverride: &redisclusterNameOverride edusharing-services-rendering-rediscluster
 
   service:
     port:
+      ## @param edusharing_services_rendering_rediscluster.service.port.api Set port for rediscluster rendering service api
       api: &redisclusterServicePortApi 6379
 
   init:
@@ -81,13 +102,17 @@ edusharing_services_rendering_rediscluster:
     permission:
 
       image:
+        ## @param edusharing_services_rendering_rediscluster.init.permission.image.name Set rediscluster rendering service init permission container name
         name: ${docker.edu_sharing.community.common.minideb.name}
+        ## @param edusharing_services_rendering_rediscluster.init.permission.image.tag Set rediscluster rendering service init permission container tag
         tag: ${docker.edu_sharing.community.common.minideb.tag}
 
     sysctl:
 
       image:
+        ## @param edusharing_services_rendering_rediscluster.init.sysctl.image.name Set rediscluster rendering service init sysctl container name
         name: ${docker.edu_sharing.community.common.minideb.name}
+        ## @param edusharing_services_rendering_rediscluster.init.sysctl.image.tag Set rediscluster rendering service init sysctl container tag
         tag: ${docker.edu_sharing.community.common.minideb.tag}
 
   sidecar:
@@ -95,25 +120,34 @@ edusharing_services_rendering_rediscluster:
     metrics:
 
       image:
+        ## @param edusharing_services_rendering_rediscluster.sidecar.metrics.image.name Set rediscluster rendering service metrics sidecar name
         name: ${docker.edu_sharing.community.common.redis.exporter.name}
+        ## @param edusharing_services_rendering_rediscluster.sidecar.metrics.image.tag Set rediscluster rendering service metrics sidecar tag
         tag: ${docker.edu_sharing.community.common.redis.exporter.tag}
 
 ########################################################################################################################
 
 edusharing_services_rendering_service:
 
+  ## @param edusharing_services_rendering_service.enabled Enable rendering service
   enabled: true
 
   config:
 
     cache:
+      ## @param edusharing_services_rendering_service.config.cache.host Set rendering service cache host
       host: *redisclusterNameOverride
+      ## @param edusharing_services_rendering_service.config.cache.port Set rendering service cache port
       port: *redisclusterServicePortApi
 
     database:
+      ## @param edusharing_services_rendering_service.config.database.host Set rendering service database host
       host: *postgresqlNameOverride
+      ## @param edusharing_services_rendering_service.config.database.port Set rendering service database port
       port: *postgresqlServicePortApi
+      ## @param edusharing_services_rendering_service.config.database.database Set rendering service database name
       database: *postgresqlConfigDatabase
+      ## @param edusharing_services_rendering_service.config.database.username Set rendering service database username
       username: *postgresqlConfigUsername
 
 ########################################################################################################################

@@ -90,7 +90,7 @@
     </docker.edu_sharing.community.common.minideb.tag>
 
     <docker.from.apache.server>
-      dockerio.mirror.docker.edu-sharing.com/php:8.1.12-apache
+      dockerio.mirror.docker.edu-sharing.com/php:8.1.29-apache
     </docker.from.apache.server>
 
   </properties>

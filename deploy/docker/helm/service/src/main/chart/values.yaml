@@ -418,6 +418,15 @@ init:
       ## @param init.permission.image.tag Set init container image tag
       tag: "${docker.edu_sharing.community.common.minideb.tag}"
 
+    ## @param init.permission.startupProbe Optional specs for startupProbe
+    startupProbe:
+
+    ## @param init.permission.livenessProbe Optional specs for livenessProbe
+    livenessProbe:
+
+    ## @param init.permission.readinessProbe Optional specs for readinessProbe
+    readinessProbe:
+
     resources:
       limits:
         ## @param init.permission.resources.limits.cpu Set init container CPU limit on resources
@@ -448,6 +457,15 @@ job:
 
     ## @param job.init.podAnnotations Set init job pod annotations
     podAnnotations: {}
+
+    ## @param job.init.startupProbe Optional specs for startupProbe
+    startupProbe:
+
+    ## @param job.init.livenessProbe Optional specs for livenessProbe
+    livenessProbe:
+
+    ## @param job.init.readinessProbe Optional specs for readinessProbe
+    readinessProbe:
 
     resources:
       ## @param job.init.resources.cpu Set CPU limit on resources
@@ -483,6 +501,15 @@ job:
 
     ## @param job.cachecleaner.podAnnotations Set init job pod annotations
     podAnnotations: {}
+
+    ## @param job.cachecleaner.startupProbe Optional specs for startupProbe
+    startupProbe:
+
+    ## @param job.cachecleaner.livenessProbe Optional specs for livenessProbe
+    livenessProbe:
+
+    ## @param job.cachecleaner.readinessProbe Optional specs for readinessProbe
+    readinessProbe:
 
     resources:
 
@@ -529,6 +556,15 @@ sidecar:
 
     ## @param sidecar.metrics.relabelings Set metrics sidecar relabelings
     relabelings: []
+
+    ## @param sidecar.metrics.startupProbe Optional specs for startupProbe
+    startupProbe:
+
+    ## @param sidecar.metrics.livenessProbe Optional specs for livenessProbe
+    livenessProbe:
+
+    ## @param sidecar.metrics.readinessProbe Optional specs for readinessProbe
+    readinessProbe:
 
     resources:
       limits:
@@ -627,6 +663,15 @@ sidecar:
 
     ## @param sidecar.proxyMetrics.relabelings Set metrics sidecar relabelings
     relabelings: []
+
+    ## @param sidecar.proxyMetrics.startupProbe Optional specs for startupProbe
+    startupProbe:
+
+    ## @param sidecar.proxyMetrics.livenessProbe Optional specs for livenessProbe
+    livenessProbe:
+
+    ## @param sidecar.proxyMetrics.readinessProbe Optional specs for readinessProbe
+    readinessProbe:
 
     resources:
 

@@ -3223,7 +3223,7 @@ const defaultOptions = {
     kind: OptionKind.WORKER
   },
   workerSrc: {
-    value: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js",
+    value: "../pdfJS/build/pdf.worker.js",
     kind: OptionKind.WORKER
   }
 };

@@ -167,12 +167,17 @@ config:
 
   http:
     client:
+      content:
+        url: ""
       proxy:
         nonproxyhosts: []
         proxyhost: ""
         proxyport: ""
         proxyuser: ""
         proxypass: ""
+    server:
+      host:
+        dynamic: false
 
   override:
     logging:

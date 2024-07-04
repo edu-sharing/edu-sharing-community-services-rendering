@@ -1,40 +1,35 @@
-<?php 
+<?php
 global $Locale, $Translate, $MC_URL;
 $msg = array();
 $msg['conversionError'] = new Phools_Message_Default('conversionError');
+session_start();
+$id = uniqid();
+$_SESSION["mod_audio"][$id]=[
+    "ajax_url" => $ajax_url,
+    "authString" => $authString
+];
 ?>
 
-<style>
-<?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
-<?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
-</style>
+    <style>
+        <?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
+        <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
+    </style>
 
-<div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-	<h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
-	<div class="edusharing_rendering_content_wrapper" role="main">
-        <?php if (isset($error) && $error == 'error') {
-            echo '<p class="error-msg">'.$msg['conversionError']->localize($Locale, $Translate).'</p>';
-        } ?>
-		<div id="edusharing_rendering_content"></div>
-	</div>
-	<?php echo $metadata; ?>
-</div>
+    <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
+        <h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
+        <div class="edusharing_rendering_content_wrapper" role="main">
+            <?php if (isset($error) && $error == 'error') {
+                echo '<p class="error-msg">'.$msg['conversionError']->localize($Locale, $Translate).'</p>';
+            } ?>
+            <div id="edusharing_rendering_content"></div>
+        </div>
+        <?php echo $metadata; ?>
+    </div>
 
-<script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
+    <script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
+    <script src="<?php echo $MC_URL?>/vendor/js/audio.module.php?ID=<?php echo urlencode($id);?>&PHPSESSID=<?php echo urlencode(session_id());?>"></script>
 
-<script>
-	get_resource = function(authstring) {
-	    jQuery.ajax({
-	        url:"<?php echo $ajax_url ?>&callback=get_resource&"+authstring,
-	        success:function(data){
-	            jQuery("#edusharing_rendering_content").html(data);
-	        }
-	    });
-	}
-	
-	get_resource("<?php echo $authString ?>");
 
-</script>
 
 <?php
 $downloadUrl = Config::get('downloadUrl');

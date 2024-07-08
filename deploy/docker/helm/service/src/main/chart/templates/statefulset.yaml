@@ -165,7 +165,7 @@ spec:
         image: {{ include "edusharing_common_lib.images.common" . }}{{ .Values.sidecar.metrics.image.name }}:{{ .Values.sidecar.metrics.image.tag }}
         args:
         - --scrape_uri=http://127.0.0.1:8082/server-status/?auto
-        - --telemetry.address=:9117
+        - --web.listen-address=:9117
         - --telemetry.endpoint=/metrics
         ports:
         - name: metrics-api

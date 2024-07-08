@@ -469,9 +469,9 @@ job:
 
     resources:
       limits:
-        ## @param job.init.resources.cpu Set CPU limit on resources
+        ## @param job.init.resources.limits.cpu Set CPU limit on resources
         cpu: 125m
-        ## @param job.init.resources.memory Set memory limit on resources
+        ## @param job.init.resources.limits.memory Set memory limit on resources
         memory: 512Mi
       requests:
         ## @param job.init.resources.requests.cpu Set CPU for requests on resources

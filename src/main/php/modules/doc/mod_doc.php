@@ -233,38 +233,11 @@ class mod_doc
     }
 
     public function requestingDeviceCanRenderContent() {
-        switch ($this->getDoctype()) {
-            case DOCTYPE_PDF :
-                return true;
-                break;
-            case DOCTYPE_ODF :
-                return true;
-                break;
-            case DOCTYPE_HTML:
-                return true;
-                break;
-            default :
-                return false;
-        }
+        return match ($this->getDoctype()) {
+            DOCTYPE_HTML, DOCTYPE_ODF, DOCTYPE_PDF => true,
+            default => false,
+        };
     }
-
-    /* public function checkPdfUserAgents() {
-         global $requestingDevice;
-         switch($requestingDevice -> getCapability('model_name')) {
-             case 'Chrome':
-             case 'Firefox':
-                 return true;
-             break;
-             case 'Internet Explorer':
-                 if((float)$requestingDevice -> getCapability('mobile_browser_version') > 10)
-                     return true;
-                 else
-                     return false;
-                 break;
-             default:
-                 return false;
-         }
-     }*/
 
     /**
      * Test if this object already exists for this module. This method
@@ -279,14 +252,20 @@ class mod_doc
         $Logger = $this->getLogger();
 
         $pdo = RsPDO::getInstance();
+        $hasVersion = !empty($this->esObject -> getVersion());
 
         try {
             $sql = 'SELECT * FROM "ESOBJECT" ' . 'WHERE "ESOBJECT_REP_ID" = :repid ' . 'AND "ESOBJECT_CONTENT_HASH" = :contenthash ' . 'AND "ESOBJECT_OBJECT_ID" = :objectid';
+
+            if ($hasVersion) {
+                $sql .= ' AND "ESOBJECT_OBJECT_VERSION" = :version';
+            }
 
             $stmt = $pdo->prepare($sql);
             $stmt->bindValue(':repid', $this->esObject->getRepId());
             $stmt->bindValue(':contenthash', $this->esObject->getContentHash());
             $stmt->bindValue(':objectid', $this->esObject->getObjectID());
+            $hasVersion && $stmt -> bindValue(':version', $this->esObject -> getVersion());
             $stmt->execute();
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);

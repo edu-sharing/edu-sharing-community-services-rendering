@@ -108,8 +108,6 @@ spec:
           {{- end }}
           volumes:
           - name: share-config
-            persistentVolumeClaim:
-              claimName: {{ include "edusharing_services_rendering.pvc.share.config" . }}
+            {{ tpl .Values.persistence.share.config.type . | nindent 12 }}
           - name: share-data
-            persistentVolumeClaim:
-              claimName: {{ include "edusharing_services_rendering.pvc.share.data" . }}
+            {{ tpl .Values.persistence.share.data.type . | nindent 12 }}

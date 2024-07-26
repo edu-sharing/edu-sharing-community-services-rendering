@@ -93,7 +93,30 @@
       dockerio.mirror.docker.edu-sharing.com/php:8.1.29-apache
     </docker.from.apache.server>
 
+    <helm.kube.version>&gt;= 1.20.0-0</helm.kube.version>
+    <helm.version>3.14.2</helm.version>
+
   </properties>
+
+  <build>
+
+    <pluginManagement>
+
+      <plugins>
+
+        <plugin>
+          <groupId>io.kokuwa.maven</groupId>
+          <artifactId>helm-maven-plugin</artifactId>
+          <configuration>
+            <helmVersion>${helm.version}</helmVersion>
+          </configuration>
+        </plugin>
+
+      </plugins>
+
+    </pluginManagement>
+
+  </build>
 
   <modules>
     <module>compose</module>

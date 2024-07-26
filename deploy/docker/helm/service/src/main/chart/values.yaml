@@ -303,6 +303,10 @@ persistence:
     config:
       ## @param persistence.share.config.create Create persistent share
       create: true
+      ## @param persistence.share.config.type Set volume type of config share
+      type: |
+        persistentVolumeClaim:
+          claimName: {{ include "edusharing_services_rendering.pvc.share.config" . }}
       spec:
         ## @param persistence.share.config.spec.accessModes Set access modes for persistent share
         accessModes: [ "ReadWriteMany" ]
@@ -313,6 +317,10 @@ persistence:
     data:
       ## @param persistence.share.data.create Create persistent data share
       create: true
+      ## @param persistence.share.data.type Set volume type of data share
+      type: |
+        persistentVolumeClaim:
+          claimName: {{ include "edusharing_services_rendering.pvc.share.data" . }}
       spec:
         ## @param persistence.share.data.spec.accessModes Set access modes for persistent data share
         accessModes: [ "ReadWriteMany" ]

@@ -374,11 +374,9 @@ spec:
         configMap:
           name: {{ include "edusharing_common_lib.names.name" . }}-file
       - name: share-config
-        persistentVolumeClaim:
-          claimName: {{ include "edusharing_services_rendering.pvc.share.config" . }}
+        {{ tpl .Values.persistence.share.config.type . | nindent 8 }}
       - name: share-data
-        persistentVolumeClaim:
-          claimName: {{ include "edusharing_services_rendering.pvc.share.data" . }}
+        {{ tpl .Values.persistence.share.data.type . | nindent 8 }}
       {{- if .Values.proxy.enabled }}
       - name: temp-proxy
         emptyDir: { }

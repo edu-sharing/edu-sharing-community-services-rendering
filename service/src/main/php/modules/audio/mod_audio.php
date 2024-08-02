@@ -59,6 +59,8 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
         
         $object_url = dirname($this -> esObject->getPath()) . '/' . basename($this->getOutputFilename()) . '?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         $data['audio_url'] = $object_url;
+        $data['preview_resource_url'] = $this->esObject->getPreviewUrl() ?? "";
+
         return $data;
     }
 
@@ -161,10 +163,21 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
         $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue(AUDIO_FORMATS[0]);
         if(empty($progress) || is_array($progress))
             $progress = '0';
-        echo $template->render('/module/audio/lock', array('callback' => mc_Request::fetch('callback', 'CHAR'),
-        											'authString' => 'token='.Config::get('token').'&'.session_name().'='.session_id(),
-        											'progress' => $progress,
-        											'positionInConversionQueue' => $positionInConversionQueue));
+        $id = uniqid();
+        $callback = mc_Request::fetch('callback', 'CHAR');
+        $_SESSION["mod_audio"][$id]=[
+            "callback"   => $callback,
+            "authString" => 'token='.Config::get('token').'&'.session_name().'='.session_id(),
+            "timeOut"    => 5000
+        ];
+        echo $template->render('/module/audio/lock',
+            [
+                "callback" => true,
+                'progress' => $progress,
+                'positionInConversionQueue' => $positionInConversionQueue,
+                'customId' => $id
+            ]
+        );
         return true;
     }
 

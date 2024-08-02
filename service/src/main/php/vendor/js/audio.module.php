@@ -3,6 +3,7 @@ require_once (__DIR__ . '/../../conf.inc.php');
 session_id($_GET["PHPSESSID"]);
 session_start();
 $data = $_SESSION["mod_audio"][$_GET["ID"]];
+header('Content-Type: text/javascript');
 ?>
 get_resource = function(authstring) {
 jQuery.ajax({

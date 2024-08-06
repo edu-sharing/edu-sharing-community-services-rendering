@@ -26,7 +26,6 @@ $_SESSION["mod_audio"][$id]=[
         <?php echo $metadata; ?>
     </div>
 
-    <script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
     <script src="<?php echo $MC_URL?>/vendor/js/audio.module.php?ID=<?php echo urlencode($id);?>&PHPSESSID=<?php echo urlencode(session_id());?>"></script>
 
 
@@ -34,5 +33,5 @@ $_SESSION["mod_audio"][$id]=[
 <?php
 $downloadUrl = Config::get('downloadUrl');
 if(!empty($downloadUrl))
-    echo '<script>try{window.ngRender.setDownloadUrl("'.$downloadUrl.'");}catch(err){}</script>';
+    echo '<data id="audioDownloadUrl" value="' . $downloadUrl . '"></data>';
 ?>

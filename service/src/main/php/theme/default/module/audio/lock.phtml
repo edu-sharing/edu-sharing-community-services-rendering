@@ -21,5 +21,6 @@ if($progress == 0 && $positionInConversionQueue) {
     echo '<div style="height: 20px; max-width: 300px;border: 1px solid #ddd;" class="es_progressbar_container"><span class="es_progressbar_progress" style="display: inline-block; height: 100%; width:'.$progress.'%; background-color: #ddd;"></span></div>';
 }
 if(!empty($callback)) {
-    echo '<script src="' . $MC_URL . '/vendor/js/conversionLock.php?ID=' . urlencode($customId) . '&PHPSESSID=' . urlencode(session_id()) . '"></script>';
+    $jsonData = json_encode(['callback' => $callback, 'authString' => $authString]);
+    echo '<data value=' . $jsonData .'></data>';
 }

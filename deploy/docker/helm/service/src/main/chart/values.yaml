@@ -297,6 +297,10 @@ config:
     ## @param config.rendermoodle.categoryId Set categoryId for moodle renderer
     categoryId: 1
 
+  h5p:
+    ## @param config.h5p.disableCacheDelay Set delay in seconds that the h5p will be re-generated
+    disableCacheDelay: 0
+
 ########################################################################################################################
 
 persistence:

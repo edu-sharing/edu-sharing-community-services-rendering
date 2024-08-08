@@ -11,6 +11,9 @@ body, html, div, h1, h2, h3 {
     width: auto;
 }
 
+img.edusharing_rendering_content{
+    max-width: 100%;
+}
 
 .edusharing_rendering_content_video_options_container {
     display: flex;

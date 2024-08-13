@@ -138,6 +138,7 @@
     display: flex;
     justify-content: center;
     padding: 4px 0;
+    text-decoration: none;
 }
 .edusharing_rendering_metadata_body .mds_material_feedback a:hover,
 .edusharing_rendering_metadata_body .mds_material_feedback a:visited{

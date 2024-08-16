@@ -150,35 +150,28 @@ class mod_audio extends ESRender_Module_AudioVideo_Abstract {
     	echo $this->renderInlineTemplate($data);
         return true;
     }
-    
-        /**
+
+    /**
      * (non-PHPdoc)
      * @see ESRender_Module_Base::locked()
-     * 
+     *
      */
     final public function locked() {
-        $template = $this->getTemplate();
-        $toolkitOutput = MC_ROOT_PATH . 'log/conversion/' . $this -> esObject -> getObjectID() . $this -> esObject->getObjectVersion() . AUDIO_FORMATS[0] .'.log';
-        $progress = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
-        $positionInConversionQueue = $this -> esObject->getPositionInConversionQueue(AUDIO_FORMATS[0]);
-        if(empty($progress) || is_array($progress))
+        $template                  = $this->getTemplate();
+        $toolkitOutput             = MC_ROOT_PATH . 'log/conversion/' . $this->esObject->getObjectID() . $this->esObject->getObjectVersion() . AUDIO_FORMATS[0] . '.log';
+        $progress                  = ESRender_Module_AudioVideo_Helper::getConversionProgress($toolkitOutput);
+        $positionInConversionQueue = $this->esObject->getPositionInConversionQueue(AUDIO_FORMATS[0]);
+        if (empty($progress) || is_array($progress))
             $progress = '0';
-        $id = uniqid();
         $callback = mc_Request::fetch('callback', 'CHAR');
-        $_SESSION["mod_audio"][$id]=[
-            "callback"   => $callback,
-            "authString" => 'token='.Config::get('token').'&'.session_name().'='.session_id(),
-            "timeOut"    => 5000
-        ];
         echo $template->render('/module/audio/lock',
             [
-                "callback" => true,
-                'progress' => $progress,
+                "callback"                  => $callback,
+                'progress'                  => $progress,
                 'positionInConversionQueue' => $positionInConversionQueue,
-                'customId' => $id
+                'authString'                => 'token=' . Config::get('token') . '&' . session_name() . '=' . session_id(),
             ]
         );
         return true;
     }
-
 }

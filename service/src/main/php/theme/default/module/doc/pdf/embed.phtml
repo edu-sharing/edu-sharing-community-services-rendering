@@ -22,12 +22,6 @@ if (!$allowPrintAndDownload) {
             <h3><?php echo $msg['cannotOpenObject']->localize($Locale, $Translate); ?></h3>
             <h4><?php echo $msg['cannotOpenObjectText']->localize($Locale, $Translate); ?></h4>
         </iframe>
-        <script>
-            const page = window.location.hash.substring(1);
-            if (page !== null && page.includes("page=")) {
-                const docFrame = document.getElementById("docFrame");
-                docFrame.src = docFrame.src + "#" + page;
-            }
-        </script>
+        <script src="<?php echo $MC_URL;?>/vendor/js/pdf.module.js"></script>
     </div>
 </div>

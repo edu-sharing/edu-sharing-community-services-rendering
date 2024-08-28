@@ -197,7 +197,14 @@ if(isset($_GET["MODULE"])) {
     $dest_path = sanitizePath($CC_RENDER_PATH . DIRECTORY_SEPARATOR . $dest_path);
 }
 
+$dest_path_old = $dest_path;
 $dest_path = realpath($dest_path);
+if(!$dest_path && $dest_path_old !== '') {
+    http_response_code(404);
+    $path = explode('/', $dest_path_old);
+    cc_rd_debug('File/Media not found, maybe the original data source is corrupted ' . $path[len($path) - 1] );
+    die();
+}
 
 if ($dest_path === false ||
     (strpos($dest_path, $MC_DOCROOT) !== 0 && isset($_GET["MODULE"])) && (

@@ -202,7 +202,7 @@ $dest_path = realpath($dest_path);
 if(!$dest_path && $dest_path_old !== '') {
     http_response_code(404);
     $path = explode('/', $dest_path_old);
-    cc_rd_debug('File/Media not found, maybe the original data source is corrupted ' . $path[len($path) - 1] );
+    cc_rd_debug('File/Media not found, maybe the original data source is corrupted ' . $path[count($path) - 1] );
     die();
 }
 

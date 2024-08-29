@@ -8,7 +8,6 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
 
 <?php
 if (!$allowPrintAndDownload) {
-    echo '<script src="'.$MC_URL.'/vendor/js/pdfJS/espdf.js"></script>';
     echo '<script src="'.$MC_URL.'/vendor/js/pdfJS/espdfglobal.js"></script>';
 }
 ?>
@@ -33,7 +32,7 @@ if (!$allowPrintAndDownload) {
                     '<img class="edusharing_rendering_content_preview" src="' . $previewUrl . '" alt="">';
             } else {
                 echo '
-            <iframe id="docFrame" src="'.$MC_URL.'/vendor/js/pdfJS/index.php?file='.$content.'&pagemode=none" style="width:100%;height:100%;min-height:calc(100vh - 150px);border: none;">'.
+            <iframe id="docFrame" src="'.$MC_URL.'/vendor/js/pdfJS/web/index.php?file='.$content.'&pagemode=none" style="width:100%;height:100%;min-height:calc(100vh - 150px);border: none;">'.
                     '<h3>' . $msg['cannotOpenObject']->localize($Locale, $Translate) . '</h3>' .
                     '<h4>' . $msg['cannotOpenObjectText']->localize($Locale, $Translate) . '</h4>' .
                     '</iframe>'.

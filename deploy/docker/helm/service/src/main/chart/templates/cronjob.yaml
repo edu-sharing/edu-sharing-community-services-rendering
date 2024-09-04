@@ -46,6 +46,44 @@ spec:
               mountPath: /var/cache/esrender/config
             - name: share-data
               mountPath: /var/cache/esrender/data
+            {{- with .Values.job.cachecleaner.startupProbe }}
+            startupProbe:
+              exec:
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - "echo startupProbe > /dev/null"
+              failureThreshold: {{ .failureThreshold }}
+              initialDelaySeconds: {{ .initialDelaySeconds }}
+              periodSeconds: {{ .periodSeconds }}
+              successThreshold: {{ .successThreshold }}
+              timeoutSeconds: {{ .timeoutSeconds }}
+            {{- end }}
+            {{- with .Values.job.cachecleaner.livenessProbe }}
+            livenessProbe:
+              exec:
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - "echo livenessProbe > /dev/null"
+              failureThreshold: {{ .failureThreshold }}
+              initialDelaySeconds: {{ .initialDelaySeconds }}
+              periodSeconds: {{ .periodSeconds }}
+              timeoutSeconds: {{ .timeoutSeconds }}
+            {{- end }}
+            {{- with .Values.job.cachecleaner.readinessProbe }}
+            readinessProbe:
+              exec:
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - "echo readinessProbe > /dev/null"
+              failureThreshold: {{ .failureThreshold }}
+              initialDelaySeconds: {{ .initialDelaySeconds }}
+              periodSeconds: {{ .periodSeconds }}
+              successThreshold: {{ .successThreshold }}
+              timeoutSeconds: {{ .timeoutSeconds }}
+            {{- end }}
             {{- with .Values.job.cachecleaner.resources }}
             resources: {{ toYaml . | nindent 14 }}
             {{- end }}
@@ -70,8 +108,6 @@ spec:
           {{- end }}
           volumes:
           - name: share-config
-            persistentVolumeClaim:
-              claimName: {{ include "edusharing_services_rendering.pvc.share.config" . }}
+            {{ tpl .Values.persistence.share.config.type . | nindent 12 }}
           - name: share-data
-            persistentVolumeClaim:
-              claimName: {{ include "edusharing_services_rendering.pvc.share.data" . }}
+            {{ tpl .Values.persistence.share.data.type . | nindent 12 }}

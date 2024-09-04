@@ -242,6 +242,7 @@ function render(array $options)
         }
 
         $ESObject = new ESObject($data);
+        LoggerMDC::put("EduSharingNodeId", $ESObject->getObjectID());
 
         //version
         if ($ESObject->getNode()->isDirectory || $ESObject->getNodeProperty('ccm:remoterepositorytype'))

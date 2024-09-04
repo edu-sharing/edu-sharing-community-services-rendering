@@ -16,6 +16,7 @@ default:
       entrypoint: [ "env", "-u", "DOCKER_HOST" ]
       command: [ "dockerd-entrypoint.sh" ]
 stages:
+  - lint
   - deploy
 
 deploy:
@@ -40,3 +41,18 @@ deploy:
     - popd
   script:
     - mvn $MAVEN_CLI -s .mvn/settings.xml deploy
+
+check-helmreadme:
+  stage: lint
+  image: node:lts-alpine3.20
+  before_script:
+    - ln -s $CI_PROJECT_DIR/deploy/docker/helm/bundle/src/main/chart /tmp/bundle && cp /tmp/bundle/README.md /tmp/README_bundle.md
+    - ln -s $CI_PROJECT_DIR/deploy/docker/helm/service/src/main/chart /tmp/service && cp /tmp/service/README.md /tmp/README_service.md
+  script:
+    - wget -qO- https://github.com/bitnami/readme-generator-for-helm/archive/refs/tags/2.6.1.tar.gz | tar -xz -C /tmp
+    - cd /tmp; npm install ./readme-generator-for-helm-2.6.1; cd readme-generator-for-helm-2.6.1
+    - ./bin/index.js -v /tmp/bundle/values.yaml -r /tmp/README_bundle.md
+    - ./bin/index.js -v /tmp/service/values.yaml -r /tmp/README_service.md
+    - diff /tmp/README_bundle.md /tmp/bundle/README.md     || (echo "README was not generated before committing." && exit 1)
+    - diff /tmp/README_service.md /tmp/service/README.md   || (echo "README was not generated before committing." && exit 1)
+

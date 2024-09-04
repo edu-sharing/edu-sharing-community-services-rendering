@@ -22,7 +22,7 @@
     </docker.edu_sharing.community.common.apache.exporter.name>
 
     <docker.edu_sharing.community.common.apache.exporter.tag>
-      0.11.0
+      1.0.8
     </docker.edu_sharing.community.common.apache.exporter.tag>
 
     <docker.edu_sharing.community.common.varnish.name>
@@ -78,7 +78,7 @@
     </docker.edu_sharing.community.common.postgresql.exporter.name>
 
     <docker.edu_sharing.community.common.postgresql.exporter.tag>
-      0.11.1
+      0.15.0
     </docker.edu_sharing.community.common.postgresql.exporter.tag>
 
     <docker.edu_sharing.community.common.minideb.name>
@@ -93,7 +93,30 @@
       dockerio.mirror.docker.edu-sharing.com/php:8.3.6-apache
     </docker.from.apache.server>
 
+    <helm.kube.version>&gt;= 1.20.0-0</helm.kube.version>
+    <helm.version>3.14.2</helm.version>
+
   </properties>
+
+  <build>
+
+    <pluginManagement>
+
+      <plugins>
+
+        <plugin>
+          <groupId>io.kokuwa.maven</groupId>
+          <artifactId>helm-maven-plugin</artifactId>
+          <configuration>
+            <helmVersion>${helm.version}</helmVersion>
+          </configuration>
+        </plugin>
+
+      </plugins>
+
+    </pluginManagement>
+
+  </build>
 
   <modules>
     <module>compose</module>

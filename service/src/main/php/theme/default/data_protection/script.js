@@ -1,6 +1,18 @@
 function replaceData(event, id, html) {
     event.preventDefault();
     const htmlElement = document.getElementById(id + '-data');
+    const appSelector = document.querySelector('es-app[ngCspNonce]');
+    if(appSelector) {
+        const nonce = appSelector.getAttribute('ngCspNonce');
+        if (nonce) {
+            html = html.replaceAll(
+                '<style',
+                '<style nonce="' +
+                nonce +
+                '"',
+            );
+        }
+    }
     htmlElement.innerHTML = html;
     if (typeof addParameters === 'function') {
         addParameters(id + '-data');

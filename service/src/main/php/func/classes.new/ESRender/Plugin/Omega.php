@@ -37,8 +37,6 @@ class ESRender_Plugin_Omega
     public function postRetrieveObjectProperties(&$data) {
         $logger = $this->getLogger();
         $esObject = new ESObject($data);
-        $logger->info('Replicationsource: ' . $esObject->getNodeProperty('ccm:replicationsource') . ', format: ' .
-            $esObject->getNodeProperty('cclom:format') .', replicationsourceid: ' . $esObject->getNodeProperty('ccm:replicationsourceid'));
 
         //check!
         if(Config::get('hasContentLicense') !== true) {
@@ -74,12 +72,16 @@ class ESRender_Plugin_Omega
                 }
             }
             if(!$inWhitelist) {
-                $logger->info("Object $repId not in whitelist array, will not trigger omega api!");
+                if($repId) {
+                    $logger->info("Object $repId not in whitelist array, will not trigger omega api!");
+                }
                 return;
             }
         }
 
         if ($esObject->getNodeProperty('ccm:replicationsource') == 'DE.FWU' && !$hasLocalContent)  {
+            $logger->info('Replicationsource: ' . $esObject->getNodeProperty('ccm:replicationsource') . ', format: ' .
+                $esObject->getNodeProperty('cclom:format') .', replicationsourceid: ' . $esObject->getNodeProperty('ccm:replicationsourceid'));
 
             if($esObject->getNodeProperty('cclom:format') == ''){
                 $logger->info('Format is empty!');

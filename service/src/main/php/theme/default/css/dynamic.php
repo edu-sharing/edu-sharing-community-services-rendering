@@ -475,3 +475,9 @@ border-radius: 5px;
     min-height:calc(100vh - 150px);
     border: none;
 }
+
+.edu-audio-video-element {
+    object-fit: cover;
+    max-width: 100%;
+    box-shadow: none;
+}

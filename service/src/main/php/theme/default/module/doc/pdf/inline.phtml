@@ -18,7 +18,7 @@ if (!$allowPrintAndDownload) {
 </style>
 
 <div class="edusharing_rendering_content_wrapper" style="display: inline-block; width: 100%">
-    <iframe id="docFrame" src="<?php echo $MC_URL; ?>/vendor/js/pdfJS/web/index.php?file=<?php echo $content; ?>&pagemode=none" style="width:100%;height:100%;min-height:calc(100vh - 150px);border: none;">
+    <iframe id="docFrame" src="<?php echo $MC_URL; ?>/vendor/js/pdfJS/web/index.php?file=<?php echo $content; ?>&pagemode=none">
         <h3><?php echo $msg['cannotOpenObject']->localize($Locale, $Translate); ?></h3>
         <h4><?php echo $msg['cannotOpenObjectText']->localize($Locale, $Translate); ?></h4>
     </iframe>

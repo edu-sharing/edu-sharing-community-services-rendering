@@ -1,0 +1,169 @@
+
+.edusharing_rendering_metadata_body .mdsGroup{
+    flex: 1;
+    padding: 0 20px;
+    min-width: 25%;
+}
+.edusharing_rendering_metadata_body .mdsCaption{
+    border-bottom: 1px solid #6f6f6f;
+    color: #6f6f6f;
+    padding: 8px 15px;
+    font-size: 130%;
+    height: auto;
+    margin: 30px 0 0;
+    font-weight: normal;
+}
+.edusharing_rendering_metadata_body .mdsWidgetCaption{
+    display: block;
+    font-style: italic;
+    font-size: unset;
+    color: #6f6f6f;
+    margin: 15px 0 0 15px;
+    line-height: 1.5;
+}
+.edusharing_rendering_metadata_body .mdsWidget .mdsWidgetContent{
+    padding-left: 0;
+}
+.edusharing_rendering_metadata_body .mdsWidget:not(.mdsWidget_tinyMCE)  .mdsWidgetContent{
+    white-space: pre-line;
+}
+.edusharing_rendering_metadata_body .mdsWidget_tinyMCE  .mdsValue > div > p:first-child {
+    margin-top: 0;
+}
+
+.edusharing_rendering_metadata_body .mdsWidgetContent .mdsValue{
+    display: inline-flex;
+    margin: 3px 0 0 15px;
+    line-height: 1.5;
+}
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue{
+    margin: 5px 0 0 8px;
+}
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue{
+    display: inline-block;
+    color: #383838;
+    background-color: #F4F4F4;
+    border-radius: 16px;
+    padding: 5px 10px;
+    margin-left: 10px;
+}
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div,
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    color: #383838;
+}
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div .value-group{
+    display: flex;
+    flex-direction: column;
+}
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div img{
+    height: 45px;
+    width: auto;
+}
+.edusharing_rendering_metadata_body .mdsWidgetMultivalue .mdsValue > div .value-description{
+    font-size: 80%;
+}
+
+.edusharing_rendering_metadata_body .mdsWidget_vcard .mdsValue {
+    display: inline-flex;
+    font-style: italic;
+}
+
+.edusharing_rendering_metadata_body .mdsWidgetContent .mdsValue > i {
+    font-size: 18px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.edusharing_rendering_metadata_body .mdsWidgetContent .mdsValue > * {
+    margin: auto;
+}
+
+.edusharing_rendering_metadata_body .mdsContributorTitle {
+    font-weight: 600;
+    font-style: normal;
+    margin: 25px 0 -10px 0;
+    color: #222;
+    border-bottom: 1px solid #eeee;
+    font-size: 105%;
+}
+.edusharing_rendering_metadata_body .mdsContributorGroup {
+    padding: 0 15px;
+}
+.edusharing_rendering_metadata_body .mdsContributorGroup .mdsWidgetCaption,
+.edusharing_rendering_metadata_body .mdsContributorGroup .mdsValue{
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+/* Produce a proper bounding box for focus styles (not provided here). */
+.edusharing_rendering_metadata_body .mds_license a {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.edusharing_rendering_metadata_body .mds_license img {
+    height: 30px;
+    width: auto;
+}
+.edusharing_rendering_metadata_body .mds_license .licenseName {
+    font-weight: bold;
+}
+.edusharing_rendering_metadata_body .mds_license .licenseDescription {
+    color: #6f6f6f;
+    font-size: 90%;
+}
+
+.edusharing_rendering_metadata_body .mds_material_feedback{
+    background: #4D799A;
+    width: 60%;
+    max-width: 220px;
+    margin: 16px auto 8px;
+    border-radius: 3px;
+    box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.25);
+    transition: 0.5s ease-in-out;
+}
+
+.edusharing_rendering_metadata_body .mds_material_feedback .mdsValue{
+    width: 100%;
+    margin: 4px auto;
+}
+
+.edusharing_rendering_metadata_body .mds_material_feedback a{
+    color: #fff;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    padding: 4px 0;
+    text-decoration: none;
+}
+.edusharing_rendering_metadata_body .mds_material_feedback a:hover,
+.edusharing_rendering_metadata_body .mds_material_feedback a:visited{
+    color: #fff;
+    text-decoration: none;
+}
+
+.edusharing_rendering_metadata_body .mds_material_feedback a i{
+    padding-right: 8px;
+}
+
+
+@media (max-width: 1400px) {
+    .edusharing_rendering_metadata_body .mdsGroup{
+        min-width:50%;
+    }
+}
+
+@media (max-width: 700px) {
+    .edusharing_rendering_metadata_body {
+        display: block;
+    }
+
+    .edusharing_rendering_metadata_body .mdsGroup {
+        display: block;
+        padding: 0;
+    }
+}

@@ -295,7 +295,7 @@ class H5PFramework implements H5PFrameworkInterface {
           WHERE name = ' . $db->quote($library['machineName']) . '
           AND major_version = ' . (int)$library['majorVersion'] . '
           AND minor_version = ' . (int)$library['minorVersion'] . '
-          AND patch_version = ' . (int)$library['patchVersion'];
+          AND patch_version >= ' . (int)$library['patchVersion'];
 
         $statement = $db->query($query);
         return $statement->fetch() === false;

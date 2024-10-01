@@ -47,6 +47,7 @@ my_gdpr_modules="${SERVICES_RENDERING_SERVICE_GDPR_MODULES:-}"
 my_gdpr_urls="${SERVICES_RENDERING_SERVICE_GDPR_URLS:-}"
 
 my_viewer_enabled="${SERVICES_RENDERING_SERVICE_VIEWER_ENABLED:-true}"
+admin_page_enabled="${SERVICES_RENDERING_SERVICE_ADMINPAGE_ENABLED:-true}"
 
 my_plugins="${SERVICES_RENDERING_SERVICE_PLUGINS:-}"
 
@@ -287,6 +288,14 @@ sed -i -r 's|\$CUSTOM_CONTENT_URL =.*|\$CUSTOM_CONTENT_URL = '"'${rendering_serv
 grep -q '$CUSTOM_CONTENT_URL' "${systemConf}" || echo '$CUSTOM_CONTENT_URL = '"'${rendering_service_custom_content_url}'"';' >> "${systemConf}"
 
 
+adminHtaccessFile="${RS_ROOT}/admin/.htaccess"
+if [[ "$admin_page_enabled" == "true" ]] ; then
+  if  [[ -f "$adminHtaccessFile" ]] ; then
+    rm "$adminHtaccessFile"
+  fi
+else
+  echo "Deny from all" > "$adminHtaccessFile"
+fi
 
 
 [[ -n $my_gdpr_modules ]] && my_gdpr_modules="'${my_gdpr_modules//,/','}'"

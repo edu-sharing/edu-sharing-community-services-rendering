@@ -1,15 +1,12 @@
 <?php
 global $Locale, $Translate, $MC_URL;
 $licid = uniqid();
+
+if ($css) {
+    echo '<link rel="stylesheet" href="' . $MC_URL . '/vendor/css/inline.css">';
+    echo '<link rel="stylesheet" href="' . $MC_URL . '/vendor/css/metadata.css">';
+}
 ?>
-<style>
-    <?php
-        if ($css){
-            include(dirname(__FILE__) . '/../../css/metadata.css');
-            include(dirname(__FILE__) . '/../../css/inline.php');
-        }
-    ?>
-</style>
 <div class="edu_audio_wrapper">
     <data class="edu_audio_data" value='<?php echo json_encode(["preview" => $preview_resource_url, "resource" => $audio_url]);?>'></data>
     <?php if (isset($footer)){

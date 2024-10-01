@@ -57,7 +57,6 @@ extends ESRender_Module_ContentNode_Abstract {
     public function process($p_kind, $objectLocked = false) {
 
     	global $CC_RENDER_PATH;
-
         if ($objectLocked) {
             return parent::process(ESRender_Application_Interface::DISPLAY_MODE_LOCKED);
         }

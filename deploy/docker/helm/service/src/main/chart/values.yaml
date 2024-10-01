@@ -285,6 +285,10 @@ config:
     ## @param config.repository.password Set repository password
     password: ""
 
+  adminpage:
+    ## @param config.adminpage.enabled Enable admin page
+    enabled: true
+
   viewer:
     ## @param config.viewer.enabled Enable viewer
     enabled: true

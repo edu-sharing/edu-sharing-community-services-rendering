@@ -10,10 +10,8 @@ $_SESSION["mod_audio"][$id]=[
 ];
 ?>
 
-    <style>
-        <?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
-        <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
-    </style>
+    <link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/dynamic.css">
+    <link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/metadata.css">
 
     <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
         <h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>

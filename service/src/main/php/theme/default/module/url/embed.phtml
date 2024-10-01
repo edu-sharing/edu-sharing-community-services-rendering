@@ -2,6 +2,7 @@
 global $Locale, $Translate,  $MC_URL;
 $msg = array();
 $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
+$msg['goToOriginConnector'] = new Phools_Message_Default('goToOriginConnector');
 ?>
 <style>
     <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
@@ -16,7 +17,13 @@ $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
         } else {
             echo $embedding;
         }?>
-        <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" data-nodeId="<?php echo $esObject-> getNode() -> ref -> id; ?>" id="edusharing_rendering_content_href"><?php echo $msg['goToOrigin']->localize($Locale, $Translate);?></a>
+        <a href="<?php echo $url ?>" target="_blank" class="edusharing_rendering_content" data-nodeId="<?php echo $esObject-> getNode() -> ref -> id; ?>" id="edusharing_rendering_content_href"><?php
+            if($ccressourcetype === 'connector') {
+                echo $msg['goToOriginConnector']->localize($Locale, $Translate);
+            } else {
+                echo $msg['goToOrigin']->localize($Locale, $Translate);
+            }
+            ?></a>
     </div>
     <?php echo $footer?>
 </div>

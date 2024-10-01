@@ -59,6 +59,7 @@ class mod_url
             $tempArray['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
 
         $tempArray['title'] = $this -> esObject->getTitle();
+        $tempArray['ccressourcetype'] = $this -> esObject->getNodeProperty('ccm:ccressourcetype');
         $tempArray['dataProtection'] = $this->getIsBehindDataProtection();
         echo $Template -> render('/module/url/dynamic', $tempArray);
 

@@ -27,10 +27,8 @@ $script = <<<JS
                 const decoded = JSON.parse(data)
                 const wrapper = dataTag.parentNode
                 const video = document.createElement("video")
+                video.classList.add("edu-audio-video-element")
                 video.poster = decoded.preview
-                video.style.objectFit = "cover"
-                video.style.maxWidth = "100%"
-                video.style.boxShadow = "none"
                 video.src = decoded.resource + (timeStamps === "" ? "" : ("#" + timeStamps))
                 video.type = "audio/mp3"
                 video.controls = true

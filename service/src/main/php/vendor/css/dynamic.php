@@ -1,3 +1,8 @@
+/*
+<?php
+header("Content-type: text/css");
+global $MC_URL;?>
+*/
 
 .edusharing_rendering_cursor_pointer {
     cursor: pointer;

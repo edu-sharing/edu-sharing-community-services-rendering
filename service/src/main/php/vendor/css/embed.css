@@ -322,3 +322,8 @@ a.edusharing_rendering_content {
     max-width: 100%;
     box-shadow: none;
 }
+
+img.edusharing_rendering_content_preview {
+    max-width: 100%;
+    height: auto;
+}

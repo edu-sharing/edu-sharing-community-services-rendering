@@ -1,14 +1,13 @@
 <?php
-global $Locale, $Translate;
+global $Locale, $Translate, $MC_URL;
 $msg = array();
 $msg['toDownload'] = new Phools_Message_Default('toDownload');
 ?>
-<style>
-    <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
-</style>
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/embed.css">
+
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
     <div class="edusharing_rendering_content_wrapper" role="main">
-        <img class="edusharing_rendering_content_preview" style="max-width: 100%; height: auto;" src="<?php echo $previewUrl?>" alt="" width="<?php echo $width ?? '100%' ?>" height="<?php echo $height ?? '' ?>">
+        <img class="edusharing_rendering_content_preview" src="<?php echo $previewUrl?>" alt="" width="<?php echo $width ?? '100%' ?>" height="<?php echo $height ?? '' ?>">
         <?php
             echo '<a href="' .  $url . '" target="_blank" class="edusharing_rendering_content" id="edusharing_rendering_content_href">' .  $msg['toDownload']->localize($Locale, $Translate) . '</a>';
         ?>

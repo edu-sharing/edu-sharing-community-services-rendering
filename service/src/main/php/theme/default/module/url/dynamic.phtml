@@ -1,16 +1,14 @@
 <?php 
-global $Locale, $Translate;
+global $Locale, $Translate, $MC_URL;
 $msg = array();
 $msg['goToOrigin'] = new Phools_Message_Default('goToOrigin');
 $msg['goToOriginConnector'] = new Phools_Message_Default('goToOriginConnector');
 ?>
 
 
-<style>
-<?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
-<?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
-<?php include(dirname(__FILE__) . '/css/url.css'); ?>
-</style>
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/dynamic.php">
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/metadata.css">
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/url/url.css">
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
 	<h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>

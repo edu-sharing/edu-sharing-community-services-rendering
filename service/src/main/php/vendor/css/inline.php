@@ -1,3 +1,6 @@
+<?php
+header("Content-type: text/css");
+global $MC_URL;?>
 
 @font-face {
     font-family: 'Material Icons';

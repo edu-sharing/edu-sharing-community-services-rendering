@@ -12,12 +12,10 @@ if (!$allowPrintAndDownload) {
 }
 ?>
 
-<style>
-    <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
-</style>
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/embed.css">
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
     <div class="edusharing_rendering_content_wrapper" >
-        <iframe id="docFrame" src="<?php echo $MC_URL; ?>/vendor/js/pdfJS/web/index.php?file=<?php echo $content; ?>&pagemode=none">
+        <iframe id="docFrame" class="embedPdfIframe" src="<?php echo $MC_URL; ?>/vendor/js/pdfJS/web/index.php?file=<?php echo $content; ?>&pagemode=none">
             <h3><?php echo $msg['cannotOpenObject']->localize($Locale, $Translate); ?></h3>
             <h4><?php echo $msg['cannotOpenObjectText']->localize($Locale, $Translate); ?></h4>
         </iframe>

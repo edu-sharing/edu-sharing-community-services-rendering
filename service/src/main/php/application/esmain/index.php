@@ -149,11 +149,15 @@ function render(array $options)
                 // LEGACY! Remove this Behaviour in future releases, only included for back compat
                 Config::set('hasContentLicense', !empty($data->node->accessEffective) && in_array('ReadAll', $data->node->accessEffective));
             } else {
-                // otherwise, the collection concept allows access, so we give the user access simply depending on the collection entry
                 Config::set('hasContentLicense', in_array('ReadAll', $data->node->access));
             }
         } else {
-            Config::set('hasContentLicense', in_array('ReadAll', $data->node->access));
+            $effective = false;
+            // access effective might also provided for regular nodes since they have enhanced access via collection shares
+            if(!empty($data->node->accessEffective)) {
+                $effective = in_array('ReadAll', $data->node->accessEffective);
+            }
+            Config::set('hasContentLicense', $effective || in_array('ReadAll', $data->node->access));
         }
         $CurrentDirectoryName = basename(dirname(__FILE__));
         $application = new ESApp();

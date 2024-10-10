@@ -28,7 +28,7 @@
   <properties>
 
     <!-- release-2 -->
-    <bom.repository.version>9.0.1</bom.repository.version>
+    <bom.repository.version>9.0.2</bom.repository.version>
 
     <docker.repository>community</docker.repository>
     <docker.prefix>edu_sharing-community-services-rendering</docker.prefix>

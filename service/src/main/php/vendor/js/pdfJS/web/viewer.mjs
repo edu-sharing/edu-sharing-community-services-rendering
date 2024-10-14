@@ -11978,6 +11978,11 @@ class Toolbar {
       eventName,
       eventDetails
     } of buttons) {
+      // mvChange
+      if (element === null) {
+        continue;
+      }
+      // mvChange
       element.addEventListener("click", evt => {
         if (eventName !== null) {
           eventBus.dispatch(eventName, {

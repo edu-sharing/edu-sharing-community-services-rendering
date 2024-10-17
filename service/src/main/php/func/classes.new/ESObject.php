@@ -406,7 +406,7 @@ class ESObject {
             return true;
         }
 
-        if(in_array('ccm:revoked', $this->getNode()->aspects)) {
+        if($this->getNode()->aspects && in_array('ccm:revoked', $this->getNode()->aspects)) {
             Logger::getLogger('de.metaventis.esrender.index') -> info('revoked node, using module "doc".');
             $this -> module -> setName('doc');
             $this -> module -> loadModuleData();

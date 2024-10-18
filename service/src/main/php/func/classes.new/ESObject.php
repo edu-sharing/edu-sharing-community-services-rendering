@@ -406,6 +406,14 @@ class ESObject {
             return true;
         }
 
+        if($this->getNode()->aspects && in_array('ccm:revoked', $this->getNode()->aspects)) {
+            Logger::getLogger('de.metaventis.esrender.index') -> info('revoked node, using module "doc".');
+            $this -> module -> setName('doc');
+            $this -> module -> loadModuleData();
+            $this -> moduleId = $this -> module -> getModuleId();
+            return true;
+        }
+
         if($this -> getNode() -> isDirectory) {
             if(in_array('ccm:collection', $this -> getNode() -> aspects)) {
                 Logger::getLogger('de.metaventis.esrender.index')->info('Property "collection" is true, using module "collection".');

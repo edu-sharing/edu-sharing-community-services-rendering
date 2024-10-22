@@ -1,0 +1,18 @@
+#download {
+    display: none;
+}
+
+#secondaryOpenFile {
+    display: none;
+    ::after {
+        display: none;
+    }
+}
+
+#secondaryToolbarButtonContainer > .horizontalToolbarSeparator {
+    display: none;
+}
+
+#secondaryToolbarButtonContainer > .horizontalToolbarSeparator ~ .horizontalToolbarSeparator{
+    display: block;
+}

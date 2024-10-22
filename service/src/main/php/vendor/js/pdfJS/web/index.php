@@ -36,6 +36,8 @@ try {
 //$LanguageCode = $_SESSION['languageCode'];
 require_once '../../../../application/esmain/init-language.php';
 
+$customCss = '/vendor/js/pdfJS/web/' . ($allowDownloadAndPrint ? 'esdefault.css' : 'esalternative.css');
+
 /**
  * Adding styles and scripts
  */
@@ -44,10 +46,6 @@ $data = str_replace('{{PDF_JS_PLACEHOLDER}}', $MC_URL . '/vendor/js/pdfJS/build/
 $data = str_replace('{{VIEWER_CSS_PLACEHOLDER}}', $MC_URL . '/vendor/js/pdfJS/web/viewer.css', $data);
 $data = str_replace('{{VIEWER_JS_PLACEHOLDER}}', $MC_URL . '/vendor/js/pdfJS/web/viewer.mjs', $data);
 $data = str_replace('{{ESPDF_JS_PLACEHOLDER}}', $allowDownloadAndPrint ? '' : $MC_URL . '/vendor/js/pdfJS/web/espdf.js', $data);
-if (! $allowDownloadAndPrint) {
-    $data = str_replace('id="toolbarViewerRight"', 'id="toolbarViewerRight" style="visibility:hidden"', $data);
-} else {
-    $data = str_replace('id="download"', 'id="print" style="display:none"', $data);
-}
+$data = str_replace('{{CUSTOM_CSS_PLACEHOLDER}}', $MC_URL . $customCss, $data);
 
 echo $data;

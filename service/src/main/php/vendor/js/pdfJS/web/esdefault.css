@@ -9,10 +9,28 @@
     }
 }
 
-#secondaryToolbarButtonContainer > .horizontalToolbarSeparator {
+#secondaryDownload + .horizontalToolbarSeparator {
     display: none;
 }
 
-#secondaryToolbarButtonContainer > .horizontalToolbarSeparator ~ .horizontalToolbarSeparator{
-    display: block;
+#viewBookmark {
+    display: none;
+    ::after {
+        display: none;
+    }
+
+    + .horizontalToolbarSeparator {
+        display: none;
+    }
+}
+
+#documentProperties {
+    display: none;
+    ::after {
+        display: none;
+    }
+}
+
+#spreadModeButtons + .horizontalToolbarSeparator {
+    display: none;
 }

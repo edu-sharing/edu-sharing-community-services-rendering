@@ -144,7 +144,7 @@ class mod_url
         $data = array('embedding' => $embedding);
 
         $Template = $this -> getTemplate();
-        echo utf8_decode($Template -> render('/module/url/inline', $data));
+        echo $Template -> render('/module/url/inline', $data);
 
         return true;
     }

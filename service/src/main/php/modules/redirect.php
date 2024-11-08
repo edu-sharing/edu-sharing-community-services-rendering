@@ -198,6 +198,15 @@ if(isset($_GET["MODULE"])) {
 }
 
 $dest_path_old = $dest_path;
+if (!file_exists($dest_path)) {
+    for ($i = 0; $i < 120; $i++) {
+        error_log("File does not exist yet. Waiting 500 ms.");
+        usleep(500000);
+        if (file_exists($dest_path)) {
+            break;
+        }
+    }
+}
 $dest_path = realpath($dest_path);
 if(!$dest_path && $dest_path_old !== '') {
     http_response_code(404);

@@ -192,6 +192,11 @@ h1.edusharing_rendering_metadata_header_title {
     margin: 30px 20px;
 }
 
+
+.edusharing_rendering_content_wrapper img.mod_url_img {
+    max-width: 100%;
+}
+
 .edusharing_rendering_content_wrapper h3,
 .edusharing_rendering_content_wrapper h4 {
     color: #585858;

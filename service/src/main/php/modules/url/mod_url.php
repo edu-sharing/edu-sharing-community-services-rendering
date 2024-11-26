@@ -223,7 +223,7 @@ class mod_url
 
     protected function getImageEmbedding($footer = '')
     {
-        return '<div><img title="' . $this -> esObject->getTitle() . '" alt="' . $this -> esObject->getTitle() . '" src="' . $this->getUrl() . '" style="max-width: 100%">
+        return '<div><img title="' . $this -> esObject->getTitle() . '" alt="' . $this -> esObject->getTitle() . '" src="' . $this->getUrl() . '" class="mod_url_img">
             ' . $footer . '</div>';
     }
 

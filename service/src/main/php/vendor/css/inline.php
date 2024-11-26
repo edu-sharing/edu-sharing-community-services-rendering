@@ -18,6 +18,11 @@ global $MC_URL;?>
     min-width: 300px;
     line-height: 1.2;
 }
+
+.edusharing_rendering_content_wrapper img.mod_url_i
+    max-width: 100%;
+}
+
 .edusharing_rendering_content_video_options_container_expanded {
     background: rgba(0, 0, 0, 0.6);
 }

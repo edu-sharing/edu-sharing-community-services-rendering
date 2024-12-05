@@ -2,7 +2,7 @@
 
 require_once '../../../conf.inc.php';
 
-global $MC_URL;
+global $MC_URL, $SESSION_COOKIE_SETTINGS;
 
 // start session
 if (empty($ESRENDER_SESSION_NAME)) {
@@ -34,6 +34,8 @@ if (isset($_GET['esOptions']) && is_string($_GET['esOptions'])) {
 if (!session_start()) {
     throw new Exception('Could not start session.');
 }
+header("Set-Cookie: $ESRENDER_SESSION_NAME=$sessid; $SESSION_COOKIE_SETTINGS");
+
 
 $esrenderSessionId = session_id();
 if (!$esrenderSessionId) {

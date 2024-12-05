@@ -2,6 +2,8 @@
 
 require_once '../../../conf.inc.php';
 
+global $SESSION_COOKIE_SETTINGS;
+
 // start session
 if (empty($ESRENDER_SESSION_NAME)) {
     error_log('ESRENDER_SESSION_NAME not set in conf/system.conf.php');
@@ -18,6 +20,7 @@ if(!empty($sessid)){
 if (!session_start()) {
     throw new Exception('Could not start session.');
 }
+header("Set-Cookie: $ESRENDER_SESSION_NAME=$sessid; $SESSION_COOKIE_SETTINGS");
 
 $esrenderSessionId = session_id();
 if (!$esrenderSessionId) {

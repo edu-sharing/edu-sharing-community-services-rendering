@@ -40,7 +40,7 @@ $Logger->debug($_SERVER['REQUEST_URI']);
 
 
 // init translate
-global $Translate, $LanguageCode;
+global $Translate, $LanguageCode, $SESSION_COOKIE_SETTINGS;
 $Translate = new Phools_Translate_Array();
 
 // LANGUAGE
@@ -70,6 +70,7 @@ if (!empty($sessid)) {
 if (!session_start()) {
     throw new Exception('Could not start session.');
 }
+header("Set-Cookie: $ESRENDER_SESSION_NAME=$sessid; $SESSION_COOKIE_SETTINGS");
 
 $esrenderSessionId = session_id();
 if (!$esrenderSessionId) {

@@ -102,10 +102,10 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         }
         if ($isPayedMedia) {
             $playOutLinkEntry = array_filter($response['data']['paidMediaLinks']['links'] ?? [], fn($link) => $link['linkType'] === 'direct');
-            $playOutUrl = $playOutLinkEntry[0]['href'] ?? '';
+            $playOutUrl = reset($playOutLinkEntry)['href'] ?? '';
             $downloadLinkEntry = array_filter($response['data']['paidMediaLinks']['links'] ?? [], fn($link) => $link['linkType'] === 'download');
             if (!empty($downloadLinkEntry)) {
-                Config::set('downloadUrl', $downloadLinkEntry[0]['href'] ?? '');
+                Config::set('downloadUrl', reset($downloadLinkEntry)['href'] ?? '');
             }
         } else {
             $playOutUrl = $response["data"]["getPlayoutWindow"]["playoutUrl"] ?? "";

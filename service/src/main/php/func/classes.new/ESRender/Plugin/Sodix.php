@@ -46,15 +46,15 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             ];
         } else {
             $body = [
-                "operationName" => "getPlayoutWindow",
-                "query" => "paidMediaLinks {  paidMediaLinks(id: \"$repId\") {  links { href linkType } } }"
+                "operationName" => "paidMediaLinks",
+                "query" => "query paidMediaLinks {  paidMediaLinks(id: \"$repId\") {  links { href linkType } } }"
             ];
         }
         $response = $this->getGraphQL($token, $body);
         if (empty($response)) {
             return;
         }
-        $this->handlePlayOut($response, $data);
+        $this->handlePlayOut($response, $data, $isPayedMedia);
     }
 
     private function getToken(): String {
@@ -94,13 +94,22 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         return json_decode($result->getBody(), true);
     }
 
-    private function handlePlayOut(array $response, &$data): void {
+    private function handlePlayOut(array $response, &$data, bool $isPayedMedia): void {
         $logger = $this->getLogger();
         if ($response["errors"][0]["extensions"]["classification"] ?? "" === "DataFetchingException") {
             $logger->error("SODIX content contains errors. Url could not be found or retrieved.");
             return;
         }
-        $playOutUrl = $response["data"]["getPlayoutWindow"]["playoutUrl"] ?? "";
+        if ($isPayedMedia) {
+            $playOutLinkEntry = array_filter($response['data']['paidMediaLinks']['links'] ?? [], fn($link) => $link['linkType'] === 'direct');
+            $playOutUrl = $playOutLinkEntry[0]['href'] ?? '';
+            $downloadLinkEntry = array_filter($response['data']['paidMediaLinks']['links'] ?? [], fn($link) => $link['linkType'] === 'download');
+            if (!empty($downloadLinkEntry)) {
+                Config::set('downloadUrl', $downloadLinkEntry[0]['href'] ?? '');
+            }
+        } else {
+            $playOutUrl = $response["data"]["getPlayoutWindow"]["playoutUrl"] ?? "";
+        }
         if (empty($playOutUrl)) {
             $logger->error("SODIX response does not contain expected url: " . json_encode($response));
         }

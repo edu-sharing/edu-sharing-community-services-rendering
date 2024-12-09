@@ -80,6 +80,7 @@ rendering_video_default_resolution="${SERVICES_RENDERING_VIDEO_DEFAULT_RESOLUTIO
 rendering_video_timeout="${SERVICES_RENDERING_VIDEO_TIMEOUT:-"3600"}"
 rendering_video_threads="${SERVICES_RENDERING_VIDEO_THREADS:-"1"}"
 rendering_h5p_disable_cache_delay="${SERVICES_RENDERING_H5P_DISABLE_CACHE_DELAY:-0}"
+rendering_session_cookie_settings="${SERVICES_RENDERING_SESSION_COOKIE_SETTINGS:-"Path=/; SameSite=Lax;"}"
 
 
 
@@ -280,6 +281,9 @@ sed -i -r 's|\$pwd.*|\$pwd = "'"${rendering_database_pass}"'";|' "${dbConf}"
 systemConf="${RS_ROOT}/conf/system.conf.php"
 sed -i -r 's|\$H5P_DISABLE_CACHE_DELAY = .*|\$H5P_DISABLE_CACHE_DELAY = '"${rendering_h5p_disable_cache_delay}"';|' "${systemConf}"
 grep -q  '$H5P_DISABLE_CACHE_DELAY' || echo '$H5P_DISABLE_CACHE_DELAY = '"${rendering_h5p_disable_cache_delay}"';' >> "${systemConf}"
+
+sed -i -r 's|\$SESSION_COOKIE_SETTINGS = .*|\$SESSION_COOKIE_SETTINGS = '"'${rendering_session_cookie_settings}'"';|' "${systemConf}"
+grep -q  '$SESSION_COOKIE_SETTINGS' || echo '$SESSION_COOKIE_SETTINGS = '"'${rendering_session_cookie_settings}'"';' >> "${systemConf}"
 
 sed -i -r 's|\$MC_URL = ['"'"'"].*|\$MC_URL = '"'${my_external_url}'"';|' "${systemConf}"
 sed -i -r 's|\$MC_DOCROOT.*|\$MC_DOCROOT = "'"${RS_ROOT}"'";|' "${systemConf}"

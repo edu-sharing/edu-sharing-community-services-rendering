@@ -301,6 +301,10 @@ config:
     ## @param config.h5p.disableCacheDelay Set delay in seconds that the h5p will be re-generated
     disableCacheDelay: 0
 
+  session:
+    ## @param config.session.cookieSettings Set session cookie settings
+    cookieSettings: ""
+
 ########################################################################################################################
 
 persistence:

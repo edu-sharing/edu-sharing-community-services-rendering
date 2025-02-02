@@ -13,7 +13,8 @@ class mod_url
         $remoteType = new RemoteObjectType($this->esObject);
         $type = $remoteType->getType();
         if(Config::get('urlEmbedding')) {
-            $embedding = Config::get('urlEmbedding');
+            $embeddingFromConfig = Config::get('urlEmbedding');
+            $embedding = $this->enrichCustomEmbedding($embeddingFromConfig) ?? $embeddingFromConfig;
         }else if ($this -> esObject -> isLti13ToolObject()){
             $embedding = $this->getLti13ToolEmbedding();
         }else if ($type === RemoteObjectType::$TYPE_VIDEO) {
@@ -118,7 +119,12 @@ class mod_url
         $type = $remoteType->getType();
 
         if(Config::get('urlEmbedding')) {
-            $embedding = Config::get('urlEmbedding') . $footer;
+            $embeddingFromConfig = Config::get('urlEmbedding');
+            $embedding = $this->enrichCustomEmbedding(
+                $embeddingFromConfig,
+                $footer,
+                mc_Request::fetch('width', 'INT', 600)
+            ) ?? ($embeddingFromConfig . $footer);
         }else if ($this -> esObject -> isLti13ToolObject()){
             $embedding = $this->getLti13ToolEmbedding();
         }else if ($type === RemoteObjectType::$TYPE_VIDEO) {
@@ -365,4 +371,10 @@ class mod_url
         return $this -> UrlProperty;
     }
 
+    private function enrichCustomEmbedding(String $embedding, String $footer = '', int $width = 800): ?String {
+        if (! str_contains($embedding, 'customEmbedding')) {
+            return null;
+        }
+        return $this->getInlineStyle($width) . str_replace('{{VIDEO_FOOTER_PLACEHOLDER}}', $footer, $embedding);
+    }
 }

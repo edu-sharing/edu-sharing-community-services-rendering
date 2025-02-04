@@ -46,5 +46,4 @@ class EsRender_Plugin_UniTube extends ESRender_Plugin_Abstract
                 </div>';
         Config::set('urlEmbedding', $embedding);
     }
-
 }

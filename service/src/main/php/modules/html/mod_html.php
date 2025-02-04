@@ -72,7 +72,8 @@ extends ESRender_Module_ContentNode_Abstract
 
     protected function dynamic()
     {
-        $template_data['url'] = $this -> esObject->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
+        $indexFile = $this->getIndexFileName();
+        $template_data['url'] = $this -> esObject->getPath(). $indexFile .'?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         if(Config::get('showMetadata'))
             $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
         $template_data['title'] = $this -> esObject->getTitle();
@@ -83,7 +84,8 @@ extends ESRender_Module_ContentNode_Abstract
 
     protected function embed()
     {
-        $template_data['url'] = $this -> esObject->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
+        $indexFile = $this->getIndexFileName();
+        $template_data['url'] = $this -> esObject->getPath(). $indexFile . '?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         $template_data['previewUrl'] = $this -> esObject->getPreviewUrl();
         echo $this -> getTemplate() -> render('/module/html/embed', $template_data);
         return true;
@@ -102,5 +104,17 @@ extends ESRender_Module_ContentNode_Abstract
 
 		return true;
 	}
+
+    private function getIndexFileName(): String {
+        $additionalIndexFiles = Config::get('eduHtmlIndexFiles', []);
+        if (is_array($additionalIndexFiles)) {
+            foreach ($additionalIndexFiles as $additionalIndexFile) {
+                if (file_exists($this->getCacheFileName() . '/' . ltrim($additionalIndexFile, '/'))) {
+                    return '/' . ltrim($additionalIndexFile, '/');
+                }
+            }
+        }
+        return '/index.html';
+    }
 
 }

@@ -106,7 +106,10 @@ extends ESRender_Module_ContentNode_Abstract
 	}
 
     private function getIndexFileName(): String {
-        return '/index.html';
+        $indexFile = $this->esObject->getNodeProperty("ccm:ccressourcemainentity");
+        if (empty($indexFile)) {
+            return '/index.html';
+        }
+        return '/' . ltrim($indexFile, '/');
     }
-
 }

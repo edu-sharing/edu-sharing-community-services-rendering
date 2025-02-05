@@ -106,14 +106,6 @@ extends ESRender_Module_ContentNode_Abstract
 	}
 
     private function getIndexFileName(): String {
-        $additionalIndexFiles = Config::get('eduHtmlIndexFiles', []);
-        if (is_array($additionalIndexFiles)) {
-            foreach ($additionalIndexFiles as $additionalIndexFile) {
-                if (file_exists($this->getCacheFileName() . '/' . ltrim($additionalIndexFile, '/'))) {
-                    return '/' . ltrim($additionalIndexFile, '/');
-                }
-            }
-        }
         return '/index.html';
     }
 

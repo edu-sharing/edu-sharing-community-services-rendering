@@ -66,10 +66,6 @@
     "portalUrl" => "https://unitube.uni-graz.at/paella/ui/watch.html"
  ]);
 
- //CUSTOMEDUHTML - Set additional index file paths for eduhtml module.
- //indexFiles has to be a JSON array. The order matters!
- $Plugins[] = new EsRender_Plugin_CustomEduHtml(['indexFiles' => '["story.html", "res/index.html"]']);
 
 
 
- 

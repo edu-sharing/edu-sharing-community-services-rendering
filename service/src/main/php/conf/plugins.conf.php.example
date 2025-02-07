@@ -59,4 +59,13 @@
     'identifierPrefixWhitelist' => ''
  ]);
  $Plugins[] = $Plugin;
+
+ //UNITUBE
+ $Plugins[] = new ESRender_Plugin_UniTube([
+    "needle" => "unitube.uni-graz.at",
+    "portalUrl" => "https://unitube.uni-graz.at/paella/ui/watch.html"
+ ]);
+
+
+
  

@@ -107,7 +107,7 @@ extends ESRender_Module_ContentNode_Abstract
 
     private function getIndexFileName(): String {
         $isScorm = $this->esObject->getResourceType() === "ADL SCORM" || $this->esObject->getResourceType() === "IMS Common Cartridge";
-        $resourceType = (string)$this->esObject->getNodeProperty("ccm:ccresourcesubtype:");
+        $resourceType = (string)$this->esObject->getNodeProperty("ccm:ccresourcesubtype");
         if ($isScorm && str_contains($resourceType, "Articulate")) {
             return '/story.html';
         }

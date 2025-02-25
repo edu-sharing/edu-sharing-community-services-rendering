@@ -212,8 +212,8 @@ else
 
 	pushd "${RS_CACHE}/config"
 
-	find . -type d -exec mkdir -p "${RS_ROOT}/{}" \;
-	find . -type f -exec cp -f {} "${RS_ROOT}/{}" \;
+  find . -type d -name "lost+found" -prune -o -type d -exec mkdir -p "${RS_ROOT}/{}" \;
+  find . -type d -name "lost+found" -prune -o -type f -exec cp -f {} "${RS_ROOT}/{}" \;
 
 	cmp -s "${RS_ROOT}/version.json" "${RS_CACHE}/config/version.json" || {
     cp "${RS_ROOT}/version.json" "${RS_CACHE}/config/version.json"

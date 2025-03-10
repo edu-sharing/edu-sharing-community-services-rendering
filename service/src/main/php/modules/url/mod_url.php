@@ -233,17 +233,34 @@ class mod_url
             ' . $footer . '</div>';
     }
 
-    protected function getLti13ToolEmbedding($footer = ''){
-        return '<script>var ltiIFrame = document.getElementById("ltiframe");ltiIFrame.height=(window.innerHeight-ltiIFrame.getBoundingClientRect().top)+"px";</script><div>
-            <iframe id="ltiframe" src="'. $this->getUrl().'&editMode=false&launchPresentation=iframe" style="border:none;;max-width: 100%;width:100%;"></iframe>
-            ' . $footer . '</div>';
+    protected function getLti13ToolEmbedding($footer = '')
+    {
+        $iframeId = 'ltiframe_' . uniqid(); // Generate a unique ID for the iframe
 
-        /**
-         *   protected function getLti13ToolEmbedding($footer = ''){
-        return '<div> <iframe src="'. $this->getUrl().'&editMode=false" style="max-width: 100%;width:100%;height: 100%;" onLoad="this.style.height=contentWindow.document.documentElement.scrollHeigh>
-        }
+        $script = <<<SCRIPT
+        <script>
+            var ltiIFrame = document.getElementById("$iframeId");
+            if (ltiIFrame) {
+                console.log("ltiIFrame:$iframeId window.innerHeight:"+window.innerHeight + " top:" +ltiIFrame.getBoundingClientRect().top );
+                var h = window.innerHeight - ltiIFrame.getBoundingClientRect().top;
+                if(h < 300) h = window.innerHeight;
+                ltiIFrame.height = h + "px";
+            }else console.log("no lti iframe found");
+        </script>
+        SCRIPT;
 
-         */
+        $iframe = <<<HTML
+        <div>
+            <iframe 
+                id="$iframeId" 
+                src="{$this->getUrl()}&editMode=false&launchPresentation=iframe" 
+                style="border: none; max-width: 100%; width: 100%;">
+            </iframe>
+            $footer
+        </div>
+        HTML;
+
+        return $script . $iframe;
     }
 
     protected function getVideoEmbedding($width = NULL, $footer = '') {

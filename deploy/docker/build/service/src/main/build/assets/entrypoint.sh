@@ -47,6 +47,7 @@ my_gdpr_modules="${SERVICES_RENDERING_SERVICE_GDPR_MODULES:-}"
 my_gdpr_urls="${SERVICES_RENDERING_SERVICE_GDPR_URLS:-}"
 
 my_viewer_enabled="${SERVICES_RENDERING_SERVICE_VIEWER_ENABLED:-true}"
+admin_page_enabled="${SERVICES_RENDERING_SERVICE_ADMINPAGE_ENABLED:-true}"
 
 my_plugins="${SERVICES_RENDERING_SERVICE_PLUGINS:-}"
 
@@ -78,6 +79,8 @@ rendering_video_resolutions="${SERVICES_RENDERING_VIDEO_RESOLUTIONS:-"240,720,10
 rendering_video_default_resolution="${SERVICES_RENDERING_VIDEO_DEFAULT_RESOLUTION:-"720"}"
 rendering_video_timeout="${SERVICES_RENDERING_VIDEO_TIMEOUT:-"3600"}"
 rendering_video_threads="${SERVICES_RENDERING_VIDEO_THREADS:-"1"}"
+rendering_h5p_disable_cache_delay="${SERVICES_RENDERING_H5P_DISABLE_CACHE_DELAY:-0}"
+rendering_session_cookie_settings="${SERVICES_RENDERING_SESSION_COOKIE_SETTINGS:-"Path=/; SameSite=Lax;"}"
 
 
 
@@ -209,8 +212,8 @@ else
 
 	pushd "${RS_CACHE}/config"
 
-	find . -type d -exec mkdir -p "${RS_ROOT}/{}" \;
-	find . -type f -exec cp -f {} "${RS_ROOT}/{}" \;
+  find . -type d -name "lost+found" -prune -o -type d -exec mkdir -p "${RS_ROOT}/{}" \;
+  find . -type d -name "lost+found" -prune -o -type f -exec cp -f {} "${RS_ROOT}/{}" \;
 
 	cmp -s "${RS_ROOT}/version.json" "${RS_CACHE}/config/version.json" || {
     cp "${RS_ROOT}/version.json" "${RS_CACHE}/config/version.json"
@@ -276,6 +279,12 @@ sed -i -r 's|\$dbuser.*|\$dbuser = "'"${rendering_database_user}"'";|' "${dbConf
 sed -i -r 's|\$pwd.*|\$pwd = "'"${rendering_database_pass}"'";|' "${dbConf}"
 
 systemConf="${RS_ROOT}/conf/system.conf.php"
+sed -i -r 's|\$H5P_DISABLE_CACHE_DELAY = .*|\$H5P_DISABLE_CACHE_DELAY = '"${rendering_h5p_disable_cache_delay}"';|' "${systemConf}"
+grep -q  '$H5P_DISABLE_CACHE_DELAY' || echo '$H5P_DISABLE_CACHE_DELAY = '"${rendering_h5p_disable_cache_delay}"';' >> "${systemConf}"
+
+sed -i -r 's|\$SESSION_COOKIE_SETTINGS = .*|\$SESSION_COOKIE_SETTINGS = '"'${rendering_session_cookie_settings}'"';|' "${systemConf}"
+grep -q  '$SESSION_COOKIE_SETTINGS' || echo '$SESSION_COOKIE_SETTINGS = '"'${rendering_session_cookie_settings}'"';' >> "${systemConf}"
+
 sed -i -r 's|\$MC_URL = ['"'"'"].*|\$MC_URL = '"'${my_external_url}'"';|' "${systemConf}"
 sed -i -r 's|\$MC_DOCROOT.*|\$MC_DOCROOT = "'"${RS_ROOT}"'";|' "${systemConf}"
 sed -i -r 's|\$CC_RENDER_PATH.*|\$CC_RENDER_PATH = "'"${RS_CACHE}/data"'";|' "${systemConf}"
@@ -283,6 +292,14 @@ sed -i -r 's|\$CUSTOM_CONTENT_URL =.*|\$CUSTOM_CONTENT_URL = '"'${rendering_serv
 grep -q '$CUSTOM_CONTENT_URL' "${systemConf}" || echo '$CUSTOM_CONTENT_URL = '"'${rendering_service_custom_content_url}'"';' >> "${systemConf}"
 
 
+adminHtaccessFile="${RS_ROOT}/admin/.htaccess"
+if [[ "$admin_page_enabled" == "true" ]] ; then
+  if  [[ -f "$adminHtaccessFile" ]] ; then
+    rm "$adminHtaccessFile"
+  fi
+else
+  echo "Deny from all" > "$adminHtaccessFile"
+fi
 
 
 [[ -n $my_gdpr_modules ]] && my_gdpr_modules="'${my_gdpr_modules//,/','}'"

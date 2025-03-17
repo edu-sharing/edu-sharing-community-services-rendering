@@ -40,7 +40,7 @@ $Logger->debug($_SERVER['REQUEST_URI']);
 
 
 // init translate
-global $Translate, $LanguageCode;
+global $Translate, $LanguageCode, $SESSION_COOKIE_SETTINGS;
 $Translate = new Phools_Translate_Array();
 
 // LANGUAGE
@@ -70,6 +70,7 @@ if (!empty($sessid)) {
 if (!session_start()) {
     throw new Exception('Could not start session.');
 }
+header("Set-Cookie: $ESRENDER_SESSION_NAME=$sessid; $SESSION_COOKIE_SETTINGS");
 
 $esrenderSessionId = session_id();
 if (!$esrenderSessionId) {
@@ -149,11 +150,15 @@ function render(array $options)
                 // LEGACY! Remove this Behaviour in future releases, only included for back compat
                 Config::set('hasContentLicense', !empty($data->node->accessEffective) && in_array('ReadAll', $data->node->accessEffective));
             } else {
-                // otherwise, the collection concept allows access, so we give the user access simply depending on the collection entry
                 Config::set('hasContentLicense', in_array('ReadAll', $data->node->access));
             }
         } else {
-            Config::set('hasContentLicense', in_array('ReadAll', $data->node->access));
+            $effective = false;
+            // access effective might also provided for regular nodes since they have enhanced access via collection shares
+            if(!empty($data->node->accessEffective)) {
+                $effective = in_array('ReadAll', $data->node->accessEffective);
+            }
+            Config::set('hasContentLicense', $effective || in_array('ReadAll', $data->node->access));
         }
         $CurrentDirectoryName = basename(dirname(__FILE__));
         $application = new ESApp();
@@ -242,6 +247,7 @@ function render(array $options)
         }
 
         $ESObject = new ESObject($data);
+        LoggerMDC::put("EduSharingNodeId", $ESObject->getObjectID());
 
         //version
         if ($ESObject->getNode()->isDirectory || $ESObject->getNodeProperty('ccm:remoterepositorytype'))

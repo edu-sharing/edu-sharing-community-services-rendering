@@ -1,11 +1,14 @@
 <?php
 	global $MC_URL;
 ?>
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/metadata/inline.css">
 <div class="edusharing_metadata_wrapper">
    <i class="material-icons edusharing_metadata_toggle_button">info_outline</i>
-	<div class="edusharing_metadata" style="display:none">
+	<div class="edusharing_metadata edusharing_metadata_inline">
         <div class="edusharing_metadata_inner edusharing_rendering_metadata_body">
 		<?php echo $metadataHtml ?>
         </div>
 	</div>
 </div>
+
+<script src="<?php echo $MC_URL?>/vendor/js/metadataToggler.js"></script>

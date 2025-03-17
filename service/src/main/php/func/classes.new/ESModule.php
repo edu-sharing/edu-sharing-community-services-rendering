@@ -192,7 +192,11 @@ class ESModule {
                 break;
             
 			case ($p_RESOURCE_TYPE == 'ADL SCORM' || $p_RESOURCE_TYPE == 'IMS Common Cartridge') :
-				$this->ESMODULE_NAME = 'scorm';
+                if (file_exists(MC_ROOT_PATH . 'modules/scorm/config.php')) {
+                    $this->ESMODULE_NAME = 'scorm';
+                } else {
+                    $this->ESMODULE_NAME = 'html';
+                }
 				break;
 
 			case ($p_RESOURCE_TYPE == 'imsqti' && $p_RESOURCE_VERSION == 'xmlv2p1') :

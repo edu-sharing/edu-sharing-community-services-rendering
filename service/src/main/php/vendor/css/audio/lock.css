@@ -1,0 +1,11 @@
+.es_progressbar_container {
+    height: 20px;
+    max-width: 300px;
+    border: 1px solid #ddd;
+}
+
+.es_progressbar_progress {
+    display: inline-block;
+    height: 100%; width:0;
+    background-color: #ddd;
+}

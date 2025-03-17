@@ -56,6 +56,9 @@ cursor: pointer;
 }
 
 div.edusharing_rendering_content_video_options_content {
+background-color: black;
+opacity: .7;
+border-radius: .5em;
 display: none;
 }
 
@@ -401,8 +404,14 @@ width: 100%;
 margin-top: 8px;
 }
 
-.edusharing_rendering_content_footer_top .license_permalink, .edusharing_rendering_content_footer_top .license {
-margin-right: 40px;
+.edusharing_rendering_content_footer_top .license {
+display: flex;
+flex-wrap:wrap;
+align-items: center;
+}
+
+.edusharing_rendering_content_footer_top .license .license_link {
+display: inline-flex;
 }
 
 video, audio {
@@ -483,3 +492,15 @@ outline: 0;
 -moz-appearance: none;
 }
 
+#docFrame {
+width:100%;
+height:100%;
+min-height:calc(100vh - 150px);
+border: none;
+}
+
+.edu-audio-video-element {
+object-fit: cover;
+max-width: 100%;
+box-shadow: none;
+}

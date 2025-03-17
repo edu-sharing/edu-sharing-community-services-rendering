@@ -22,3 +22,5 @@ $DEFAULT_LANG = 1;
 $MC_URL = rtrim($MC_URL, '/');
 $ROOT_PATH = current(explode("conf", dirname(__FILE__)));
 $ROOT_URI  = $MC_URL . '/';
+$H5P_DISABLE_CACHE_DELAY = 0;
+$SESSION_COOKIE_SETTINGS = "";

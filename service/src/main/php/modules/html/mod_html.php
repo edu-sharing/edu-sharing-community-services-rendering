@@ -72,7 +72,8 @@ extends ESRender_Module_ContentNode_Abstract
 
     protected function dynamic()
     {
-        $template_data['url'] = $this -> esObject->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
+        $indexFile = $this->getIndexFileName();
+        $template_data['url'] = $this -> esObject->getPath(). $indexFile .'?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         if(Config::get('showMetadata'))
             $template_data['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
         $template_data['title'] = $this -> esObject->getTitle();
@@ -83,7 +84,8 @@ extends ESRender_Module_ContentNode_Abstract
 
     protected function embed()
     {
-        $template_data['url'] = $this -> esObject->getPath().'/index.html?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
+        $indexFile = $this->getIndexFileName();
+        $template_data['url'] = $this -> esObject->getPath(). $indexFile . '?' . session_name() . '=' . session_id(). '&token=' . Config::get('token');
         $template_data['previewUrl'] = $this -> esObject->getPreviewUrl();
         echo $this -> getTemplate() -> render('/module/html/embed', $template_data);
         return true;
@@ -103,4 +105,16 @@ extends ESRender_Module_ContentNode_Abstract
 		return true;
 	}
 
+    private function getIndexFileName(): String {
+        $isScorm = $this->esObject->getResourceType() === "ADL SCORM" || $this->esObject->getResourceType() === "IMS Common Cartridge";
+        $resourceType = (string)$this->esObject->getNodeProperty("ccm:ccresourcesubtype");
+        if ($isScorm && strtolower($resourceType) === "articulate storyline") {
+            return '/story.html';
+        }
+        $indexFile = $this->esObject->getNodeProperty("ccm:ccressourcemainentity");
+        if (empty($indexFile)) {
+            return '/index.html';
+        }
+        return '/' . ltrim($indexFile, '/');
+    }
 }

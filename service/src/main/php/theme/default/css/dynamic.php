@@ -58,6 +58,9 @@ opacity: 1;
 }
 
 div.edusharing_rendering_content_video_options_content {
+background-color: black;
+opacity: .7;
+border-radius: .5em;
 display: none;
 }
 
@@ -464,4 +467,17 @@ border-radius: 5px;
     padding: 0px 8px;
     top: 23px;
     right: 20px;
+}
+
+#docFrame {
+    width:100%;
+    height:100%;
+    min-height:calc(100vh - 150px);
+    border: none;
+}
+
+.edu-audio-video-element {
+    object-fit: cover;
+    max-width: 100%;
+    box-shadow: none;
 }

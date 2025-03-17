@@ -16,6 +16,7 @@ default:
       entrypoint: [ "env", "-u", "DOCKER_HOST" ]
       command: [ "dockerd-entrypoint.sh" ]
 stages:
+  - test
   - deploy
 
 deploy:
@@ -32,7 +33,7 @@ deploy:
   before_script:
     - curl -sSL https://packages.sury.org/php/README.txt | bash -x
     - apt-get update -y
-    - apt-get install -y php8.1 php8.1-curl php8.1-dom php8.1-gd php8.1-mbstring php8.1-xml php8.1-zip
+    - apt-get install -y php8.3 php8.3-curl php8.3-dom php8.3-gd php8.3-mbstring php8.3-xml php8.3-zip
     - pushd /tmp
     - wget https://get.helm.sh/helm-v3.14.2-linux-amd64.tar.gz
     - tar -xzvf helm-v3.14.2-linux-amd64.tar.gz
@@ -40,3 +41,18 @@ deploy:
     - popd
   script:
     - mvn $MAVEN_CLI -s .mvn/settings.xml deploy
+
+check-helmreadme:
+  stage: test
+  image: node:lts-alpine3.20
+  before_script:
+    - ln -s $CI_PROJECT_DIR/deploy/docker/helm/bundle/src/main/chart /tmp/bundle && cp /tmp/bundle/README.md /tmp/README_bundle.md
+    - ln -s $CI_PROJECT_DIR/deploy/docker/helm/service/src/main/chart /tmp/service && cp /tmp/service/README.md /tmp/README_service.md
+  script:
+    - wget -qO- https://github.com/bitnami/readme-generator-for-helm/archive/refs/tags/2.6.1.tar.gz | tar -xz -C /tmp
+    - cd /tmp; npm install ./readme-generator-for-helm-2.6.1; cd readme-generator-for-helm-2.6.1
+    - ./bin/index.js -v /tmp/bundle/values.yaml -r /tmp/README_bundle.md
+    - ./bin/index.js -v /tmp/service/values.yaml -r /tmp/README_service.md
+    - diff /tmp/README_bundle.md /tmp/bundle/README.md     || (echo "README was not generated before committing." && exit 1)
+    - diff /tmp/README_service.md /tmp/service/README.md   || (echo "README was not generated before committing." && exit 1)
+

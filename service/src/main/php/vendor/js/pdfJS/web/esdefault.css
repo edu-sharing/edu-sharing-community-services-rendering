@@ -1,0 +1,36 @@
+#download {
+    display: none;
+}
+
+#secondaryOpenFile {
+    display: none;
+    ::after {
+        display: none;
+    }
+}
+
+#secondaryDownload + .horizontalToolbarSeparator {
+    display: none;
+}
+
+#viewBookmark {
+    display: none;
+    ::after {
+        display: none;
+    }
+
+    + .horizontalToolbarSeparator {
+        display: none;
+    }
+}
+
+#documentProperties {
+    display: none;
+    ::after {
+        display: none;
+    }
+}
+
+#spreadModeButtons + .horizontalToolbarSeparator {
+    display: none;
+}

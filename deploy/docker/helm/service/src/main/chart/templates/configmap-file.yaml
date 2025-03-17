@@ -45,6 +45,10 @@ data:
         return (pass);
       }
 
+      if (req.http.range) {
+        return (pass);
+      }
+
       if (req.restarts > 0) {
         set req.hash_always_miss = true;
       }

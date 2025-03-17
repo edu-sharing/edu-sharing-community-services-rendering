@@ -4,10 +4,8 @@ $uniqueId = rand();
 ?>
     <script id="eduGetJS" src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
     <script src="<?php echo $MC_URL?>/theme/default/data_protection/script.js"></script>
-    <style>
-        <?php include(dirname(__FILE__) . '/../css/dynamic.php'); ?>
-        <?php include(dirname(__FILE__) . '/../css/metadata.css'); ?>
-    </style>
+    <link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/dynamic.php">
+    <link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/metadata.css">
     <div class="edusharing_rendering_wrapper" id="<?php echo $uniqueId;?>-privacy">
         <h1 class="edusharing_rendering_content_title"><?php echo $node->getNode()->title ?></h1>
         <div class="edusharing_rendering_content_wrapper" role="main">

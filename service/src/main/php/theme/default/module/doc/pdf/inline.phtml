@@ -8,18 +8,15 @@ $msg['cannotOpenObjectText'] = new Phools_Message_Default('cannotOpenObjectText'
 
 <?php
 if (!$allowPrintAndDownload) {
-    echo '<script src="'.$MC_URL.'/vendor/js/pdfJS/espdf.js"></script>';
-    echo '<script src="'.$MC_URL.'/vendor/js/pdfJS/espdfglobal.js"></script>';
+    echo '<link rel="stylesheet" href="'.$MC_URL.'/vendor/js/pdfJS/web/espdfglobal.css">';
 }
 ?>
 
-<style>
-    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
-    <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
-</style>
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/inline.php">
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/metadata.css">
 
 <div class="edusharing_rendering_content_wrapper" style="display: inline-block; width: 100%">
-    <iframe id="docFrame" src="<?php echo $MC_URL; ?>/vendor/js/pdfJS/index.php?file=<?php echo $content; ?>" style="width:100%;height:100%;min-height:calc(100vh - 150px);border: none;">
+    <iframe id="docFrame" src="<?php echo $MC_URL; ?>/vendor/js/pdfJS/web/index.php?file=<?php echo $content; ?>&pagemode=none">
         <h3><?php echo $msg['cannotOpenObject']->localize($Locale, $Translate); ?></h3>
         <h4><?php echo $msg['cannotOpenObjectText']->localize($Locale, $Translate); ?></h4>
     </iframe>

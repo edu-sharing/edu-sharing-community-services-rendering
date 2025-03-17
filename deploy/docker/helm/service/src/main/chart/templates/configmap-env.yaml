@@ -15,6 +15,7 @@ data:
   SERVICES_RENDERING_DATABASE_HOST: {{ .Values.config.database.host | quote }}
   SERVICES_RENDERING_DATABASE_NAME: {{ .Values.config.database.database | quote }}
   SERVICES_RENDERING_DATABASE_PORT: {{ .Values.config.database.port | quote }}
+  SERVICES_RENDERING_SERVICE_CACHE_CLEANER_USE_DISK_SIZE: {{ .Values.job.cachecleaner.config.useDiskSize | quote }}
   SERVICES_RENDERING_SERVICE_GDPR_ENABLED: {{ .Values.config.gdpr.enabled | quote }}
   {{- with .Values.config.gdpr.modules }}
   SERVICES_RENDERING_SERVICE_GDPR_MODULES: '{{- join "," . }}'
@@ -32,6 +33,8 @@ data:
   {{- end }}
   SERVICES_RENDERING_SERVICE_PORT_EXTERNAL: {{ if .Values.ingress.tls }}"443"{{ else }}"80"{{ end }}
   SERVICES_RENDERING_SERVICE_PORT_INTERNAL: {{ .Values.service.port.api.internal | quote }}
+  SERVICES_RENDERING_SERVICE_DYNAMIC_URL: {{ .Values.config.http.server.host.dynamic | quote }}
+  SERVICES_RENDERING_SERVICE_CUSTOM_CONTENT_URL: {{ .Values.config.http.client.content.url | quote }}
   SERVICES_RENDERING_SERVICE_PROT_EXTERNAL: {{ if .Values.ingress.tls }}"https"{{ else }}"http"{{ end }}
   {{- with .Values.config.http.client.proxy.nonproxyhosts }}
   SERVICES_RENDERING_SERVICE_PROXY_NONPROXYHOSTS: '{{- join "," . }}'
@@ -41,6 +44,7 @@ data:
   SERVICES_RENDERING_SERVICE_PROXY_USER: {{ .Values.config.http.client.proxy.proxyuser | quote }}
   SERVICES_RENDERING_SERVICE_PROXY_PASS: {{ .Values.config.http.client.proxy.proxypass | quote }}
   SERVICES_RENDERING_SERVICE_VIEWER_ENABLED: {{ .Values.config.viewer.enabled | quote }}
+  SERVICES_RENDERING_SERVICE_ADMINPAGE_ENABLED: {{ .Values.config.adminpage.enabled | quote }}
   SERVICES_RENDERING_RENDERMOODLE_URL: {{ .Values.config.rendermoodle.url | quote }}
   SERVICES_RENDERING_RENDERMOODLE_TOKEN: {{ .Values.config.rendermoodle.token | quote }}
   SERVICES_RENDERING_RENDERMOODLE_CATEGORY_ID: {{ .Values.config.rendermoodle.categoryId | quote }}
@@ -49,3 +53,5 @@ data:
   SERVICES_RENDERING_VIDEO_DEFAULT_RESOLUTION: {{ .Values.config.converter.video.resolution.default | quote }}
   SERVICES_RENDERING_VIDEO_THREADS: {{ .Values.config.converter.video.threads | quote }}
   SERVICES_RENDERING_VIDEO_TIMEOUT: {{ .Values.config.converter.video.timeout | quote }}
+  SERVICES_RENDERING_H5P_DISABLE_CACHE_DELAY: {{ .Values.config.h5p.disableCacheDelay | quote }}
+  SERVICES_RENDERING_SESSION_COOKIE_SETTINGS: {{ .Values.config.session.cookieSettings | quote }}

@@ -23,6 +23,8 @@ ob_start();
 set_time_limit(0);
 include_once ('../conf.inc.php');
 
+global $SESSION_COOKIE_SETTINGS, $MC_DOCROOT, $MC_DOCROOT, $MC_URL, $CC_RENDER_PATH;
+
 $skipToken = false;
 $logCacheRead = false;
 
@@ -140,6 +142,7 @@ $l_dest = sanitizePath($l_dest);
 session_name($ESRENDER_SESSION_NAME);
 session_id($l_sid);
 session_start();
+header("Set-Cookie: $ESRENDER_SESSION_NAME=$l_sid; $SESSION_COOKIE_SETTINGS");
 
 if (empty($_SESSION['esrender'])) {
     error_log('Missing "esrender"-session-data.');
@@ -197,7 +200,23 @@ if(isset($_GET["MODULE"])) {
     $dest_path = sanitizePath($CC_RENDER_PATH . DIRECTORY_SEPARATOR . $dest_path);
 }
 
+$dest_path_old = $dest_path;
+if (!file_exists($dest_path)) {
+    for ($i = 0; $i < 120; $i++) {
+        error_log("File does not exist yet. Waiting 500 ms.");
+        usleep(500000);
+        if (file_exists($dest_path)) {
+            break;
+        }
+    }
+}
 $dest_path = realpath($dest_path);
+if(!$dest_path && $dest_path_old !== '') {
+    http_response_code(404);
+    $path = explode('/', $dest_path_old);
+    cc_rd_debug('File/Media not found, maybe the original data source is corrupted ' . $path[count($path) - 1] );
+    die();
+}
 
 if ($dest_path === false ||
     (strpos($dest_path, $MC_DOCROOT) !== 0 && isset($_GET["MODULE"])) && (

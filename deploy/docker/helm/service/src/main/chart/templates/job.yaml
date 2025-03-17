@@ -30,6 +30,44 @@ spec:
             name: {{ include "edusharing_common_lib.names.name" . }}-env
         - secretRef:
             name: {{ include "edusharing_common_lib.names.name" . }}-env
+        {{- with .Values.job.init.startupProbe }}
+        startupProbe:
+          exec:
+            command:
+              - "/bin/sh"
+              - "-c"
+              - "echo startupProbe > /dev/null"
+          failureThreshold: {{ .failureThreshold }}
+          initialDelaySeconds: {{ .initialDelaySeconds }}
+          periodSeconds: {{ .periodSeconds }}
+          successThreshold: {{ .successThreshold }}
+          timeoutSeconds: {{ .timeoutSeconds }}
+        {{- end }}
+        {{- with .Values.job.init.livenessProbe }}
+        livenessProbe:
+          exec:
+            command:
+              - "/bin/sh"
+              - "-c"
+              - "echo livenessProbe > /dev/null"
+          failureThreshold: {{ .failureThreshold }}
+          initialDelaySeconds: {{ .initialDelaySeconds }}
+          periodSeconds: {{ .periodSeconds }}
+          timeoutSeconds: {{ .timeoutSeconds }}
+        {{- end }}
+        {{- with .Values.job.init.readinessProbe }}
+        readinessProbe:
+          exec:
+            command:
+              - "/bin/sh"
+              - "-c"
+              - "echo readinessProbe > /dev/null"
+          failureThreshold: {{ .failureThreshold }}
+          initialDelaySeconds: {{ .initialDelaySeconds }}
+          periodSeconds: {{ .periodSeconds }}
+          successThreshold: {{ .successThreshold }}
+          timeoutSeconds: {{ .timeoutSeconds }}
+        {{- end }}
         {{- with .Values.job.init.resources }}
         resources: {{ toYaml . | nindent 10 }}
         {{- end }}

@@ -13,7 +13,8 @@ class mod_url
         $remoteType = new RemoteObjectType($this->esObject);
         $type = $remoteType->getType();
         if(Config::get('urlEmbedding')) {
-            $embedding = Config::get('urlEmbedding');
+            $embeddingFromConfig = Config::get('urlEmbedding');
+            $embedding = $this->enrichCustomEmbedding($embeddingFromConfig) ?? $embeddingFromConfig;
         }else if ($this -> esObject -> isLti13ToolObject()){
             $embedding = $this->getLti13ToolEmbedding();
         }else if ($type === RemoteObjectType::$TYPE_VIDEO) {
@@ -59,6 +60,7 @@ class mod_url
             $tempArray['metadata'] = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/dynamic');
 
         $tempArray['title'] = $this -> esObject->getTitle();
+        $tempArray['ccressourcetype'] = $this -> esObject->getNodeProperty('ccm:ccressourcetype');
         $tempArray['dataProtection'] = $this->getIsBehindDataProtection();
         echo $Template -> render('/module/url/dynamic', $tempArray);
 
@@ -118,7 +120,12 @@ class mod_url
         $type = $remoteType->getType();
 
         if(Config::get('urlEmbedding')) {
-            $embedding = Config::get('urlEmbedding') . $footer;
+            $embeddingFromConfig = Config::get('urlEmbedding');
+            $embedding = $this->enrichCustomEmbedding(
+                $embeddingFromConfig,
+                $footer,
+                mc_Request::fetch('width', 'INT', 600)
+            ) ?? ($embeddingFromConfig . $footer);
         }else if ($this -> esObject -> isLti13ToolObject()){
             $embedding = $this->getLti13ToolEmbedding();
         }else if ($type === RemoteObjectType::$TYPE_VIDEO) {
@@ -143,7 +150,7 @@ class mod_url
         $data = array('embedding' => $embedding);
 
         $Template = $this -> getTemplate();
-        echo utf8_decode($Template -> render('/module/url/inline', $data));
+        echo $Template -> render('/module/url/inline', $data);
 
         return true;
     }
@@ -222,21 +229,38 @@ class mod_url
 
     protected function getImageEmbedding($footer = '')
     {
-        return '<div><img title="' . $this -> esObject->getTitle() . '" alt="' . $this -> esObject->getTitle() . '" src="' . $this->getUrl() . '" style="max-width: 100%">
+        return '<div><img title="' . $this -> esObject->getTitle() . '" alt="' . $this -> esObject->getTitle() . '" src="' . $this->getUrl() . '" class="mod_url_img">
             ' . $footer . '</div>';
     }
 
-    protected function getLti13ToolEmbedding($footer = ''){
-        return '<script>var ltiIFrame = document.getElementById("ltiframe");ltiIFrame.height=(window.innerHeight-ltiIFrame.getBoundingClientRect().top)+"px";</script><div>
-            <iframe id="ltiframe" src="'. $this->getUrl().'&editMode=false&launchPresentation=iframe" style="border:none;;max-width: 100%;width:100%;"></iframe>
-            ' . $footer . '</div>';
+    protected function getLti13ToolEmbedding($footer = '')
+    {
+        $iframeId = 'ltiframe_' . uniqid(); // Generate a unique ID for the iframe
 
-        /**
-         *   protected function getLti13ToolEmbedding($footer = ''){
-        return '<div> <iframe src="'. $this->getUrl().'&editMode=false" style="max-width: 100%;width:100%;height: 100%;" onLoad="this.style.height=contentWindow.document.documentElement.scrollHeigh>
-        }
+        $script = <<<SCRIPT
+        <script>
+            var ltiIFrame = document.getElementById("$iframeId");
+            if (ltiIFrame) {
+                console.log("ltiIFrame:$iframeId window.innerHeight:"+window.innerHeight + " top:" +ltiIFrame.getBoundingClientRect().top );
+                var h = window.innerHeight - ltiIFrame.getBoundingClientRect().top;
+                if(h < 300) h = window.innerHeight;
+                ltiIFrame.height = h + "px";
+            }else console.log("no lti iframe found");
+        </script>
+        SCRIPT;
 
-         */
+        $iframe = <<<HTML
+        <div>
+            <iframe 
+                id="$iframeId" 
+                src="{$this->getUrl()}&editMode=false&launchPresentation=iframe" 
+                style="border: none; max-width: 100%; width: 100%;">
+            </iframe>
+            $footer
+        </div>
+        HTML;
+
+        return $script . $iframe;
     }
 
     protected function getVideoEmbedding($width = NULL, $footer = '') {
@@ -365,4 +389,10 @@ class mod_url
         return $this -> UrlProperty;
     }
 
+    private function enrichCustomEmbedding(String $embedding, String $footer = '', int $width = 800): ?String {
+        if (! str_contains($embedding, 'customEmbedding')) {
+            return null;
+        }
+        return $this->getInlineStyle($width) . str_replace('{{VIDEO_FOOTER_PLACEHOLDER}}', $footer, $embedding);
+    }
 }

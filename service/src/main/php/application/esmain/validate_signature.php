@@ -37,5 +37,8 @@ try {
         throw new ESRender_Exception_SslVerification('SSL signature check failed');
     }
 } catch (Exception $e) {
+    $Logger->error('Error checking signature, pubkeyid: ' . $pubkeyid. ', signature: ' . $signature);
+    $Logger->error($e->getMessage());
+    $Logger->error($e->getTraceAsString());
     throw new ESRender_Exception_SslVerification('Error checking signature');
 }

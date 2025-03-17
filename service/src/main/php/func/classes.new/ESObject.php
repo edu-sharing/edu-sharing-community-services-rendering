@@ -406,6 +406,14 @@ class ESObject {
             return true;
         }
 
+        if($this->getNode()->aspects && in_array('ccm:revoked', $this->getNode()->aspects)) {
+            Logger::getLogger('de.metaventis.esrender.index') -> info('revoked node, using module "doc".');
+            $this -> module -> setName('doc');
+            $this -> module -> loadModuleData();
+            $this -> moduleId = $this -> module -> getModuleId();
+            return true;
+        }
+
         if($this -> getNode() -> isDirectory) {
             if(in_array('ccm:collection', $this -> getNode() -> aspects)) {
                 Logger::getLogger('de.metaventis.esrender.index')->info('Property "collection" is true, using module "collection".');
@@ -498,6 +506,8 @@ class ESObject {
                 Logger::getLogger('de.metaventis.esrender.index') -> info('Could not set module by resource-type/-version, using default ("doc") module.');
                 $this -> module -> setName('doc');
             }
+        } else if ($this -> mimetype == 'audio/mp4') {
+            $this->module->setName('audio');
         } else {
             if (!$this -> module -> setModuleByMimetype($this -> mimetype)) {
                 Logger::getLogger('de.metaventis.esrender.index') -> info('Could not set module by mimetype "'.$this->mimetype.'" using default ("doc") module.');
@@ -756,7 +766,6 @@ class ESObject {
     }
 
     public function conversionFailed($format, $resolution = null) {
-
         $pdo = RsPDO::getInstance();
         try {
             $sql = 'SELECT "ESOBJECT_CONVERSION_OBJECT_ID" FROM "ESOBJECT_CONVERSION" WHERE "ESOBJECT_CONVERSION_OBJECT_ID" = :objectid AND "ESOBJECT_CONVERSION_FORMAT" = :format AND "ESOBJECT_CONVERSION_STATUS" like :error';
@@ -773,7 +782,7 @@ class ESObject {
 
             $stmt -> execute();
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
-            if(!$result){
+            if(!$result || (int)$this->id === 0){
                 return false;
             }else{
                 return true;
@@ -890,7 +899,7 @@ class ESObject {
 
     public function getVersion(): string
     {
-        return $this->version;
+        return $this->version ?? '';
     }
 
     public function getResourceVersion(): string

@@ -62,8 +62,12 @@ extends ESRender_Module_Base
         {
             if ( ! mkdir($this->render_path, 0777, true) )
             {
-                $Logger->error('Error creating path "'.$this->render_path.'".');
-                return false;
+                if(file_exists($this->render_path)) {
+                    // this is okay! In a cluster env, the current path might be created by an other node!
+                } else {
+                    $Logger->error('Error creating path "' . $this->render_path . '".');
+                    return false;
+                }
             }
             $Logger->debug('Created path "'.$this->render_path.'".');
 

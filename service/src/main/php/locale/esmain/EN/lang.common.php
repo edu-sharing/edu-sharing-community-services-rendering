@@ -53,6 +53,7 @@ $Translate
 	->addTranslation('en', 'cannotOpenObject', 'This material can not be displayed in the browser.')
 	->addTranslation('en', 'cannotOpenObjectText', 'In order to use the material please download it.')
 	->addTranslation('en', 'goToOrigin', 'Go to link location')
+	->addTranslation('en', 'goToOriginConnector', 'Open element')
     ->addTranslation('en', 'showDocument', 'Show document')
     ->addTranslation('en', 'showInLearningAppsOrg', 'Open in learningapps.org')
     ->addTranslation('en', 'hasNoContentLicense', 'You\'re not allowed to use the content because of licence restrictions.')

@@ -22,7 +22,7 @@ repository_service_admin_pass="${REPOSITORY_SERVICE_ADMIN_PASS:-admin}"
 
 until wait-for-it "${my_host_internal}:${my_port_internal}" -t 3; do sleep 1; done
 
-until [[ $( curl -sSf -w "%{http_code}\n" -o /dev/null "${my_base_internal}/admin/" ) -eq 200 ]]
+until [[ $( curl -sSf -w "%{http_code}\n" -o /dev/null "${my_meta_internal}" ) -eq 200 ]]
 do
 	echo >&2 "Waiting for ${my_host_internal} ..."
 	sleep 3

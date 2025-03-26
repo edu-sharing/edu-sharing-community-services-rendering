@@ -285,6 +285,8 @@ font-weight: 600;
 
 img.edusharing_rendering_content {
 background-image: url('<?php echo $MC_URL?>/theme/default/img/background-transparent.png');
+/* for svg without width/height */
+min-width: 40vw;
 }
 
 .edusharing_rendering_content,

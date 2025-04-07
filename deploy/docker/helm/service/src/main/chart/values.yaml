@@ -51,6 +51,9 @@ global:
     common: ${docker.common}
 
   metrics:
+    rules:
+      ## @param global.metrics.rules.enabled Enable metrics rules
+      enabled: false
     scrape:
       ## @param global.metrics.scrape.interval Set prometheus scrape interval
       interval: 60s
@@ -265,6 +268,19 @@ config:
       host:
         ## @param config.http.server.host.dynamic Enable dynamic url generation (for virtual domains)
         dynamic: false
+
+  metrics:
+
+    rules:
+
+      apacheUp:
+        ## @param config.metrics.rules.apacheUp.enabled Enable metric rule apacheUp
+        enabled: true
+        ## @param config.metrics.rules.apacheUp.for Set metric rule apacheUp wait interval
+        for: 1m
+        labels:
+          ## @param config.metrics.rules.apacheUp.labels.severity Set metric rule apacheUp severity level
+          severity: critical
 
   override:
     logging:

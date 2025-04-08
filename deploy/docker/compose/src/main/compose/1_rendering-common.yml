@@ -107,6 +107,7 @@ services:
       SERVICES_RENDERING_DATABASE_PORT: "5432"
       SERVICES_RENDERING_DATABASE_USER: "${SERVICES_RENDERING_DATABASE_USER:-rendering}"
       SERVICES_RENDERING_SERVICE_CACHE_CLEANER_SCHEDULE: "${SERVICES_RENDERING_SERVICE_CACHE_CLEANER_SCHEDULE:-0 0 * * 0}"
+      SERVICES_RENDERING_SERVICE_CACHE_CLEANER_USE_DISK_SIZE: "${SERVICES_RENDERING_SERVICE_CACHE_CLEANER_SCHEDULE:-false}"
     volumes:
       - "services-rendering-service-volume-config:/var/cache/esrender/config"
       - "services-rendering-service-volume-data:/var/cache/esrender/data"

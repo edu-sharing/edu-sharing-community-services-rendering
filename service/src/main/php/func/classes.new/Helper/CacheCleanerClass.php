@@ -38,7 +38,14 @@ class CacheCleanerClass
         $size = 0;
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory)) as $file) {
             if ($file->getFileName() !== '..' && $file->getFileName() !== '.')
-                $size += $file->getSize();
+                try {
+                    $fileSize = $file->getSize();
+                    if (is_numeric($fileSize)) {
+                        $size += $fileSize;
+                    }
+                } catch (Exception $exception) {
+                    $this->logger->error($exception->getMessage());
+                }
         }
         return $size;
     }

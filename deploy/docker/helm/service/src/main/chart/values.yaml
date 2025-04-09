@@ -277,7 +277,7 @@ config:
         ## @param config.metrics.rules.apacheUp.enabled Enable metric rule apacheUp
         enabled: true
         ## @param config.metrics.rules.apacheUp.for Set metric rule apacheUp wait interval
-        for: 1m
+        for: 5m
         labels:
           ## @param config.metrics.rules.apacheUp.labels.severity Set metric rule apacheUp severity level
           severity: critical

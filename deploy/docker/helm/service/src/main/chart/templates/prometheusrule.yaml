@@ -1,0 +1,24 @@
+{{- if .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" }}
+{{- if .Values.global.metrics.rules.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "edusharing_common_lib.names.name" . }}
+  labels: {{ include "edusharing_common_lib.labels.app" . | nindent 4 }}
+spec:
+  groups:
+    - name: {{ include "edusharing_common_lib.names.name" . }}
+      rules:
+        {{- if .Values.config.metrics.rules.apacheUp.enabled }}
+        - alert: apacheUp
+          annotations:
+            description: >-
+              {{ include "edusharing_common_lib.names.name" . }} is down since {{ .Values.config.metrics.rules.apacheUp.for }}.
+            summary: {{ include "edusharing_common_lib.names.name" . }} is down.
+          expr: >-
+            apache_up{namespace="{{ .Release.Namespace }}",pod=~"{{ include "edusharing_common_lib.names.name" . }}.*"} < 1
+          for: {{ .Values.config.metrics.rules.apacheUp.for }}
+          labels: {{ toYaml .Values.config.metrics.rules.apacheUp.labels | nindent 12 }}
+        {{- end }}
+{{- end }}
+{{- end }}

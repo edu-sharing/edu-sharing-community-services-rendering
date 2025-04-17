@@ -94,4 +94,5 @@ $Translate
     ->addTranslation('en', 'ViewerJS_Previous Page', 'Previous Page')
     ->addTranslation('en', 'ViewerJS_Zoom In', 'Zoom in')
     ->addTranslation('en', 'ViewerJS_Zoom Out', 'Zoom out')
-    ->addTranslation('en', 'imageDescriptionNotAvailable', 'An image description is not available.');
+    ->addTranslation('en', 'imageDescriptionNotAvailable', 'An image description is not available.')
+    ->addTranslation('en', 'sodixPluginError', 'Fehler beim Abruf des Datensatzes :identifier von der Sodix-API: :error');

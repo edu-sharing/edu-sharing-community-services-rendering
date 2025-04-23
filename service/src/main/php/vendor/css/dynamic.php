@@ -486,3 +486,15 @@ a.dataProtectionRegulationsButton {
     max-width: 100%;
     box-shadow: none;
 }
+
+.plugin-error-message {
+    display: flex;
+    max-width: 100%;
+    margin: 20px 10%;
+    padding: 10px 20px;
+    border-radius: 20px;
+    background-color: #880000;
+    color: #fff;
+    font-weight:bold;
+    text-align: center;
+}

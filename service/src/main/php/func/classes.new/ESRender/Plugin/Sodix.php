@@ -42,7 +42,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         if (!$isPayedMedia) {
             $body = [
                 "operationName" => "getPlayoutWindow",
-                "query" => "query getPlayoutWindow {  getPlayoutWindow(mediaId: \"$repId\") {  playoutUrl } }"
+                "query" => "query getPlayoutWindow {  getPlayoutWindow(mediaId: \"$repId\", autoplay: false) {  playoutUrl } }"
             ];
         } else {
             $body = [

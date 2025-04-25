@@ -498,3 +498,15 @@ a.dataProtectionRegulationsButton {
     font-weight:bold;
     text-align: center;
 }
+
+.sodix-iframe {
+    border: none;
+    width: 100%;
+}
+.sodix-iframe-audio {
+    padding: 0 5%;
+    height: 40px;
+}
+.sodix-iframe-video {
+    aspect-ratio: 16 / 9;
+}

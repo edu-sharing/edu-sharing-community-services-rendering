@@ -42,7 +42,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         if (!$isPayedMedia) {
             $body = [
                 "operationName" => "getPlayoutWindow",
-                "query" => "query getPlayoutWindow {  getPlayoutWindow(mediaId: \"$repId\") {  playoutUrl } }"
+                "query" => "query getPlayoutWindow {  getPlayoutWindow(mediaId: \"$repId\", autoplay: false) {  playoutUrl } }"
             ];
         } else {
             $body = [
@@ -133,6 +133,10 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         $logger->info("SODIX url successfully retrieved.");
         $data->node->properties->{'ccm:wwwurl'} = $playOutUrl;
         $unique = uniqid();
-        Config::set('urlEmbedding', '<iframe id="'.$unique.'" src="'. $playOutUrl . '" width="100%" height="800" border="0"></iframe>');
+        $cssClass="sodix-iframe-video";
+        if($data->node->mediatype === 'file-audio') {
+            $cssClass="sodix-iframe-audio";
+        }
+        Config::set('urlEmbedding', '<iframe id="'.$unique.'" src="'. $playOutUrl . '" class="sodix-iframe '.$cssClass.'"></iframe>');
     }
 }

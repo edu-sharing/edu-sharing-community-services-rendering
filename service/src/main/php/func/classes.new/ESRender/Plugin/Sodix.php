@@ -42,7 +42,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         if (!$isPayedMedia) {
             $body = [
                 "operationName" => "getPlayoutWindow",
-                "query" => "query getPlayoutWindow {  getPlayoutWindow(mediaId: \"$repId\") {  playoutUrl } }"
+                "query" => "query getPlayoutWindow {  getPlayoutWindow(mediaId: \"$repId\", autoplay: false) {  playoutUrl } }"
             ];
         } else {
             $body = [
@@ -54,7 +54,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         if (empty($response)) {
             return;
         }
-        $this->handlePlayOut($response, $data, $isPayedMedia);
+        $this->handlePlayOut($repId, $response, $data, $isPayedMedia);
     }
 
     private function getToken(): String {
@@ -94,9 +94,26 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         return json_decode($result->getBody(), true);
     }
 
-    private function handlePlayOut(array $response, &$data, bool $isPayedMedia): void {
+    public function displayError($message, array $data = []) {
+        global $Locale, $Translate;
+        $data = array_map(
+            function($key, $value) {
+                return new Phools_Message_Param_String($key, $value);
+            },
+            array_keys($data),
+            $data
+        );
+        $Message = new Phools_Message_Default('sodixPluginError', $data);
+        echo '<div class="plugin-error-message">' . $Message -> localize($Locale, $Translate) . '</div>';
+    }
+
+    private function handlePlayOut(string $repId, array $response, &$data, bool $isPayedMedia): void {
         $logger = $this->getLogger();
         if ($response["errors"][0]["extensions"]["classification"] ?? "" === "DataFetchingException") {
+            $this->displayError(
+                'sodix_fetch_error',
+                [':identifier' => $repId, ':error' => ($response["errors"][0]["message"] ?: print_r($response["errors"][0], true))]
+            );
             $logger->error("SODIX content contains errors. Url could not be found or retrieved.");
             return;
         }
@@ -116,6 +133,10 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         $logger->info("SODIX url successfully retrieved.");
         $data->node->properties->{'ccm:wwwurl'} = $playOutUrl;
         $unique = uniqid();
-        Config::set('urlEmbedding', '<iframe id="'.$unique.'" src="'. $playOutUrl . '" width="100%" height="800" border="0"></iframe>');
+        $cssClass="sodix-iframe-video";
+        if($data->node->mediatype === 'file-audio') {
+            $cssClass="sodix-iframe-audio";
+        }
+        Config::set('urlEmbedding', '<iframe id="'.$unique.'" src="'. $playOutUrl . '" class="sodix-iframe '.$cssClass.'"></iframe>');
     }
 }

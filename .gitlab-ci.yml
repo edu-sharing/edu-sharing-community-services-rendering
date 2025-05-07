@@ -22,9 +22,10 @@ stages:
 deploy:
   stage: deploy
   rules:
-    - if: $CI_COMMIT_BRANCH =~ "/maven/release/" && $CI_PIPELINE_SOURCE == "pipeline"
-    - if: $CI_COMMIT_TAG != "" && $CI_PIPELINE_SOURCE == "pipeline"
-    - if: $CI_COMMIT_BRANCH !~ "/maven/release/" || $CI_COMMIT_TAG == ""
+    - if: $CI_COMMIT_BRANCH =~ /^maven\/release\/.*/ && $CI_PIPELINE_SOURCE == "pipeline"
+    - if: $CI_COMMIT_TAG && $CI_PIPELINE_SOURCE == "pipeline"
+    - if: $CI_COMMIT_BRANCH =~ /^maven\/fixes\/.*/ && $CI_COMMIT_TAG == null
+    - if: $CI_COMMIT_BRANCH =~ /^maven\/feature\/\d+\.\d+[_-].*/ && $PROJECT_NAME && $CI_COMMIT_TAG == null && $CI_PIPELINE_SOURCE == "pipeline" #Feature branches build pipeline only in
   artifacts:
     paths:
       - target/php/composer.json

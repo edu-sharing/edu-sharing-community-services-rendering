@@ -30,6 +30,9 @@
 
   <properties>
 
+    <!-- git extension controlled props -->
+    <project.version.base>git</project.version.base>
+
     <!-- release-2 -->
     <bom.repository.version>${project.version}</bom.repository.version>
 

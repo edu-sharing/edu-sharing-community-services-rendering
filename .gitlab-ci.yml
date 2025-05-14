@@ -33,8 +33,6 @@ deploy:
     when: always
   before_script:
     - apt-get update -y
-    - apt-get install -y curl wget tar
-    - apt-get update -y
     - apt-get install -y php8.3 php8.3-curl php8.3-dom php8.3-gd php8.3-mbstring php8.3-xml php8.3-zip
     - pushd /tmp
     - wget https://get.helm.sh/helm-v3.14.2-linux-amd64.tar.gz

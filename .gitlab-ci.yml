@@ -9,7 +9,7 @@ variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
 default:
-  image: maven:3.9.9-eclipse-temurin-21-jammy
+  image: maven:3.9.9-amazoncorretto-8-debian-bookworm
   services:
     - name: "$DIND_IMAGE"
       alias: docker
@@ -32,6 +32,8 @@ deploy:
       - target/php/composer.lock
     when: always
   before_script:
+    - apt-get update -y
+    - apt-get install -y curl wget tar
     - curl -sSL https://packages.sury.org/php/README.txt | bash -x
     - apt-get update -y
     - apt-get install -y php8.3 php8.3-curl php8.3-dom php8.3-gd php8.3-mbstring php8.3-xml php8.3-zip

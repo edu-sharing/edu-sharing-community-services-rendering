@@ -335,7 +335,6 @@ class mod_url
     private function getInlineStyle(int $width) {
         return '<style>
             .videoWrapperOuter {max-width: '. $width . 'px;}
-            .videoWrapperInner {position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;}
             .videoWrapperInner > video {width:100%; max-width: 100%;background: transparent url(\''.$this->esObject->getPreviewUrl().'\') 50% 50% / cover no-repeat;}
             .videoWrapperInner > iframe {position: absolute; top: 0; left: 0; width: 100%; height: 100%;}
             </style>';

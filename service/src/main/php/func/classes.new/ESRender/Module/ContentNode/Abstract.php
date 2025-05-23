@@ -90,7 +90,10 @@ extends ESRender_Module_Base
             $url =  current(explode("/services/", Config::get('homeRepository')->prop_array['authenticationwebservice']));
             $path = '/content?';
             $params = 'repId=' . $this -> esObject -> getNode() -> ref -> repo . '&appId='.Config::get('homeConfig')->prop_array['appid'] . '&nodeId=' .
-                $this -> esObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature . '&version=' . $this -> esObject -> getObjectVersion();
+                $this -> esObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature;
+            if(!in_array('ccm:revoked', $this->esObject->getNode()->aspects)) {
+                $params .= '&version=' . $this -> esObject -> getObjectVersion();
+            }
             $url .= $path . $params;
 
             try {

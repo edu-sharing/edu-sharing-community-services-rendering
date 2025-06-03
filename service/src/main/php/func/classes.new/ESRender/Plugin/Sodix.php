@@ -137,6 +137,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         if($data->node->mediatype === 'file-audio') {
             $cssClass="sodix-iframe-audio";
         }
+        Config::set('urlEmbeddingIFrame', true);
         Config::set('urlEmbedding', '<iframe id="'.$unique.'" src="'. $playOutUrl . '" class="sodix-iframe '.$cssClass.'"></iframe>');
     }
 }

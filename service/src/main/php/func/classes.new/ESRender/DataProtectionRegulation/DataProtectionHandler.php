@@ -2,6 +2,7 @@
 
 class RemoteObjectType {
     static $TYPE_VIDEO = 'video';
+    static $TYPE_IFRAME = 'iframe';
     static $TYPE_AUDIO = 'audio';
     static $TYPE_IMAGE = 'image';
     static $TYPE_H5P = 'h5p';
@@ -24,6 +25,9 @@ class RemoteObjectType {
     public function getType() {
         if($this->detectVideo()) {
             return RemoteObjectType::$TYPE_VIDEO;
+        }
+        if($this->detectIFrame()) {
+            return RemoteObjectType::$TYPE_IFRAME;
         }
         if($this->detectAudio()) {
             return RemoteObjectType::$TYPE_AUDIO;
@@ -66,6 +70,9 @@ class RemoteObjectType {
         return false;
     }
 
+    private function detectIFrame() {
+        return Config::get('urlEmbeddingIFrame') != null;
+    }
     private function detectVideo() {
         if($this->isYoutube() || $this->isVimeo()) {
             return true;

@@ -1,6 +1,7 @@
 <?php
 global $Locale, $Translate, $MC_URL;
 $msg = array();
+$id = uniqid();
 ?>
 
 <style>
@@ -10,7 +11,7 @@ $msg = array();
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
     <div class="edusharing_rendering_content_wrapper">
-        <div id="edusharing_rendering_content" ></div>
+        <div id="edusharing_rendering_content_<?php echo $id;?>" ></div>
     </div>
     <?php echo $footer?>
 </div>
@@ -27,7 +28,7 @@ $msg = array();
         jQuery.ajax({
             url:"<?php echo $ajax_url ?>&callback=get_resource&"+authstring+"&videoFormat="+videoFormat,
             success:function(data){
-                jQuery("#edusharing_rendering_content").html(data);
+                jQuery("#edusharing_rendering_content_<?php echo $id;?>").html(data);
             }
         });
     }

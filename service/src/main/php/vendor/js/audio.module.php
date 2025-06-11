@@ -11,7 +11,7 @@ $script = <<<JS
     function get_resource(authString) {
         const url = "$ajaxUrl" + "&callback=get_resource&" + authString
         fetch(url).then(response => response.text()).then(result => {
-            const contentContainer = document.getElementById("edusharing_rendering_content")
+            const contentContainer = document.getElementById("edusharing_rendering_content_{$_GET['ID']}")
             contentContainer.innerHTML = result
             const isLockScreen = document.querySelector('[data-view="lock"]') !== null
             if (isLockScreen) {

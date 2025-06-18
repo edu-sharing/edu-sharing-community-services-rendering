@@ -11,16 +11,27 @@ $script = <<<JS
     function get_resource(authString) {
         const url = "$ajaxUrl" + "&callback=get_resource&" + authString
         fetch(url).then(response => response.text()).then(result => {
-            const contentContainer = document.getElementById("edusharing_rendering_content_{$_GET['ID']}")
+            const id = "edusharing_rendering_content_{$_GET['ID']}";
+            let contentContainer = document.getElementById(id)
+            if(!contentContainer) {
+                const allElements = document.querySelectorAll('*');
+                Array.from(allElements).filter(el => el.shadowRoot).forEach((shadow) => {
+                    const el = shadow.shadowRoot.getElementById(id);
+                    if(el) {
+                        contentContainer = el;
+                    }
+                });
+            }
+        
             contentContainer.innerHTML = result
-            const isLockScreen = document.querySelector('[data-view="lock"]') !== null
+            const isLockScreen = contentContainer.querySelector('[data-view="lock"]') !== null
             if (isLockScreen) {
                 const lockData = contentContainer.querySelector("data")
                 const decodedLockData = JSON.parse(lockData.value)
                 setTimeout(() => get_resource(decodedLockData.authString), 2000)
                 return
             }
-            const dataTags = document.querySelectorAll(".edu_audio_data")
+            let dataTags = contentContainer.querySelectorAll(".edu_audio_data")
             const timeStamps = window.location.hash.substring(1)
             for (let dataTag of dataTags) {
                 const data = dataTag.getAttribute("value")

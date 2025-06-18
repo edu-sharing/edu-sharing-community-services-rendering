@@ -329,8 +329,56 @@ img.edusharing_rendering_content_preview {
 }
 
 .embedPdfIframe {
-        width:100%;
-        height:100%;
-        min-height:calc(100vh - 150px);
-        border: none;
+    width:100%;
+    height:100%;
+    min-height:calc(100vh - 150px);
+    border: none;
+}
+
+/** embed auto scaling stuff */
+.edu-audio-video-element {
+    object-fit: cover;
+    max-width: 100%;
+    box-shadow: none;
+}
+
+.edusharing_rendering_wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper > div,
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .videoWrapperOuter,
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .edu_audio_wrapper,
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .edusharing_rendering_content_video_wrapper,
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .videoWrapperOuter .videoWrapperInner {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 0;
+}
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .videoWrapperOuter .videoWrapperInner {
+    padding-top: 0;
+}
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper > div > img,
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper img.edusharing_rendering_content_preview,
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .edu_audio_wrapper > video,
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .edusharing_rendering_content_video_wrapper > video,
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .videoWrapperOuter .videoWrapperInner > video {
+    flex-grow: 1;
+    height: 0;
+    object-fit: contain;
+    max-height: fit-content;
+}
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .edusharing_rendering_content_video_wrapper > video {
+    width: 100% !important;
+}
+.edusharing_rendering_content_picture, .mod_url_img,
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .videoWrapperOuter {
+    max-width: 100%;
 }

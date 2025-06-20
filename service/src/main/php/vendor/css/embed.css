@@ -382,3 +382,43 @@ img.edusharing_rendering_content_preview {
 .edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .videoWrapperOuter {
     max-width: 100%;
 }
+
+/* metadata overlay */
+.edusharing_metadata .edusharing_rendering_metadata_body .mdsGroup .mdsCaption {
+    font-size: 1.15em;
+    text-align: left;
+}
+.edusharing_metadata .edusharing_rendering_metadata_body .mdsGroup .mdsContent {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.edusharing_metadata .edusharing_rendering_metadata_body .mdsGroup .mdsContent ul.mdsWidgetMultivalue {
+    margin-block: 0;
+    padding-inline-start: 20px;
+    list-style-type: square;
+}
+.edusharing_metadata .edusharing_rendering_metadata_body .mdsGroup .mdsContent h3.mdsWidgetCaption {
+    width: 100%;
+    color: #888;
+    font-size: 1em;
+    text-align: left;
+    margin-block-end: 4px;
+}
+.edusharing_metadata .edusharing_rendering_metadata_body .mdsGroup .mdsContent .mdsWidgetContent {
+    text-align: left;
+}
+.edusharing_metadata .edusharing_rendering_metadata_body .mdsGroup .mdsContributorGroup {
+    margin-left: 0;
+    text-align: left;
+}
+.edusharing_metadata .edusharing_rendering_metadata_body .mdsGroup .mdsContributorTitle {
+    font-weight: bold;
+    color: #888;
+}
+.edusharing_metadata .edusharing_rendering_metadata_body .mdsGroup .licenseGroup {
+    padding: 5px 0;
+}
+.edusharing_metadata .edusharing_rendering_metadata_body .mdsGroup .licenseDescription {
+    font-size: 85%;
+    color: #888;
+}

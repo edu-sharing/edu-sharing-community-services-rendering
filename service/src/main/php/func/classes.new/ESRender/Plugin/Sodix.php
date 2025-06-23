@@ -12,11 +12,13 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
     protected String $url;
     protected String $user;
     protected String $password;
+    protected String $mimetypesPlayout;
 
     public function __construct(array $properties = [
         "url" => "",
         "user" => "",
-        "password" => ""
+        "password" => "",
+        "mimetypesPlayout" => ""
     ]) {
         parent::__construct($properties);
     }
@@ -31,12 +33,19 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             $logger->error("No SODIX ID found for");
         }
         $isPayedMedia = $esObject->getNodeProperty('ccm:editorial_state') === 'restricted_mz';
+
         $logger->info("Started communication with SODIX API for node" . ($isPayedMedia ? ' (payed media)' : ''));
         $repId = $esObject->getNodeProperty('ccm:replicationsourceid');
         $token = $this->getToken();
         if (empty($token)) {
             $logger->error("Token could not be retrieved, aborting");
             return;
+        }
+        if(!$isPayedMedia && $this->mimetypesPlayout) {
+            if(!preg_match($this->mimetypesPlayout, $esObject->getMimeType())) {
+                $logger->info('Sodix ' . $repId . ' mimetype is not supported: ' . $esObject->getMimeType() . ', allowed: ' . $this->mimetypesPlayout );
+                return;
+            }
         }
         $logger->info("Successfully retrieved token.");
         if (!$isPayedMedia) {

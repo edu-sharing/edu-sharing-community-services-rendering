@@ -1,37 +1,46 @@
 <?php
 global $Locale, $Translate, $MC_URL;
 $msg = array();
+$id = uniqid();
 ?>
 
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/embed.css">
 <style>
-    <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
-    <?php include(dirname(__FILE__) . '/../../css/material-icons.php'); ?>
+  <?php include(dirname(__FILE__) . '/../../css/material-icons.php'); ?>
 </style>
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
-    <div class="edusharing_rendering_content_wrapper">
-        <div id="edusharing_rendering_content" ></div>
-    </div>
+  <div class="edusharing_rendering_content_wrapper">
+    <div id="edusharing_rendering_content_<?php echo $id;?>" ></div>
+  </div>
     <?php echo $footer?>
 </div>
 
 <script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
 
 <script>
-    var videoFormat = 'webm';
-    var v = document.createElement('video');
-    if(v.canPlayType && v.canPlayType('video/mp4').replace(/no/, '')) {
-        videoFormat = 'mp4';
-    }
-    get_resource = function(authstring) {
-        jQuery.ajax({
-            url:"<?php echo $ajax_url ?>&callback=get_resource&"+authstring+"&videoFormat="+videoFormat,
-            success:function(data){
-                jQuery("#edusharing_rendering_content").html(data);
-            }
+  var videoFormat = 'webm';
+  var v = document.createElement('video');
+  if(v.canPlayType && v.canPlayType('video/mp4').replace(/no/, '')) {
+    videoFormat = 'mp4';
+  }
+  get_resource = function(authstring) {
+    jQuery.ajax({
+      url:"<?php echo $ajax_url ?>&callback=get_resource&"+authstring+"&videoFormat="+videoFormat,
+      success:function(data){
+        const id = "#edusharing_rendering_content_<?php echo $id;?>"
+        const allElements = document.querySelectorAll('*');
+        Array.from(allElements).filter(el => el.shadowRoot).forEach((shadow) => {
+          const el = shadow.shadowRoot.querySelector(id);
+          if(el) {
+            el.innerHTML = data;
+          }
         });
-    }
+        jQuery(id).html(data);
+      }
+    });
+  };
 
-    get_resource("<?php echo $authString ?>");
+  get_resource("<?php echo $authString ?>");
 
 </script>

@@ -19,7 +19,7 @@ $_SESSION["mod_audio"][$id]=[
             <?php if (isset($error) && $error == 'error') {
                 echo '<p class="error-msg">'.$msg['conversionError']->localize($Locale, $Translate).'</p>';
             } ?>
-            <div id="edusharing_rendering_content"></div>
+            <div id="edusharing_rendering_content_<?php echo $id; ?>"></div>
         </div>
         <?php echo $metadata; ?>
     </div>

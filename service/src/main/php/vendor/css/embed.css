@@ -375,6 +375,20 @@ img.edusharing_rendering_content_preview {
     object-fit: contain;
     max-height: fit-content;
 }
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper img.edusharing_rendering_content_preview {
+    width: auto;
+}
+.embed-h5p-wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.embed-h5p-wrapper > iframe {
+    flex-grow: 1;
+    height: 0;
+    width: 100%;
+}
 .edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .edusharing_rendering_content_video_wrapper > video {
     width: 100% !important;
 }

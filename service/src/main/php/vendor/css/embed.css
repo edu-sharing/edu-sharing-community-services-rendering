@@ -362,6 +362,9 @@ img.edusharing_rendering_content_preview {
     flex-grow: 1;
     height: 0;
 }
+.edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .videoWrapperOuter {
+    width: 100%;
+}
 .edusharing_rendering_wrapper .edusharing_rendering_content_wrapper .videoWrapperOuter .videoWrapperInner {
     padding-top: 0;
 }

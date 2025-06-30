@@ -5,15 +5,14 @@ $msg['h5p_ie_hint'] = new Phools_Message_Default('h5p_ie_hint');
 ?>
 
 <style>
-    <?php include(dirname(__FILE__) . '/../../css/embed.css'); ?>
     <?php include(dirname(__FILE__) . '/../../css/inline.php'); ?>
 </style>
-
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/embed.css">
 <script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
 
-<div>
+<div class="embed-h5p-wrapper">
     <?php if(empty($h5p_new)){ ?>
-        <iframe src="<?php echo $iframeurl?>" style="width:85%;border:none" allowfullscreen="allowfullscreen" allow="camera *;microphone *" frameBorder="0" scrolling="no"></iframe>
+        <iframe src="<?php echo $iframeurl?>" style="border:none" allowfullscreen="allowfullscreen" allow="camera *;microphone *" frameBorder="0"></iframe>
         <script src="<?php echo $MC_URL; ?>/modules/h5p/h5p-resizer.js" charset="UTF-8"></script>
     <?php }else{ ?>
         <h3><?php echo $h5p_new?></h3>

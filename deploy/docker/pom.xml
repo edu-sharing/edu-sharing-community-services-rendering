@@ -22,7 +22,7 @@
     </docker.edu_sharing.community.common.apache.exporter.name>
 
     <docker.edu_sharing.community.common.apache.exporter.tag>
-      1.0.8
+      1.0.10
     </docker.edu_sharing.community.common.apache.exporter.tag>
 
     <docker.edu_sharing.community.common.varnish.name>
@@ -46,7 +46,7 @@
     </docker.edu_sharing.community.common.redis.name>
 
     <docker.edu_sharing.community.common.redis.tag>
-      7.4.1
+      7.4.3
     </docker.edu_sharing.community.common.redis.tag>
 
     <docker.edu_sharing.community.common.redis.exporter.name>
@@ -62,7 +62,7 @@
     </docker.edu_sharing.community.common.redis-cluster.name>
 
     <docker.edu_sharing.community.common.redis-cluster.tag>
-      7.4.1
+      7.4.3
     </docker.edu_sharing.community.common.redis-cluster.tag>
 
     <docker.edu_sharing.community.common.postgresql.name>
@@ -86,7 +86,7 @@
     </docker.edu_sharing.community.common.minideb.name>
 
     <docker.edu_sharing.community.common.minideb.tag>
-      11
+      12.0.1
     </docker.edu_sharing.community.common.minideb.tag>
 
     <docker.from.apache.server>

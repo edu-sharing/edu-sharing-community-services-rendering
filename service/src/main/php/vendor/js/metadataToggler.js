@@ -8,7 +8,7 @@ if (typeof window.toggleMetadataListener === 'undefined') {
             // Case 2: Outside click -> Close all metadata divs
         } else if (event.target.closest(".edusharing_metadata") === null) {
             const allMetadataNodes = document.querySelectorAll(".edusharing_metadata")
-            allMetadataNodes.forEach(node => node.classList.toggle("edusharing_metadata_inline"))
+            allMetadataNodes.forEach(node => node.classList.add("edusharing_metadata_inline"))
         }
     }
     document.addEventListener('click', window.toggleMetadataListener)

@@ -1,17 +1,18 @@
 <?php
 header("Content-type: text/css");
-global $MC_URL;?>
+global $MC_URL;
+?>
 
 @font-face {
     font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
-    src: url('<?php echo $MC_URL?>/vendor/fonts/materialicons/MaterialIcons-Regular.eot'); /* For IE6-8 */
+    src: url('<?php echo $MC_URL?>/esrender/vendor/fonts/materialicons/MaterialIcons-Regular.eot'); /* For IE6-8 */
     src: local('Material Icons'),
     local('MaterialIcons-Regular'),
-    url('<?php echo $MC_URL?>/vendor/fonts/materialicons/MaterialIcons-Regular.woff2') format('woff2'),
-    url('<?php echo $MC_URL?>/vendor/fonts/materialicons/MaterialIcons-Regular.woff') format('woff'),
-    url('<?php echo $MC_URL?>/vendor/fonts/materialicons/MaterialIcons-Regular.ttf') format('truetype');
+    url('<?php echo $MC_URL?>/esrender/vendor/fonts/materialicons/MaterialIcons-Regular.woff2') format('woff2'),
+    url('<?php echo $MC_URL?>/esrender/vendor/fonts/materialicons/MaterialIcons-Regular.woff') format('woff'),
+    url('<?php echo $MC_URL?>/esrender/vendor/fonts/materialicons/MaterialIcons-Regular.ttf') format('truetype');
 }
 
 .edusharing_rendering_content_wrapper {

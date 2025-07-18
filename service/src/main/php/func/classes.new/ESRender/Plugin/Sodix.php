@@ -54,9 +54,14 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
                 "query" => "query getPlayoutWindow {  getPlayoutWindow(mediaId: \"$repId\", autoplay: false) {  playoutUrl } }"
             ];
         } else {
+            $role = 'LEARNER';
+            $esObject = new ESObject($data);
+            if($esObject->getUser()->primaryAffiliation === 'teacher') {
+                $role = 'TEACHER';
+            }
             $body = [
                 "operationName" => "paidMediaLinks",
-                "query" => "query paidMediaLinks {  paidMediaLinks(id: \"$repId\") {  links { href linkType } } }"
+                "query" => "query paidMediaLinks {  paidMediaLinks(id: \"$repId\", role: \"$role\") {  links { href linkType } } }"
             ];
         }
         $response = $this->getGraphQL($token, $body);

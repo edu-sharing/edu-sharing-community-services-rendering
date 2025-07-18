@@ -61,7 +61,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             }
             $body = [
                 "operationName" => "paidMediaLinks",
-                "query" => "query paidMediaLinks {  paidMediaLinks(id: \"$repId\", role: \"$role\") {  links { href linkType } } }"
+                "query" => "query paidMediaLinks {  paidMediaLinks(id: \"$repId\", role: $role) {  links { href linkType } } }"
             ];
         }
         $response = $this->getGraphQL($token, $body);

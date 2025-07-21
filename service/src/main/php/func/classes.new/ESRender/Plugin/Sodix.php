@@ -154,6 +154,8 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         if(!$isPayedMedia && preg_match('/playout\.sodix\.de/', $playOutUrl)) {
             Config::set('urlEmbeddingIFrame', true);
             Config::set('urlEmbedding', '<iframe id="'.$unique.'" src="'. $playOutUrl . '" class="sodix-iframe '.$cssClass.'"></iframe>');
+        } else if(!$isPayedMedia && isset($data->node->properties->{'cclom:location'})) {
+            $data->node->properties->{'ccm:wwwurl'} = $data->node->properties->{'cclom:location'};
         }
     }
 }

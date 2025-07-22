@@ -161,6 +161,8 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             $end = strtolower(substr($data->node->properties->{'cclom:location'}[0], -3));
             if($mime[0] === 'video' || $mime[0] === 'audio' && $end === 'mp4' || $end === 'mp3') {
                 $data->node->properties->{'ccm:wwwurl'} = $data->node->properties->{'cclom:location'};
+            } else {
+                Config::set('RemoteObjectType', 'generic');
             }
         }
     }

@@ -155,7 +155,13 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             Config::set('urlEmbeddingIFrame', true);
             Config::set('urlEmbedding', '<iframe id="'.$unique.'" src="'. $playOutUrl . '" class="sodix-iframe '.$cssClass.'"></iframe>');
         } else if(!$isPayedMedia && isset($data->node->properties->{'cclom:location'})) {
-            $data->node->properties->{'ccm:wwwurl'} = $data->node->properties->{'cclom:location'};
+            // todo: check for mp4 and mp3 ending and video/audio
+            $esObject = new ESObject($data);
+            $mime = explode('/', strtolower($esObject->getMimeType()));
+            $end = strtolower(substr($data->node->properties->{'cclom:location'}[0], -3));
+            if($mime[0] === 'video' || $mime[0] === 'audio' && $end === 'mp4' || $end === 'mp3') {
+                $data->node->properties->{'ccm:wwwurl'} = $data->node->properties->{'cclom:location'};
+            }
         }
     }
 }

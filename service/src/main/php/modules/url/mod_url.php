@@ -253,6 +253,7 @@ class mod_url
         <div>
             <iframe 
                 id="$iframeId" 
+                allowfullscreen
                 src="{$this->getUrl()}&editMode=false&launchPresentation=iframe" 
                 style="border: none; max-width: 100%; width: 100%;">
             </iframe>

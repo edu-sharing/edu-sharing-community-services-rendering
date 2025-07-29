@@ -134,6 +134,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         if ($isPayedMedia) {
             $playOutLinkEntry = array_filter($response['data']['paidMediaLinks']['links'] ?? [], fn($link) => $link['linkType'] === 'direct');
             $playOutUrl = reset($playOutLinkEntry)['href'] ?? '';
+            Config::set('RemoteObjectType', 'generic');
             $downloadLinkEntry = array_filter($response['data']['paidMediaLinks']['links'] ?? [], fn($link) => $link['linkType'] === 'download');
             if (!empty($downloadLinkEntry)) {
                 Config::set('downloadUrl', reset($downloadLinkEntry)['href'] ?? '');

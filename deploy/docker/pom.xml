@@ -70,7 +70,7 @@
     </docker.edu_sharing.community.common.postgresql.name>
 
     <docker.edu_sharing.community.common.postgresql.tag>
-      13.15.0
+      16.6.0
     </docker.edu_sharing.community.common.postgresql.tag>
 
     <docker.edu_sharing.community.common.postgresql.exporter.name>
@@ -80,6 +80,14 @@
     <docker.edu_sharing.community.common.postgresql.exporter.tag>
       0.15.0
     </docker.edu_sharing.community.common.postgresql.exporter.tag>
+
+    <docker.edu_sharing.community.common.postgresql.upgrade.name>
+      edu_sharing-community-common-docker-postgresql-upgrade
+    </docker.edu_sharing.community.common.postgresql.upgrade.name>
+
+    <docker.edu_sharing.community.common.postgresql.upgrade.tag>
+      16.0.0
+    </docker.edu_sharing.community.common.postgresql.upgrade.tag>
 
     <docker.edu_sharing.community.common.minideb.name>
       edu_sharing-community-common-docker-minideb

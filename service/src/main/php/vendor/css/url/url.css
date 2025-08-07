@@ -7,6 +7,7 @@
 .videoWrapperInner {
 	position: relative;
 	padding-top: 25px;
+	min-height: 400px;
 }
 .edusharing_audio_wrapper .edusharing_audio_bg {
 	position: absolute;

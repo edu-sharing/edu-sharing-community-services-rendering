@@ -20,6 +20,8 @@
 | `edusharing_services_rendering_postgresql.config.username`              | Set postgresql rendering service database username                | `rendering`                                                       |
 | `edusharing_services_rendering_postgresql.init.permission.image.name`   | Set postgresql rendering service init permission container name   | `${docker.edu_sharing.community.common.minideb.name}`             |
 | `edusharing_services_rendering_postgresql.init.permission.image.tag`    | Set postgresql rendering service init permission container tag    | `${docker.edu_sharing.community.common.minideb.tag}`              |
+| `edusharing_services_rendering_postgresql.init.upgrade.image.name`      | Set postgresql repository init upgrade image name                 | `${docker.edu_sharing.community.common.postgresql.upgrade.name}`  |
+| `edusharing_services_rendering_postgresql.init.upgrade.image.tag`       | Set postgresql repository init upgrade image tag                  | `${docker.edu_sharing.community.common.postgresql.upgrade.tag}`   |
 | `edusharing_services_rendering_postgresql.job.dump.image.name`          | Set postgresql rendering service dump job container name          | `${docker.edu_sharing.community.common.postgresql.name}`          |
 | `edusharing_services_rendering_postgresql.job.dump.image.tag`           | Set postgresql rendering service dump job container tag           | `${docker.edu_sharing.community.common.postgresql.tag}`           |
 | `edusharing_services_rendering_postgresql.sidecar.metrics.image.name`   | Set postgresql rendering service metrics sidecar name             | `${docker.edu_sharing.community.common.postgresql.exporter.name}` |

@@ -69,6 +69,7 @@ repository_service_port="${REPOSITORY_SERVICE_PORT:-8080}"
 rendering_rendermoodle_url="${SERVICES_RENDERING_RENDERMOODLE_URL:-}"
 rendering_rendermoodle_token="${SERVICES_RENDERING_RENDERMOODLE_TOKEN:-}"
 rendering_rendermoodle_category_id="${SERVICES_RENDERING_RENDERMOODLE_CATEGORY_ID:-1}"
+rendering_rendermoodle_submit_user_details="${SERVICES_RENDERING_RENDERMOODLE_SUBMIT_USER_DETAILS:-true}"
 rendering_rendermoodle_timeout="${SERVICES_RENDERING_RENDERMOODLE_TIMEOUT:-90}"
 
 repository_service_base="http://${repository_service_host}:${repository_service_port}/edu-sharing"
@@ -237,6 +238,7 @@ if [[ -n "${rendering_rendermoodle_url}" ]]; then
   sed -i "s|define('MOODLE_BASE_DIR', '');.*|define('MOODLE_BASE_DIR', '${rendering_rendermoodle_url}');|" "${moodleConfFile}"
   sed -i "s|define('MOODLE_TOKEN', '');.*|define('MOODLE_TOKEN', '${rendering_rendermoodle_token}');|" "${moodleConfFile}"
   sed -i "s|define('MOODLE_CATEGORY_ID', '1');.*|define('MOODLE_CATEGORY_ID', '${rendering_rendermoodle_category_id}');|" "${moodleConfFile}"
+  sed -i "s|define('MOODLE_SUBMIT_USER_DETAILS', true);.*|define('MOODLE_SUBMIT_USER_DETAILS', ${rendering_rendermoodle_submit_user_details});|" "${moodleConfFile}"
 
   sed -i "s|define('MOODLE_TIMEOUT', .*|define('MOODLE_TIMEOUT', ${rendering_rendermoodle_timeout});|" "${moodleConfFile}"
   grep -q "define('MOODLE_TIMEOUT'" "${moodleConfFile}" || echo "define('MOODLE_TIMEOUT', ${rendering_rendermoodle_timeout});" >> "${moodleConfFile}"
@@ -247,6 +249,7 @@ if [[ -n "${rendering_rendermoodle_url}" ]]; then
   sed -i "s|define('MOODLE_BASE_DIR', '');.*|define('MOODLE_BASE_DIR', '${rendering_rendermoodle_url}');|" "${scormConfFile}"
   sed -i "s|define('MOODLE_TOKEN', '');.*|define('MOODLE_TOKEN', '${rendering_rendermoodle_token}');|" "${scormConfFile}"
   sed -i "s|define('MOODLE_CATEGORY_ID', '1');.*|define('MOODLE_CATEGORY_ID', '${rendering_rendermoodle_category_id}');|" "${scormConfFile}"
+  sed -i "s|define('MOODLE_SUBMIT_USER_DETAILS', true);.*|define('MOODLE_SUBMIT_USER_DETAILS', ${rendering_rendermoodle_submit_user_details});|" "${scormConfFile}"
 
   sed -i "s|define('MOODLE_TIMEOUT', .*|define('MOODLE_TIMEOUT', ${rendering_rendermoodle_timeout});|" "${scormConfFile}"
   grep -q "define('MOODLE_TIMEOUT'" "${scormConfFile}" || echo "define('MOODLE_TIMEOUT', ${rendering_rendermoodle_timeout});" >> "${scormConfFile}"

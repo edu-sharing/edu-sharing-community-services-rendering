@@ -20,9 +20,12 @@ class RemoteObjectType {
             $this->isYoutubeRemoteObject();
     }
     public function isVimeo() {
-            return strpos($this->url, 'vimeo.com') !== FALSE;
+        return strpos($this->url, 'vimeo.com') !== FALSE;
     }
     public function getType() {
+        if(Config::get('RemoteObjectType') != null) {
+            return Config::get('RemoteObjectType');
+        }
         if($this->detectVideo()) {
             return RemoteObjectType::$TYPE_VIDEO;
         }

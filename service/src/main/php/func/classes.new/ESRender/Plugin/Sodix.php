@@ -13,12 +13,14 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
     protected String $user;
     protected String $password;
     protected String $mimetypesPlayout;
+    protected String $allowExternalFrameSrc;
 
     public function __construct(array $properties = [
         "url" => "",
         "user" => "",
         "password" => "",
-        "mimetypesPlayout" => ""
+        "mimetypesPlayout" => "",
+        "allowExternalFrameSrc" => false
     ]) {
         parent::__construct($properties);
     }
@@ -152,7 +154,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         if($data->node->mediatype === 'file-audio') {
             $cssClass="sodix-iframe-audio";
         }
-        if(!$isPayedMedia && preg_match('/playout\.sodix\.de/', $playOutUrl)) {
+        if(!$isPayedMedia && (preg_match('/playout\.sodix\.de/', $playOutUrl) || $this->allowExternalFrameSrc == true)) {
             Config::set('urlEmbeddingIFrame', true);
             Config::set('urlEmbedding', '<iframe id="'.$unique.'" src="'. $playOutUrl . '" class="sodix-iframe '.$cssClass.'"></iframe>');
         } else if(!$isPayedMedia && isset($data->node->properties->{'cclom:location'})) {

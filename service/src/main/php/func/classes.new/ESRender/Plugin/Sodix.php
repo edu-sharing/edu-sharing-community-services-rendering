@@ -54,9 +54,11 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
                 "query" => "query getPlayoutWindow {  getPlayoutWindow(mediaId: \"$repId\", autoplay: false) {  playoutUrl } }"
             ];
         } else {
+            // @TODO: Rename to LEARNER
             $role = 'S';
             $esObject = new ESObject($data);
             if($esObject->getUser()->primaryAffiliation === 'teacher') {
+                // @TODO: Rename to TEACHER
                 $role = 'L';
             }
             $body = [
@@ -152,10 +154,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         if($data->node->mediatype === 'file-audio') {
             $cssClass="sodix-iframe-audio";
         }
-        if(!$isPayedMedia && preg_match('/playout\.sodix\.de/', $playOutUrl)) {
-            Config::set('urlEmbeddingIFrame', true);
-            Config::set('urlEmbedding', '<iframe id="'.$unique.'" src="'. $playOutUrl . '" class="sodix-iframe '.$cssClass.'"></iframe>');
-        } else if(!$isPayedMedia) {
+        if(!$isPayedMedia) {
             // try to fetch temporary download url
             if(isset($data->node->properties->{'ccm:external_download_allowed'}) && $data->node->properties->{'ccm:external_download_allowed'}[0] === 'true') {
                 try {
@@ -165,24 +164,32 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
                     ];
                     $response = $this->getGraphQL($token, $body);
                     if (!empty($response)) {
-                        $url = $response['data']['media']['downloadUrl'];
+                        $url = $response['data']['metadataByIdentifier']['media']['downloadUrl'];
                         if($url) {
                             Config::set('downloadUrl', $url);
+                            $logger->info('Sodix ' . $repId . ' download url response: ' . $url);
+                        } else {
+                            $logger->info('Sodix ' . $repId . ' no download url response');
                         }
                     }
                 }catch(Exception $e) {
                     $logger->warn('Can not fetch downloadUrl', $e);
                 }
             }
-            if(isset($data->node->properties->{'cclom:location'})) {
-                // todo: check for mp4 and mp3 ending and video/audio
-                $esObject = new ESObject($data);
-                $mime = explode('/', strtolower($esObject->getMimeType()));
-                $end = strtolower(substr($data->node->properties->{'cclom:location'}[0], -3));
-                if ($mime[0] === 'video' || $mime[0] === 'audio' && $end === 'mp4' || $end === 'mp3') {
-                    $data->node->properties->{'ccm:wwwurl'} = $data->node->properties->{'cclom:location'};
-                } else {
-                    Config::set('RemoteObjectType', 'generic');
+            if(preg_match('/playout\.sodix\.de/', $playOutUrl)) {
+                Config::set('urlEmbeddingIFrame', true);
+                Config::set('urlEmbedding', '<iframe id="'.$unique.'" src="'. $playOutUrl . '" class="sodix-iframe '.$cssClass.'"></iframe>');
+            } else {
+                if(isset($data->node->properties->{'cclom:location'})) {
+                    // todo: check for mp4 and mp3 ending and video/audio
+                    $esObject = new ESObject($data);
+                    $mime = explode('/', strtolower($esObject->getMimeType()));
+                    $end = strtolower(substr($data->node->properties->{'cclom:location'}[0], -3));
+                    if ($mime[0] === 'video' || $mime[0] === 'audio' && $end === 'mp4' || $end === 'mp3') {
+                        $data->node->properties->{'ccm:wwwurl'} = $data->node->properties->{'cclom:location'};
+                    } else {
+                        Config::set('RemoteObjectType', 'generic');
+                    }
                 }
             }
         }

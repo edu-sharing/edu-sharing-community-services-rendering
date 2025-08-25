@@ -118,20 +118,28 @@ extends ESRender_Module_ContentNode_Abstract {
 			return false;
 		}
 
-        $user_givenname = !empty($this -> esObject -> getData() -> user->profile->firstName) ? $this -> esObject -> getData() -> user->profile->firstName : 'Moodle';
-        $user_surname = !empty($this -> esObject -> getData() -> user->profile->lastName) ? $this -> esObject -> getData() -> user->profile->lastName : 'Nutzer';
-        $user_email = !empty($this -> esObject -> getData() -> user->profile->email) ? $this -> esObject -> getData() -> user->profile->email : $this->esObject->getData()->user->authorityName;
+        $submitDetails = defined('MOODLE_USER_DETAILS_SUBMITTED') && MOODLE_USER_DETAILS_SUBMITTED == true;
+
+        if ($submitDetails) {
+            $user_givenname = !empty($this -> esObject -> getData() -> user->profile->firstName) ? $this -> esObject -> getData() -> user->profile->firstName : 'Moodle';
+            $user_surname = !empty($this -> esObject -> getData() -> user->profile->lastName) ? $this -> esObject -> getData() -> user->profile->lastName : 'Nutzer';
+            $user_email = !empty($this -> esObject -> getData() -> user->profile->email) ? $this -> esObject -> getData() -> user->profile->email : $this->esObject->getData()->user->authorityName;
+        } else {
+            $user_surname = uniqid();
+            $user_givenname = uniqid();
+            $user_email = uniqid() . '@' . uniqid() . '.edu';
+        }
 
 		$url = MOODLE_BASE_DIR . "/webservice/rest/server.php?wsfunction=local_edusharing_handleuser&moodlewsrestformat=json&wstoken=" . MOODLE_TOKEN;
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
-		$params = array('user_name' => htmlentities($this -> esObject -> getData() -> user->authorityName),
-                        'user_givenname' => htmlentities($user_givenname),
-                        'user_surname' => htmlentities($user_surname),
-                        'user_email' => htmlentities($user_email),
-                        'courseid' => $this->getCourseId(),
-                        'role' => 'student'); // or role 'editingteacher'
+		$params = ['user_name'      => htmlentities($this -> esObject -> getData() -> user->authorityName),
+                   'user_givenname' => htmlentities($user_givenname),
+                   'user_surname'   => htmlentities($user_surname),
+                   'user_email'     => htmlentities($user_email),
+                   'courseid'       => $this->getCourseId(),
+                   'role'           => 'student']; // or role 'editingteacher'
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);

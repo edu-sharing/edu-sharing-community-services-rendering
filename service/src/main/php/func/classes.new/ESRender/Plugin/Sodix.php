@@ -54,12 +54,10 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
                 "query" => "query getPlayoutWindow {  getPlayoutWindow(mediaId: \"$repId\", autoplay: false) {  playoutUrl } }"
             ];
         } else {
-            // @TODO: Rename to LEARNER
-            $role = 'S';
+            $role = 'LEARNER';
             $esObject = new ESObject($data);
             if($esObject->getUser()->primaryAffiliation === 'teacher') {
-                // @TODO: Rename to TEACHER
-                $role = 'L';
+                $role = 'TEACHER';
             }
             $body = [
                 "operationName" => "paidMediaLinks",

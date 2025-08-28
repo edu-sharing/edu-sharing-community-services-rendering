@@ -188,6 +188,8 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
                     } else {
                         Config::set('RemoteObjectType', 'generic');
                     }
+                } else {
+                    Config::set('RemoteObjectType', 'generic');
                 }
             }
         }

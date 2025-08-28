@@ -2,7 +2,7 @@
 
 define('MOODLE_BASE_DIR', '');
 define('MOODLE_TOKEN', '');
-define('MOODLE_SUBMIT_USER_DETAILS', true)
+define('MOODLE_SUBMIT_USER_DETAILS', true);
 
 // fallback to 1 as this was the default before this constant exists
 define('MOODLE_CATEGORY_ID', '1');

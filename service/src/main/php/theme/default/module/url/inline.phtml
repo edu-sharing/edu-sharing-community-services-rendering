@@ -4,19 +4,4 @@
 <link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/metadata.css">
 <link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/url/url.css">
 
-<?php
-    $iframe = <<<HTML
-        <div>
-            <iframe 
-                allowfullscreen
-                src="$embedding&editMode=false&launchPresentation=iframe" 
-                style="border: none; max-width: 100%; width: 100%;" 
-                height="500px"
-            >
-            </iframe>
-        </div>
-        HTML;
-
-    echo $iframe;
-?>
-
+<?php echo $embedding ?>

@@ -127,7 +127,7 @@ class mod_url
                 mc_Request::fetch('width', 'INT', 600)
             ) ?? ($embeddingFromConfig . $footer);
         }else if ($this -> esObject -> isLti13ToolObject()){
-            $embedding = $this->getLti13ToolEmbedding();
+            $embedding = $this->getLti13ToolEmbedding(true);
         }else if ($type === RemoteObjectType::$TYPE_VIDEO) {
             $embedding = $this -> getVideoEmbedding(mc_Request::fetch('width', 'INT', 600), $footer);
         }else if ($type === RemoteObjectType::$TYPE_VIDEO) {
@@ -233,7 +233,7 @@ class mod_url
             ' . $footer . '</div>';
     }
 
-    protected function getLti13ToolEmbedding($footer = '')
+    protected function getLti13ToolEmbedding(bool $inline = false)
     {
         $iframeId = 'ltiframe_' . uniqid(); // Generate a unique ID for the iframe
 
@@ -257,9 +257,21 @@ class mod_url
                 src="{$this->getUrl()}&editMode=false&launchPresentation=iframe" 
                 style="border: none; max-width: 100%; width: 100%;">
             </iframe>
-            $footer
         </div>
         HTML;
+
+        if ($inline) {
+            return <<<HTML
+            <div>
+                <iframe 
+                    id="$iframeId" 
+                    allowfullscreen
+                    src="{$this->getUrl()}&editMode=false&launchPresentation=iframe" 
+                    style="border: none; max-width: 100%; width: 100%; height: 500px;">
+                </iframe>
+            </div>
+            HTML;
+        }
 
         return $script . $iframe;
     }

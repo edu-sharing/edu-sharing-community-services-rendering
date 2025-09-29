@@ -41,10 +41,16 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             $logger->error("Token could not be retrieved, aborting");
             return;
         }
-        if(!$isPayedMedia && $this->mimetypesPlayout) {
-            if(!preg_match($this->mimetypesPlayout, $esObject->getMimeType())) {
-                $logger->info('Sodix ' . $repId . ' mimetype is not supported: ' . $esObject->getMimeType() . ', allowed: ' . $this->mimetypesPlayout );
-                return;
+        if(!$isPayedMedia) {
+            $downloadUrl = $this->fetchPublicDownloadUrl($data, $repId, $token);
+            if($downloadUrl) {
+                Config::set('downloadUrl', $downloadUrl);
+            }
+            if($this->mimetypesPlayout) {
+                if(!preg_match($this->mimetypesPlayout, $esObject->getMimeType())) {
+                    $logger->info('Sodix ' . $repId . ' mimetype is not supported: ' . $esObject->getMimeType() . ', allowed: ' . $this->mimetypesPlayout );
+                    return;
+                }
             }
         }
         $logger->info("Successfully retrieved token.");
@@ -70,7 +76,30 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         }
         $this->handlePlayOut($token, $repId, $response, $data, $isPayedMedia);
     }
-
+    private function fetchPublicDownloadUrl(&$data, $repId, $token): ?String {
+        // try to fetch temporary download url
+        if(isset($data->node->properties->{'ccm:external_download_allowed'}) && $data->node->properties->{'ccm:external_download_allowed'}[0] === 'true') {
+            try {
+                $body = [
+                    "operationName" => "metadataByIdentifier",
+                    "query" => "query metadataByIdentifier {  metadataByIdentifier(identifier: \"$repId\") {  media { downloadUrl } } }"
+                ];
+                $response = $this->getGraphQL($token, $body);
+                if (!empty($response)) {
+                    $url = $response['data']['metadataByIdentifier']['media']['downloadUrl'];
+                    if($url) {
+                        $this->getLogger()->info('Sodix ' . $repId . ' download url response: ' . $url);
+                    } else {
+                        $this->getLogger()->info('Sodix ' . $repId . ' no download url response');
+                    }
+                    return $url;
+                }
+            }catch(Exception $e) {
+                $this->getLogger()->warn('Can not fetch downloadUrl', $e);
+            }
+        }
+        return null;
+    }
     private function getToken(): String {
         $logger = $this->getLogger();
         $uri = substr($this->url, 0, -8) . '/auth/login';
@@ -153,27 +182,6 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             $cssClass="sodix-iframe-audio";
         }
         if(!$isPayedMedia) {
-            // try to fetch temporary download url
-            if(isset($data->node->properties->{'ccm:external_download_allowed'}) && $data->node->properties->{'ccm:external_download_allowed'}[0] === 'true') {
-                try {
-                    $body = [
-                        "operationName" => "metadataByIdentifier",
-                        "query" => "query metadataByIdentifier {  metadataByIdentifier(identifier: \"$repId\") {  media { downloadUrl } } }"
-                    ];
-                    $response = $this->getGraphQL($token, $body);
-                    if (!empty($response)) {
-                        $url = $response['data']['metadataByIdentifier']['media']['downloadUrl'];
-                        if($url) {
-                            Config::set('downloadUrl', $url);
-                            $logger->info('Sodix ' . $repId . ' download url response: ' . $url);
-                        } else {
-                            $logger->info('Sodix ' . $repId . ' no download url response');
-                        }
-                    }
-                }catch(Exception $e) {
-                    $logger->warn('Can not fetch downloadUrl', $e);
-                }
-            }
             if(preg_match('/playout\.sodix\.de/', $playOutUrl)) {
                 Config::set('urlEmbeddingIFrame', true);
                 Config::set('urlEmbedding', '<iframe id="'.$unique.'" src="'. $playOutUrl . '" class="sodix-iframe '.$cssClass.'"></iframe>');

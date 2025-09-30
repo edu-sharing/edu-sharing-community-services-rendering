@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7;
 
 class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
 {
+    const Timeout = 5;
     protected String $url;
     protected String $user;
     protected String $password;
@@ -41,6 +42,10 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         $token = $this->getToken();
         if (empty($token)) {
             $logger->error("Token could not be retrieved, aborting");
+            $this->displayError(
+                'sodix_fetch_error',
+                [':identifier' => $repId, ':error' => 'Error while trying to reach FWU Sodix API']
+            );
             return;
         }
         if(!$isPayedMedia && $this->mimetypesPlayout) {
@@ -79,9 +84,13 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         $client = GuzzleHelper::getClient();
         try {
             $result = $client->post($uri, [
+                'timeout'  => self::Timeout,
                 GuzzleHttp\RequestOptions::JSON =>["login" => $this->user, "password" => $this->password],
                 'http_errors' => true
             ]);
+        } catch (GuzzleHttp\Exception\ConnectException $exception) {
+            $logger->error($exception->getMessage());
+            return "";
         } catch (GuzzleHttp\Exception\ClientException | GuzzleHttp\Exception\TransferException $exception) {
             $logger->error(GuzzleHttp\Psr7\Message::toString($exception->getResponse()));
             return "";
@@ -95,6 +104,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         $client = GuzzleHelper::getClient();
         try {
             $result = $client->post($this->url, [
+                'timeout'  => self::Timeout,
                 'headers' => [
                     'Authorization' => 'Bearer ' . $token,
                     'Content-Type' => 'application/json'
@@ -102,7 +112,10 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
                 GuzzleHttp\RequestOptions::JSON => $body,
                 'http_errors' => true
             ]);
-        } catch (GuzzleHttp\Exception\ClientException | GuzzleHttp\Exception\TransferException $exception) {
+        } catch (GuzzleHttp\Exception\ConnectException $exception) {
+            $logger->error($exception->getMessage());
+            return [];
+        }  catch (GuzzleHttp\Exception\ClientException | GuzzleHttp\Exception\TransferException $exception) {
             $logger->error(GuzzleHttp\Psr7\Message::toString($exception->getResponse()));
             return [];
         }

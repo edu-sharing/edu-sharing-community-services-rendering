@@ -13,12 +13,14 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
     protected String $user;
     protected String $password;
     protected String $mimetypesPlayout;
+    protected String $sodixRegion;
 
     public function __construct(array $properties = [
         "url" => "",
         "user" => "",
         "password" => "",
-        "mimetypesPlayout" => ""
+        "mimetypesPlayout" => "",
+        "sodixRegion" => ""
     ]) {
         parent::__construct($properties);
     }
@@ -67,7 +69,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             }
             $body = [
                 "operationName" => "paidMediaLinks",
-                "query" => "query paidMediaLinks {  paidMediaLinks(id: \"$repId\", role: $role) {  links { href linkType } } }"
+                "query" => "query paidMediaLinks {  paidMediaLinks(id: \"$repId\", role: $role, region: \"$this->sodixRegion\") {  links { href linkType } } }"
             ];
         }
         $response = $this->getGraphQL($token, $body);

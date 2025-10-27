@@ -3,4 +3,4 @@
 define('MOODLE_BASE_DIR', '');
 define('MOODLE_TOKEN', '');
 define('MOODLE_CATEGORY_ID', '1');
-define('MOODLE_SUBMIT_USER_DETAILS', true)
+define('MOODLE_SUBMIT_USER_DETAILS', true);

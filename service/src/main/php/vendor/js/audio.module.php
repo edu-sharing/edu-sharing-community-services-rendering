@@ -32,6 +32,10 @@ $script = <<<JS
                 return
             }
             let dataTags = contentContainer.querySelectorAll(".edu_audio_data")
+            const video = contentContainer.querySelector(".edu_audio_wrapper > video");
+            if(video) {
+                video.oncontextmenu = () => { return false; }
+            }
             const timeStamps = window.location.hash.substring(1)
             for (let dataTag of dataTags) {
                 const data = dataTag.getAttribute("value")

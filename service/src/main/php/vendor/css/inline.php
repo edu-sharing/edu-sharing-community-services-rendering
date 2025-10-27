@@ -1,3 +1,4 @@
+
 <?php
 header("Content-type: text/css");
 global $MC_URL;
@@ -428,6 +429,11 @@ video, audio {
 .edu_audio_wrapper{
     display: inline-block;
     min-width: 70%;
+}
+.edu_audio_wrapper > video {
+  object-fit: cover;
+  width:100%;
+  box-shadow: none;
 }
 
 .dataProtectionRegulations {

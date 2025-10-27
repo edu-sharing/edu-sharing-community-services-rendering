@@ -15,12 +15,14 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
     protected String $password;
     protected String $mimetypesPlayout;
     protected String $allowExternalFrameSrc;
+    protected String $sodixRegion;
 
     public function __construct(array $properties = [
         "url" => "",
         "user" => "",
         "password" => "",
         "mimetypesPlayout" => "",
+        "sodixRegion" => "",
         "allowExternalFrameSrc" => false
     ]) {
         parent::__construct($properties);
@@ -48,10 +50,16 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             );
             return;
         }
-        if(!$isPayedMedia && $this->mimetypesPlayout) {
-            if(!preg_match($this->mimetypesPlayout, $esObject->getMimeType())) {
-                $logger->info('Sodix ' . $repId . ' mimetype is not supported: ' . $esObject->getMimeType() . ', allowed: ' . $this->mimetypesPlayout );
-                return;
+        if(!$isPayedMedia) {
+            $downloadUrl = $this->fetchPublicDownloadUrl($data, $repId, $token);
+            if($downloadUrl) {
+                Config::set('downloadUrl', $downloadUrl);
+            }
+            if($this->mimetypesPlayout) {
+                if(!preg_match($this->mimetypesPlayout, $esObject->getMimeType())) {
+                    $logger->info('Sodix ' . $repId . ' mimetype is not supported: ' . $esObject->getMimeType() . ', allowed: ' . $this->mimetypesPlayout );
+                    return;
+                }
             }
         }
         $logger->info("Successfully retrieved token.");
@@ -68,7 +76,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             }
             $body = [
                 "operationName" => "paidMediaLinks",
-                "query" => "query paidMediaLinks {  paidMediaLinks(id: \"$repId\", role: $role) {  links { href linkType } } }"
+                "query" => "query paidMediaLinks {  paidMediaLinks(id: \"$repId\", role: $role, region: \"$this->sodixRegion\") {  links { href linkType } } }"
             ];
         }
         $response = $this->getGraphQL($token, $body);
@@ -77,7 +85,30 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         }
         $this->handlePlayOut($token, $repId, $response, $data, $isPayedMedia);
     }
-
+    private function fetchPublicDownloadUrl(&$data, $repId, $token): ?String {
+        // try to fetch temporary download url
+        if(isset($data->node->properties->{'ccm:external_download_allowed'}) && $data->node->properties->{'ccm:external_download_allowed'}[0] === 'true') {
+            try {
+                $body = [
+                    "operationName" => "metadataByIdentifier",
+                    "query" => "query metadataByIdentifier {  metadataByIdentifier(identifier: \"$repId\") {  media { downloadUrl } } }"
+                ];
+                $response = $this->getGraphQL($token, $body);
+                if (!empty($response)) {
+                    $url = $response['data']['metadataByIdentifier']['media']['downloadUrl'];
+                    if($url) {
+                        $this->getLogger()->info('Sodix ' . $repId . ' download url response: ' . $url);
+                    } else {
+                        $this->getLogger()->info('Sodix ' . $repId . ' no download url response');
+                    }
+                    return $url;
+                }
+            }catch(Exception $e) {
+                $this->getLogger()->warn('Can not fetch downloadUrl', $e);
+            }
+        }
+        return null;
+    }
     private function getToken(): String {
         $logger = $this->getLogger();
         $uri = substr($this->url, 0, -8) . '/auth/login';
@@ -203,6 +234,8 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
                     } else {
                         Config::set('RemoteObjectType', 'generic');
                     }
+                } else {
+                    Config::set('RemoteObjectType', 'generic');
                 }
             }
         }

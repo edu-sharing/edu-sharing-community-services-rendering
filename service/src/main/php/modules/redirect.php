@@ -99,18 +99,22 @@ function sendFile($src_file) {
 if($_REQUEST['ID'] === 'h5p-resizer.js' && $_REQUEST['MODULE'] === 'h5p') {
     sendFile($MC_DOCROOT . '/modules/h5p/' . $_REQUEST['ID']);
     exit();
-} else if(strpos($_REQUEST['ID'], 'cache/h5p/libraries') !== false && strpos($_REQUEST['ID'], '..') === false) {
+} else if(str_starts_with($_REQUEST['ID'], 'h5p/libraries') &&
+    !str_contains($_REQUEST['ID'], '..') &&
+    !str_contains($_REQUEST['ID'], './')) {
 
     $_SESSION['esrender']['check'] = $_REQUEST['ID'];
 
     $rs_name = substr($MC_URL, strrpos($MC_URL, "/") + 1);
-    $src_file = str_replace('/'.$rs_name.'/modules/cache', $CC_RENDER_PATH, $_REQUEST['ID']);
-
-    sendFile($src_file);
+    $src_file = realpath($CC_RENDER_PATH . '/' . $_REQUEST['ID']);
+    if(str_starts_with($src_file, '/var/cache/esrender/data/h5p/libraries/')) {
+        sendFile($src_file);
+    } else {
+        error_log('wrong h5p library path: ' . $src_file . ' / ' . $_REQUEST['ID']);
+        header('HTTP/1.0 500 Internal Server Error');
+    }
     exit();
-
 }
-
 // start session to read object-data
 if (!empty($_GET[$ESRENDER_SESSION_NAME])) {
     $l_sid = $_GET[$ESRENDER_SESSION_NAME];
@@ -176,8 +180,8 @@ if(!$skipToken) {
         $token = $_SESSION['esrender']['token'];
         setcookie('ESSEC', $token, time() + 300);
         $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
-    } else {
-        cc_rd_debug('Invalid token');
+//    } else {
+//        cc_rd_debug('Invalid token');
         header('HTTP/1.0 401 Unauthorized');
     }
 }

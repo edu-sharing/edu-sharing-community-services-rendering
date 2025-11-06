@@ -180,8 +180,8 @@ if(!$skipToken) {
         $token = $_SESSION['esrender']['token'];
         setcookie('ESSEC', $token, time() + 300);
         $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
-//    } else {
-//        cc_rd_debug('Invalid token');
+    } else {
+        cc_rd_debug('Invalid token');
         header('HTTP/1.0 401 Unauthorized');
     }
 }

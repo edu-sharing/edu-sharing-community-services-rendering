@@ -13,6 +13,11 @@ if (!$allowPrintAndDownload) {
 ?>
 
 <link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/embed.css">
+
+<style>
+    <?php include(dirname(__FILE__) . '/../../../css/material-icons.php'); ?>
+</style>
+
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
     <div class="edusharing_rendering_content_wrapper" >
         <iframe id="docFrame" class="embedPdfIframe" src="<?php echo $MC_URL; ?>/vendor/js/pdfJS/web/index.php?file=<?php echo $content; ?>&pagemode=none">

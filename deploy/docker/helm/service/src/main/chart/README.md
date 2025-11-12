@@ -5,6 +5,7 @@
 | Name                                        | Description                                    | Value                                  |
 | ------------------------------------------- | ---------------------------------------------- | -------------------------------------- |
 | `global.annotations`                        | Set global annotations                         | `{}`                                   |
+| `global.backup.velero.enabled`              | Enable velero backup                           | `false`                                |
 | `global.cluster.cert.annotations`           | Set global cluster cert annotations            | `{}`                                   |
 | `global.cluster.ingress.ingressClassName`   | Set global cluster ingressClass name           | `nginx`                                |
 | `global.cluster.istio.enabled`              | Enable Istio Service mesh                      | `false`                                |

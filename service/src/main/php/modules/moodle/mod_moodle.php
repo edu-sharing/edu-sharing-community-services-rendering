@@ -118,7 +118,7 @@ extends ESRender_Module_ContentNode_Abstract {
 			return false;
 		}
 
-        $submitDetails = defined('MOODLE_USER_DETAILS_SUBMITTED') && MOODLE_USER_DETAILS_SUBMITTED == true;
+        $submitDetails = defined('MOODLE_SUBMIT_USER_DETAILS') && MOODLE_SUBMIT_USER_DETAILS == true;
 
         if ($submitDetails) {
             $user_givenname = !empty($this -> esObject -> getData() -> user->profile->firstName) ? $this -> esObject -> getData() -> user->profile->firstName : 'Moodle';

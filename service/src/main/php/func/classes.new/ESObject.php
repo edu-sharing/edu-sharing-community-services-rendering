@@ -406,8 +406,8 @@ class ESObject {
             return true;
         }
 
-        if($this->getNode()->aspects && in_array('ccm:revoked', $this->getNode()->aspects)) {
-            Logger::getLogger('de.metaventis.esrender.index') -> info('revoked node, using module "doc".');
+        if($this->getNode()->aspects && $this->getNode()->size === '0' && in_array('ccm:revoked', $this->getNode()->aspects)) {
+            Logger::getLogger('de.metaventis.esrender.index') -> info('revoked, published node, using module "doc".');
             $this -> module -> setName('doc');
             $this -> module -> loadModuleData();
             $this -> moduleId = $this -> module -> getModuleId();

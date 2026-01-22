@@ -314,6 +314,8 @@ config:
     token: ""
     ## @param config.rendermoodle.categoryId Set categoryId for moodle renderer
     categoryId: 1
+    ## @param config.rendermoodle.submitUserDetails Set submitUserDetails for moodle renderer
+    submitUserDetails: true
 
   h5p:
     ## @param config.h5p.disableCacheDelay Set delay in seconds that the h5p will be re-generated

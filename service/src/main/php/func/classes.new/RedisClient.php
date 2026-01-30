@@ -58,6 +58,7 @@ final class RedisClient
         }
         return new \Predis\Client([
             'scheme' => 'tcp',
+            'cluster' => 'redis',
             'host' => $host,
             'port' => $port,
             'persistent' => true,

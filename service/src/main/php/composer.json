@@ -29,7 +29,8 @@
     "phpoffice/phppresentation": "^0.9.0",
     "phpoffice/phpspreadsheet": "^1.18",
     "phpoffice/phpword": "^0.18.2",
-    "mathjax/mathjax": "^2.7.5"
+    "mathjax/mathjax": "^2.7.5",
+    "predis/predis": "^v3.3.0"
   },
   "require-dev": {
     "vimeo/psalm": "~4.27.0"

@@ -320,8 +320,14 @@ class mod_url
                 </div>';
         }
         else if ($type->isVimeo()) {
-            $urlArr = explode('/', $this -> getUrl());
-            $vidId = end($urlArr);
+            $path = parse_url($this -> getUrl(), PHP_URL_PATH);
+            $segments = explode('/', trim($path, '/'));
+            if (count($segments) < 2) {
+                $vidId = $segments[0];
+            } else {
+                $lastTwo = array_slice($segments, -2);
+                $vidId = implode('?h=', $lastTwo);
+            }
             $this->dataProtection = $dataProtectionRegulationHandler->getApplyDataProtectionRegulationsDialog($this->esObject, $objId, 'Vimeo', 'https://help.vimeo.com/hc/de/sections/203915088-Datenschutz', 'player.vimeo.com', 'VIMEO');
             return $this->getInlineStyle($width) . '<div class="videoWrapperOuter">
                     <div class="videoWrapperInner">

@@ -327,8 +327,14 @@ class mod_url
 
             $query = parse_url($decoded, PHP_URL_QUERY);
             parse_str($query, $params);
-            $h = $params['h'] ?? null;
-
+            // https://player.vimeo.com/video/<vidId>?h=<token>
+            if($segments[0] === 'video') {
+                $h = $params['h'] ?? null;
+                // https://vimeo.com/video/<vidId>/<token>
+            } else if(count($segments) > 1) {
+                $vidId = $segments[0];
+                $h = $segments[1];
+            }
             if ($h !== null) {
                 $vidId .= '?h=' . $h;
             }

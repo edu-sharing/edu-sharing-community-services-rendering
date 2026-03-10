@@ -55,11 +55,13 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             return;
         }
         if(!$isPayedMedia) {
+            // for new rs: handled in method /render/playout (downloadUrl)
             $downloadUrl = $this->fetchPublicDownloadUrl($data, $repId, $token);
             if($downloadUrl) {
                 Config::set('downloadUrl', $downloadUrl);
             }
             if($this->mimetypesPlayout) {
+               // for new rs: custom config for helm charts
                 if(!preg_match($this->mimetypesPlayout, $esObject->getMimeType())) {
                     $logger->info('Sodix ' . $repId . ' mimetype is not supported: ' . $esObject->getMimeType() . ', allowed: ' . $this->mimetypesPlayout );
                     return;
@@ -68,6 +70,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         }
         $logger->info("Successfully retrieved token.");
         if (!$isPayedMedia) {
+            // for new rs: handled in method /render/playout (see above, includes playoutUrl + downloadUrl)
             $body = [
                 "operationName" => "getPlayoutWindow",
                 "query" => "query getPlayoutWindow {  getPlayoutWindow(mediaId: \"$repId\", autoplay: false) {  playoutUrl } }"
@@ -78,6 +81,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             if($esObject->getUser()->primaryAffiliation === 'teacher') {
                 $role = 'TEACHER';
             }
+            // for new rs: handled in method /render/paidmedia (role must be sent; region is present in the sodix importer itself and not required)
             $body = [
                 "operationName" => "paidMediaLinks",
                 "query" => "query paidMediaLinks {  paidMediaLinks(id: \"$repId\", role: $role, region: \"$this->sodixRegion\") {  links { href linkType } } }"

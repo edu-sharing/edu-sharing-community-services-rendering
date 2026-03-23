@@ -31,7 +31,7 @@
     <project.version.base>git</project.version.base>
 
     <!-- release-2 -->
-    <bom.repository.version>11.0.0-RC3</bom.repository.version>
+    <bom.repository.version>11.0.0-RC4</bom.repository.version>
 
     <docker.repository>community</docker.repository>
     <docker.prefix>edu_sharing-community-services-rendering</docker.prefix>

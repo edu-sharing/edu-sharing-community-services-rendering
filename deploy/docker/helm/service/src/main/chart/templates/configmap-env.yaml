@@ -26,7 +26,7 @@ data:
   {{- end }}
   SERVICES_RENDERING_SERVICE_HOST_EXTERNAL: {{ .Values.ingress.hosts | first | quote }}
   SERVICES_RENDERING_SERVICE_HOST_INTERNAL: {{ include "edusharing_common_lib.names.name" . | quote }}
-  SERVICES_RENDERING_SERVICE_PATH_EXTERNAL: {{ .Values.ingress.paths | first | quote }}
+  SERVICES_RENDERING_SERVICE_PATH_EXTERNAL: {{ if eq (.Values.ingress.paths | first) "/" -}}{{ "" | quote }}{{- else -}}{{ .Values.ingress.paths | first | quote }}{{- end }}
   SERVICES_RENDERING_SERVICE_PLUGINS: |-
   {{- range $ununsed, $plugin := .Values.config.plugins }}
     {{ $plugin.class }}([{{ range $k, $v := $plugin.args }}{{ $k | quote }} => {{ if kindIs "string" $v }}{{ $v | quote }}{{ else }}{{ $v }}{{ end }},{{ end }}]);

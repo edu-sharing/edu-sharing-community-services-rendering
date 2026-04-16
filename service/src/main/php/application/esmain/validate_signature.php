@@ -18,11 +18,25 @@ if (empty($_GET['sig'])) {
     throw new ESRender_Exception_MissingRequestParam('sig');
 }
 
+if (empty($_GET['sigAlg'])) {
+    $Logger->error('Missing request-param "sigAlg".');
+    throw new ESRender_Exception_MissingRequestParam('sigAlg');
+}
+
 try {
     $pubkeyid = openssl_get_publickey($homeRep->prop_array['public_key']);
     $signature = rawurldecode($_GET['sig']);
     $signature = base64_decode($signature);
     $sigString = null;
+    $sigAlg = rawurldecode($_GET['sigAlg']);
+
+    $sigAlgOpenSSL = OPENSSL_ALGO_SHA512;
+    if($sigAlg == 'SHA512withRSA'){
+        $sigAlgOpenSSL = OPENSSL_ALGO_SHA512;
+    }
+    if($sigAlg == 'SHA1withRSA'){
+        $sigAlgOpenSSL = OPENSSL_ALGO_SHA1;
+    }
     if(isset($data)) {
         $sigString = $data->node->ref->repo . $data->node->ref->id;
     } else {
@@ -32,7 +46,8 @@ try {
         }
         $sigString = $_GET['sig_token'];
     }
-    $ok = openssl_verify($sigString . $ts, $signature, $pubkeyid, 'sha1WithRSAEncryption');
+    // sha1WithRSAEncryption
+    $ok = openssl_verify($sigString . $ts, $signature, $pubkeyid, $sigAlgOpenSSL);
     if ($ok != 1) {
         throw new ESRender_Exception_SslVerification('SSL signature check failed');
     }

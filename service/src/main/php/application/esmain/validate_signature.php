@@ -18,9 +18,9 @@ if (empty($_GET['sig'])) {
     throw new ESRender_Exception_MissingRequestParam('sig');
 }
 
-if (empty($_GET['sigAlg'])) {
-    $Logger->error('Missing request-param "sigAlg".');
-    throw new ESRender_Exception_MissingRequestParam('sigAlg');
+if (empty($_GET['signedAlg'])) {
+    $Logger->error('Missing request-param "signedAlg".');
+    throw new ESRender_Exception_MissingRequestParam('signedAlg');
 }
 
 try {
@@ -28,7 +28,7 @@ try {
     $signature = rawurldecode($_GET['sig']);
     $signature = base64_decode($signature);
     $sigString = null;
-    $sigAlg = rawurldecode($_GET['sigAlg']);
+    $sigAlg = rawurldecode($_GET['signedAlg']);
 
     $sigAlgOpenSSL = OPENSSL_ALGO_SHA512;
     if($sigAlg == 'SHA512withRSA'){

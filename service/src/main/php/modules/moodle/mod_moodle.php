@@ -81,7 +81,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		    $resp = str_replace('<?php', '', $resp); // moodle response sometimes contains '<?php' for some reason
 			$courseId = json_decode($resp);
 			$logger->error('Restored course with id ' . $courseId);
-            if(!is_numeric($courseId)) {
+            if(!is_numeric(json_decode($courseId))) {
                 $logger->error('No valid course id received');
                 return false;
             }

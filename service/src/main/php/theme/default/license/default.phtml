@@ -11,7 +11,7 @@
 
     $licenceContent =  Config::get('licensePre', '');
 
-    $licenceContent .= '<a class="license_permalink" href="'.$license_permalink.'" target="_blank" title="'.htmlentities(htmlentities($license_filename)).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
+    $licenceContent .= '<a class="license_permalink" href="'.$license_permalink.'" target="_blank"><es:title xmlns:es="http://edu-sharing.net/object" >'
         . htmlentities(htmlentities($license_filename))
         . '</es:title></a>'
         . htmlentities('&nbsp;');

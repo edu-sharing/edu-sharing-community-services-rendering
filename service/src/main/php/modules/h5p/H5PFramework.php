@@ -1155,4 +1155,8 @@ class H5PFramework implements H5PFrameworkInterface {
     {
         // TODO: Implement setContentHubMetadataChecked() method.
     }
+
+    public function resetHubOrganizationData() {
+        // TODO: Implement resetHubOrganizationData() method.
+    }
 }

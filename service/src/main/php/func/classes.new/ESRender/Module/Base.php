@@ -85,9 +85,9 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         $msg['hasNoContentLicense'] = new Phools_Message_Default('hasNoContentLicense');
 
         $data = array('title' => $this -> esObject -> getTitle(),
-                    'width' => mc_Request::fetch('width', 'INT', 0),
-                    'height' => mc_Request::fetch('height', 'INT', 0),
-                    'backLink' => mc_Request::fetch('backLink', 'CHAR', ''));
+            'width' => mc_Request::fetch('width', 'INT', 0),
+            'height' => mc_Request::fetch('height', 'INT', 0),
+            'backLink' => mc_Request::fetch('backLink', 'CHAR', ''));
 
         if(false === Config::get('hasContentLicense')) {
             $license = '<span class="edusharing_warning">' . htmlentities($msg['hasNoContentLicense']->localize($Locale, $Translate), ENT_COMPAT, 'utf-8') . '</span>';
@@ -95,8 +95,8 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
             if($this -> esObject -> getLicense()) {
                 $license = $this -> esObject -> getLicense() -> renderFooter($this -> getTemplate(), $this->lmsInlineHelper());
             } else {
-                $license = '<a class="license_permalink" href="'.$this->lmsInlineHelper().'&closeOnBack=true" target="_blank" title="'.htmlentities($this->esObject -> getTitle()).'"><es:title xmlns:es="http://edu-sharing.net/object" >'
-                    . htmlentities($this->esObject -> getTitle())
+                $license = '<a class="license_permalink" href="'.$this->lmsInlineHelper().'&closeOnBack=true" target="_blank"><es:title xmlns:es="http://edu-sharing.net/object" >'
+                    . htmlentities(htmlentities($this->esObject -> getTitle()))
                     . '</es:title></a>';
             }
         }
@@ -107,7 +107,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
 
         $metadata = '';
         if(ENABLE_METADATA_INLINE_RENDERING && $showMetadata) {
-	       	$metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
+            $metadata = $this -> esObject -> getMetadataHandler() -> render($this -> getTemplate(), '/metadata/inline');
         }
 
         $data['footer'] = $this->getTemplate()->render('/footer/inline', array('license' => $license, 'metadata' => $metadata, 'sequence' => $sequence, 'title' => $this -> esObject -> getTitle()));
@@ -141,14 +141,14 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
     public function instanceLocked() {
         $Logger = $this -> getLogger();
         $pdo = RsPDO::getInstance();
-        
+
         try {
             $sql = 'SELECT "ESOBJECT_LOCK_OBJECT_ID" FROM "ESOBJECT_LOCK" '.
                 'WHERE "ESOBJECT_LOCK_REP_ID" = :repid '.
                 'AND "ESOBJECT_LOCK_CONTENT_HASH" = :contenthash '
                 .'AND "ESOBJECT_LOCK_OBJECT_ID" = :objectid '.
                 'AND "ESOBJECT_LOCK_OBJECT_VERSION" = :version';
-                
+
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
             $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
@@ -157,7 +157,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
 
             $stmt -> execute();
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
-            
+
         } catch(PDOException $e) {
             throw new Exception($e -> getMessage());
         }
@@ -175,17 +175,17 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
         $pdo = RsPDO::getInstance();
         try {
             $sql = 'DELETE FROM "ESOBJECT_LOCK" WHERE "ESOBJECT_LOCK_REP_ID" = :repid AND "ESOBJECT_LOCK_OBJECT_ID" = :objectid AND "ESOBJECT_LOCK_OBJECT_VERSION" = :version';
-    
+
             $stmt = $pdo -> prepare($sql);
             $stmt -> bindValue(':repid', $this -> esObject -> getRepId());
             $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
             $stmt -> bindValue(':version', $this -> esObject -> getObjectVersion());
             $result = $stmt -> execute();
-    
+
             if (!$result) {
                 throw new Exception('Instance could not be unlocked. ' . print_r($pdo -> errorInfo(), true));
             }
-    
+
             $Logger -> debug('Instance unlocked.');
             return true;
         } catch(PDOException $e) {
@@ -248,7 +248,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
             $stmt -> bindValue(':contenthash', $this -> esObject -> getContentHash());
             $stmt -> bindValue(':objectid', $this -> esObject -> getObjectID());
             $stmt -> execute();
-            
+
             $result = $stmt -> fetch(PDO::FETCH_ASSOC);
 
             if ($result) {
@@ -272,7 +272,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
                     return false;
                 }
             }
-    
+
             $Logger -> debug('Instance does not exist.');
             return false;
         } catch (PDOException $e) {
@@ -309,7 +309,7 @@ abstract class ESRender_Module_Base implements ESRender_Module_Interface {
                 $Logger -> debug('Calling Module::inline()');
                 return $this -> inline();
                 break;
-                
+
             case ESRender_Application_Interface::DISPLAY_MODE_DYNAMIC :
                 $Logger -> debug('Calling Module::dynamic()');
                 return $this -> dynamic();

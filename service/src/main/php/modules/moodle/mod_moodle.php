@@ -207,7 +207,4 @@ extends ESRender_Module_ContentNode_Abstract {
 	protected function getForwardUrl() {
 		return MOODLE_BASE_DIR . '/local/edusharing_webservice/forwardUser.php?token=' . urlencode($this-> getUserToken());
 	}
-	
-	
-	
 }

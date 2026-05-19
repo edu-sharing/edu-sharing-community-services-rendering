@@ -146,7 +146,8 @@ $l_dest = sanitizePath($l_dest);
 session_name($ESRENDER_SESSION_NAME);
 session_id($l_sid);
 session_start();
-header("Set-Cookie: $ESRENDER_SESSION_NAME=$l_sid; $SESSION_COOKIE_SETTINGS");
+// we need to set path, otherwise the cookie is ignored in browser for assets!
+header("Set-Cookie: $ESRENDER_SESSION_NAME=$l_sid; path=/esrender; $SESSION_COOKIE_SETTINGS");
 
 if (empty($_SESSION['esrender'])) {
     error_log('Missing "esrender"-session-data.');

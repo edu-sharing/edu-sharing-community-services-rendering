@@ -61,7 +61,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
                 Config::set('downloadUrl', $downloadUrl);
             }
             if($this->mimetypesPlayout) {
-               // for new rs: custom config for helm charts
+                // for new rs: custom config for helm charts
                 if(!preg_match($this->mimetypesPlayout, $esObject->getMimeType())) {
                     $logger->info('Sodix ' . $repId . ' mimetype is not supported: ' . $esObject->getMimeType() . ', allowed: ' . $this->mimetypesPlayout );
                     return;
@@ -122,10 +122,11 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         try {
             $cached = $this->redisClient->get(self::TOKEN_CACHE_KEY);
             if (is_string($cached) && $cached !== '') {
+                $this->getLogger()->debug('Redis cache found. ');
                 return $cached;
             }
         } catch (\Throwable $e) {
-            $this->getLogger()->warn('Redis unavailable while reading token cache; continuing without cache.', $e);
+            $this->getLogger()->warn('Redis unavailable while reading token cache; continuing without cache. ' . $e);
         }
 
         $token = $this->fetchNewToken();
@@ -136,7 +137,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         try {
             $this->redisClient->set(self::TOKEN_CACHE_KEY, $token);
         } catch (\Throwable $e) {
-            $this->getLogger()->warn('Redis unavailable while writing token cache; continuing without cache.', $e);
+            $this->getLogger()->warn('Redis unavailable while writing token cache; continuing without cache. ' . $e);
         }
 
         return $token;

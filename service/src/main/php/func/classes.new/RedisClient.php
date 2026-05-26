@@ -20,7 +20,7 @@ final class RedisClient
 
     private function __construct() {
         $this->client = $this->createClient();
-        $this->client->ping();
+        $this->healthCheck($this->client);
     }
 
     /**
@@ -56,14 +56,20 @@ final class RedisClient
         if (empty($host) || empty($port)) {
             throw new \Exception('Cache host or port not set');
         }
-        return new \Predis\Client([
-            'scheme' => 'tcp',
-            'cluster' => 'redis',
-            'host' => $host,
-            'port' => $port,
-            'persistent' => true,
-            'timeout' => 1.0,
-            'read_write_timeout' => 1.0,
-        ]);
+        return new \Predis\Client(
+            [
+                [
+                    'scheme' => 'tcp',
+                    'host' => $host,
+                    'port' => $port,
+                    'persistent' => true,
+                    'timeout' => 1.0,
+                    'read_write_timeout' => 1.0,
+                ],
+            ],
+            [
+                'cluster' => 'redis',
+            ]
+        );
     }
 }

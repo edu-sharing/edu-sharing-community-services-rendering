@@ -32,14 +32,23 @@ final class RedisClient
      */
     public function getClient(): \Predis\Client {
         try {
-            $this->client->ping();
+            $this->healthCheck($this->client);
             return $this->client;
         } catch (\Throwable $e) {
             $this->client = $this->createClient();
-            $this->client->ping();
+            $this->healthCheck($this->client);
 
             return $this->client;
         }
+    }
+
+    /**
+     * Cluster-safe liveness check. PING has no key and therefore no hash slot,
+     * so Predis refuses to route it in cluster mode — use a slot-routable
+     * command against a sentinel key instead.
+     */
+    private function healthCheck(\Predis\Client $client): void {
+        $client->exists('healthcheck');
     }
 
     /**

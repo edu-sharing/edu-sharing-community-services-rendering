@@ -20,7 +20,7 @@ final class RedisClient
 
     private function __construct() {
         $this->client = $this->createClient();
-        $this->client->ping();
+        $this->healthCheck($this->client);
     }
 
     /**
@@ -32,14 +32,23 @@ final class RedisClient
      */
     public function getClient(): \Predis\Client {
         try {
-            $this->client->ping();
+            $this->healthCheck($this->client);
             return $this->client;
         } catch (\Throwable $e) {
             $this->client = $this->createClient();
-            $this->client->ping();
+            $this->healthCheck($this->client);
 
             return $this->client;
         }
+    }
+
+    /**
+     * Cluster-safe liveness check. PING has no key and therefore no hash slot,
+     * so Predis refuses to route it in cluster mode — use a slot-routable
+     * command against a sentinel key instead.
+     */
+    private function healthCheck(\Predis\Client $client): void {
+        $client->exists('healthcheck');
     }
 
     /**
@@ -56,14 +65,20 @@ final class RedisClient
         if (empty($host) || empty($port)) {
             throw new \Exception('Cache host or port not set');
         }
-        return new \Predis\Client([
-            'scheme' => 'tcp',
-            'cluster' => 'redis',
-            'host' => $host,
-            'port' => $port,
-            'persistent' => true,
-            'timeout' => 1.0,
-            'read_write_timeout' => 1.0,
-        ]);
+        return new \Predis\Client(
+            [
+                [
+                    'scheme' => 'tcp',
+                    'host' => $host,
+                    'port' => $port,
+                    'persistent' => true,
+                    'timeout' => 1.0,
+                    'read_write_timeout' => 1.0,
+                ],
+            ],
+            [
+                'cluster' => 'redis',
+            ]
+        );
     }
 }

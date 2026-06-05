@@ -83,14 +83,14 @@ extends ESRender_Module_Base
             $timestamp = round(microtime(true) * 1000);
             $signData = $this -> esObject -> getObjectID() . $timestamp;
             $pkeyid = openssl_get_privatekey(Config::get('homeConfig')->prop_array['private_key']);
-            openssl_sign($signData, $signature, $pkeyid);
+            openssl_sign($signData, $signature, $pkeyid, OPENSSL_ALGO_SHA512);
             $signature = urlencode(base64_encode($signature));
             openssl_pkey_free($pkeyid);
             $cacheFile = $this->getCacheFileName();
             $url =  current(explode("/services/", Config::get('homeRepository')->prop_array['authenticationwebservice']));
             $path = '/content?';
             $params = 'repId=' . $this -> esObject -> getNode() -> ref -> repo . '&appId='.Config::get('homeConfig')->prop_array['appid'] . '&nodeId=' .
-                $this -> esObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature;
+                $this -> esObject -> getObjectID() . '&timeStamp=' . $timestamp . '&authToken=' . $signature.'&signedAlg=SHA512withRSA';
             if(!in_array('ccm:revoked', $this->esObject->getNode()->aspects)) {
                 $params .= '&version=' . $this -> esObject -> getObjectVersion();
             }

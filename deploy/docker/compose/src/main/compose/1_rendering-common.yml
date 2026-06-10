@@ -75,7 +75,7 @@ services:
     expose:
       - "8080"
     ports:
-      - "${COMMON_BIND_HOST:-127.0.0.1}:${SERVICES_RENDERING_SERVICE_PORT:-9100}:8081"
+      - "${COMMON_BIND_HOST:-127.0.0.1}:${SERVICES_RENDERING_SERVICE_PORT_HTTP:-9100}:8081"
     volumes:
       - "services-rendering-service-volume-config:/var/cache/esrender/config"
       - "services-rendering-service-volume-data:/var/cache/esrender/data"

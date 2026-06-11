@@ -278,7 +278,10 @@ padding: 8px 16px;
 text-decoration: none;
 color: #fff;
 background-color: #4f7a98;
-display: inline-block;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
 margin-top: 20px;
 font-weight: 600;
 }

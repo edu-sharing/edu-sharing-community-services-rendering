@@ -6,6 +6,7 @@ $uniqueId = rand();
     <script src="<?php echo $MC_URL?>/theme/default/data_protection/script.js"></script>
     <link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/dynamic.php">
     <link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/metadata.css">
+    <?php include(dirname(__FILE__) . '/../css/material-icons.php'); ?>
     <div class="edusharing_rendering_wrapper" id="<?php echo $uniqueId;?>-privacy">
         <h1 class="edusharing_rendering_content_title"><?php echo $node->getNode()->title ?></h1>
         <div class="edusharing_rendering_content_wrapper" role="main">
@@ -30,7 +31,7 @@ $uniqueId = rand();
                             </p>
                             <p>
                                 <a href="<?php echo $url; ?>" class="edusharing_rendering_content btn btn-primary dataProtectionRegulationsButton dataProtectionRegulationsButton-<?php echo $type;?>" target="_blank" id="edusharing_rendering_content_href">
-                                    <?php echo Phools_Message_Default::translate('goToOrigin'); ?>
+                                    <?php echo Phools_Message_Default::translate('goToOrigin'); ?><i class="material-icons">open_in_new</i>
                                 </a>
                             </p>
 

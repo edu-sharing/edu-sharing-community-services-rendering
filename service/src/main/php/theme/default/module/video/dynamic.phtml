@@ -1,22 +1,23 @@
-<?php 
+<?php
 global $Locale, $Translate, $MC_URL;
 $msg = array();
+session_start();
+$id = uniqid();
+$_SESSION["mod_video"][$id] = [
+    "ajax_url"   => $ajax_url,
+    "authString" => $authString
+];
 ?>
 
-<style>
-    <?php include(dirname(__FILE__) . '/../../css/dynamic.php'); ?>
-    <?php include(dirname(__FILE__) . '/../../css/metadata.css'); ?>
-</style>
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/dynamic.php">
+<link rel="stylesheet" href="<?php echo $MC_URL;?>/vendor/css/metadata.css">
 
 <div class="edusharing_rendering_wrapper" vocab="http://schema.org/" typeof="WebPage">
 	<h1 class="edusharing_rendering_content_title"><?php echo htmlentities($title) ?></h1>
 	<div class="edusharing_rendering_content_wrapper">
-		<div id="edusharing_rendering_content"
-			data-ajax-url="<?php echo htmlspecialchars($ajax_url, ENT_QUOTES, 'UTF-8') ?>"
-			data-auth-string="<?php echo htmlspecialchars($authString, ENT_QUOTES, 'UTF-8') ?>"></div>
+		<div id="edusharing_rendering_content_<?php echo $id; ?>"></div>
 	</div>
 	<?php echo $metadata; ?>
 </div>
 
-<script src="<?php echo $MC_URL?>/vendor/js/getJS.php"></script>
-<script src="<?php echo $MC_URL?>/vendor/js/video/dynamic.js"></script>
+<script src="<?php echo $MC_URL?>/vendor/js/video.module.php?ID=<?php echo urlencode($id);?>&PHPSESSID=<?php echo urlencode(session_id());?>"></script>

@@ -71,6 +71,10 @@ display: inline-block;
 position: relative;
 }
 
+div.edusharing_rendering_content_video_wrapper > video {
+max-width: 100%;
+}
+
 div.edusharing_rendering_content_video_wrapper:hover div.edusharing_rendering_content_video_options {
 display: block;
 }
@@ -88,7 +92,8 @@ font-size: 18px !important;
 }
 
 i.edusharing_rendering_content_video_options_toggle {
-text-shadow: 0px 0px 4px #333;
+text-shadow: 0px 0px 4px #fff;
+cursor: pointer;
 }
 
 ul.edusharing_rendering_content_video_options_resolutions > li {

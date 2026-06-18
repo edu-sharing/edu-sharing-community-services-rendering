@@ -278,7 +278,6 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
 }
 
 .edusharing_rendering_content_footer {
-    width: 100%;
     background: #f6f6f6;
     padding: 6px;
 }

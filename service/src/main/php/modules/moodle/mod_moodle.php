@@ -66,6 +66,10 @@ extends ESRender_Module_ContentNode_Abstract {
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
 
+        if (!empty(MOODLE_PUBLIC_HOST)) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Host: ' . MOODLE_PUBLIC_HOST]);
+        }
+
 		$params = array('nodeid'=> $this -> esObject->getObjectID(),'category' => MOODLE_CATEGORY_ID, 'title' => htmlentities($this -> esObject->getTitle()));
 
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
@@ -80,6 +84,10 @@ extends ESRender_Module_ContentNode_Abstract {
 		if ($httpcode >= 200 && $httpcode < 300 && strpos($resp, 'exception') === false) {
 		    $resp = str_replace('<?php', '', $resp); // moodle response sometimes contains '<?php' for some reason
 			$courseId = json_decode($resp);
+            // Remove all stupid stuff
+            if (is_string($courseId)) {
+                $courseId = trim($courseId, "\"' \t\n\r\0\x0B");
+            }
 			$logger->error('Restored course with id ' . $courseId);
             if(!is_numeric($courseId)) {
                 $logger->error('No valid course id received');
@@ -134,6 +142,10 @@ extends ESRender_Module_ContentNode_Abstract {
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
+
+        if (!empty(MOODLE_PUBLIC_HOST)) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Host: ' . MOODLE_PUBLIC_HOST]);
+        }
 		$params = ['user_name'      => htmlentities($this -> esObject -> getData() -> user->authorityName),
                    'user_givenname' => htmlentities($user_givenname),
                    'user_surname'   => htmlentities($user_surname),

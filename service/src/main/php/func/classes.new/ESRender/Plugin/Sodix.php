@@ -17,6 +17,9 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
     protected String $allowExternalFrameSrc;
     protected String $sodixRegion;
 
+    private \Predis\Client $redisClient;
+    private const TOKEN_CACHE_KEY = 'sodix:token';
+
     public function __construct(array $properties = [
         "url" => "",
         "user" => "",
@@ -25,6 +28,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         "sodixRegion" => "",
         "allowExternalFrameSrc" => false
     ]) {
+        $this->redisClient = RedisClient::getInstance()->getClient();
         parent::__construct($properties);
     }
 
@@ -51,11 +55,13 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             return;
         }
         if(!$isPayedMedia) {
+            // for new rs: handled in method /render/playout (downloadUrl)
             $downloadUrl = $this->fetchPublicDownloadUrl($data, $repId, $token);
             if($downloadUrl) {
                 Config::set('downloadUrl', $downloadUrl);
             }
             if($this->mimetypesPlayout) {
+                // for new rs: custom config for helm charts
                 if(!preg_match($this->mimetypesPlayout, $esObject->getMimeType())) {
                     $logger->info('Sodix ' . $repId . ' mimetype is not supported: ' . $esObject->getMimeType() . ', allowed: ' . $this->mimetypesPlayout );
                     return;
@@ -64,6 +70,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         }
         $logger->info("Successfully retrieved token.");
         if (!$isPayedMedia) {
+            // for new rs: handled in method /render/playout (see above, includes playoutUrl + downloadUrl)
             $body = [
                 "operationName" => "getPlayoutWindow",
                 "query" => "query getPlayoutWindow {  getPlayoutWindow(mediaId: \"$repId\", autoplay: false) {  playoutUrl } }"
@@ -74,6 +81,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
             if($esObject->getUser()->primaryAffiliation === 'teacher') {
                 $role = 'TEACHER';
             }
+            // for new rs: handled in method /render/paidmedia (role must be sent; region is present in the sodix importer itself and not required)
             $body = [
                 "operationName" => "paidMediaLinks",
                 "query" => "query paidMediaLinks {  paidMediaLinks(id: \"$repId\", role: $role, region: \"$this->sodixRegion\") {  links { href linkType } } }"
@@ -109,7 +117,41 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         }
         return null;
     }
-    private function getToken(): String {
+
+    private function getToken(): string {
+        try {
+            $cached = $this->redisClient->get(self::TOKEN_CACHE_KEY);
+            if (is_string($cached) && $cached !== '') {
+                $this->getLogger()->debug('Redis cache found. ');
+                return $cached;
+            }
+        } catch (\Throwable $e) {
+            $this->getLogger()->warn('Redis unavailable while reading token cache; continuing without cache. ' . $e);
+        }
+
+        $token = $this->fetchNewToken();
+        if ($token === '') {
+            return '';
+        }
+
+        try {
+            $this->redisClient->set(self::TOKEN_CACHE_KEY, $token);
+        } catch (\Throwable $e) {
+            $this->getLogger()->warn('Redis unavailable while writing token cache; continuing without cache. ' . $e);
+        }
+
+        return $token;
+    }
+
+    private function invalidateTokenCache(): void {
+        try {
+            $this->redisClient->del([self::TOKEN_CACHE_KEY]);
+        } catch (\Throwable $e) {
+            $this->getLogger()->warn('Redis unavailable while invalidating token cache.', $e);
+        }
+    }
+
+    private function fetchNewToken(): String {
         $logger = $this->getLogger();
         $uri = substr($this->url, 0, -8) . '/auth/login';
         $client = GuzzleHelper::getClient();
@@ -130,7 +172,7 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         return json_decode($result->getBody(), true)["access_token"] ?? "";
     }
 
-    private function getGraphQL(String $token, array $body): array {
+    private function requestGraphQl(string $token, array $body): ?array {
         $logger = $this->getLogger();
         $client = GuzzleHelper::getClient();
         try {
@@ -146,12 +188,39 @@ class ESRender_Plugin_Sodix extends ESRender_Plugin_Abstract
         } catch (GuzzleHttp\Exception\ConnectException $exception) {
             $logger->error($exception->getMessage());
             return [];
-        }  catch (GuzzleHttp\Exception\ClientException | GuzzleHttp\Exception\TransferException $exception) {
+        } catch ( GuzzleHttp\Exception\ClientException $clientException) {
+            $status = $clientException->getResponse()?->getStatusCode();
+            if ($status === 401 || $status === 403) {
+                // Token invalid/expired -> tell caller to refresh and retry once
+                return null;
+            }
+            $logger->error(GuzzleHttp\Psr7\Message::toString($clientException->getResponse()));
+            return [];
+        }  catch (GuzzleHttp\Exception\TransferException $exception) {
             $logger->error(GuzzleHttp\Psr7\Message::toString($exception->getResponse()));
             return [];
         }
 
         return json_decode($result->getBody(), true);
+    }
+
+    private function getGraphQL(String $token, array $body): array {
+        $logger = $this->getLogger();
+
+        $response = $this->requestGraphQl($token, $body);
+        if ($response !== null) {
+            return $response;
+        }
+        $logger->info('SODIX token seems stale; fetching a new token and retrying once.');
+        $this->invalidateTokenCache();
+
+        $freshToken = $this->getToken();
+        if ($freshToken === '') {
+            return [];
+        }
+
+        $response = $this->requestGraphQL($freshToken, $body);
+        return $response ?? [];
     }
 
     public function displayError($message, array $data = []) {

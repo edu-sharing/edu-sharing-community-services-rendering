@@ -301,7 +301,10 @@ a.edusharing_rendering_content {
     text-decoration: none;
     color: #fff;
     background-color: #4F7A98;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     margin: 20px;
     font-weight: 600;
 }

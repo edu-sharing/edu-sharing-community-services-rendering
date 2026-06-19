@@ -98,7 +98,7 @@
     </docker.edu_sharing.community.common.minideb.tag>
 
     <docker.from.apache.server>
-      dockerio.mirror.docker.edu-sharing.com/php:8.3-apache
+      dockerio.mirror.docker.edu-sharing.com/php:8.3.31-apache
     </docker.from.apache.server>
 
     <helm.kube.version>&gt;= 1.20.0-0</helm.kube.version>

@@ -162,6 +162,7 @@ class mod_h5p
 
             self::$settings['contents'][$cid]['scripts'] = $this -> H5PCore->getAssetsUrls($files['scripts']);
             self::$settings['contents'][$cid]['styles'] = $this -> H5PCore->getAssetsUrls($files['styles']);
+            self::$settings['contents'][$cid]['url'] = $this -> esObject -> getPath();
         }
     }
 

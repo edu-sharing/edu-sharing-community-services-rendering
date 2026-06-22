@@ -113,7 +113,6 @@ extends ESRender_Module_AudioVideo_Abstract {
             '&display=inline' .
             '&displayoption=min' .
             '&language='.$Locale->getLanguageTwoLetters().
-            '&width=640'.
             '&antiCache=' . mt_rand();
     		//could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
 
@@ -142,7 +141,6 @@ extends ESRender_Module_AudioVideo_Abstract {
             '&display=inline' .
             '&displayoption=min' .
             '&language='.$Locale->getLanguageTwoLetters().
-            '&width=640'.
             '&antiCache=' . mt_rand();
         //could be achieved with jquery ajax option, but in this way we can influence, for example allow caching if resource is in conversion cue
 

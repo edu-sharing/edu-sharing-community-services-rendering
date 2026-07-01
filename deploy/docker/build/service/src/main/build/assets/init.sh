@@ -37,29 +37,13 @@ done
 
 ########################################################################################################################
 
-my_appid=$( \
-	curl -sS "${my_meta_internal}" | xmlstarlet sel -t -v '/properties/entry[@key="appid"]' - | xargs echo \
-)
-
-has_my_appid=$( \
-	curl -sS \
-		-H "Accept: application/json" \
-		--user "${repository_service_admin_user}:${repository_service_admin_pass}" \
-		"${repository_service_base}/rest/admin/v1/applications" | jq -r '.[] | select(.id == "'"${my_appid}"'") | .id' \
-)
-
-if [ -n "${has_my_appid}" ]
-then
-	curl -sS \
-		-H "Accept: application/json" \
-		--user "${repository_service_admin_user}:${repository_service_admin_pass}" \
-		-XDELETE \
-		"${repository_service_base}/rest/admin/v1/applications/${my_appid}"
-fi
-
-curl -sS \
-  -H "Accept: application/json" \
-  --user "${repository_service_admin_user}:${repository_service_admin_pass}" \
-  -XPUT \
-  "${repository_service_base}/rest/admin/v1/applications?url=$( jq -nr --arg v "${my_meta_internal}" '$v|@uri' )"
+# Upsert the application in a single call: the PUT /applications/xml endpoint parses the appid from the
+# uploaded metadata and updates it in place if already registered, otherwise inserts it. No list/delete dance.
+curl -sS "${my_meta_internal}" \
+  | curl -sS \
+      -H "Accept: application/json" \
+      --user "${repository_service_admin_user}:${repository_service_admin_pass}" \
+      -XPUT \
+      -F "xml=@-;type=text/xml;filename=metadata.xml" \
+      "${repository_service_base}/rest/admin/v1/applications/xml"
 

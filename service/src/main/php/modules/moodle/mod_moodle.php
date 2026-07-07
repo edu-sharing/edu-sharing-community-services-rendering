@@ -66,7 +66,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
 
-        if (!empty(MOODLE_PUBLIC_HOST)) {
+        if (defined(MOODLE_PUBLIC_HOST) && !empty(MOODLE_PUBLIC_HOST)) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, ['Host: ' . MOODLE_PUBLIC_HOST]);
         }
 
@@ -143,7 +143,7 @@ extends ESRender_Module_ContentNode_Abstract {
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_POST, true );
 
-        if (!empty(MOODLE_PUBLIC_HOST)) {
+        if (defined(MOODLE_PUBLIC_HOST) && !empty(MOODLE_PUBLIC_HOST)) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, ['Host: ' . MOODLE_PUBLIC_HOST]);
         }
 		$params = ['user_name'      => htmlentities($this -> esObject -> getData() -> user->authorityName),

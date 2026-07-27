@@ -78,6 +78,14 @@ div.edusharing_rendering_content_video_wrapper {
     position: relative;
 }
 
+div.edusharing_rendering_content_video_wrapper > video {
+    max-width: 100%;
+}
+
+.edusharing_rendering_content_video_error {
+    display: none;
+}
+
 div.edusharing_rendering_content_video_wrapper:hover div.edusharing_rendering_content_video_options {
     display: block;
 }
@@ -95,7 +103,9 @@ ul.edusharing_rendering_content_video_options_resolutions i {
 }
 
 i.edusharing_rendering_content_video_options_toggle {
+    color: #fff;
     text-shadow: 0px 0px 4px #333;
+    cursor: pointer;
 }
 
 ul.edusharing_rendering_content_video_options_resolutions > li {
@@ -268,7 +278,6 @@ ul.edusharing_rendering_content_video_options_resolutions > li.edusharing_render
 }
 
 .edusharing_rendering_content_footer {
-    width: 100%;
     background: #f6f6f6;
     padding: 6px;
 }

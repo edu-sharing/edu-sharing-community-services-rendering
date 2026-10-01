@@ -44,6 +44,10 @@ deploy:
 check-helmreadme:
   stage: test
   image: node:lts-alpine3.20
+  rules:
+    - if: $SKIP_TESTS == "true"
+      when: never
+    - when: on_success
   before_script:
     - ln -s $CI_PROJECT_DIR/deploy/docker/helm/bundle/src/main/chart /tmp/bundle && cp /tmp/bundle/README.md /tmp/README_bundle.md
     - ln -s $CI_PROJECT_DIR/deploy/docker/helm/service/src/main/chart /tmp/service && cp /tmp/service/README.md /tmp/README_service.md

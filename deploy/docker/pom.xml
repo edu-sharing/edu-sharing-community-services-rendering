@@ -46,7 +46,7 @@
     </docker.edu_sharing.community.common.redis.name>
 
     <docker.edu_sharing.community.common.redis.tag>
-      8.2.9
+      8.2.10
     </docker.edu_sharing.community.common.redis.tag>
 
     <docker.edu_sharing.community.common.redis.exporter.name>
@@ -62,7 +62,7 @@
     </docker.edu_sharing.community.common.redis-cluster.name>
 
     <docker.edu_sharing.community.common.redis-cluster.tag>
-      8.2.9
+      8.2.10
     </docker.edu_sharing.community.common.redis-cluster.tag>
 
     <docker.edu_sharing.community.common.postgresql.name>
@@ -98,7 +98,7 @@
     </docker.edu_sharing.community.common.minideb.tag>
 
     <docker.from.apache.server>
-      dockerio.mirror.docker.edu-sharing.com/php:8.3.33-apache
+      dockerio.mirror.docker.edu-sharing.com/php:8.3.36-apache
     </docker.from.apache.server>
 
     <helm.kube.version>&gt;= 1.20.0-0</helm.kube.version>

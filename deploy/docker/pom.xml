@@ -70,7 +70,7 @@
     </docker.edu_sharing.community.common.postgresql.name>
 
     <docker.edu_sharing.community.common.postgresql.tag>
-      16.6.0-2
+      16.6.0-3
     </docker.edu_sharing.community.common.postgresql.tag>
 
     <docker.edu_sharing.community.common.postgresql.exporter.name>

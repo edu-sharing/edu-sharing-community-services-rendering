@@ -46,7 +46,7 @@
     </docker.edu_sharing.community.common.redis.name>
 
     <docker.edu_sharing.community.common.redis.tag>
-      8.2.10
+      8.2.10-2
     </docker.edu_sharing.community.common.redis.tag>
 
     <docker.edu_sharing.community.common.redis.exporter.name>
@@ -62,7 +62,7 @@
     </docker.edu_sharing.community.common.redis-cluster.name>
 
     <docker.edu_sharing.community.common.redis-cluster.tag>
-      8.2.10
+      8.2.10-2
     </docker.edu_sharing.community.common.redis-cluster.tag>
 
     <docker.edu_sharing.community.common.postgresql.name>
@@ -70,7 +70,7 @@
     </docker.edu_sharing.community.common.postgresql.name>
 
     <docker.edu_sharing.community.common.postgresql.tag>
-      16.6.0
+      16.6.0-2
     </docker.edu_sharing.community.common.postgresql.tag>
 
     <docker.edu_sharing.community.common.postgresql.exporter.name>

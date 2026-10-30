@@ -59,8 +59,10 @@ WORKDIR $RS_ROOT
 
 COPY artifacts/edu_sharing-community-services-rendering-service-${org.edu_sharing:edu_sharing-community-services-rendering-service:tar.gz:bin.version}-bin.tar.gz /tmp/edu_sharing-community-services-rendering.tar.gz
 
+# the archive entries have no leading './', so the exclude must not have one either.
+# the bundled static ffmpeg 6.1 is not used in the container (entrypoint.sh configures /usr/bin/ffmpeg)
 RUN set -eux \
-	&& tar -xzf /tmp/edu_sharing-community-services-rendering.tar.gz --exclude './vendor/lib/converter' \
+	&& tar -xzf /tmp/edu_sharing-community-services-rendering.tar.gz --exclude 'vendor/lib/converter' \
 	&& rm -rf /tmp/edu_sharing-community-services-rendering.tar.gz
 
 COPY assets/apache2/ports.conf /etc/apache2/ports.conf

@@ -2,8 +2,11 @@ FROM ${docker.from.apache.server}
 
 ########################################################################################################################
 
+# The OS packages (e.g. apache2) are upgraded first to pick up security fixes released after the upstream php image was
+# built; this has to happen before the php extensions are compiled so that they are built against the upgraded libraries.
 RUN set -eux \
 	&& apt-get update -y \
+	&& apt-get upgrade -y --no-install-recommends \
 	&& apt-get install -y --no-install-recommends \
         cron \
         ca-certificates \

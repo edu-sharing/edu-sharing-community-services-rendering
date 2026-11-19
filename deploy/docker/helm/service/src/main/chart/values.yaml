@@ -228,7 +228,9 @@ config:
     ## @param config.database.port Set database port
     port: 5432
     ## @param config.database.database Set database name
-    database: rendering;sslmode=disabled
+    database: rendering
+    ## @param config.database.sslmode Set database ssl mode (libpq sslmode, e.g. disable, prefer, require; empty = libpq default)
+    sslmode: disable
     ## @param config.database.username Set database username
     username: rendering
     ## @param config.database.password Set database password

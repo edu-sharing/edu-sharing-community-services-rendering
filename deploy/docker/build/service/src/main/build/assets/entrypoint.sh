@@ -64,6 +64,18 @@ rendering_database_pass="${SERVICES_RENDERING_DATABASE_PASS:-rendering}"
 rendering_database_port="${SERVICES_RENDERING_DATABASE_PORT:-5432}"
 rendering_database_user="${SERVICES_RENDERING_DATABASE_USER:-rendering}"
 
+# legacy: options appended to the database name, e.g. "rendering;sslmode=disable"
+# -> use the plain name and pass sslmode via PGSSLMODE (read by libpq for psql and php pdo_pgsql)
+if [[ "${rendering_database_name}" == *";"* ]]; then
+	database_options="${rendering_database_name#*;}"
+	rendering_database_name="${rendering_database_name%%;*}"
+	if [[ -z "${PGSSLMODE:-}" && "${database_options}" =~ sslmode=([a-z-]+) ]]; then
+		PGSSLMODE="${BASH_REMATCH[1]}"
+		[[ "${PGSSLMODE}" == "disabled" ]] && PGSSLMODE="disable"
+		export PGSSLMODE
+	fi
+fi
+
 repository_service_host="${REPOSITORY_SERVICE_HOST:-repository-service}"
 repository_service_port="${REPOSITORY_SERVICE_PORT:-8080}"
 
